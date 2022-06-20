@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/student.dart';
+import '../screens/student_main_screen.dart';
 
 class StudentListTile extends StatelessWidget {
   const StudentListTile(this.student, {Key? key}) : super(key: key);
@@ -14,8 +15,8 @@ class StudentListTile extends StatelessWidget {
       child: ListTile(
         title: Text(student.toString()),
         subtitle: Text('Progression : ${student.progression}%'),
-        // hoverColor: Theme.of(context).colorScheme.secondary,
-        onTap: () => debugPrint('coucou'),
+        onTap: () => Navigator.of(context)
+            .pushNamed(StudentMainScreen.routeName, arguments: student),
       ),
     );
   }

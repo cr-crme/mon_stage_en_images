@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import './providers/students.dart';
 import './screens/students_screen.dart';
+import './screens/student_main_screen.dart';
 import './models/my_theme_data.dart';
 
 void main() {
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
         initialRoute: StudentScreen.routeName,
         routes: {
           StudentScreen.routeName: (context) => const StudentScreen(),
+          StudentMainScreen.routeName: (context) => const StudentMainScreen(),
         },
       ),
     );
