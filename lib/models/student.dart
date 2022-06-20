@@ -5,6 +5,16 @@ class Student {
   final String firstName;
   final String lastName;
 
-  Student({required this.firstName, required this.lastName})
-      : id = Random().hashCode.toString();
+  final int progression;
+
+  Student({
+    required this.firstName,
+    required this.lastName,
+    required this.progression,
+  }) : id = Random().hashCode.toString();
+
+  @override
+  String toString() {
+    return '$firstName $lastName';
+  }
 }

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import './providers/students.dart';
 import './screens/students_screen.dart';
+import './models/my_theme_data.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,10 +18,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => Students()),
       ],
       child: MaterialApp(
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: const MyHomePage(),
+        theme: myThemeData(),
+        initialRoute: StudentScreen.routeName,
+        routes: {
+          StudentScreen.routeName: (context) => const StudentScreen(),
+        },
       ),
     );
   }

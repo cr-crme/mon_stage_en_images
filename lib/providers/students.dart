@@ -8,9 +8,9 @@ bool isInteger(num value) => (value % 1) == 0;
 class Students with ChangeNotifier {
   final List<Student> _students = [];
 
-  void add(Student student) {
+  void add(Student student, {bool notify = true}) {
     _students.add(student);
-    notifyListeners();
+    if (notify) notifyListeners();
   }
 
   Student operator [](value) {
@@ -26,4 +26,6 @@ class Students with ChangeNotifier {
   int getIndex(String id) {
     return _students.indexWhere((element) => element.id == id);
   }
+
+  int get count => _students.length;
 }
