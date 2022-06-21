@@ -1,13 +1,13 @@
 import 'dart:math';
 
-abstract class ProvidedItem {
+abstract class ItemSerializable {
   static int _counter = 0;
-  late final String id;
+  final String id;
 
-  ProvidedItem({id}) : id = _counter.toString() {
+  ItemSerializable({id}) : id = _counter.toString() {
     _counter += 1;
   }
-  ProvidedItem.fromSerialized(Map<String, dynamic> map)
+  ItemSerializable.fromSerialized(Map<String, dynamic> map)
       : id = map['id'] ?? Random().hashCode.toString();
 
   Map<String, dynamic> serializedMap();
@@ -17,5 +17,5 @@ abstract class ProvidedItem {
     return out;
   }
 
-  ProvidedItem deserializeItem(Map<String, dynamic> map);
+  ItemSerializable deserializeItem(Map<String, dynamic> map);
 }

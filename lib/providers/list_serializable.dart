@@ -1,25 +1,21 @@
-import 'package:flutter/foundation.dart';
-
 import './provider_models/exceptions.dart';
-import './provider_models/provided_item.dart';
+import 'provider_models/item_serializable.dart';
 
 bool isInteger(num value) => (value % 1) == 0;
 
-abstract class ProvidedList<T> with ChangeNotifier {
+abstract class ListSerializable<T> {
   final List<T> items = [];
 
-  void add(T item, {bool notify = true}) {
+  void add(T item) {
     items.add(item);
-    if (notify) notifyListeners();
   }
 
   T? operator [](value) {
     return items[_getIndex(value)];
   }
 
-  void remove(value, {bool notify = true}) {
+  void remove(value) {
     items.removeAt(_getIndex(value));
-    if (notify) notifyListeners();
   }
 
   void clear() {
@@ -31,7 +27,7 @@ abstract class ProvidedList<T> with ChangeNotifier {
       return value;
     } else if (value is String) {
       return items
-          .indexWhere((element) => (element as ProvidedItem).id == value);
+          .indexWhere((element) => (element as ItemSerializable).id == value);
     } else {
       throw const TypeException(
           'Wrong type for getting an element of the provided list');
@@ -42,7 +38,7 @@ abstract class ProvidedList<T> with ChangeNotifier {
 
   Map<String, dynamic> serialize() {
     final serializedItem = [];
-    for (var element in items as List<ProvidedItem>) {
+    for (var element in items as List<ItemSerializable>) {
       serializedItem.add(element.serialize());
     }
     return {

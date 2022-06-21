@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 ThemeData myThemeData() {
-  const primaryColor = Colors.lightGreen;
+  const primaryColor = Colors.amber;
 
   return ThemeData(
       primarySwatch: primaryColor,

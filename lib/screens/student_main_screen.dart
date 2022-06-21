@@ -10,14 +10,14 @@ class StudentMainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final student = ModalRoute.of(context)!.settings.arguments as Student;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: Text(student.toString()),
       ),
-      body: Center(
-        child: Text('Progression : ${student.progression}%'),
-      ),
+      body: Column(children: [
+        Text('Entreprise : ${student.company}'),
+      ]),
     );
   }
 }

@@ -1,7 +1,7 @@
-import './provided_list.dart';
+import 'list_provided.dart';
 import '../models/student.dart';
 
-class Students extends ProvidedList<Student> {
+class Students extends ListProvided<Student> {
   int get count => length;
 
   @override
