@@ -1,4 +1,5 @@
 import 'package:defi_photo/providers/list_serializable.dart';
+import 'package:flutter/material.dart';
 
 import 'list_provided.dart';
 import './provider_models/exceptions.dart';
@@ -10,28 +11,58 @@ class QuestionList with ListSerializable<Question> {
     deserialize(map);
   }
 
-  // int get nbQuestionsAnswered {
-  //   int sum = 0;
-  //   for (var element in items) {
-  //     sum += element.answered ? 1 : 0;
-  //   }
-  //   return sum;
-  // }
-
   @override
   Question deserializeItem(map) {
     return Question.fromSerialized(map);
   }
 }
 
-class AllQuestionsLists extends ListProvided<QuestionList> {
+class AllQuestionList extends ListProvided<QuestionList> {
   final int nbSections = 6;
 
-  AllQuestionsLists() : super() {
+  static String letter(index) {
+    switch (index) {
+      case 0:
+        return 'M';
+      case 1:
+        return 'E';
+      case 2:
+        return 'T';
+      case 3:
+        return 'I';
+      case 4:
+        return 'E';
+      case 5:
+        return 'R';
+      default:
+        throw const ValueException('Number of elements are limited to 6');
+    }
+  }
+
+  static MaterialColor color(index) {
+    switch (index) {
+      case 0:
+        return Colors.red;
+      case 1:
+        return Colors.orange;
+      case 2:
+        return Colors.yellow;
+      case 3:
+        return Colors.green;
+      case 4:
+        return Colors.blue;
+      case 5:
+        return Colors.purple;
+      default:
+        throw const ValueException('Number of elements are limited to 6');
+    }
+  }
+
+  AllQuestionList() : super() {
     _initialize();
   }
 
-  AllQuestionsLists.fromSerialized(map) {
+  AllQuestionList.fromSerialized(map) {
     for (var element in (map['metier'] as List<Map<String, dynamic>>)) {
       items.add(QuestionList.fromSerialized(element));
     }
@@ -44,11 +75,11 @@ class AllQuestionsLists extends ListProvided<QuestionList> {
   }
 
   @override
-  operator [](value) {
+  QuestionList operator [](value) {
     if (value is int && value >= nbSections) {
       throw ValueException('Number of elements are limited to $nbSections');
     }
-    return super[value];
+    return super[value]!;
   }
 
   @override

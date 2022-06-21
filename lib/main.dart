@@ -10,8 +10,15 @@ import './providers/students.dart';
 import './screens/student_main_screen.dart';
 import './screens/students_screen.dart';
 
-void prepareDummyData(Students students, AllQuestionsLists questions) {
-  questions[0]!.add(Question('Qui es-tu?'));
+void prepareDummyData(Students students, AllQuestionList questions) {
+  questions[0].add(Question('Qui es-tu?'));
+  questions[1].add(Question('Qui es-tu?'));
+  questions[2].add(Question('Qui es-tu?'));
+  questions[3].add(Question('Qui es-tu?'));
+  questions[4].add(Question('Qui es-tu?'));
+  questions[5].add(Question('Qui es-tu?'));
+  questions[5].add(Question('Qui es-tu?'));
+  questions[5].add(Question('Qui es-tu?'));
 
   final company = Company(name: 'Ici');
 
@@ -30,7 +37,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final students = Students();
-    final questions = AllQuestionsLists();
+    final questions = AllQuestionList();
     prepareDummyData(students, questions);
 
     return MultiProvider(

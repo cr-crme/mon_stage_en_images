@@ -6,7 +6,7 @@ class Student extends ItemSerializable {
   final String firstName;
   final String lastName;
 
-  final Company? company;
+  Company? company;
 
   Student({
     required this.firstName,

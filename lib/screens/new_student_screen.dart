@@ -1,7 +1,7 @@
-// ignore_for_file: curly_braces_in_flow_control_structures
-
-import 'package:defi_photo/models/student.dart';
 import 'package:flutter/material.dart';
+
+import '../models/company.dart';
+import '../models/student.dart';
 
 class NewStudentScreen extends StatefulWidget {
   const NewStudentScreen({Key? key}) : super(key: key);
@@ -14,6 +14,7 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
   final _formKey = GlobalKey<FormState>();
   String? _firstName;
   String? _lastName;
+  String? _companyName;
 
   void _finalize(BuildContext context, {bool hasCancelled = false}) {
     if (hasCancelled) {
@@ -21,11 +22,16 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
       return;
     }
 
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
+    if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
+      return;
     }
-    Navigator.pop(
-        context, Student(firstName: _firstName!, lastName: _lastName!));
+    _formKey.currentState!.save();
+
+    var student = Student(firstName: _firstName!, lastName: _lastName!);
+    if (_companyName != null && _companyName!.isNotEmpty) {
+      student.company = Company(name: _companyName!);
+    }
+    Navigator.pop(context, student);
   }
 
   @override
@@ -49,6 +55,12 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
                 validator: (value) =>
                     value == null || value.isEmpty ? 'Ajouter un nom' : null,
                 onSaved: (value) => _lastName = value,
+              ),
+              TextFormField(
+                decoration:
+                    const InputDecoration(labelText: 'Nom de l\'entreprise'),
+                validator: (value) => null,
+                onSaved: (value) => _companyName = value,
               ),
             ],
           ),

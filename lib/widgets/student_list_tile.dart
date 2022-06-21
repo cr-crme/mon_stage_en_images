@@ -17,7 +17,7 @@ class StudentListTile extends StatelessWidget {
       elevation: 5,
       child: ListTile(
         title: Text(student.toString()),
-        // subtitle: Text('Progression : ${student.progression}%'),
+        subtitle: const Text('Progression : 0%'),
         trailing: IconButton(
           icon: const Icon(
             Icons.delete,
