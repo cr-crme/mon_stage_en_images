@@ -31,6 +31,12 @@ class _StudentsScreenState extends State<StudentsScreen> {
     students.add(student);
   }
 
+  Future<void> _removeItem(Student student) async {
+    final students = Provider.of<Students>(context, listen: false);
+
+    students.remove(student.id);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +45,10 @@ class _StudentsScreenState extends State<StudentsScreen> {
       ),
       body: Consumer<Students>(
         builder: (context, students, child) => ListView.builder(
-          itemBuilder: (context, index) => StudentListTile(students[index]!),
+          itemBuilder: (context, index) => StudentListTile(
+            students[index]!,
+            removeItemCallback: _removeItem,
+          ),
           itemCount: students.count,
         ),
       ),

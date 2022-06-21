@@ -4,8 +4,11 @@ import '../models/student.dart';
 import '../screens/student_main_screen.dart';
 
 class StudentListTile extends StatelessWidget {
-  const StudentListTile(this.student, {Key? key}) : super(key: key);
+  const StudentListTile(this.student,
+      {Key? key, required this.removeItemCallback})
+      : super(key: key);
 
+  final Function(Student) removeItemCallback;
   final Student student;
 
   @override
@@ -15,6 +18,10 @@ class StudentListTile extends StatelessWidget {
       child: ListTile(
         title: Text(student.toString()),
         subtitle: Text('Progression : ${student.progression}%'),
+        trailing: IconButton(
+          icon: const Icon(Icons.delete),
+          onPressed: () => removeItemCallback(student),
+        ),
         onTap: () => Navigator.of(context)
             .pushNamed(StudentMainScreen.routeName, arguments: student),
       ),

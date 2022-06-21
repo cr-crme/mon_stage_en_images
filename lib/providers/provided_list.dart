@@ -18,7 +18,7 @@ abstract class ProvidedList<T> with ChangeNotifier {
   }
 
   void remove(value, {bool notify = true}) {
-    items.remove(value);
+    items.removeAt(_getIndex(value));
     if (notify) notifyListeners();
   }
 
@@ -58,5 +58,4 @@ abstract class ProvidedList<T> with ChangeNotifier {
       items.add(deserializeItem(element));
     }
   }
-
 }
