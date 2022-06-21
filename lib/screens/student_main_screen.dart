@@ -10,6 +10,7 @@ class StudentMainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final student = ModalRoute.of(context)!.settings.arguments as Student;
+    
     return Scaffold(
       appBar: AppBar(
         title: Text(student.toString()),

@@ -1,7 +1,6 @@
-import 'dart:math';
+import '../providers/provider_models/provided_item.dart';
 
-class Student {
-  final String id;
+class Student extends ProvidedItem {
   final String firstName;
   final String lastName;
 
@@ -10,8 +9,29 @@ class Student {
   Student({
     required this.firstName,
     required this.lastName,
-    required this.progression,
-  }) : id = Random().hashCode.toString();
+    this.progression = 0,
+  });
+
+  @override
+  Student.fromSerialized(Map<String, dynamic> map)
+      : firstName = map['firstName'],
+        lastName = map['lastName'],
+        progression = 0,
+        super.fromSerialized(map);
+
+  @override
+  Map<String, dynamic> serializedMap() {
+    return {
+      'firstName': firstName,
+      'lastName': lastName,
+      'progression': progression,
+    };
+  }
+
+  @override
+  Student deserializeItem(Map<String, dynamic> map) {
+    return Student.fromSerialized(map);
+  }
 
   @override
   String toString() {

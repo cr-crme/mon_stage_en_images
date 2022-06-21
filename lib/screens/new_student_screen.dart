@@ -24,8 +24,8 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
     }
-    Navigator.pop(context,
-        Student(firstName: _firstName!, lastName: _lastName!, progression: 0));
+    Navigator.pop(
+        context, Student(firstName: _firstName!, lastName: _lastName!));
   }
 
   @override
