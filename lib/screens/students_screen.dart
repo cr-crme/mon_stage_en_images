@@ -6,34 +6,16 @@ import '../providers/students.dart';
 import '../models/student.dart';
 import '../widgets/student_list_tile.dart';
 
-class StudentScreen extends StatefulWidget {
-  const StudentScreen({Key? key}) : super(key: key);
+class StudentsScreen extends StatefulWidget {
+  const StudentsScreen({Key? key}) : super(key: key);
 
   static const routeName = '/student-screen';
 
   @override
-  State<StudentScreen> createState() => _StudentScreenState();
+  State<StudentsScreen> createState() => _StudentsScreenState();
 }
 
-class _StudentScreenState extends State<StudentScreen> {
-  var _first = true;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    if (_first) {
-      _first = false;
-      final students = Provider.of<Students>(context, listen: false);
-      students.add(
-          Student(firstName: 'Benjamin', lastName: 'Michaud', progression: 5),
-          notify: false);
-      students.add(
-          Student(firstName: 'Aurélie', lastName: 'Tondoux', progression: 20),
-          notify: false);
-    }
-  }
-
+class _StudentsScreenState extends State<StudentsScreen> {
   Future<void> _showNewStudent() async {
     final students = Provider.of<Students>(context, listen: false);
 
