@@ -19,7 +19,10 @@ class StudentListTile extends StatelessWidget {
         title: Text(student.toString()),
         subtitle: Text('Progression : ${student.progression}%'),
         trailing: IconButton(
-          icon: const Icon(Icons.delete),
+          icon: const Icon(
+            Icons.delete,
+            color: Colors.red,
+          ),
           onPressed: () => removeItemCallback(student),
         ),
         onTap: () => Navigator.of(context)

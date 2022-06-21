@@ -1,10 +1,11 @@
-import 'package:defi_photo/screens/new_student_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import './new_student_screen.dart';
 import '../providers/students.dart';
 import '../models/student.dart';
 import '../widgets/student_list_tile.dart';
+import '../widgets/are_you_sure_dialog.dart';
 
 class StudentsScreen extends StatefulWidget {
   const StudentsScreen({Key? key}) : super(key: key);
@@ -31,10 +32,24 @@ class _StudentsScreenState extends State<StudentsScreen> {
     students.add(student);
   }
 
-  Future<void> _removeItem(Student student) async {
+  Future<void> _removeStudent(Student student) async {
     final students = Provider.of<Students>(context, listen: false);
 
-    students.remove(student.id);
+    final sure = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AreYouSureDialog(
+          title: 'Suppression des données d\'un étudiant',
+          content:
+              'Êtes-vous certain(e) de vouloir supprimer les données de $student?',
+        );
+      },
+    );
+
+    if (sure!) {
+      students.remove(student.id);
+    }
   }
 
   @override
@@ -47,7 +62,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
         builder: (context, students, child) => ListView.builder(
           itemBuilder: (context, index) => StudentListTile(
             students[index]!,
-            removeItemCallback: _removeItem,
+            removeItemCallback: _removeStudent,
           ),
           itemCount: students.count,
         ),
