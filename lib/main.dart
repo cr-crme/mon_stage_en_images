@@ -12,14 +12,14 @@ import './screens/student_info/student_main_screen.dart';
 import './screens/all_students/students_screen.dart';
 
 void prepareDummyData(Students students, AllQuestionList questions) {
-  questions[0].add(Question('Qui es-tu?'));
-  questions[1].add(Question('Qui es-tu?'));
-  questions[2].add(Question('Qui es-tu?'));
-  questions[3].add(Question('Qui es-tu?'));
-  questions[4].add(Question('Qui es-tu?'));
-  questions[5].add(Question('Qui es-tu?'));
-  questions[5].add(Question('Qui es-tu?'));
-  questions[5].add(Question('Qui es-tu?'));
+  questions[0].add(Question('Qui es-tu? 1'));
+  questions[1].add(Question('Qui es-tu? 2'));
+  questions[2].add(Question('Qui es-tu? 3'));
+  questions[3].add(Question('Qui es-tu? 4'));
+  questions[4].add(Question('Qui es-tu? 5'));
+  questions[5].add(Question('Qui es-tu? 6'));
+  questions[5].add(Question('Qui es-tu? 7'));
+  questions[5].add(Question('Qui es-tu? 8'));
 
   final company = Company(name: 'Ici');
 

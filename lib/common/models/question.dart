@@ -1,11 +1,11 @@
 import '../../misc/custom_list/item_serializable.dart';
 
 class Question extends ItemSerializable {
-  final String question;
+  final String title;
 
-  Question(this.question);
+  Question(this.title);
   Question.fromSerialized(Map<String, dynamic> map)
-      : question = map['question'],
+      : title = map['question'],
         super.fromSerialized(map);
 
   @override
@@ -16,7 +16,7 @@ class Question extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() {
     return {
-      'question': question,
+      'question': title,
     };
   }
 }

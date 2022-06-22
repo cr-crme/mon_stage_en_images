@@ -26,6 +26,8 @@ class AllQuestionList extends ListProvided<QuestionList> {
     _initialize();
   }
 
+  int get number => length;
+
   AllQuestionList.fromSerialized(map) {
     for (var element in (map['metier'] as List<Map<String, dynamic>>)) {
       items.add(QuestionList.fromSerialized(element));

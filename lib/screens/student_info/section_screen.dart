@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import './widgets/question_tile.dart';
+import '../../../common/models/student.dart';
 import '../../../common/providers/all_question_lists.dart';
 
 class SectionScreen extends StatelessWidget {
@@ -10,13 +12,25 @@ class SectionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final index = ModalRoute.of(context)!.settings.arguments as int;
+    final arguments =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final index = arguments['sectionIndex'] as int;
+    final student = arguments['student'] as Student;
 
     final questions =
         Provider.of<AllQuestionList>(context, listen: false)[index];
     return Scaffold(
-      appBar: AppBar(title: Text(AllQuestionList.letter(index))),
-      body: Text(questions[0]!.question),
+      appBar:
+          AppBar(title: Text('$student (${AllQuestionList.letter(index)})')),
+      body: ListView.builder(
+        itemBuilder: (context, index) => Column(
+          children: [
+            QuestionTile(questions[index]!),
+            const Divider(),
+          ],
+        ),
+        itemCount: questions.number,
+      ),
     );
   }
 }

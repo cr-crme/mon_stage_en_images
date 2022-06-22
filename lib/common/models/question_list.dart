@@ -11,4 +11,6 @@ class QuestionList with ListSerializable<Question> {
   Question deserializeItem(map) {
     return Question.fromSerialized(map);
   }
+
+  int get number => length;
 }
