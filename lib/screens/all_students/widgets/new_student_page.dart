@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
-import '../models/company.dart';
-import '../models/student.dart';
+import '../../../common/models/company.dart';
+import '../../../common/models/student.dart';
 
-class NewStudentScreen extends StatefulWidget {
-  const NewStudentScreen({Key? key}) : super(key: key);
+class NewStudentPage extends StatefulWidget {
+  const NewStudentPage({Key? key}) : super(key: key);
 
   @override
-  State<NewStudentScreen> createState() => _NewStudentScreenState();
+  State<NewStudentPage> createState() => _NewStudentPageState();
 }
 
-class _NewStudentScreenState extends State<NewStudentScreen> {
+class _NewStudentPageState extends State<NewStudentPage> {
   final _formKey = GlobalKey<FormState>();
   String? _firstName;
   String? _lastName;

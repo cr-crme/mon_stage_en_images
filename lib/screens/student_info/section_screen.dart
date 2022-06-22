@@ -1,6 +1,7 @@
-import 'package:defi_photo/providers/all_question_lists.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../../common/providers/all_question_lists.dart';
 
 class SectionScreen extends StatelessWidget {
   const SectionScreen({Key? key}) : super(key: key);

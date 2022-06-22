@@ -1,10 +1,10 @@
-import 'package:defi_photo/models/company.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/student.dart';
-import '../providers/all_question_lists.dart';
-import '../widgets/section_tile_in_student.dart';
+import '../../common/models/company.dart';
+import '../../common/models/student.dart';
+import '../../common/providers/all_question_lists.dart';
+import '../../common/widgets/section_tile_in_student.dart';
 
 class StudentMainScreen extends StatefulWidget {
   const StudentMainScreen({Key? key}) : super(key: key);

@@ -1,4 +1,4 @@
-import '../providers/provider_models/item_serializable.dart';
+import '../../misc/custom_list/item_serializable.dart';
 
 class Question extends ItemSerializable {
   final String question;

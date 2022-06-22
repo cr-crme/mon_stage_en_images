@@ -1,4 +1,4 @@
-import 'list_provided.dart';
+import '../../misc/custom_list/list_provided.dart';
 import '../models/student.dart';
 
 class Students extends ListProvided<Student> {

@@ -1,7 +1,12 @@
-import './provider_models/exceptions.dart';
-import 'provider_models/item_serializable.dart';
+import 'item_serializable.dart';
 
 bool isInteger(num value) => (value % 1) == 0;
+
+class TypeException implements Exception {
+  final String message;
+
+  const TypeException(this.message);
+}
 
 abstract class ListSerializable<T> {
   final List<T> items = [];

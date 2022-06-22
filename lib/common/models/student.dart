@@ -1,6 +1,5 @@
-import '../providers/provider_models/item_serializable.dart';
-
 import './company.dart';
+import '../../misc/custom_list/item_serializable.dart';
 
 class Student extends ItemSerializable {
   final String firstName;

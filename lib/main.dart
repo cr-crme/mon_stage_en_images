@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './models/company.dart';
-import './models/my_theme_data.dart';
-import './models/question.dart';
-import './models/student.dart';
-import './providers/all_question_lists.dart';
-import './providers/students.dart';
-import './screens/section_screen.dart';
-import './screens/student_main_screen.dart';
-import './screens/students_screen.dart';
+import './common/models/company.dart';
+import './common/models/my_theme_data.dart';
+import './common/models/question.dart';
+import './common/models/student.dart';
+import './common/providers/all_question_lists.dart';
+import './common/providers/students.dart';
+import 'screens/student_info/section_screen.dart';
+import './screens/student_info/student_main_screen.dart';
+import './screens/all_students/students_screen.dart';
 
 void prepareDummyData(Students students, AllQuestionList questions) {
   questions[0].add(Question('Qui es-tu?'));

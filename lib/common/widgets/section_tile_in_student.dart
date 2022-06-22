@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../providers/all_question_lists.dart';
-import '../screens/section_screen.dart';
+import '../models/question_list.dart';
+import '../../screens/student_info/section_screen.dart';
 
 class SectionTileInStudent extends StatelessWidget {
   const SectionTileInStudent(this.questions, this.sectionIndex, {Key? key})

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './new_student_screen.dart';
-import '../providers/students.dart';
-import '../models/student.dart';
-import '../widgets/student_list_tile.dart';
-import '../widgets/are_you_sure_dialog.dart';
+import './widgets/new_student_page.dart';
+import './widgets/student_list_tile.dart';
+import '../../common/providers/students.dart';
+import '../../common/models/student.dart';
+import '../../common/widgets/are_you_sure_dialog.dart';
 
 class StudentsScreen extends StatefulWidget {
   const StudentsScreen({Key? key}) : super(key: key);
@@ -24,7 +24,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return const NewStudentScreen();
+        return const NewStudentPage();
       },
     );
     if (student == null) return;
