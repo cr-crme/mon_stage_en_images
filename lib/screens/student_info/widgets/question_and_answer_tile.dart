@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import './discussion_tile.dart';
+import './discussion_list_view.dart';
 import '../../../common/models/answer.dart';
 import '../../../common/models/question.dart';
 
@@ -74,7 +74,7 @@ class AnswerPart extends StatelessWidget {
                   const SizedBox(height: 12),
                 if (answer!.needText) _showWrittenAnswer(),
                 const SizedBox(height: 12),
-                _showDiscussion(),
+                DiscussionListView(answer: answer),
               ],
             ),
           );
@@ -113,34 +113,6 @@ class AnswerPart extends StatelessWidget {
               padding: const EdgeInsets.only(left: 10),
               child: Text(answer!.text!.toString()),
             )
-    ]);
-  }
-
-  Widget _showDiscussion() {
-    final discussion = answer!.discussion;
-
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const Text('Discussion : ', style: TextStyle(color: Colors.grey)),
-      const SizedBox(height: 4),
-      discussion.isEmpty
-          ? const Center(
-              child: Text('Il n\'y a aucun message associé à cette question',
-                  style: TextStyle(color: Colors.grey)))
-          : SingleChildScrollView(
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(left: 10),
-                    height: 200,
-                    child: ListView.builder(
-                      itemBuilder: (context, index) =>
-                          DiscussionTile(discussion: discussion[index]),
-                      itemCount: discussion.length,
-                    ),
-                  ),
-                ],
-              ),
-            ),
     ]);
   }
 }
