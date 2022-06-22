@@ -1,36 +1,36 @@
-import '../models/question_list.dart';
+import '../models/answer_list.dart';
 import '../models/section.dart';
 import '../../misc/custom_list/list_provided.dart';
 import '../../misc/exceptions.dart';
 
-class AllQuestionList extends ListProvided<QuestionList> with Section {
+class AllAnswerList extends ListProvided<AnswerList> with Section {
   // Constructors and (de)serializer
-  AllQuestionList() : super() {
+  AllAnswerList() : super() {
     _initialize();
   }
 
   void _initialize() {
     for (int i = 0; i < nbSections; ++i) {
-      items.add(QuestionList());
+      items.add(AnswerList());
     }
   }
 
-  AllQuestionList.fromSerialized(map) {
+  AllAnswerList.fromSerialized(map) {
     for (var element in (map['metier'] as List<Map<String, dynamic>>)) {
-      items.add(QuestionList.fromSerialized(element));
+      items.add(AnswerList.fromSerialized(element));
     }
   }
 
   @override
-  QuestionList deserializeItem(map) {
-    return QuestionList.fromSerialized(map);
+  AnswerList deserializeItem(map) {
+    return AnswerList.fromSerialized(map);
   }
 
   // Attributes and methods
   int get number => length;
 
   @override
-  QuestionList operator [](value) {
+  AnswerList operator [](value) {
     if (value is int && value >= nbSections) {
       throw ValueException('Number of elements are limited to $nbSections');
     }
@@ -38,7 +38,7 @@ class AllQuestionList extends ListProvided<QuestionList> with Section {
   }
 
   @override
-  void add(QuestionList item, {bool notify = true}) {
+  void add(AnswerList item, {bool notify = true}) {
     throw const ShouldNotCall('Add should not be called by the user');
   }
 }

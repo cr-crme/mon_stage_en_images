@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import './widgets/question_tile.dart';
+import '../../../common/models/section.dart';
 import '../../../common/models/student.dart';
 import '../../../common/providers/all_question_lists.dart';
 
@@ -21,8 +22,7 @@ class SectionScreen extends StatelessWidget {
         Provider.of<AllQuestionList>(context, listen: false)[index];
     return Scaffold(
       appBar: AppBar(
-        title: Column(
-            children: [Text('$student (${AllQuestionList.letter(index)})')]),
+        title: Column(children: [Text('$student (${Section.letter(index)})')]),
       ),
       body: SizedBox(
         child: ListView.builder(

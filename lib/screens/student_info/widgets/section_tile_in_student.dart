@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../section_screen.dart';
+import '../../../common/models/section.dart';
 import '../../../common/models/student.dart';
 import '../../../common/providers/all_question_lists.dart';
 
@@ -25,8 +26,8 @@ class SectionTileInStudent extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: AllQuestionList.color(sectionIndex)),
-        child: Text(AllQuestionList.letter(sectionIndex),
+            color: Section.color(sectionIndex)),
+        child: Text(Section.letter(sectionIndex),
             style: const TextStyle(fontSize: 25, color: Colors.white)),
       ),
       title: Text('Questions répondues : 0 / ${questions.number}'),

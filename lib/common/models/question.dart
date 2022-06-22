@@ -1,10 +1,7 @@
 import '../../misc/custom_list/item_serializable.dart';
 
 class Question extends ItemSerializable {
-  final String text;
-  final bool needPhoto;
-  final bool needText;
-
+  // Constructors and (de)serializer
   Question(this.text, {required this.needPhoto, required this.needText});
   Question.fromSerialized(Map<String, dynamic> map)
       : text = map['text'],
@@ -14,11 +11,7 @@ class Question extends ItemSerializable {
 
   @override
   ItemSerializable deserializeItem(Map<String, dynamic> map) {
-    return Question(
-      map['text'],
-      needPhoto: map['needPhoto'],
-      needText: map['isWrittenRequired'],
-    );
+    return Question.fromSerialized(map);
   }
 
   @override
@@ -29,4 +22,9 @@ class Question extends ItemSerializable {
       'isWrittenRequired': needText,
     };
   }
+
+  // Attributes and methods
+  final String text;
+  final bool needPhoto;
+  final bool needText;
 }
