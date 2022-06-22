@@ -25,7 +25,7 @@ class AllQuestionList extends ListProvided<QuestionList> {
       case 0:
         return 'M';
       case 1:
-        return 'E';
+        return 'É';
       case 2:
         return 'T';
       case 3:

@@ -7,6 +7,7 @@ import './models/question.dart';
 import './models/student.dart';
 import './providers/all_question_lists.dart';
 import './providers/students.dart';
+import './screens/section_screen.dart';
 import './screens/student_main_screen.dart';
 import './screens/students_screen.dart';
 
@@ -51,6 +52,7 @@ class MyApp extends StatelessWidget {
         routes: {
           StudentsScreen.routeName: (context) => const StudentsScreen(),
           StudentMainScreen.routeName: (context) => const StudentMainScreen(),
+          SectionScreen.routeName: (context) => const SectionScreen(),
         },
       ),
     );
