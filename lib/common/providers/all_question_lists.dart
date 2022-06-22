@@ -1,6 +1,6 @@
 import '../models/question_list.dart';
 import '../models/section.dart';
-import '../../misc/custom_list/list_provided.dart';
+import '../../misc/custom_containers/list_provided.dart';
 import '../../misc/exceptions.dart';
 
 class AllQuestionList extends ListProvided<QuestionList> with Section {

@@ -15,15 +15,16 @@ class SectionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final arguments =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    final index = arguments['sectionIndex'] as int;
+    final sectionIndex = arguments['sectionIndex'] as int;
     final student = arguments['student'] as Student;
-    final answers = student.allAnswers[index];
 
     final questions =
-        Provider.of<AllQuestionList>(context, listen: false)[index];
+        Provider.of<AllQuestionList>(context, listen: false)[sectionIndex];
+
     return Scaffold(
       appBar: AppBar(
-        title: Column(children: [Text('$student (${Section.letter(index)})')]),
+        title: Column(
+            children: [Text('$student (${Section.letter(sectionIndex)})')]),
       ),
       body: SizedBox(
         child: ListView.builder(
@@ -32,7 +33,7 @@ class SectionScreen extends StatelessWidget {
             children: [
               QuestionTile(
                 questions[index]!,
-                answer: answers[index],
+                answer: student.allAnswers[questions[index]!.id],
               ),
               const Divider(),
             ],

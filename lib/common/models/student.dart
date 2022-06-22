@@ -1,6 +1,6 @@
 import './company.dart';
-import './all_answer_lists.dart';
-import '../../misc/custom_list/item_serializable.dart';
+import 'all_answer.dart';
+import '../../misc/custom_containers/item_serializable.dart';
 
 class Student extends ItemSerializable {
   // Constructors and (de)serializer
@@ -59,7 +59,7 @@ class Student extends ItemSerializable {
   // Attributes and methods
   final String firstName;
   final String lastName;
-  final AllAnswerList allAnswers;
+  final AllAnswer allAnswers;
   final Company company;
 
   // String get progression => '$nbQuestionsAnswered / $nbQuestionsTotal';

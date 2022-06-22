@@ -1,5 +1,5 @@
 import '../models/question.dart';
-import '../../misc/custom_list/list_serializable.dart';
+import '../../misc/custom_containers/list_serializable.dart';
 
 class QuestionList extends ListSerializable<Question> {
   QuestionList();

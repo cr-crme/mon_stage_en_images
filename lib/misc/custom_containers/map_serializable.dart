@@ -34,9 +34,7 @@ abstract class MapSerializable<T> {
 
   final Map<String, T> items = {};
 
-  void add(String key, T item) {
-    items[key] = item;
-  }
+  void add(T item) => items[(item as ItemSerializable).id] = item;
 
   T? operator [](key) {
     return items[key];
