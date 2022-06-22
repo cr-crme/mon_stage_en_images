@@ -29,7 +29,10 @@ void prepareDummyData(Students students, AllQuestionList questions) {
   benjaminAnswers.add(Answer(isActive: true, question: questions[5][0]!));
   benjaminAnswers
       .add(Answer(isActive: true, text: 'coucou', question: questions[5][1]!));
-  benjaminAnswers.add(Answer(isActive: true, question: questions[5][2]!));
+  benjaminAnswers
+      .add(Answer(isActive: true, text: 'coucou2', question: questions[5][1]!));
+  benjaminAnswers
+      .add(Answer(isActive: true, text: 'coucou3', question: questions[5][2]!));
 
   students.add(Student(
       firstName: 'Benjamin',

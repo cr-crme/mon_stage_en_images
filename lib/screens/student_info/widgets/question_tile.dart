@@ -64,35 +64,46 @@ class AnswerPart extends StatelessWidget {
         ? const Center(
             child: Text('Cette question n\'a pas été posée à l\'élève.'))
         : SizedBox(
-            width: double.infinity,
+            width: MediaQuery.of(context).size.width - 60,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (answer!.needPhoto) _showPhoto(),
                 if (answer!.needPhoto && answer!.needText)
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 12),
                 if (answer!.needText) _showWrittenAnswer(),
               ],
             ),
           );
   }
 
-  Widget _showWrittenAnswer() {
-    return answer!.text == null
-        ? const Center(
-            child: Text('En attente de la réponse de l\'étudiant',
-                style: TextStyle(color: Colors.red)))
-        : Text(answer!.text!);
+  Widget _showPhoto() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Photo : ', style: TextStyle(color: Colors.grey)),
+        const SizedBox(height: 4),
+        answer!.photoUrl == null
+            ? const Center(
+                child: Text('En attente de la photo de l\'étudiant',
+                    style: TextStyle(color: Colors.red)))
+            : Image.network(
+                answer!.photoUrl!,
+                fit: BoxFit.cover,
+              ),
+      ],
+    );
   }
 
-  Widget _showPhoto() {
-    return answer!.photoUrl == null
-        ? const Center(
-            child: Text('En attente de la photo de l\'étudiant',
-                style: TextStyle(color: Colors.red)))
-        : Image.network(
-            answer!.photoUrl!,
-            fit: BoxFit.cover,
-          );
+  Widget _showWrittenAnswer() {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const Text('Réponse écrite : ', style: TextStyle(color: Colors.grey)),
+      const SizedBox(height: 4),
+      answer!.text == null
+          ? const Center(
+              child: Text('En attente de la réponse de l\'étudiant',
+                  style: TextStyle(color: Colors.red)))
+          : Text(answer!.text!.toString())
+    ]);
   }
 }
