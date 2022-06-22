@@ -1,4 +1,5 @@
-import '../models/question.dart';
+import './discussion.dart';
+import './question.dart';
 import '../../misc/custom_containers/item_serializable.dart';
 
 class Answer extends ItemSerializable {
@@ -8,12 +9,14 @@ class Answer extends ItemSerializable {
     required this.question,
     this.text,
     this.photoUrl,
+    required this.discussion,
   });
   Answer.fromSerialized(Map<String, dynamic> map)
       : isActive = map['isActive'],
         question = map['question'],
         text = map['text'],
         photoUrl = map['photoUrl'],
+        discussion = map['discussion'],
         super.fromSerialized(map);
 
   @override
@@ -28,6 +31,7 @@ class Answer extends ItemSerializable {
       'question': question,
       'text': text,
       'photoUrl': photoUrl,
+      'discussion': discussion,
     };
   }
 
@@ -36,6 +40,7 @@ class Answer extends ItemSerializable {
   final Question question;
   final String? text;
   final String? photoUrl;
+  final List<Discussion> discussion;
 
   bool get needText => question.needText;
   bool get needPhoto => question.needPhoto;

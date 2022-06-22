@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 
+import './discussion_tile.dart';
 import '../../../common/models/answer.dart';
 import '../../../common/models/question.dart';
 
-class QuestionTile extends StatefulWidget {
-  const QuestionTile(this.question, {Key? key, required this.answer})
+class QuestionAndAnswerTile extends StatefulWidget {
+  const QuestionAndAnswerTile(this.question, {Key? key, required this.answer})
       : super(key: key);
 
   final Question question;
   final Answer? answer;
 
   @override
-  State<QuestionTile> createState() => _QuestionTileState();
+  State<QuestionAndAnswerTile> createState() => _QuestionAndAnswerTileState();
 }
 
-class _QuestionTileState extends State<QuestionTile> {
+class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   var _isExpanded = false;
 
   void _expand() {
@@ -45,7 +46,7 @@ class QuestionPart extends StatelessWidget {
     required this.widget,
   }) : super(key: key);
 
-  final QuestionTile widget;
+  final QuestionAndAnswerTile widget;
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +73,8 @@ class AnswerPart extends StatelessWidget {
                 if (answer!.needPhoto && answer!.needText)
                   const SizedBox(height: 12),
                 if (answer!.needText) _showWrittenAnswer(),
+                const SizedBox(height: 12),
+                _showDiscussion(),
               ],
             ),
           );
@@ -87,9 +90,12 @@ class AnswerPart extends StatelessWidget {
             ? const Center(
                 child: Text('En attente de la photo de l\'étudiant',
                     style: TextStyle(color: Colors.red)))
-            : Image.network(
-                answer!.photoUrl!,
-                fit: BoxFit.cover,
+            : Container(
+                padding: const EdgeInsets.only(left: 10),
+                child: Image.network(
+                  answer!.photoUrl!,
+                  fit: BoxFit.cover,
+                ),
               ),
       ],
     );
@@ -103,7 +109,38 @@ class AnswerPart extends StatelessWidget {
           ? const Center(
               child: Text('En attente de la réponse de l\'étudiant',
                   style: TextStyle(color: Colors.red)))
-          : Text(answer!.text!.toString())
+          : Container(
+              padding: const EdgeInsets.only(left: 10),
+              child: Text(answer!.text!.toString()),
+            )
+    ]);
+  }
+
+  Widget _showDiscussion() {
+    final discussion = answer!.discussion;
+
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const Text('Discussion : ', style: TextStyle(color: Colors.grey)),
+      const SizedBox(height: 4),
+      discussion.isEmpty
+          ? const Center(
+              child: Text('Il n\'y a aucun message associé à cette question',
+                  style: TextStyle(color: Colors.grey)))
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(left: 10),
+                    height: 200,
+                    child: ListView.builder(
+                      itemBuilder: (context, index) =>
+                          DiscussionTile(discussion: discussion[index]),
+                      itemCount: discussion.length,
+                    ),
+                  ),
+                ],
+              ),
+            ),
     ]);
   }
 }

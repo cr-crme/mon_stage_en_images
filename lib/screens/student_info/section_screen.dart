@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './widgets/question_tile.dart';
+import 'widgets/question_and_answer_tile.dart';
 import '../../../common/models/section.dart';
 import '../../../common/models/student.dart';
 import '../../../common/providers/all_question_lists.dart';
@@ -31,7 +31,7 @@ class SectionScreen extends StatelessWidget {
           shrinkWrap: true,
           itemBuilder: (context, index) => Column(
             children: [
-              QuestionTile(
+              QuestionAndAnswerTile(
                 questions[index]!,
                 answer: student.allAnswers[questions[index]!.id],
               ),
