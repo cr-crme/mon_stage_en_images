@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../common/models/answer.dart';
 import '../../../common/models/question.dart';
 
 class QuestionTile extends StatefulWidget {
@@ -25,13 +26,57 @@ class _QuestionTileState extends State<QuestionTile> {
     return Column(
       children: [
         ListTile(
-          title: Text(widget.question.title),
+          title: Text(widget.question.text),
           trailing:
               Icon(_isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
           onTap: _expand,
         ),
-        if (_isExpanded) Text('coucou'),
+        if (_isExpanded)
+          AnswerTile(Answer(
+              questionId: '0',
+              needPhoto: widget.question.needPhoto,
+              needText: widget.question.needText)),
       ],
     );
+  }
+}
+
+class AnswerTile extends StatelessWidget {
+  const AnswerTile(this.answer, {Key? key}) : super(key: key);
+
+  final Answer answer;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (answer.needPhoto) _showPhoto(),
+          if (answer.needPhoto && answer.needText) const SizedBox(height: 10),
+          if (answer.needText) _showWrittenAnswer(),
+        ],
+      ),
+    );
+  }
+
+  Widget _showWrittenAnswer() {
+    return answer.text == null
+        ? const Center(
+            child: Text('En attente de la réponse de l\'étudiant',
+                style: TextStyle(color: Colors.red)))
+        : Text(answer.text!);
+  }
+
+  Widget _showPhoto() {
+    return answer.photoUrl == null
+        ? const Center(
+            child: Text('En attente de la photo de l\'étudiant',
+                style: TextStyle(color: Colors.red)))
+        : Image.network(
+            answer.photoUrl!,
+            fit: BoxFit.cover,
+          );
   }
 }

@@ -1,6 +1,15 @@
 class Answer {
   final String questionId;
-  final String answer;
+  final bool needText;
+  final String? text;
+  final bool needPhoto;
+  final String? photoUrl;
 
-  Answer(this.answer, {required this.questionId});
+  Answer({
+    required this.questionId,
+    required this.needText,
+    this.text,
+    required this.needPhoto,
+    this.photoUrl,
+  });
 }
