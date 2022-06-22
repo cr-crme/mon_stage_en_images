@@ -1,7 +1,7 @@
 import '../models/answer.dart';
 import '../../misc/custom_list/list_serializable.dart';
 
-class AnswerList with ListSerializable<Answer> {
+class AnswerList extends ListSerializable<Answer> {
   AnswerList();
   AnswerList.fromSerialized(map) {
     deserialize(map);

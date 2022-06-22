@@ -4,24 +4,27 @@ import '../../misc/custom_list/item_serializable.dart';
 class Answer extends ItemSerializable {
   // Constructors and (de)serializer
   Answer({
+    required this.isActive,
     required this.question,
     this.text,
     this.photoUrl,
   });
   Answer.fromSerialized(Map<String, dynamic> map)
-      : question = map['question'],
+      : isActive = map['isActive'],
+        question = map['question'],
         text = map['text'],
         photoUrl = map['photoUrl'],
         super.fromSerialized(map);
 
   @override
-  ItemSerializable deserializeItem(Map<String, dynamic> map) {
+  Answer deserializeItem(Map<String, dynamic> map) {
     return Answer.fromSerialized(map);
   }
 
   @override
   Map<String, dynamic> serializedMap() {
     return {
+      'isActive': isActive,
       'question': question,
       'text': text,
       'photoUrl': photoUrl,
@@ -29,6 +32,7 @@ class Answer extends ItemSerializable {
   }
 
   // Attributes and methods
+  final bool isActive;
   final Question question;
   final String? text;
   final String? photoUrl;

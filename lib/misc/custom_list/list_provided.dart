@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import './list_serializable.dart';
 
-abstract class ListProvided<T> with ListSerializable<T>, ChangeNotifier {
+abstract class ListProvided<T> extends ListSerializable<T> with ChangeNotifier {
   @override
   void add(T item, {bool notify = true}) {
     super.add(item);

@@ -17,6 +17,7 @@ class SectionScreen extends StatelessWidget {
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     final index = arguments['sectionIndex'] as int;
     final student = arguments['student'] as Student;
+    final answers = student.allAnswers[index];
 
     final questions =
         Provider.of<AllQuestionList>(context, listen: false)[index];
@@ -29,7 +30,10 @@ class SectionScreen extends StatelessWidget {
           shrinkWrap: true,
           itemBuilder: (context, index) => Column(
             children: [
-              QuestionTile(questions[index]!),
+              QuestionTile(
+                questions[index]!,
+                answer: answers[index],
+              ),
               const Divider(),
             ],
           ),

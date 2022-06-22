@@ -1,11 +1,10 @@
 import '../models/question.dart';
 import '../../misc/custom_list/list_serializable.dart';
 
-class QuestionList with ListSerializable<Question> {
+class QuestionList extends ListSerializable<Question> {
   QuestionList();
-  QuestionList.fromSerialized(map) {
-    deserialize(map);
-  }
+  QuestionList.fromSerialized(Map<String, dynamic> map)
+      : super.fromSerialized(map);
 
   @override
   Question deserializeItem(map) {

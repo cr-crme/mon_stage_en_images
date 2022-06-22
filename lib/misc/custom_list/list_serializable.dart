@@ -9,7 +9,33 @@ class TypeException implements Exception {
 }
 
 abstract class ListSerializable<T> {
+  ListSerializable();
+  ListSerializable.fromSerialized(Map<String, dynamic> map) {
+    deserialize(map);
+  }
+
+  Map<String, dynamic> serialize() {
+    final serializedItem = [];
+    for (var element in items as List<ItemSerializable>) {
+      serializedItem.add(element.serialize());
+    }
+    return {
+      'items': serializedItem,
+    };
+  }
+
+  T deserializeItem(map);
+
+  void deserialize(Map<String, dynamic> map) {
+    items.clear();
+    for (var element in map['items']) {
+      items.add(deserializeItem(element));
+    }
+  }
+
   final List<T> items = [];
+
+  int get length => items.length;
 
   void add(T item) {
     items.add(item);
@@ -36,27 +62,6 @@ abstract class ListSerializable<T> {
     } else {
       throw const TypeException(
           'Wrong type for getting an element of the provided list');
-    }
-  }
-
-  int get length => items.length;
-
-  Map<String, dynamic> serialize() {
-    final serializedItem = [];
-    for (var element in items as List<ItemSerializable>) {
-      serializedItem.add(element.serialize());
-    }
-    return {
-      'items': serializedItem,
-    };
-  }
-
-  T deserializeItem(map);
-
-  void deserialize(Map<String, dynamic> map) {
-    items.clear();
-    for (var element in map['items']) {
-      items.add(deserializeItem(element));
     }
   }
 }
