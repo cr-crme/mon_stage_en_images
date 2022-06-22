@@ -71,45 +71,51 @@ class _DiscussionListViewState extends State<DiscussionListView> {
 
     final discussion = widget.answer!.discussion;
 
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const Text('Commentaire(s) : ', style: TextStyle(color: Colors.grey)),
-      const SizedBox(height: 4),
-      discussion.isEmpty
-          ? const Center(
-              child: Text('Il n\'y a aucun message associé à cette question',
-                  style: TextStyle(color: Colors.grey)))
-          : SingleChildScrollView(
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(left: 10),
-                    height: 26 * min(discussion.length.toDouble(), 8),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      controller: _scrollController,
-                      itemBuilder: (context, index) =>
-                          DiscussionTile(discussion: discussion[index]),
-                      itemCount: discussion.length,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Commentaire(s) : ', style: TextStyle(color: Colors.grey)),
+        const SizedBox(height: 4),
+        discussion.isEmpty
+            ? const Center(
+                child: Text('Il n\'y a aucun message associé à cette question',
+                    style: TextStyle(color: Colors.grey)))
+            : SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(left: 15),
+                      height: 26 * min(discussion.length.toDouble(), 8),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        controller: _scrollController,
+                        itemBuilder: (context, index) =>
+                            DiscussionTile(discussion: discussion[index]),
+                        itemCount: discussion.length,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-      Form(
-        key: _formKey,
-        child: TextFormField(
-          decoration: InputDecoration(
-            labelText: 'Ajouter un commentaire',
-            suffixIcon: IconButton(
-              icon: const Icon(Icons.send),
-              onPressed: _sendMessage,
+        Container(
+          padding: const EdgeInsets.only(left: 15),
+          child: Form(
+            key: _formKey,
+            child: TextFormField(
+              decoration: InputDecoration(
+                labelText: 'Ajouter un commentaire',
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.send),
+                  onPressed: _sendMessage,
+                ),
+              ),
+              onSaved: (value) => _newMessage = value,
+              onFieldSubmitted: (value) => _sendMessage,
+              controller: fieldText,
             ),
           ),
-          onSaved: (value) => _newMessage = value,
-          onFieldSubmitted: (value) => _sendMessage,
-          controller: fieldText,
         ),
-      ),
-    ]);
+      ],
+    );
   }
 }

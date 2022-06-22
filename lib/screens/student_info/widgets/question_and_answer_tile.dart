@@ -91,7 +91,7 @@ class AnswerPart extends StatelessWidget {
                 child: Text('En attente de la photo de l\'étudiant',
                     style: TextStyle(color: Colors.red)))
             : Container(
-                padding: const EdgeInsets.only(left: 10),
+                padding: const EdgeInsets.only(left: 15),
                 child: Image.network(
                   answer!.photoUrl!,
                   fit: BoxFit.cover,
@@ -110,7 +110,7 @@ class AnswerPart extends StatelessWidget {
               child: Text('En attente de la réponse de l\'étudiant',
                   style: TextStyle(color: Colors.red)))
           : Container(
-              padding: const EdgeInsets.only(left: 10),
+              padding: const EdgeInsets.only(left: 15),
               child: Text(answer!.text!.toString()),
             )
     ]);
