@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../common/models/discussion.dart';
+import '../../../common/models/message.dart';
 
 class DiscussionTile extends StatelessWidget {
   const DiscussionTile({
@@ -8,7 +8,7 @@ class DiscussionTile extends StatelessWidget {
     required this.discussion,
   }) : super(key: key);
 
-  final Discussion discussion;
+  final Message discussion;
 
   @override
   Widget build(BuildContext context) {

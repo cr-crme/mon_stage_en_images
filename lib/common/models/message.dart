@@ -1,15 +1,15 @@
 import '../../misc/custom_containers/item_serializable.dart';
 
-class Discussion extends ItemSerializable {
+class Message extends ItemSerializable {
   // Constructors and (de)serializer
-  Discussion({required this.name, required this.text});
-  Discussion.fromSerialized(Map<String, dynamic> map)
+  Message({required this.name, required this.text});
+  Message.fromSerialized(Map<String, dynamic> map)
       : name = map['name'],
         text = map['text'],
         super.fromSerialized(map);
   @override
   ItemSerializable deserializeItem(Map<String, dynamic> map) =>
-      Discussion.fromSerialized(map);
+      Message.fromSerialized(map);
 
   @override
   Map<String, dynamic> serializedMap() {

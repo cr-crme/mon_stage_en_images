@@ -1,4 +1,4 @@
-import 'package:defi_photo/common/models/discussion.dart';
+import 'package:defi_photo/common/models/message.dart';
 
 import 'common/models/all_answer.dart';
 import './common/models/answer.dart';
@@ -54,24 +54,24 @@ void prepareDummyData(Students students, AllQuestionList questions) {
       text: 'coucou3',
       question: questions[5][2]!,
       discussion: [
-        Discussion(name: 'Prof', text: 'Coucou'),
-        Discussion(name: 'Aurélie', text: 'Non pas coucou'),
-        Discussion(name: 'Prof', text: 'Coucou'),
-        Discussion(name: 'Aurélie', text: 'Non pas coucou'),
-        Discussion(name: 'Prof', text: 'Coucou'),
-        Discussion(name: 'Aurélie', text: 'Non pas coucou'),
-        Discussion(name: 'Prof', text: 'Coucou'),
-        Discussion(name: 'Aurélie', text: 'Non pas coucou'),
-        Discussion(name: 'Prof', text: 'Coucou'),
-        Discussion(name: 'Aurélie', text: 'Non pas coucou'),
-        Discussion(name: 'Prof', text: 'Coucou'),
-        Discussion(name: 'Aurélie', text: 'Non pas coucou'),
-        Discussion(name: 'Prof', text: 'Coucou'),
-        Discussion(name: 'Aurélie', text: 'Non pas coucou'),
-        Discussion(name: 'Prof', text: 'Coucou'),
-        Discussion(name: 'Aurélie', text: 'Non pas coucou'),
-        Discussion(name: 'Prof', text: 'Coucou'),
-        Discussion(name: 'Aurélie', text: 'Non pas coucou'),
+        Message(name: 'Prof', text: 'Coucou'),
+        Message(name: 'Aurélie', text: 'Non pas coucou'),
+        Message(name: 'Prof', text: 'Coucou'),
+        Message(name: 'Aurélie', text: 'Non pas coucou'),
+        Message(name: 'Prof', text: 'Coucou'),
+        Message(name: 'Aurélie', text: 'Non pas coucou'),
+        Message(name: 'Prof', text: 'Coucou'),
+        Message(name: 'Aurélie', text: 'Non pas coucou'),
+        Message(name: 'Prof', text: 'Coucou'),
+        Message(name: 'Aurélie', text: 'Non pas coucou'),
+        Message(name: 'Prof', text: 'Coucou'),
+        Message(name: 'Aurélie', text: 'Non pas coucou'),
+        Message(name: 'Prof', text: 'Coucou'),
+        Message(name: 'Aurélie', text: 'Non pas coucou'),
+        Message(name: 'Prof', text: 'Coucou'),
+        Message(name: 'Aurélie', text: 'Non pas coucou'),
+        Message(name: 'Prof', text: 'Coucou'),
+        Message(name: 'Aurélie', text: 'Non pas coucou'),
       ]));
 
   students.add(Student(

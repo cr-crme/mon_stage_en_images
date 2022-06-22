@@ -1,4 +1,4 @@
-import './discussion.dart';
+import 'message.dart';
 import './question.dart';
 import '../../misc/custom_containers/item_serializable.dart';
 
@@ -40,7 +40,7 @@ class Answer extends ItemSerializable {
   final Question question;
   final String? text;
   final String? photoUrl;
-  final List<Discussion> discussion;
+  final List<Message> discussion;
 
   bool get needText => question.needText;
   bool get needPhoto => question.needPhoto;
@@ -51,4 +51,6 @@ class Answer extends ItemSerializable {
   bool get isAnswered {
     return isTextAnswered && isPhotoAnswered;
   }
+
+  void addMessage(Message message) => discussion.add(message);
 }
