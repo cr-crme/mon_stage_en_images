@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import './common/models/all_answer_lists.dart';
+import './common/models/answer.dart';
 import './common/models/company.dart';
 import './common/models/my_theme_data.dart';
 import './common/models/question.dart';
@@ -21,12 +23,20 @@ void prepareDummyData(Students students, AllQuestionList questions) {
   questions[5].add(Question('Qui es-tu? 7', needPhoto: false, needText: true));
   questions[5].add(Question('Qui es-tu? 8', needPhoto: true, needText: true));
 
-  final company = Company(name: 'Ici');
+  final benjaminAnswers = AllAnswerList();
+  benjaminAnswers[0].add(Answer(question: questions[0][0]!));
 
-  students.add(
-      Student(firstName: 'Benjamin', lastName: 'Michaud', company: company));
+  students.add(Student(
+      firstName: 'Benjamin',
+      lastName: 'Michaud',
+      company: Company(name: 'Ici'),
+      allAnswers: benjaminAnswers));
 
-  students.add(Student(firstName: 'Aurélie', lastName: 'Tondoux'));
+  students.add(Student(
+      firstName: 'Aurélie',
+      lastName: 'Tondoux',
+      company: Company(name: null),
+      allAnswers: benjaminAnswers));
 }
 
 void main() {

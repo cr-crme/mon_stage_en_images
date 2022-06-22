@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../common/models/all_answer_lists.dart';
 import '../../../common/models/company.dart';
 import '../../../common/models/student.dart';
 
@@ -27,10 +28,12 @@ class _NewStudentPageState extends State<NewStudentPage> {
     }
     _formKey.currentState!.save();
 
-    var student = Student(firstName: _firstName!, lastName: _lastName!);
-    if (_companyName != null && _companyName!.isNotEmpty) {
-      student.company = Company(name: _companyName!);
-    }
+    var student = Student(
+      firstName: _firstName!,
+      lastName: _lastName!,
+      allAnswers: AllAnswerList(),
+      company: Company(name: _companyName),
+    );
     Navigator.pop(context, student);
   }
 

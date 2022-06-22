@@ -1,19 +1,16 @@
+import '../models/question.dart';
 import '../../misc/custom_list/item_serializable.dart';
 
 class Answer extends ItemSerializable {
   // Constructors and (de)serializer
   Answer({
-    required this.questionId,
-    required this.needText,
+    required this.question,
     this.text,
-    required this.needPhoto,
     this.photoUrl,
   });
   Answer.fromSerialized(Map<String, dynamic> map)
-      : questionId = map['questionId'],
-        needText = map['needText'],
+      : question = map['question'],
         text = map['text'],
-        needPhoto = map['needPhoto'],
         photoUrl = map['photoUrl'],
         super.fromSerialized(map);
 
@@ -25,20 +22,19 @@ class Answer extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() {
     return {
-      'questionId': questionId,
-      'needText': needText,
+      'question': question,
       'text': text,
-      'needPhoto': needPhoto,
       'photoUrl': photoUrl,
     };
   }
 
   // Attributes and methods
-  final String questionId;
-  final bool needText;
+  final Question question;
   final String? text;
-  final bool needPhoto;
   final String? photoUrl;
+
+  bool get needText => question.needText;
+  bool get needPhoto => question.needPhoto;
 
   bool get isTextAnswered => !needText || (needText && text != null);
   bool get isPhotoAnswered => !needPhoto || (needPhoto && photoUrl != null);

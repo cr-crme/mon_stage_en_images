@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../common/models/company.dart';
 import '../../../common/models/student.dart';
 
 class CompanyTile extends StatefulWidget {
@@ -34,7 +33,7 @@ class _CompanyTileState extends State<CompanyTile> {
     if (_newCompanyName == "") return;
 
     final student = ModalRoute.of(context)!.settings.arguments as Student;
-    student.company = Company(name: _newCompanyName);
+    student.company.name = _newCompanyName;
   }
 
   @override
@@ -47,15 +46,11 @@ class _CompanyTileState extends State<CompanyTile> {
           ? Form(
               key: _formKeyModifyCompany,
               child: TextFormField(
-                initialValue: widget.student.company == null
-                    ? ''
-                    : widget.student.company.toString(),
+                initialValue: widget.student.company.toString(),
                 onSaved: (value) => _newCompanyName = value as String,
               ),
             )
-          : Text(
-              widget.student.company == null ? '' : '${widget.student.company}',
-            ),
+          : Text(widget.student.company.toString()),
       trailing: _isModifyingCompany
           ? IconButton(
               icon: const Icon(Icons.save),

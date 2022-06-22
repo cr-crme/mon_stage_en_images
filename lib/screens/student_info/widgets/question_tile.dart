@@ -13,10 +13,7 @@ class QuestionTile extends StatefulWidget {
 }
 
 class _QuestionTileState extends State<QuestionTile> {
-  late final Answer answer = Answer(
-      questionId: '0',
-      needPhoto: widget.question.needPhoto,
-      needText: widget.question.needText);
+  late final Answer answer = Answer(question: widget.question);
 
   var _isExpanded = false;
 

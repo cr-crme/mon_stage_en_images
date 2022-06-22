@@ -1,9 +1,10 @@
-import '../models/answer_list.dart';
-import '../models/section.dart';
-import '../../misc/custom_list/list_provided.dart';
+import 'package:defi_photo/misc/custom_list/list_serializable.dart';
+
+import './answer_list.dart';
+import './section.dart';
 import '../../misc/exceptions.dart';
 
-class AllAnswerList extends ListProvided<AnswerList> with Section {
+class AllAnswerList extends ListSerializable<AnswerList> with Section {
   // Constructors and (de)serializer
   AllAnswerList() : super() {
     _initialize();
