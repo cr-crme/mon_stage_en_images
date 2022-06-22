@@ -22,10 +22,16 @@ class _QuestionTileState extends State<QuestionTile> {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(widget.question.title),
-      trailing: Icon(_isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-      onTap: _expand,
+    return Column(
+      children: [
+        ListTile(
+          title: Text(widget.question.title),
+          trailing:
+              Icon(_isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+          onTap: _expand,
+        ),
+        if (_isExpanded) Text('coucou'),
+      ],
     );
   }
 }

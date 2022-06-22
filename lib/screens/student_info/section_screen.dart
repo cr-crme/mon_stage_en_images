@@ -20,16 +20,21 @@ class SectionScreen extends StatelessWidget {
     final questions =
         Provider.of<AllQuestionList>(context, listen: false)[index];
     return Scaffold(
-      appBar:
-          AppBar(title: Text('$student (${AllQuestionList.letter(index)})')),
-      body: ListView.builder(
-        itemBuilder: (context, index) => Column(
-          children: [
-            QuestionTile(questions[index]!),
-            const Divider(),
-          ],
+      appBar: AppBar(
+        title: Column(
+            children: [Text('$student (${AllQuestionList.letter(index)})')]),
+      ),
+      body: SizedBox(
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemBuilder: (context, index) => Column(
+            children: [
+              QuestionTile(questions[index]!),
+              const Divider(),
+            ],
+          ),
+          itemCount: questions.number,
         ),
-        itemCount: questions.number,
       ),
     );
   }
