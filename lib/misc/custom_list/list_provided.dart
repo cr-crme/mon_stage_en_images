@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import 'list_serializable.dart';
+import './list_serializable.dart';
 
 abstract class ListProvided<T> with ListSerializable<T>, ChangeNotifier {
   @override

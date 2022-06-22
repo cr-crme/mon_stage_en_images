@@ -13,6 +13,11 @@ class QuestionTile extends StatefulWidget {
 }
 
 class _QuestionTileState extends State<QuestionTile> {
+  late final Answer answer = Answer(
+      questionId: '0',
+      needPhoto: widget.question.needPhoto,
+      needText: widget.question.needText);
+
   var _isExpanded = false;
 
   void _expand() {
@@ -26,23 +31,33 @@ class _QuestionTileState extends State<QuestionTile> {
     return Column(
       children: [
         ListTile(
-          title: Text(widget.question.text),
+          title: QuestionPart(widget: widget),
           trailing:
               Icon(_isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
           onTap: _expand,
         ),
-        if (_isExpanded)
-          AnswerTile(Answer(
-              questionId: '0',
-              needPhoto: widget.question.needPhoto,
-              needText: widget.question.needText)),
+        if (_isExpanded) AnswerPart(answer),
       ],
     );
   }
 }
 
-class AnswerTile extends StatelessWidget {
-  const AnswerTile(this.answer, {Key? key}) : super(key: key);
+class QuestionPart extends StatelessWidget {
+  const QuestionPart({
+    Key? key,
+    required this.widget,
+  }) : super(key: key);
+
+  final QuestionTile widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(widget.question.text);
+  }
+}
+
+class AnswerPart extends StatelessWidget {
+  const AnswerPart(this.answer, {Key? key}) : super(key: key);
 
   final Answer answer;
 

@@ -12,4 +12,11 @@ class Answer {
     required this.needPhoto,
     this.photoUrl,
   });
+
+  bool get isTextAnswered => !needText || (needText && text != null);
+  bool get isPhotoAnswered => !needPhoto || (needPhoto && photoUrl != null);
+
+  bool get isAnswered {
+    return isTextAnswered && isPhotoAnswered;
+  }
 }

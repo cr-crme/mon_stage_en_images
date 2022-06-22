@@ -7,7 +7,7 @@ import './common/models/question.dart';
 import './common/models/student.dart';
 import './common/providers/all_question_lists.dart';
 import './common/providers/students.dart';
-import 'screens/student_info/section_screen.dart';
+import './screens/student_info/section_screen.dart';
 import './screens/student_info/student_main_screen.dart';
 import './screens/all_students/students_screen.dart';
 

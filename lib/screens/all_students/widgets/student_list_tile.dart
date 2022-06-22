@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../common/models/student.dart';
 import '../../student_info/student_main_screen.dart';
+import '../../../common/models/student.dart';
 
 class StudentListTile extends StatelessWidget {
   const StudentListTile(this.student,

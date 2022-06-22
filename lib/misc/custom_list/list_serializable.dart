@@ -1,4 +1,4 @@
-import 'item_serializable.dart';
+import './item_serializable.dart';
 
 bool isInteger(num value) => (value % 1) == 0;
 
