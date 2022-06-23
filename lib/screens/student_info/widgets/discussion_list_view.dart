@@ -23,6 +23,12 @@ class _DiscussionListViewState extends State<DiscussionListView> {
   final _formKey = GlobalKey<FormState>();
   String? _newMessage;
 
+  @override
+  void dispose() {
+    super.dispose();
+    fieldText.dispose();
+  }
+
   void _clearText() {
     fieldText.clear();
     setState(() {});

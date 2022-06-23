@@ -7,35 +7,37 @@ import '../../common/models/student.dart';
 import '../../common/providers/all_question_lists.dart';
 
 class SectionMainPage extends StatelessWidget {
-  const SectionMainPage({Key? key, required this.student}) : super(key: key);
+  const SectionMainPage({
+    Key? key,
+    required this.student,
+    required this.onPageChanged,
+  }) : super(key: key);
 
   static const routeName = '/section-main-screen';
   final Student student;
+  final Function(int) onPageChanged;
 
   @override
   Widget build(BuildContext context) {
     return Consumer<AllQuestionList>(
-      builder: (context, questions, child) => Scaffold(
-        appBar: AppBar(
-          title: Text(student.toString()),
-        ),
-        body: SingleChildScrollView(
-          child: Column(children: [
+      builder: (context, questions, child) => SingleChildScrollView(
+        child: Column(
+          children: [
             CompanyTile(student: student),
             const Divider(),
-            SectionTileInStudent(0, student: student),
+            SectionTileInStudent(0, student: student, onTap: onPageChanged),
             const Divider(),
-            SectionTileInStudent(1, student: student),
+            SectionTileInStudent(1, student: student, onTap: onPageChanged),
             const Divider(),
-            SectionTileInStudent(2, student: student),
+            SectionTileInStudent(2, student: student, onTap: onPageChanged),
             const Divider(),
-            SectionTileInStudent(3, student: student),
+            SectionTileInStudent(3, student: student, onTap: onPageChanged),
             const Divider(),
-            SectionTileInStudent(4, student: student),
+            SectionTileInStudent(4, student: student, onTap: onPageChanged),
             const Divider(),
-            SectionTileInStudent(5, student: student),
+            SectionTileInStudent(5, student: student, onTap: onPageChanged),
             const Divider(),
-          ]),
+          ],
         ),
       ),
     );

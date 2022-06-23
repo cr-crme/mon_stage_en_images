@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../section_page.dart';
 import '../../../common/models/section.dart';
 import '../../../common/models/student.dart';
 import '../../../common/providers/all_question_lists.dart';
 
 class SectionTileInStudent extends StatelessWidget {
   const SectionTileInStudent(this.sectionIndex,
-      {Key? key, required this.student})
+      {Key? key, required this.student, required this.onTap})
       : super(key: key);
 
   final int sectionIndex;
   final Student student;
+  final Function(int) onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +32,7 @@ class SectionTileInStudent extends StatelessWidget {
       ),
       title: Text('Questions répondues : 0 / ${questions.number}'),
       trailing: const Icon(Icons.arrow_right),
-      onTap: () => Navigator.of(context).pushNamed(SectionPage.routeName,
-          arguments: {'student': student, 'sectionIndex': sectionIndex}),
+      onTap: () => onTap(sectionIndex),
     );
   }
 }
