@@ -111,7 +111,7 @@ class AnswerPart extends StatelessWidget {
                   style: TextStyle(color: Colors.red)))
           : Container(
               padding: const EdgeInsets.only(left: 15),
-              child: Text(answer!.text!.toString()),
+              child: Flexible(child: Text(answer!.text!.toString())),
             )
     ]);
   }

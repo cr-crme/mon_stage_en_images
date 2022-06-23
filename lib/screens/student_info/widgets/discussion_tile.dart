@@ -15,9 +15,15 @@ class DiscussionTile extends StatelessWidget {
     return Column(
       children: [
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('${discussion.name} : '),
-            Text(discussion.text),
+            Flexible(
+                child: Text(
+              '${discussion.name} : ',
+              style: TextStyle(
+                  color: Colors.grey[600], fontWeight: FontWeight.bold),
+            )),
+            Flexible(child: Text(discussion.text)),
           ],
         ),
         const SizedBox(height: 10),

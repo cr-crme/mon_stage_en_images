@@ -51,7 +51,8 @@ void prepareDummyData(Students students, AllQuestionList questions) {
       isActive: true,
       photoUrl: 'https://cdn.photographycourse.net/wp-content/uploads/2014/11/'
           'Landscape-Photography-steps.jpg',
-      text: 'coucou3',
+      text:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent vel turpis quis augue efficitur dignissim sit amet vel sem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aliquam erat volutpat. Quisque metus velit, lacinia ut lorem euismod, rhoncus maximus erat. Phasellus sapien leo, consectetur eget viverra id, molestie in leo. Nam vitae sapien augue. Nulla pulvinar, lorem sit amet bibendum feugiat, dui odio convallis ligula, nec dapibus velit mi a urna. Donec sit amet risus lacus.',
       question: questions[5][2]!,
       discussion: [
         Message(name: 'Prof', text: 'Coucou'),
