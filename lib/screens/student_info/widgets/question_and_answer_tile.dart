@@ -29,6 +29,12 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     setState(() {});
   }
 
+  void onStateChange(VoidCallback func) {
+    _isExpanded = false;
+    widget.onStateChange(() {});
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     var isQuestionActive = widget.answer != null && widget.answer!.isActive;
@@ -44,7 +50,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
           onTap: _expand,
         ),
         if (_isExpanded)
-          AnswerPart(widget.answer, onStateChange: widget.onStateChange),
+          AnswerPart(widget.answer, onStateChange: onStateChange),
       ],
     );
   }
