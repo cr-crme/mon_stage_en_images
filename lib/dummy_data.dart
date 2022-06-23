@@ -9,15 +9,15 @@ import './common/providers/all_question_lists.dart';
 import './common/providers/students.dart';
 
 void prepareDummyData(Students students, AllQuestionList questions) {
-  questions[0].add(Question('Photo?', needPhoto: true, needText: false));
-  questions[1].add(Question('Photo?', needPhoto: true, needText: false));
-  questions[2].add(Question('Photo?', needPhoto: true, needText: false));
-  questions[3].add(Question('Photo?', needPhoto: true, needText: false));
-  questions[4].add(Question('Photo?', needPhoto: true, needText: false));
-  questions[5].add(Question('Photo?', needPhoto: true, needText: false));
-  questions[5].add(Question('Texte?', needPhoto: false, needText: true));
+  questions[0].add(Question('Photo 1?', needPhoto: true, needText: false));
+  questions[1].add(Question('Photo 2?', needPhoto: true, needText: false));
+  questions[2].add(Question('Photo 3?', needPhoto: true, needText: false));
+  questions[3].add(Question('Photo 4?', needPhoto: true, needText: false));
+  questions[4].add(Question('Photo 5?', needPhoto: true, needText: false));
+  questions[5].add(Question('Photo 6?', needPhoto: true, needText: false));
+  questions[5].add(Question('Texte 1?', needPhoto: false, needText: true));
   questions[5]
-      .add(Question('Photo et texte?', needPhoto: true, needText: true));
+      .add(Question('Photo et texte 1?', needPhoto: true, needText: true));
 
   final benjaminAnswers = AllAnswer();
   benjaminAnswers

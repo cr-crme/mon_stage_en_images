@@ -8,7 +8,8 @@ class TypeException implements Exception {
   const TypeException(this.message);
 }
 
-abstract class ListSerializable<T> {
+abstract class ListSerializable<T> extends Iterable<T> {
+  // Constructors and (de)serializer
   ListSerializable();
   ListSerializable.fromSerialized(Map<String, dynamic> map) {
     deserialize(map);
@@ -33,9 +34,24 @@ abstract class ListSerializable<T> {
     }
   }
 
-  final List<T> items = [];
+  // // Iterator
+  // int _currentIteratorIndex = 0;
+  // @override
+  // T get current => items[_currentIteratorIndex];
 
-  int get length => items.length;
+  // @override
+  // bool moveNext() {
+  //   _currentIteratorIndex++;
+  //   if (_currentIteratorIndex < items.length) return true;
+  //   _currentIteratorIndex = 0;
+  //   return false;
+  // }
+
+  @override
+  Iterator<T> get iterator => items.iterator; // Todo make a copy here
+
+  // Attributes and methods
+  final List<T> items = [];
 
   void add(T item) {
     items.add(item);

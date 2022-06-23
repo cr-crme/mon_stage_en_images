@@ -8,7 +8,9 @@ class TypeException implements Exception {
   const TypeException(this.message);
 }
 
-abstract class MapSerializable<T> {
+abstract class MapSerializable<T> extends Iterable<MapEntry<String, T>> {
+  // Constructors and (de)serializer
+  final Map<String, T> items = {};
   MapSerializable();
   MapSerializable.fromSerialized(Map<String, dynamic> map) {
     deserialize(map);
@@ -32,8 +34,12 @@ abstract class MapSerializable<T> {
     });
   }
 
-  final Map<String, T> items = {};
+  // Iterator
+  @override
+  Iterator<MapEntry<String, T>> get iterator =>
+      items.entries.iterator; // Todo make a copy here
 
+  // Attributes and methods
   void add(T item) => items[(item as ItemSerializable).id] = item;
 
   T? operator [](key) {
@@ -47,6 +53,4 @@ abstract class MapSerializable<T> {
   void clear() {
     items.clear();
   }
-
-  int get length => items.length;
 }
