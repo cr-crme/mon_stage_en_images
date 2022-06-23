@@ -85,13 +85,13 @@ class AnswerPart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _ShowStatus(answer: answer, onStateChange: onStateChange),
           if (isActive && answer!.needPhoto) _showPhoto(),
           if (isActive && answer!.needPhoto && answer!.needText)
             const SizedBox(height: 12),
           if (isActive && answer!.needText) _showWrittenAnswer(),
           if (isActive) const SizedBox(height: 12),
           if (isActive) DiscussionListView(answer: answer),
+          _ShowStatus(answer: answer, onStateChange: onStateChange),
         ],
       ),
     );
@@ -167,13 +167,14 @@ class _ShowStatusState extends State<_ShowStatus> {
   @override
   Widget build(BuildContext context) {
     _isActive = widget.answer!.isActive;
-    var status = _isActive ? 'Question activée' : 'Question désactivée';
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Flexible(
           child: Text(
-            'Statut : $status',
+            _isActive
+                ? 'Désactiver la question'
+                : 'Activer la question pour cet élève',
             style: const TextStyle(color: Colors.grey),
           ),
         ),

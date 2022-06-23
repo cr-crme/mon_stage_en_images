@@ -21,37 +21,67 @@ class SectionPage extends StatelessWidget {
 
     return SingleChildScrollView(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemBuilder: (context, index) => Column(
-              children: [
-                QuestionAndAnswerTile(
-                  activeQuestions[index],
-                  answer: student.allAnswers[activeQuestions[index].id],
-                  onStateChange: onStateChange,
-                ),
-                const Divider(),
-              ],
-            ),
-            itemCount: activeQuestions.length,
+          Container(
+            padding: const EdgeInsets.only(left: 5, top: 10),
+            child:
+                const Text('Questions actives', style: TextStyle(fontSize: 20)),
           ),
-          ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemBuilder: (context, index) => Column(
-              children: [
-                QuestionAndAnswerTile(
-                  inactiveQuestions[index],
-                  answer: student.allAnswers[inactiveQuestions[index].id],
-                  onStateChange: onStateChange,
+          activeQuestions.isNotEmpty
+              ? ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) => Column(
+                    children: [
+                      QuestionAndAnswerTile(
+                        activeQuestions[index],
+                        answer: student.allAnswers[activeQuestions[index].id],
+                        onStateChange: onStateChange,
+                      ),
+                      if (index != activeQuestions.length - 1) const Divider(),
+                    ],
+                  ),
+                  itemCount: activeQuestions.length,
+                )
+              : Container(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: const Text(
+                    'Aucune question active',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.grey),
+                  ),
                 ),
-                const Divider(),
-              ],
-            ),
-            itemCount: inactiveQuestions.length,
+          Container(
+            padding: const EdgeInsets.only(left: 5, top: 45),
+            child: const Text('Questions inactives',
+                style: TextStyle(fontSize: 20, color: Colors.grey)),
           ),
+          inactiveQuestions.isNotEmpty
+              ? ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) => Column(
+                    children: [
+                      QuestionAndAnswerTile(
+                        inactiveQuestions[index],
+                        answer: student.allAnswers[inactiveQuestions[index].id],
+                        onStateChange: onStateChange,
+                      ),
+                      if (index != inactiveQuestions.length - 1)
+                        const Divider(),
+                    ],
+                  ),
+                  itemCount: inactiveQuestions.length,
+                )
+              : Container(
+                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                  child: const Text(
+                    'Aucune question inactive',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ),
         ],
       ),
     );
