@@ -42,6 +42,10 @@ class _StudentScreenState extends State<StudentScreen> {
     onPageChangedRequest(-1);
   }
 
+  void onStateChange(VoidCallback func) {
+    setState(func);
+  }
+
   @override
   Widget build(BuildContext context) {
     final student = ModalRoute.of(context)!.settings.arguments as Student;
@@ -64,12 +68,18 @@ class _StudentScreenState extends State<StudentScreen> {
                 children: [
                   SectionMainPage(
                       student: student, onPageChanged: onPageChangedRequest),
-                  SectionPage(0, student: student),
-                  SectionPage(1, student: student),
-                  SectionPage(2, student: student),
-                  SectionPage(3, student: student),
-                  SectionPage(4, student: student),
-                  SectionPage(5, student: student),
+                  SectionPage(0,
+                      student: student, onStateChange: onStateChange),
+                  SectionPage(1,
+                      student: student, onStateChange: onStateChange),
+                  SectionPage(2,
+                      student: student, onStateChange: onStateChange),
+                  SectionPage(3,
+                      student: student, onStateChange: onStateChange),
+                  SectionPage(4,
+                      student: student, onStateChange: onStateChange),
+                  SectionPage(5,
+                      student: student, onStateChange: onStateChange),
                 ],
               ),
             ),

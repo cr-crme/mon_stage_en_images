@@ -36,6 +36,22 @@ class AllAnswers extends MapSerializable<Answer> {
     return answered;
   }
 
+  AllQuestions get activeQuestions {
+    var out = AllQuestions();
+    forEach((answer) {
+      if (answer.value.isActive) out.add(answer.value.question);
+    });
+    return out;
+  }
+
+  AllQuestions get inactiveQuestions {
+    var out = AllQuestions();
+    forEach((answer) {
+      if (!answer.value.isActive) out.add(answer.value.question);
+    });
+    return out;
+  }
+
   @override
   void add(Answer item) => items[item.question.id] = item;
 

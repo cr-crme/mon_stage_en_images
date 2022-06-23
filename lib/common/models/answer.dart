@@ -5,14 +5,14 @@ import '../../misc/custom_containers/item_serializable.dart';
 class Answer extends ItemSerializable {
   // Constructors and (de)serializer
   Answer({
-    required this.isActive,
+    required isActive,
     required this.question,
     this.text,
     this.photoUrl,
     required this.discussion,
-  });
+  }) : _isActive = isActive;
   Answer.fromSerialized(Map<String, dynamic> map)
-      : isActive = map['isActive'],
+      : _isActive = map['isActive'],
         question = map['question'],
         text = map['text'],
         photoUrl = map['photoUrl'],
@@ -36,7 +36,10 @@ class Answer extends ItemSerializable {
   }
 
   // Attributes and methods
-  final bool isActive;
+  bool _isActive;
+  bool get isActive => _isActive;
+  set isActive(value) => _isActive = value;
+
   final Question question;
   final String? text;
   final String? photoUrl;

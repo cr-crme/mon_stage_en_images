@@ -5,11 +5,16 @@ import '../../../common/models/answer.dart';
 import '../../../common/models/question.dart';
 
 class QuestionAndAnswerTile extends StatefulWidget {
-  const QuestionAndAnswerTile(this.question, {Key? key, required this.answer})
-      : super(key: key);
+  const QuestionAndAnswerTile(
+    this.question, {
+    Key? key,
+    required this.answer,
+    required this.onStateChange,
+  }) : super(key: key);
 
   final Question question;
   final Answer? answer;
+  final Function(VoidCallback) onStateChange;
 
   @override
   State<QuestionAndAnswerTile> createState() => _QuestionAndAnswerTileState();
@@ -26,18 +31,20 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
 
   @override
   Widget build(BuildContext context) {
+    var isQuestionActive = widget.answer != null && widget.answer!.isActive;
     return Column(
       children: [
         ListTile(
           title: QuestionPart(
             question: widget.question,
-            isActive: widget.answer != null && widget.answer!.isActive,
+            isActive: isQuestionActive,
           ),
           trailing:
               Icon(_isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
           onTap: _expand,
         ),
-        if (_isExpanded) AnswerPart(widget.answer),
+        if (_isExpanded)
+          AnswerPart(widget.answer, onStateChange: widget.onStateChange),
       ],
     );
   }
@@ -61,33 +68,33 @@ class QuestionPart extends StatelessWidget {
 }
 
 class AnswerPart extends StatelessWidget {
-  const AnswerPart(this.answer, {Key? key}) : super(key: key);
+  const AnswerPart(
+    this.answer, {
+    Key? key,
+    required this.onStateChange,
+  }) : super(key: key);
 
   final Answer? answer;
+  final Function(VoidCallback) onStateChange;
 
   @override
   Widget build(BuildContext context) {
-    return answer != null && answer!.isActive
-        ? SizedBox(
-            width: MediaQuery.of(context).size.width - 60,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (answer!.needPhoto) _showPhoto(),
-                if (answer!.needPhoto && answer!.needText)
-                  const SizedBox(height: 12),
-                if (answer!.needText) _showWrittenAnswer(),
-                const SizedBox(height: 12),
-                DiscussionListView(answer: answer),
-              ],
-            ),
-          )
-        : const Center(
-            child: Text(
-              'Cette question n\'a pas été posée à l\'élève.',
-              style: TextStyle(color: Colors.grey),
-            ),
-          );
+    var isActive = answer!.isActive;
+    return Container(
+      padding: const EdgeInsets.only(left: 40, right: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _ShowStatus(answer: answer, onStateChange: onStateChange),
+          if (isActive && answer!.needPhoto) _showPhoto(),
+          if (isActive && answer!.needPhoto && answer!.needText)
+            const SizedBox(height: 12),
+          if (isActive && answer!.needText) _showWrittenAnswer(),
+          if (isActive) const SizedBox(height: 12),
+          if (isActive) DiscussionListView(answer: answer),
+        ],
+      ),
+    );
   }
 
   Widget _showPhoto() {
@@ -132,5 +139,46 @@ class AnswerPart extends StatelessWidget {
               ),
             )
     ]);
+  }
+}
+
+class _ShowStatus extends StatefulWidget {
+  const _ShowStatus(
+      {Key? key, required this.answer, required this.onStateChange})
+      : super(key: key);
+
+  final Answer? answer;
+  final Function(VoidCallback) onStateChange;
+
+  @override
+  State<_ShowStatus> createState() => _ShowStatusState();
+}
+
+class _ShowStatusState extends State<_ShowStatus> {
+  var _isActive = false;
+
+  void _toggleQuestion(value) {
+    _isActive = value;
+    widget.answer!.isActive = value;
+    setState(() {});
+    widget.onStateChange(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _isActive = widget.answer!.isActive;
+    var status = _isActive ? 'Question activée' : 'Question désactivée';
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          child: Text(
+            'Statut : $status',
+            style: const TextStyle(color: Colors.grey),
+          ),
+        ),
+        Switch(onChanged: _toggleQuestion, value: _isActive),
+      ],
+    );
   }
 }

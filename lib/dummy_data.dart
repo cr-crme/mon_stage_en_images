@@ -35,8 +35,6 @@ void prepareDummyData(Students students, AllQuestions questions) {
       question: questions.fromSection(1)[0],
       discussion: []));
   benjaminAnswers.add(Answer(
-      isActive: true, question: questions.fromSection(5)[0], discussion: []));
-  benjaminAnswers.add(Answer(
       isActive: true,
       text: 'coucou',
       question: questions.fromSection(5)[1],
@@ -58,7 +56,7 @@ void prepareDummyData(Students students, AllQuestions questions) {
       company: Company(name: 'Ici'),
       allAnswers: benjaminAnswers));
 
-  final aurelieAnswers = AllAnswers();
+  final aurelieAnswers = AllAnswers(questions: questions);
   aurelieAnswers.add(Answer(
       isActive: true,
       photoUrl: 'https://cdn.photographycourse.net/wp-content/uploads/2014/11/'
