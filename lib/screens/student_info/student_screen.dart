@@ -17,12 +17,7 @@ class StudentScreen extends StatelessWidget {
     final student = ModalRoute.of(context)!.settings.arguments as Student;
 
     return Consumer<AllQuestionList>(
-      builder: (context, questions, child) => Scaffold(
-        appBar: AppBar(
-          title: Text(student.toString()),
-        ),
-        body: const _SectionPages(),
-      ),
+      builder: (context, questions, child) => const _SectionPages(),
     );
   }
 }
@@ -55,31 +50,42 @@ class _SectionPagesState extends State<_SectionPages> {
     _pageController.dispose();
   }
 
+  void _onBackPressed() {
+    if (_currentPage == 0) Navigator.of(context).pop();
+    onPageChangedRequest(-1);
+  }
+
   @override
   Widget build(BuildContext context) {
     final student = ModalRoute.of(context)!.settings.arguments as Student;
 
-    return Column(
-      children: [
-        METIERPageNavigator(
-            selected: _currentPage - 1, onPageChanged: onPageChangedRequest),
-        Expanded(
-          child: PageView(
-            controller: _pageController,
-            onPageChanged: onPageChanged,
-            children: [
-              SectionMainPage(
-                  student: student, onPageChanged: onPageChangedRequest),
-              SectionPage(0, student: student),
-              SectionPage(1, student: student),
-              SectionPage(2, student: student),
-              SectionPage(3, student: student),
-              SectionPage(4, student: student),
-              SectionPage(5, student: student),
-            ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(student.toString()),
+        leading: BackButton(onPressed: _onBackPressed),
+      ),
+      body: Column(
+        children: [
+          METIERPageNavigator(
+              selected: _currentPage - 1, onPageChanged: onPageChangedRequest),
+          Expanded(
+            child: PageView(
+              controller: _pageController,
+              onPageChanged: onPageChanged,
+              children: [
+                SectionMainPage(
+                    student: student, onPageChanged: onPageChangedRequest),
+                SectionPage(0, student: student),
+                SectionPage(1, student: student),
+                SectionPage(2, student: student),
+                SectionPage(3, student: student),
+                SectionPage(4, student: student),
+                SectionPage(5, student: student),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
