@@ -19,25 +19,27 @@ class SectionMainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AllQuestions>(
-      builder: (context, questions, child) => SingleChildScrollView(
-        child: Column(
-          children: [
-            CompanyTile(student: student),
-            const Divider(),
-            SectionTileInStudent(0, student: student, onTap: onPageChanged),
-            const Divider(),
-            SectionTileInStudent(1, student: student, onTap: onPageChanged),
-            const Divider(),
-            SectionTileInStudent(2, student: student, onTap: onPageChanged),
-            const Divider(),
-            SectionTileInStudent(3, student: student, onTap: onPageChanged),
-            const Divider(),
-            SectionTileInStudent(4, student: student, onTap: onPageChanged),
-            const Divider(),
-            SectionTileInStudent(5, student: student, onTap: onPageChanged),
-            const Divider(),
-          ],
+    return SingleChildScrollView(
+      child: Consumer<AllQuestions>(
+        builder: (context, questions, child) => SingleChildScrollView(
+          child: Column(
+            children: [
+              CompanyTile(student: student),
+              const Divider(),
+              SectionTileInStudent(0, student: student, onTap: onPageChanged),
+              const Divider(),
+              SectionTileInStudent(1, student: student, onTap: onPageChanged),
+              const Divider(),
+              SectionTileInStudent(2, student: student, onTap: onPageChanged),
+              const Divider(),
+              SectionTileInStudent(3, student: student, onTap: onPageChanged),
+              const Divider(),
+              SectionTileInStudent(4, student: student, onTap: onPageChanged),
+              const Divider(),
+              SectionTileInStudent(5, student: student, onTap: onPageChanged),
+              const Divider(),
+            ],
+          ),
         ),
       ),
     );

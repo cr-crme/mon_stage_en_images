@@ -19,37 +19,41 @@ class SectionPage extends StatelessWidget {
     final activeQuestions = answers.activeQuestions;
     final inactiveQuestions = answers.inactiveQuestions;
 
-    return Column(
-      children: [
-        ListView.builder(
-          shrinkWrap: true,
-          itemBuilder: (context, index) => Column(
-            children: [
-              QuestionAndAnswerTile(
-                activeQuestions[index],
-                answer: student.allAnswers[activeQuestions[index].id],
-                onStateChange: onStateChange,
-              ),
-              const Divider(),
-            ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemBuilder: (context, index) => Column(
+              children: [
+                QuestionAndAnswerTile(
+                  activeQuestions[index],
+                  answer: student.allAnswers[activeQuestions[index].id],
+                  onStateChange: onStateChange,
+                ),
+                const Divider(),
+              ],
+            ),
+            itemCount: activeQuestions.length,
           ),
-          itemCount: activeQuestions.length,
-        ),
-        ListView.builder(
-          shrinkWrap: true,
-          itemBuilder: (context, index) => Column(
-            children: [
-              QuestionAndAnswerTile(
-                inactiveQuestions[index],
-                answer: student.allAnswers[inactiveQuestions[index].id],
-                onStateChange: onStateChange,
-              ),
-              const Divider(),
-            ],
+          ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemBuilder: (context, index) => Column(
+              children: [
+                QuestionAndAnswerTile(
+                  inactiveQuestions[index],
+                  answer: student.allAnswers[inactiveQuestions[index].id],
+                  onStateChange: onStateChange,
+                ),
+                const Divider(),
+              ],
+            ),
+            itemCount: inactiveQuestions.length,
           ),
-          itemCount: inactiveQuestions.length,
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
