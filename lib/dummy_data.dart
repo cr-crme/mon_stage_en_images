@@ -10,23 +10,23 @@ import './common/providers/students.dart';
 
 void prepareDummyData(Students students, AllQuestions questions) {
   questions
-      .add(Question('Photo 1?', needPhoto: true, needText: false, section: 0));
+      .add(Question('Photo 1', needPhoto: true, needText: false, section: 0));
   questions
-      .add(Question('Texte 1?', needPhoto: false, needText: true, section: 1));
+      .add(Question('Texte 1', needPhoto: false, needText: true, section: 1));
   questions
-      .add(Question('Photo 2?', needPhoto: true, needText: false, section: 2));
+      .add(Question('Photo 2', needPhoto: true, needText: false, section: 2));
   questions
-      .add(Question('Photo 3?', needPhoto: true, needText: false, section: 3));
+      .add(Question('Photo 3', needPhoto: true, needText: false, section: 3));
   questions
-      .add(Question('Photo 4?', needPhoto: true, needText: false, section: 4));
+      .add(Question('Photo 4', needPhoto: true, needText: false, section: 4));
   questions
-      .add(Question('Photo 5?', needPhoto: true, needText: false, section: 5));
+      .add(Question('Photo 5', needPhoto: true, needText: false, section: 5));
   questions
-      .add(Question('Texte 2?', needPhoto: false, needText: true, section: 5));
-  questions.add(Question('Photo et texte 1?',
+      .add(Question('Texte 2', needPhoto: false, needText: true, section: 5));
+  questions.add(Question('Photo et texte 1',
       needPhoto: true, needText: true, section: 5));
 
-  final benjaminAnswers = AllAnswers();
+  final benjaminAnswers = AllAnswers(questions: questions);
   benjaminAnswers.add(Answer(
       isActive: true, question: questions.fromSection(0)[0], discussion: []));
   benjaminAnswers.add(Answer(

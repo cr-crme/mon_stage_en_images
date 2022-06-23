@@ -1,9 +1,16 @@
 import './answer.dart';
+
+import '../providers/all_questions.dart';
 import '../../misc/custom_containers/map_serializable.dart';
 
 class AllAnswers extends MapSerializable<Answer> {
   // Constructors and (de)serializer
-  AllAnswers();
+  AllAnswers({AllQuestions? questions}) : super() {
+    if (questions == null) return;
+    for (var question in questions) {
+      add(Answer(isActive: false, question: question, discussion: []));
+    }
+  }
   AllAnswers.fromSerialized(map) : super.fromSerialized(map);
 
   @override
@@ -13,6 +20,14 @@ class AllAnswers extends MapSerializable<Answer> {
 
   // Attributes and methods
   int get number => length;
+  int get numberActive {
+    int answered = 0;
+    forEach((answer) {
+      if (answer.value.isActive) answered++;
+    });
+    return answered;
+  }
+
   int get numberAnswered {
     int answered = 0;
     forEach((answer) {

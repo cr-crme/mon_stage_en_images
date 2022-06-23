@@ -29,7 +29,10 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     return Column(
       children: [
         ListTile(
-          title: QuestionPart(widget: widget),
+          title: QuestionPart(
+            question: widget.question,
+            isActive: widget.answer != null && widget.answer!.isActive,
+          ),
           trailing:
               Icon(_isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
           onTap: _expand,
@@ -43,14 +46,17 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
 class QuestionPart extends StatelessWidget {
   const QuestionPart({
     Key? key,
-    required this.widget,
+    required this.question,
+    required this.isActive,
   }) : super(key: key);
 
-  final QuestionAndAnswerTile widget;
+  final Question question;
+  final bool isActive;
 
   @override
   Widget build(BuildContext context) {
-    return Text(widget.question.text);
+    return Text(question.text,
+        style: TextStyle(color: isActive ? Colors.black : Colors.grey));
   }
 }
 
@@ -61,10 +67,8 @@ class AnswerPart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return answer == null
-        ? const Center(
-            child: Text('Cette question n\'a pas été posée à l\'élève.'))
-        : SizedBox(
+    return answer != null && answer!.isActive
+        ? SizedBox(
             width: MediaQuery.of(context).size.width - 60,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,6 +80,12 @@ class AnswerPart extends StatelessWidget {
                 const SizedBox(height: 12),
                 DiscussionListView(answer: answer),
               ],
+            ),
+          )
+        : const Center(
+            child: Text(
+              'Cette question n\'a pas été posée à l\'élève.',
+              style: TextStyle(color: Colors.grey),
             ),
           );
   }
