@@ -31,7 +31,7 @@ class AllAnswers extends MapSerializable<Answer> {
   int get numberAnswered {
     int answered = 0;
     forEach((answer) {
-      if (answer.value.isAnswered) answered++;
+      if (answer.value.isActive && answer.value.isAnswered) answered++;
     });
     return answered;
   }
