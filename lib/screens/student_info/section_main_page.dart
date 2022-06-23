@@ -6,15 +6,14 @@ import './widgets/section_tile_in_student.dart';
 import '../../common/models/student.dart';
 import '../../common/providers/all_question_lists.dart';
 
-class StudentMainScreen extends StatelessWidget {
-  const StudentMainScreen({Key? key}) : super(key: key);
+class SectionMainPage extends StatelessWidget {
+  const SectionMainPage({Key? key, required this.student}) : super(key: key);
 
-  static const routeName = '/student-main-screen';
+  static const routeName = '/section-main-screen';
+  final Student student;
 
   @override
   Widget build(BuildContext context) {
-    final student = ModalRoute.of(context)!.settings.arguments as Student;
-
     return Consumer<AllQuestionList>(
       builder: (context, questions, child) => Scaffold(
         appBar: AppBar(

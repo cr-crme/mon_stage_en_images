@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../student_info/student_main_screen.dart';
+import '../../student_info/student_screen.dart';
 import '../../../common/models/student.dart';
 
 class StudentListTile extends StatelessWidget {
@@ -26,7 +26,7 @@ class StudentListTile extends StatelessWidget {
           onPressed: () => removeItemCallback(student),
         ),
         onTap: () => Navigator.of(context)
-            .pushNamed(StudentMainScreen.routeName, arguments: student),
+            .pushNamed(StudentScreen.routeName, arguments: student),
       ),
     );
   }

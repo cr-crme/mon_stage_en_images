@@ -10,7 +10,7 @@ import '../../common/widgets/are_you_sure_dialog.dart';
 class StudentsScreen extends StatefulWidget {
   const StudentsScreen({Key? key}) : super(key: key);
 
-  static const routeName = '/student-screen';
+  static const routeName = '/students-screen';
 
   @override
   State<StudentsScreen> createState() => _StudentsScreenState();

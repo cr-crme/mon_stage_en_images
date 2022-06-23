@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../section_screen.dart';
+import '../section_page.dart';
 import '../../../common/models/section.dart';
 import '../../../common/models/student.dart';
 import '../../../common/providers/all_question_lists.dart';
@@ -32,7 +32,7 @@ class SectionTileInStudent extends StatelessWidget {
       ),
       title: Text('Questions répondues : 0 / ${questions.number}'),
       trailing: const Icon(Icons.arrow_right),
-      onTap: () => Navigator.of(context).pushNamed(SectionScreen.routeName,
+      onTap: () => Navigator.of(context).pushNamed(SectionPage.routeName,
           arguments: {'student': student, 'sectionIndex': sectionIndex}),
     );
   }
