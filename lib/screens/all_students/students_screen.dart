@@ -61,7 +61,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
       body: Consumer<Students>(
         builder: (context, students, child) => ListView.builder(
           itemBuilder: (context, index) => StudentListTile(
-            students[index]!,
+            students[index],
             removeItemCallback: _removeStudent,
           ),
           itemCount: students.count,

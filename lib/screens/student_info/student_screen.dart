@@ -5,7 +5,7 @@ import './section_main_page.dart';
 import './section_page.dart';
 import './widgets/metier_page_navigator.dart';
 import '../../common/models/student.dart';
-import '../../common/providers/all_question_lists.dart';
+import '../../common/providers/all_questions.dart';
 
 class StudentScreen extends StatefulWidget {
   const StudentScreen({Key? key}) : super(key: key);
@@ -46,7 +46,7 @@ class _StudentScreenState extends State<StudentScreen> {
   Widget build(BuildContext context) {
     final student = ModalRoute.of(context)!.settings.arguments as Student;
 
-    return Consumer<AllQuestionList>(builder: (context, questions, child) {
+    return Consumer<AllQuestions>(builder: (context, questions, child) {
       return Scaffold(
         appBar: AppBar(
           title: Text(student.toString()),

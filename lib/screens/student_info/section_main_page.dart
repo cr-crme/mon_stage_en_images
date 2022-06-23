@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import './widgets/company_tile.dart';
 import './widgets/section_tile_in_student.dart';
 import '../../common/models/student.dart';
-import '../../common/providers/all_question_lists.dart';
+import '../../common/providers/all_questions.dart';
 
 class SectionMainPage extends StatelessWidget {
   const SectionMainPage({
@@ -19,7 +19,7 @@ class SectionMainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AllQuestionList>(
+    return Consumer<AllQuestions>(
       builder: (context, questions, child) => SingleChildScrollView(
         child: Column(
           children: [

@@ -34,19 +34,7 @@ abstract class ListSerializable<T> extends Iterable<T> {
     }
   }
 
-  // // Iterator
-  // int _currentIteratorIndex = 0;
-  // @override
-  // T get current => items[_currentIteratorIndex];
-
-  // @override
-  // bool moveNext() {
-  //   _currentIteratorIndex++;
-  //   if (_currentIteratorIndex < items.length) return true;
-  //   _currentIteratorIndex = 0;
-  //   return false;
-  // }
-
+  // Iterator
   @override
   Iterator<T> get iterator => items.iterator; // Todo make a copy here
 
@@ -57,7 +45,7 @@ abstract class ListSerializable<T> extends Iterable<T> {
     items.add(item);
   }
 
-  T? operator [](value) {
+  T operator [](value) {
     return items[_getIndex(value)];
   }
 

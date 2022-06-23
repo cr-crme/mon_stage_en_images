@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../common/models/all_answer.dart';
+import '../../../common/models/all_answers.dart';
 import '../../../common/models/company.dart';
 import '../../../common/models/student.dart';
 
@@ -31,7 +31,7 @@ class _NewStudentPageState extends State<NewStudentPage> {
     var student = Student(
       firstName: _firstName!,
       lastName: _lastName!,
-      allAnswers: AllAnswer(),
+      allAnswers: AllAnswers(),
       company: Company(name: _companyName),
     );
     Navigator.pop(context, student);

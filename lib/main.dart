@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import './dummy_data.dart';
 import './common/models/my_theme_data.dart';
-import './common/providers/all_question_lists.dart';
+import 'common/providers/all_questions.dart';
 import './common/providers/user.dart';
 import './common/providers/students.dart';
 import './screens/student_info/student_screen.dart';
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = User(name: 'Pariterre');
     final students = Students();
-    final questions = AllQuestionList();
+    final questions = AllQuestions();
     prepareDummyData(students, questions);
 
     return MultiProvider(

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../common/models/section.dart';
 import '../../../common/models/student.dart';
-import '../../../common/providers/all_question_lists.dart';
+import '../../../common/providers/all_questions.dart';
 
 class SectionTileInStudent extends StatelessWidget {
   const SectionTileInStudent(this.sectionIndex,
@@ -16,7 +16,11 @@ class SectionTileInStudent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final questions = Provider.of<AllQuestionList>(context)[sectionIndex];
+    final questions =
+        Provider.of<AllQuestions>(context).fromSection(sectionIndex);
+    final answers = student.allAnswers.fromSection(sectionIndex);
+    final answered = answers.numberAnswered;
+    final number = questions.number;
 
     return ListTile(
       leading: Container(
@@ -30,7 +34,9 @@ class SectionTileInStudent extends StatelessWidget {
         child: Text(Section.letter(sectionIndex),
             style: const TextStyle(fontSize: 25, color: Colors.white)),
       ),
-      title: Text('Questions répondues : 0 / ${questions.number}'),
+      title: Text('Réponses : $answered / $number',
+          style:
+              TextStyle(color: answered >= number ? Colors.black : Colors.red)),
       trailing: const Icon(Icons.arrow_right),
       onTap: () => onTap(sectionIndex),
     );
