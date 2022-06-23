@@ -92,10 +92,16 @@ class AnswerPart extends StatelessWidget {
                     style: TextStyle(color: Colors.red)))
             : Container(
                 padding: const EdgeInsets.only(left: 15),
-                child: Image.network(
-                  answer!.photoUrl!,
-                  fit: BoxFit.cover,
-                ),
+                child: FutureBuilder(builder: (context, snapshot) {
+                  return snapshot.connectionState == ConnectionState.waiting
+                      ? const Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : Image.network(
+                          answer!.photoUrl!,
+                          fit: BoxFit.cover,
+                        );
+                }),
               ),
       ],
     );
@@ -111,7 +117,9 @@ class AnswerPart extends StatelessWidget {
                   style: TextStyle(color: Colors.red)))
           : Container(
               padding: const EdgeInsets.only(left: 15),
-              child: Flexible(child: Text(answer!.text!.toString())),
+              child: Row(
+                children: [Flexible(child: Text(answer!.text!.toString()))],
+              ),
             )
     ]);
   }
