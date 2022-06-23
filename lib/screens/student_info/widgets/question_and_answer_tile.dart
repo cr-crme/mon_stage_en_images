@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import './discussion_list_view.dart';
 import '../../../common/models/answer.dart';
 import '../../../common/models/question.dart';
+import '../../../common/widgets/are_you_sure_dialog.dart';
 
 class QuestionAndAnswerTile extends StatefulWidget {
   const QuestionAndAnswerTile(
@@ -163,7 +164,21 @@ class _ShowStatus extends StatefulWidget {
 class _ShowStatusState extends State<_ShowStatus> {
   var _isActive = false;
 
-  void _toggleQuestion(value) {
+  Future<void> _toggleQuestion(value) async {
+    final sure = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AreYouSureDialog(
+          title: 'Confimer le choix',
+          content:
+              'Voulez-vous vraiment ${value ? 'activer' : 'désactiver'} cette question?',
+        );
+      },
+    );
+
+    if (!sure!) return;
+
     _isActive = value;
     widget.answer!.isActive = value;
     setState(() {});
