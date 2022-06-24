@@ -62,11 +62,13 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
             children: [
               _showQuestionTextInput(),
               const SizedBox(height: 25),
-              const Text('Ajouter la question à :'),
-              _showAddTo(context),
-              const SizedBox(height: 25),
-              const Text('La réponse doit être de type :'),
+              const Text('Le type de la question est :'),
               _showQuestionType(context),
+              const SizedBox(height: 25),
+              Text(widget.student == null
+                  ? 'Activer la question pour'
+                  : 'Ajouter la question à :'),
+              _showAddTo(context),
             ],
           ),
         ),
@@ -109,8 +111,10 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         GroupedRadioButton<Target>(
-            title: Text(widget.student.toString()),
-            value: Target.individual,
+            title: widget.student == null
+                ? const Text('Personne')
+                : Text(widget.student.toString()),
+            value: widget.student == null ? Target.none : Target.individual,
             groupValue: _target,
             onChanged: _setTarget),
         GroupedRadioButton<Target>(

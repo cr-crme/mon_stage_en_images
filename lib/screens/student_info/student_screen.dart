@@ -58,7 +58,7 @@ class _StudentScreenState extends State<StudentScreen> {
     final questions = Provider.of<AllQuestions>(context, listen: false);
     final students = Provider.of<AllStudents>(context, listen: false);
     final currentStudent =
-        ModalRoute.of(context)!.settings.arguments as Student;
+        ModalRoute.of(context)!.settings.arguments as Student?;
 
     final userInput = await showDialog<Map<String, dynamic>>(
       context: context,
@@ -73,9 +73,12 @@ class _StudentScreenState extends State<StudentScreen> {
 
     questions.add(question);
     for (var student in students) {
-      final isAtive = target == Target.all || student.id == currentStudent.id;
+      final isActive = target != Target.none &&
+          (target == Target.all ||
+              currentStudent == null ||
+              student.id == currentStudent.id);
       student.allAnswers
-          .add(Answer(isActive: isAtive, question: question, discussion: []));
+          .add(Answer(isActive: isActive, question: question, discussion: []));
     }
 
     setState(() {});
