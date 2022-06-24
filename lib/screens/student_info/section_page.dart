@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import './widgets/question_and_answer_tile.dart';
-import '../../../common/models/student.dart';
+import '../../common/models/all_answers.dart';
+import '../../common/models/student.dart';
+import '../../common/providers/all_questions.dart';
 
 class SectionPage extends StatelessWidget {
   const SectionPage(this.sectionIndex,
@@ -10,100 +13,96 @@ class SectionPage extends StatelessWidget {
 
   static const routeName = '/section-screen';
   final int sectionIndex;
-  final Student student;
+  final Student? student;
   final Function(VoidCallback) onStateChange;
 
   @override
   Widget build(BuildContext context) {
-    final answers = student.allAnswers.fromSection(sectionIndex);
-    final answeredQuestions = answers.answeredActiveQuestions;
-    final unansweredQuestions = answers.unansweredActiveQuestions;
-    final inactiveQuestions = answers.inactiveQuestions;
+    late final AllAnswers? answers;
+    late final AllQuestions? answeredQuestions;
+    late final AllQuestions? unansweredQuestions;
+    late final AllQuestions? inactiveQuestions;
+    if (student != null) {
+      answers = student!.allAnswers.fromSection(sectionIndex);
+      answeredQuestions = answers.answeredActiveQuestions;
+      unansweredQuestions = answers.unansweredActiveQuestions;
+      inactiveQuestions = answers.inactiveQuestions;
+    } else {
+      answeredQuestions = Provider.of<AllQuestions>(context);
+      unansweredQuestions = AllQuestions();
+      inactiveQuestions = AllQuestions();
+    }
 
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            padding: const EdgeInsets.only(left: 5, top: 15),
-            child: Text('Questions répondues',
-                style: Theme.of(context).textTheme.titleLarge),
-          ),
-          answeredQuestions.isNotEmpty
-              ? ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) => QuestionAndAnswerTile(
-                    answeredQuestions[index],
-                    answer: student.allAnswers[answeredQuestions[index].id],
-                    onStateChange: onStateChange,
-                    isActive: true,
-                  ),
-                  itemCount: answeredQuestions.length,
-                )
-              : Container(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: const Text(
-                    'Aucune question active',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ),
-          Container(
-            padding: const EdgeInsets.only(left: 5, top: 45),
-            child: Text('Questions non répondues',
-                style: Theme.of(context).textTheme.titleLarge),
-          ),
-          unansweredQuestions.isNotEmpty
-              ? ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) => QuestionAndAnswerTile(
-                    unansweredQuestions[index],
-                    answer: student.allAnswers[unansweredQuestions[index].id],
-                    onStateChange: onStateChange,
-                    isActive: true,
-                  ),
-                  itemCount: unansweredQuestions.length,
-                )
-              : Container(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: const Text(
-                    'Aucune question active',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ),
-          Container(
-            padding: const EdgeInsets.only(left: 5, top: 45),
-            child: Text('Questions inactives',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleLarge!
-                    .copyWith(color: Colors.grey)),
-          ),
-          inactiveQuestions.isNotEmpty
-              ? ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) => QuestionAndAnswerTile(
-                    inactiveQuestions[index],
-                    answer: student.allAnswers[inactiveQuestions[index].id],
-                    onStateChange: onStateChange,
-                    isActive: false,
-                  ),
-                  itemCount: inactiveQuestions.length,
-                )
-              : Container(
-                  padding: const EdgeInsets.only(top: 10, bottom: 10),
-                  child: const Text(
-                    'Aucune question inactive',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ),
+          ..._buildQuestionSection(context,
+              title: 'Questions répondues',
+              titleColor: Colors.black,
+              questions: answeredQuestions,
+              isActive: true,
+              titleIfNone: 'Aucune question active',
+              topSpacing: 15),
+          ..._buildQuestionSection(context,
+              title: 'Questions non répondues',
+              titleColor: Colors.black,
+              questions: unansweredQuestions,
+              isActive: true,
+              titleIfNone: 'Aucune question active',
+              topSpacing: 45),
+          ..._buildQuestionSection(context,
+              title: 'Questions inactives',
+              titleColor: Colors.grey,
+              questions: inactiveQuestions,
+              isActive: false,
+              titleIfNone: 'Aucune question inactive',
+              topSpacing: 45),
         ],
       ),
     );
+  }
+
+  List<Widget> _buildQuestionSection(
+    BuildContext context, {
+    required String title,
+    required Color titleColor,
+    required AllQuestions questions,
+    required bool isActive,
+    required String titleIfNone,
+    required double topSpacing,
+  }) {
+    return [
+      Container(
+        padding: EdgeInsets.only(left: 5, top: topSpacing),
+        child: Text(title,
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge!
+                .copyWith(color: titleColor)),
+      ),
+      questions.isNotEmpty
+          ? ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemBuilder: (context, index) => QuestionAndAnswerTile(
+                questions[index],
+                answer: student != null
+                    ? student!.allAnswers[questions[index].id]
+                    : null,
+                onStateChange: onStateChange,
+                isActive: isActive,
+              ),
+              itemCount: questions.length,
+            )
+          : Container(
+              padding: const EdgeInsets.only(top: 10),
+              child: Text(
+                titleIfNone,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.grey),
+              ),
+            ),
+    ];
   }
 }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'widgets/new_student_alert_dialog.dart';
+import './widgets/new_student_alert_dialog.dart';
 import './widgets/student_list_tile.dart';
+import '../student_info/student_screen.dart';
 import '../../common/providers/students.dart';
 import '../../common/models/student.dart';
 import '../../common/widgets/are_you_sure_dialog.dart';
@@ -80,6 +81,51 @@ class _StudentsScreenState extends State<StudentsScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: _showNewStudent,
         child: const Icon(Icons.add),
+      ),
+      drawer: Drawer(
+          child: Scaffold(
+        appBar:
+            AppBar(title: const Text('Menu principal'), leading: Container()),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            MenuItem(
+                title: 'Acceuil',
+                onTap: () =>
+                    Navigator.of(context).pushNamed(StudentsScreen.routeName)),
+            MenuItem(
+                title: 'Gestion des questions',
+                onTap: () =>
+                    Navigator.of(context).pushNamed(StudentScreen.routeName)),
+            const MenuItem(
+                title: 'Déconnexion', onTap: null, iconColor: Colors.grey),
+          ],
+        ),
+      )),
+    );
+  }
+}
+
+class MenuItem extends StatelessWidget {
+  const MenuItem(
+      {Key? key, required this.title, required this.onTap, this.iconColor})
+      : super(key: key);
+
+  final String title;
+  final VoidCallback? onTap;
+  final Color? iconColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      child: ListTile(
+        leading: Icon(
+          Icons.cottage,
+          color: iconColor ?? Theme.of(context).colorScheme.secondary,
+        ),
+        title: Text(title, style: Theme.of(context).textTheme.titleLarge),
+        onTap: onTap,
       ),
     );
   }

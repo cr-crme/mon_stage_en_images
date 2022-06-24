@@ -14,7 +14,7 @@ class SectionMainPage extends StatelessWidget {
   }) : super(key: key);
 
   static const routeName = '/section-main-screen';
-  final Student student;
+  final Student? student;
   final Function(int) onPageChanged;
 
   @override
@@ -25,13 +25,15 @@ class SectionMainPage extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 15),
-              Text('Informations générales',
-                  style: Theme.of(context).textTheme.titleLarge),
-              CompanyTile(student: student),
-              const SizedBox(height: 20),
-              Text('Résumé des réponses',
-                  style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 5),
+              if (student != null)
+                Text('Informations générales',
+                    style: Theme.of(context).textTheme.titleLarge),
+              if (student != null) CompanyTile(student: student),
+              if (student != null) const SizedBox(height: 20),
+              if (student != null)
+                Text('Résumé des réponses',
+                    style: Theme.of(context).textTheme.titleLarge),
+              if (student != null) const SizedBox(height: 5),
               SectionTileInStudent(0, student: student, onTap: onPageChanged),
               SectionTileInStudent(1, student: student, onTap: onPageChanged),
               SectionTileInStudent(2, student: student, onTap: onPageChanged),

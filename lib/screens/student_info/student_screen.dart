@@ -81,12 +81,12 @@ class _StudentScreenState extends State<StudentScreen> {
     setState(() {});
   }
 
-  AppBar _setAppBar(Student student) {
+  AppBar _setAppBar(Student? student) {
     return AppBar(
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(student.toString()),
+          Text(student != null ? student.toString() : 'Gestion des questions'),
           if (_currentPage > 0)
             Text(
               Section.name(_currentPage - 1),
@@ -106,7 +106,7 @@ class _StudentScreenState extends State<StudentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final student = ModalRoute.of(context)!.settings.arguments as Student;
+    var student = ModalRoute.of(context)!.settings.arguments as Student?;
 
     return Consumer<AllQuestions>(builder: (context, questions, child) {
       return Scaffold(
