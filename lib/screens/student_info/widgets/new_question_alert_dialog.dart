@@ -101,30 +101,16 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Flexible(
-          child: Row(
-            children: [
-              Radio<Target>(
-                groupValue: _target,
-                onChanged: _setTarget,
-                value: Target.individual,
-              ),
-              Flexible(child: Text('${widget.student}')),
-            ],
-          ),
-        ),
-        Flexible(
-          child: Row(
-            children: [
-              Radio<Target>(
-                groupValue: _target,
-                onChanged: _setTarget,
-                value: Target.all,
-              ),
-              const Flexible(child: Text('Tous')),
-            ],
-          ),
-        ),
+        addRadioButon<Target>(
+            title: Text(widget.student.toString()),
+            value: Target.individual,
+            groupValue: _target,
+            onChanged: _setTarget),
+        addRadioButon<Target>(
+            title: const Text('Tous'),
+            value: Target.all,
+            groupValue: _target,
+            onChanged: _setTarget),
       ],
     );
   }
@@ -133,31 +119,38 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Flexible(
-          child: Row(
-            children: [
-              Radio<QuestionType>(
-                groupValue: _questionType,
-                onChanged: _setQuestionType,
-                value: QuestionType.text,
-              ),
-              const Flexible(child: Text('Texte')),
-            ],
-          ),
-        ),
-        Flexible(
-          child: Row(
-            children: [
-              Radio<QuestionType>(
-                groupValue: _questionType,
-                onChanged: _setQuestionType,
-                value: QuestionType.photo,
-              ),
-              const Flexible(child: Text('Photo')),
-            ],
-          ),
-        ),
+        addRadioButon<QuestionType>(
+            title: const Text('Texte'),
+            value: QuestionType.text,
+            groupValue: _questionType,
+            onChanged: _setQuestionType),
+        addRadioButon<QuestionType>(
+            title: const Text('Photo'),
+            value: QuestionType.photo,
+            groupValue: _questionType,
+            onChanged: _setQuestionType),
       ],
+    );
+  }
+
+  Flexible addRadioButon<T>({
+    required title,
+    required value,
+    required groupValue,
+    required onChanged,
+  }) {
+    return Flexible(
+      child: ListTile(
+        leading: Radio<T>(
+          groupValue: groupValue,
+          onChanged: onChanged,
+          value: value,
+        ),
+        title: Flexible(child: title),
+        horizontalTitleGap: 0,
+        contentPadding: const EdgeInsets.all(0),
+        onTap: () => onChanged(value),
+      ),
     );
   }
 }
