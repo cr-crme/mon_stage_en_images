@@ -39,9 +39,7 @@ class _CompanyTileState extends State<CompanyTile> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: const Text(
-        'Nom de l\'entreprise :',
-      ),
+      title: const Text('Nom de l\'entreprise :'),
       subtitle: _isModifyingCompany
           ? Form(
               key: _formKeyModifyCompany,

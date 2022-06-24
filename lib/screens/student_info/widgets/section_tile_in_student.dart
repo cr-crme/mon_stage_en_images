@@ -18,25 +18,30 @@ class SectionTileInStudent extends StatelessWidget {
     final answered = answers.numberAnswered;
     final active = answers.numberActive;
 
-    return ListTile(
-      leading: Container(
-        margin: const EdgeInsets.all(2),
-        padding: const EdgeInsets.all(14),
-        width: 50,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            color: Section.color(sectionIndex)),
-        child: Text(Section.letter(sectionIndex),
-            style: const TextStyle(fontSize: 25, color: Colors.white)),
+    return Card(
+      elevation: 5,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 5),
+        child: ListTile(
+          leading: Container(
+            margin: const EdgeInsets.only(bottom: 2),
+            width: 50,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Section.color(sectionIndex)),
+            child: Text(Section.letter(sectionIndex),
+                style: const TextStyle(fontSize: 25, color: Colors.white)),
+          ),
+          title: Text('Réponses : $answered / $active',
+              style: TextStyle(
+                  color: active > 0
+                      ? (answered >= active ? Colors.black : Colors.red)
+                      : Colors.grey)),
+          trailing: const Icon(Icons.arrow_right),
+          onTap: () => onTap(sectionIndex),
+        ),
       ),
-      title: Text('Réponses : $answered / $active',
-          style: TextStyle(
-              color: active > 0
-                  ? (answered >= active ? Colors.black : Colors.red)
-                  : Colors.grey)),
-      trailing: const Icon(Icons.arrow_right),
-      onTap: () => onTap(sectionIndex),
     );
   }
 }

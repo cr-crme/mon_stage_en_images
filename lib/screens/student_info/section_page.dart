@@ -32,15 +32,10 @@ class SectionPage extends StatelessWidget {
               ? ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemBuilder: (context, index) => Column(
-                    children: [
-                      QuestionAndAnswerTile(
-                        activeQuestions[index],
-                        answer: student.allAnswers[activeQuestions[index].id],
-                        onStateChange: onStateChange,
-                      ),
-                      if (index != activeQuestions.length - 1) const Divider(),
-                    ],
+                  itemBuilder: (context, index) => QuestionAndAnswerTile(
+                    activeQuestions[index],
+                    answer: student.allAnswers[activeQuestions[index].id],
+                    onStateChange: onStateChange,
                   ),
                   itemCount: activeQuestions.length,
                 )
@@ -61,16 +56,10 @@ class SectionPage extends StatelessWidget {
               ? ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemBuilder: (context, index) => Column(
-                    children: [
-                      QuestionAndAnswerTile(
-                        inactiveQuestions[index],
-                        answer: student.allAnswers[inactiveQuestions[index].id],
-                        onStateChange: onStateChange,
-                      ),
-                      if (index != inactiveQuestions.length - 1)
-                        const Divider(),
-                    ],
+                  itemBuilder: (context, index) => QuestionAndAnswerTile(
+                    inactiveQuestions[index],
+                    answer: student.allAnswers[inactiveQuestions[index].id],
+                    onStateChange: onStateChange,
                   ),
                   itemCount: inactiveQuestions.length,
                 )

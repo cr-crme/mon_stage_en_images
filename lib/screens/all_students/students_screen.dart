@@ -56,15 +56,23 @@ class _StudentsScreenState extends State<StudentsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Élèves'),
+        title: const Text('Gestion des stages'),
       ),
       body: Consumer<Students>(
-        builder: (context, students, child) => ListView.builder(
-          itemBuilder: (context, index) => StudentListTile(
-            students[index],
-            removeItemCallback: _removeStudent,
-          ),
-          itemCount: students.count,
+        builder: (context, students, child) => Column(
+          children: [
+            const SizedBox(height: 10),
+            const Text('Élèves', style: TextStyle(fontSize: 20)),
+            Expanded(
+              child: ListView.builder(
+                itemBuilder: (context, index) => StudentListTile(
+                  students[index],
+                  removeItemCallback: _removeStudent,
+                ),
+                itemCount: students.count,
+              ),
+            ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(

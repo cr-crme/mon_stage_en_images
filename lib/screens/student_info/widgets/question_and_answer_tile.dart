@@ -39,20 +39,23 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   @override
   Widget build(BuildContext context) {
     var isQuestionActive = widget.answer != null && widget.answer!.isActive;
-    return Column(
-      children: [
-        ListTile(
-          title: QuestionPart(
-            question: widget.question,
-            isActive: isQuestionActive,
+    return Card(
+      elevation: 5,
+      child: Column(
+        children: [
+          ListTile(
+            title: QuestionPart(
+              question: widget.question,
+              isActive: isQuestionActive,
+            ),
+            trailing:
+                Icon(_isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+            onTap: _expand,
           ),
-          trailing:
-              Icon(_isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-          onTap: _expand,
-        ),
-        if (_isExpanded)
-          AnswerPart(widget.answer, onStateChange: onStateChange),
-      ],
+          if (_isExpanded)
+            AnswerPart(widget.answer, onStateChange: onStateChange),
+        ],
+      ),
     );
   }
 }
