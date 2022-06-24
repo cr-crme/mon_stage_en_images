@@ -24,12 +24,13 @@ class SectionMainPage extends StatelessWidget {
         builder: (context, questions, child) => SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 10),
-              const Text('Informations générales',
-                  style: TextStyle(fontSize: 20)),
+              const SizedBox(height: 15),
+              Text('Informations générales',
+                  style: Theme.of(context).textTheme.titleLarge),
               CompanyTile(student: student),
               const SizedBox(height: 20),
-              const Text('Résumé des réponses', style: TextStyle(fontSize: 20)),
+              Text('Résumé des réponses',
+                  style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 5),
               SectionTileInStudent(0, student: student, onTap: onPageChanged),
               SectionTileInStudent(1, student: student, onTap: onPageChanged),

@@ -25,9 +25,9 @@ class SectionPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.only(left: 5, top: 10),
-            child: const Text('Questions répondues',
-                style: TextStyle(fontSize: 20)),
+            padding: const EdgeInsets.only(left: 5, top: 15),
+            child: Text('Questions répondues',
+                style: Theme.of(context).textTheme.titleLarge),
           ),
           answeredQuestions.isNotEmpty
               ? ListView.builder(
@@ -51,8 +51,8 @@ class SectionPage extends StatelessWidget {
                 ),
           Container(
             padding: const EdgeInsets.only(left: 5, top: 45),
-            child: const Text('Questions non répondues',
-                style: TextStyle(fontSize: 20)),
+            child: Text('Questions non répondues',
+                style: Theme.of(context).textTheme.titleLarge),
           ),
           unansweredQuestions.isNotEmpty
               ? ListView.builder(
@@ -76,8 +76,11 @@ class SectionPage extends StatelessWidget {
                 ),
           Container(
             padding: const EdgeInsets.only(left: 5, top: 45),
-            child: const Text('Questions inactives',
-                style: TextStyle(fontSize: 20, color: Colors.grey)),
+            child: Text('Questions inactives',
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge!
+                    .copyWith(color: Colors.grey)),
           ),
           inactiveQuestions.isNotEmpty
               ? ListView.builder(

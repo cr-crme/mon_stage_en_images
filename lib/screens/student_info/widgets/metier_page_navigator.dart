@@ -12,7 +12,16 @@ class METIERPageNavigator extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      color: Theme.of(context).colorScheme.primary.withAlpha(70),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary.withAlpha(90),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 5,
+            blurRadius: 7,
+          ),
+        ],
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

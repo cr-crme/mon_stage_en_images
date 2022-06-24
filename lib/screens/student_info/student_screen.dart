@@ -90,7 +90,10 @@ class _StudentScreenState extends State<StudentScreen> {
           if (_currentPage > 0)
             Text(
               Section.name(_currentPage - 1),
-              style: const TextStyle(fontSize: 15),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge!
+                  .copyWith(fontSize: 15),
             ),
         ],
       ),

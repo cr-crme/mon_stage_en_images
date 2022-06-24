@@ -38,7 +38,7 @@ class SectionTileInStudent extends StatelessWidget {
                   color: active > 0
                       ? (answered >= active ? Colors.black : Colors.red)
                       : Colors.grey)),
-          trailing: const Icon(Icons.arrow_right),
+          trailing: const Icon(Icons.arrow_right, color: Colors.black),
           onTap: () => onTap(sectionIndex),
         ),
       ),

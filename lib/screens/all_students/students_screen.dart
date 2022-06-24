@@ -61,8 +61,9 @@ class _StudentsScreenState extends State<StudentsScreen> {
       body: Consumer<Students>(
         builder: (context, students, child) => Column(
           children: [
-            const SizedBox(height: 10),
-            const Text('Élèves', style: TextStyle(fontSize: 20)),
+            const SizedBox(height: 15),
+            Text('Élèves', style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 3),
             Expanded(
               child: ListView.builder(
                 itemBuilder: (context, index) => StudentListTile(
