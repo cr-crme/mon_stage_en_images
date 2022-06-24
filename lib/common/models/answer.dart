@@ -1,5 +1,6 @@
 import 'message.dart';
 import './question.dart';
+import '../../common/models/enum.dart';
 import '../../misc/custom_containers/item_serializable.dart';
 
 class Answer extends ItemSerializable {
@@ -45,15 +46,10 @@ class Answer extends ItemSerializable {
   final String? photoUrl;
   final List<Message> discussion;
 
-  bool get needText => question.needText;
-  bool get needPhoto => question.needPhoto;
-
-  bool get isTextAnswered => !needText || (needText && text != null);
-  bool get isPhotoAnswered => !needPhoto || (needPhoto && photoUrl != null);
-
-  bool get isAnswered {
-    return isTextAnswered && isPhotoAnswered;
-  }
+  bool get isTextAnswered => question.type == QuestionType.text && text != null;
+  bool get isPhotoAnswered =>
+      question.type == QuestionType.photo && photoUrl != null;
+  bool get isAnswered => isTextAnswered || isPhotoAnswered;
 
   void addMessage(Message message) => discussion.add(message);
 }

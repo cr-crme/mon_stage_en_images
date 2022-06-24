@@ -34,10 +34,8 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
     }
     _formKey.currentState!.save();
 
-    var question = Question(_text!,
-        needPhoto: _questionType == QuestionType.photo,
-        needText: _questionType == QuestionType.text,
-        section: widget.section);
+    var question =
+        Question(_text!, type: _questionType, section: widget.section);
 
     Navigator.pop(context, {'question': question, 'target': _target});
   }

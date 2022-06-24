@@ -120,13 +120,9 @@ class AnswerPart extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (answer == null) _QuestionTypeChooser(question: question),
-          if (isActive && question.needPhoto && answer != null) _showPhoto(),
-          if (isActive &&
-              answer != null &&
-              question.needPhoto &&
-              question.needText)
-            const SizedBox(height: 12),
-          if (isActive && answer != null && question.needText)
+          if (isActive && question.type == QuestionType.photo && answer != null)
+            _showPhoto(),
+          if (isActive && answer != null && question.type == QuestionType.text)
             _showWrittenAnswer(),
           if (isActive && answer != null) const SizedBox(height: 12),
           if (isActive && answer != null) DiscussionListView(answer: answer),

@@ -4,11 +4,10 @@ import '../../common/models/enum.dart';
 class Question extends ItemSerializable {
   // Constructors and (de)serializer
   Question(this.text,
-      {required this.needPhoto, required this.needText, required this.section});
+      {required this.type, required this.section});
   Question.fromSerialized(Map<String, dynamic> map)
       : text = map['text'],
-        needPhoto = map['needPhoto'],
-        needText = map['isWrittenRequired'],
+        type = map['type'],
         section = map['section'],
         super.fromSerialized(map);
 
@@ -21,21 +20,13 @@ class Question extends ItemSerializable {
   Map<String, dynamic> serializedMap() {
     return {
       'text': text,
-      'needPhoto': needPhoto,
-      'isWrittenRequired': needText,
+      'type': type,
       'section': section,
     };
   }
 
-  QuestionType get type => needPhoto ? QuestionType.photo : QuestionType.text;
-  set type(QuestionType value) {
-    needPhoto = value == QuestionType.photo;
-    needText = value == QuestionType.text;
-  }
-
   // Attributes and methods
   final String text;
-  bool needPhoto;
-  bool needText;
+  QuestionType type;
   final int section;
 }
