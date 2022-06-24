@@ -6,9 +6,9 @@ import './common/models/company.dart';
 import './common/models/question.dart';
 import './common/models/student.dart';
 import 'common/providers/all_questions.dart';
-import './common/providers/students.dart';
+import 'common/providers/all_students.dart';
 
-void prepareDummyData(Students students, AllQuestions questions) {
+void prepareDummyData(AllStudents students, AllQuestions questions) {
   questions
       .add(Question('Photo 1', needPhoto: true, needText: false, section: 0));
   questions

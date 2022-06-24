@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import './discussion_list_view.dart';
 import '../../../common/models/answer.dart';
 import '../../../common/models/question.dart';
+import '../../../common/providers/all_students.dart';
 import '../../../common/widgets/are_you_sure_dialog.dart';
 
 class QuestionAndAnswerTile extends StatefulWidget {
@@ -12,7 +14,6 @@ class QuestionAndAnswerTile extends StatefulWidget {
     required this.answer,
     required this.onStateChange,
     required this.isActive,
-
   }) : super(key: key);
 
   final Question question;
@@ -55,7 +56,11 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
             onTap: _expand,
           ),
           if (_isExpanded)
-            AnswerPart(widget.answer, onStateChange: onStateChange),
+            AnswerPart(
+              widget.answer,
+              onStateChange: onStateChange,
+              question: widget.question,
+            ),
         ],
       ),
     );
@@ -84,26 +89,50 @@ class AnswerPart extends StatelessWidget {
     this.answer, {
     Key? key,
     required this.onStateChange,
+    required this.question,
   }) : super(key: key);
 
   final Answer? answer;
   final Function(VoidCallback) onStateChange;
+  final Question question;
 
   @override
   Widget build(BuildContext context) {
-    var isActive = answer!.isActive;
+    late final bool isActive;
+    if (answer != null) {
+      isActive = answer!.isActive;
+    } else {
+      // Only active if active for all
+      var indexInactive = Provider.of<AllStudents>(context).indexWhere(
+        (student) {
+          if (student.allAnswers[question.id] == null) false;
+          return student.allAnswers[question.id]!.isActive;
+        },
+      );
+      isActive = indexInactive >= 0;
+    }
+
     return Container(
       padding: const EdgeInsets.only(left: 40, right: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (isActive && answer!.needPhoto) _showPhoto(),
-          if (isActive && answer!.needPhoto && answer!.needText)
+          if (isActive && question.needPhoto && answer != null) _showPhoto(),
+          if (isActive &&
+              answer != null &&
+              question.needPhoto &&
+              question.needText)
             const SizedBox(height: 12),
-          if (isActive && answer!.needText) _showWrittenAnswer(),
-          if (isActive) const SizedBox(height: 12),
-          if (isActive) DiscussionListView(answer: answer),
-          _ShowStatus(answer: answer, onStateChange: onStateChange),
+          if (isActive && answer != null && question.needText)
+            _showWrittenAnswer(),
+          if (isActive && answer != null) const SizedBox(height: 12),
+          if (isActive && answer != null) DiscussionListView(answer: answer),
+          _ShowStatus(
+            answer: answer,
+            question: question,
+            onStateChange: onStateChange,
+            initialStatus: isActive,
+          ),
         ],
       ),
     );
@@ -156,10 +185,16 @@ class AnswerPart extends StatelessWidget {
 
 class _ShowStatus extends StatefulWidget {
   const _ShowStatus(
-      {Key? key, required this.answer, required this.onStateChange})
+      {Key? key,
+      required this.answer,
+      required this.onStateChange,
+      required this.initialStatus,
+      required this.question})
       : super(key: key);
 
   final Answer? answer;
+  final Question question;
+  final bool initialStatus;
   final Function(VoidCallback) onStateChange;
 
   @override
@@ -170,6 +205,7 @@ class _ShowStatusState extends State<_ShowStatus> {
   var _isActive = false;
 
   Future<void> _toggleQuestion(value) async {
+    final students = Provider.of<AllStudents>(context, listen: false);
     final sure = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
@@ -177,7 +213,8 @@ class _ShowStatusState extends State<_ShowStatus> {
         return AreYouSureDialog(
           title: 'Confimer le choix',
           content:
-              'Voulez-vous vraiment ${value ? 'activer' : 'désactiver'} cette question?',
+              'Voulez-vous vraiment ${value ? 'activer' : 'désactiver'} cette '
+              'question${widget.answer == null ? ' pour tous' : ''}?',
         );
       },
     );
@@ -185,14 +222,20 @@ class _ShowStatusState extends State<_ShowStatus> {
     if (!sure!) return;
 
     _isActive = value;
-    widget.answer!.isActive = value;
+    if (widget.answer != null) {
+      widget.answer!.isActive = value;
+    } else {
+      for (var student in students) {
+        student.allAnswers[widget.question.id]!.isActive = value;
+      }
+    }
     setState(() {});
     widget.onStateChange(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    _isActive = widget.answer!.isActive;
+    _isActive = widget.initialStatus;
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [

@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import './dummy_data.dart';
 import './common/providers/all_questions.dart';
 import './common/providers/user.dart';
-import './common/providers/students.dart';
+import 'common/providers/all_students.dart';
 import './common/widgets/my_theme_data.dart';
 import './screens/student_info/student_screen.dart';
 import './screens/all_students/students_screen.dart';
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = User(name: 'Pariterre');
-    final students = Students();
+    final students = AllStudents();
     final questions = AllQuestions();
     prepareDummyData(students, questions);
 

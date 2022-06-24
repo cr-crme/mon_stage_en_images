@@ -28,7 +28,8 @@ class SectionPage extends StatelessWidget {
       unansweredQuestions = answers.unansweredActiveQuestions;
       inactiveQuestions = answers.inactiveQuestions;
     } else {
-      answeredQuestions = Provider.of<AllQuestions>(context);
+      answeredQuestions =
+          Provider.of<AllQuestions>(context).fromSection(sectionIndex);
       unansweredQuestions = AllQuestions();
       inactiveQuestions = AllQuestions();
     }
@@ -38,26 +39,28 @@ class SectionPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ..._buildQuestionSection(context,
-              title: 'Questions répondues',
+              title: student != null ? 'Questions répondues' : 'Questions',
               titleColor: Colors.black,
               questions: answeredQuestions,
               isActive: true,
               titleIfNone: 'Aucune question active',
               topSpacing: 15),
-          ..._buildQuestionSection(context,
-              title: 'Questions non répondues',
-              titleColor: Colors.black,
-              questions: unansweredQuestions,
-              isActive: true,
-              titleIfNone: 'Aucune question active',
-              topSpacing: 45),
-          ..._buildQuestionSection(context,
-              title: 'Questions inactives',
-              titleColor: Colors.grey,
-              questions: inactiveQuestions,
-              isActive: false,
-              titleIfNone: 'Aucune question inactive',
-              topSpacing: 45),
+          if (student != null)
+            ..._buildQuestionSection(context,
+                title: 'Questions non répondues',
+                titleColor: Colors.black,
+                questions: unansweredQuestions,
+                isActive: true,
+                titleIfNone: 'Aucune question active',
+                topSpacing: 45),
+          if (student != null)
+            ..._buildQuestionSection(context,
+                title: 'Questions inactives',
+                titleColor: Colors.grey,
+                questions: inactiveQuestions,
+                isActive: false,
+                titleIfNone: 'Aucune question inactive',
+                topSpacing: 45),
         ],
       ),
     );

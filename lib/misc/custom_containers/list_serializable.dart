@@ -57,6 +57,10 @@ abstract class ListSerializable<T> extends Iterable<T> {
     items.clear();
   }
 
+  int indexWhere(bool Function(T element) test, [int start = 0]) {
+    return items.indexWhere(test, start);
+  }
+
   int _getIndex(value) {
     if (value is int) {
       return value;

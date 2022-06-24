@@ -11,7 +11,7 @@ import '../../common/models/question.dart';
 import '../../common/models/section.dart';
 import '../../common/models/student.dart';
 import '../../common/providers/all_questions.dart';
-import '../../common/providers/students.dart';
+import '../../common/providers/all_students.dart';
 
 class StudentScreen extends StatefulWidget {
   const StudentScreen({Key? key}) : super(key: key);
@@ -56,7 +56,7 @@ class _StudentScreenState extends State<StudentScreen> {
 
   Future<void> _newQuestion(BuildContext context) async {
     final questions = Provider.of<AllQuestions>(context, listen: false);
-    final students = Provider.of<Students>(context, listen: false);
+    final students = Provider.of<AllStudents>(context, listen: false);
     final currentStudent =
         ModalRoute.of(context)!.settings.arguments as Student;
 

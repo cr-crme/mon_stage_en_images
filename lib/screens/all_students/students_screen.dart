@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import './widgets/new_student_alert_dialog.dart';
 import './widgets/student_list_tile.dart';
 import '../student_info/student_screen.dart';
-import '../../common/providers/students.dart';
+import '../../common/providers/all_students.dart';
 import '../../common/models/student.dart';
 import '../../common/widgets/are_you_sure_dialog.dart';
 
@@ -19,7 +19,7 @@ class StudentsScreen extends StatefulWidget {
 
 class _StudentsScreenState extends State<StudentsScreen> {
   Future<void> _showNewStudent() async {
-    final students = Provider.of<Students>(context, listen: false);
+    final students = Provider.of<AllStudents>(context, listen: false);
 
     final student = await showDialog<Student>(
       context: context,
@@ -34,7 +34,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
   }
 
   Future<void> _removeStudent(Student student) async {
-    final students = Provider.of<Students>(context, listen: false);
+    final students = Provider.of<AllStudents>(context, listen: false);
 
     final sure = await showDialog<bool>(
       context: context,
@@ -59,7 +59,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
       appBar: AppBar(
         title: const Text('Gestion des stages'),
       ),
-      body: Consumer<Students>(
+      body: Consumer<AllStudents>(
         builder: (context, students, child) => Column(
           children: [
             const SizedBox(height: 15),
