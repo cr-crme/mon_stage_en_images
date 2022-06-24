@@ -90,7 +90,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             MenuItem(
-                title: 'Acceuil',
+                title: 'Accueil',
                 onTap: () =>
                     Navigator.of(context).pushNamed(StudentsScreen.routeName)),
             MenuItem(
@@ -118,7 +118,7 @@ class MenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 0,
+      elevation: 1,
       child: ListTile(
         leading: Icon(
           Icons.cottage,
