@@ -64,21 +64,29 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
               _showQuestionTextInput(),
               const SizedBox(height: 25),
               const Text('Ajouter la question à :'),
-              _showAddTo(),
+              _showAddTo(context),
               const SizedBox(height: 25),
               const Text('La réponse doit être de type :'),
-              _showQuestionType(),
+              _showQuestionType(context),
             ],
           ),
         ),
       ),
       actions: <Widget>[
         TextButton(
-          child: const Text('Annuler'),
+          child: Text(
+            'Annuler',
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.secondary),
+          ),
           onPressed: () => _finalize(context, hasCancelled: true),
         ),
         TextButton(
-          child: const Text('Ajouter'),
+          child: Text('Ajouter',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.secondary)),
           onPressed: () => _finalize(context),
         ),
       ],
@@ -97,16 +105,16 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
     );
   }
 
-  Row _showAddTo() {
+  Row _showAddTo(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        addRadioButon<Target>(
+        addRadioButon<Target>(context,
             title: Text(widget.student.toString()),
             value: Target.individual,
             groupValue: _target,
             onChanged: _setTarget),
-        addRadioButon<Target>(
+        addRadioButon<Target>(context,
             title: const Text('Tous'),
             value: Target.all,
             groupValue: _target,
@@ -115,16 +123,16 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
     );
   }
 
-  Row _showQuestionType() {
+  Row _showQuestionType(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        addRadioButon<QuestionType>(
+        addRadioButon<QuestionType>(context,
             title: const Text('Texte'),
             value: QuestionType.text,
             groupValue: _questionType,
             onChanged: _setQuestionType),
-        addRadioButon<QuestionType>(
+        addRadioButon<QuestionType>(context,
             title: const Text('Photo'),
             value: QuestionType.photo,
             groupValue: _questionType,
@@ -133,7 +141,8 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
     );
   }
 
-  Flexible addRadioButon<T>({
+  Flexible addRadioButon<T>(
+    BuildContext context, {
     required title,
     required value,
     required groupValue,
@@ -145,6 +154,7 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
           groupValue: groupValue,
           onChanged: onChanged,
           value: value,
+          activeColor: Theme.of(context).colorScheme.secondary,
         ),
         title: Flexible(child: title),
         horizontalTitleGap: 0,

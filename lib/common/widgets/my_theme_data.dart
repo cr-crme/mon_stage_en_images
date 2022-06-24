@@ -5,6 +5,7 @@ ThemeData myThemeData() {
   const fontFamily = 'Urbanist';
   final colorSwatch = ColorScheme.fromSwatch(
     primarySwatch: primaryColor,
+    accentColor: Colors.amber[700],
   );
 
   const textTheme = TextTheme(

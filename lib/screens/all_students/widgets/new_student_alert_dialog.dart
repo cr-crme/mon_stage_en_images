@@ -71,11 +71,17 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
       ),
       actions: <Widget>[
         TextButton(
-          child: const Text('Annuler'),
+          child: Text('Annuler',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.secondary)),
           onPressed: () => _finalize(context, hasCancelled: true),
         ),
         TextButton(
-          child: const Text('Ajouter'),
+          child: Text('Ajouter',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.secondary)),
           onPressed: () => _finalize(context),
         ),
       ],
