@@ -4,14 +4,14 @@ import '../../../common/models/all_answers.dart';
 import '../../../common/models/company.dart';
 import '../../../common/models/student.dart';
 
-class NewStudentPage extends StatefulWidget {
-  const NewStudentPage({Key? key}) : super(key: key);
+class NewStudentAlertDialog extends StatefulWidget {
+  const NewStudentAlertDialog({Key? key}) : super(key: key);
 
   @override
-  State<NewStudentPage> createState() => _NewStudentPageState();
+  State<NewStudentAlertDialog> createState() => _NewStudentAlertDialogState();
 }
 
-class _NewStudentPageState extends State<NewStudentPage> {
+class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
   final _formKey = GlobalKey<FormState>();
   String? _firstName;
   String? _lastName;

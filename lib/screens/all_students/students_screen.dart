@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './widgets/new_student_page.dart';
+import 'widgets/new_student_alert_dialog.dart';
 import './widgets/student_list_tile.dart';
 import '../../common/providers/students.dart';
 import '../../common/models/student.dart';
@@ -24,7 +24,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return const NewStudentPage();
+        return const NewStudentAlertDialog();
       },
     );
     if (student == null) return;
