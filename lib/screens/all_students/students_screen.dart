@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import './widgets/new_student_alert_dialog.dart';
 import './widgets/student_list_tile.dart';
 import '../student_info/student_screen.dart';
+import '../../common/providers/all_questions.dart';
 import '../../common/providers/all_students.dart';
+import '../../common/models/answer.dart';
 import '../../common/models/student.dart';
 import '../../common/widgets/are_you_sure_dialog.dart';
 
@@ -20,6 +22,7 @@ class StudentsScreen extends StatefulWidget {
 class _StudentsScreenState extends State<StudentsScreen> {
   Future<void> _showNewStudent() async {
     final students = Provider.of<AllStudents>(context, listen: false);
+    final questions = Provider.of<AllQuestions>(context, listen: false);
 
     final student = await showDialog<Student>(
       context: context,
@@ -30,6 +33,11 @@ class _StudentsScreenState extends State<StudentsScreen> {
     );
     if (student == null) return;
 
+    // TODO: Find a way to remember that some specific question should be added to the new students.
+    for (final question in questions) {
+      student.allAnswers
+          .add(Answer(isActive: false, discussion: [], question: question));
+    }
     students.add(student);
   }
 
