@@ -4,7 +4,18 @@ class Section {
   final int nbSections = 6;
 
   static String letter(index) {
-    return 'MÉTIER'[index];
+    return name(index)[0];
+  }
+
+  static String name(index) {
+    return [
+      'Matières et produits',
+      'Équipements',
+      'Tâches et exigences',
+      'Individu',
+      'Environnement de travail',
+      'Ressources humaines',
+    ][index];
   }
 
   static MaterialColor color(index) {

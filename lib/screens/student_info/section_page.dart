@@ -20,7 +20,6 @@ class SectionPage extends StatelessWidget {
     final unansweredQuestions = answers.unansweredActiveQuestions;
     final inactiveQuestions = answers.inactiveQuestions;
 
-    debugPrint(unansweredQuestions.isNotEmpty.toString());
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

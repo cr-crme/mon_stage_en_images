@@ -8,6 +8,7 @@ import './widgets/new_question_alert_dialog.dart';
 import '../../common/models/answer.dart';
 import '../../common/models/enum.dart';
 import '../../common/models/question.dart';
+import '../../common/models/section.dart';
 import '../../common/models/student.dart';
 import '../../common/providers/all_questions.dart';
 import '../../common/providers/students.dart';
@@ -80,20 +81,33 @@ class _StudentScreenState extends State<StudentScreen> {
     setState(() {});
   }
 
+  AppBar _setAppBar(Student student) {
+    return AppBar(
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(student.toString()),
+          if (_currentPage > 0)
+            Text(
+              Section.name(_currentPage - 1),
+              style: const TextStyle(fontSize: 15),
+            ),
+        ],
+      ),
+      leading: BackButton(onPressed: _onBackPressed),
+      actions: [
+        IconButton(onPressed: _newQuestionCallback, icon: const Icon(Icons.add))
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final student = ModalRoute.of(context)!.settings.arguments as Student;
 
     return Consumer<AllQuestions>(builder: (context, questions, child) {
       return Scaffold(
-        appBar: AppBar(
-          title: Text(student.toString()),
-          leading: BackButton(onPressed: _onBackPressed),
-          actions: [
-            IconButton(
-                onPressed: _newQuestionCallback, icon: const Icon(Icons.add))
-          ],
-        ),
+        appBar: _setAppBar(student),
         body: Column(
           children: [
             METIERPageNavigator(
