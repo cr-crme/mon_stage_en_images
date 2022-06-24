@@ -1,4 +1,5 @@
 import '../../misc/custom_containers/item_serializable.dart';
+import '../../common/models/enum.dart';
 
 class Question extends ItemSerializable {
   // Constructors and (de)serializer
@@ -26,9 +27,15 @@ class Question extends ItemSerializable {
     };
   }
 
+  QuestionType get type => needPhoto ? QuestionType.photo : QuestionType.text;
+  set type(QuestionType value) {
+    needPhoto = value == QuestionType.photo;
+    needText = value == QuestionType.text;
+  }
+
   // Attributes and methods
   final String text;
-  final bool needPhoto;
-  final bool needText;
+  bool needPhoto;
+  bool needText;
   final int section;
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../common/models/enum.dart';
 import '../../../common/models/question.dart';
 import '../../../common/models/student.dart';
+import '../../../common/widgets/grouped_radio_button.dart';
 
 class NewQuestionAlertDialog extends StatefulWidget {
   const NewQuestionAlertDialog(
@@ -109,12 +110,12 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        addRadioButon<Target>(context,
+        GroupedRadioButton<Target>(
             title: Text(widget.student.toString()),
             value: Target.individual,
             groupValue: _target,
             onChanged: _setTarget),
-        addRadioButon<Target>(context,
+        GroupedRadioButton<Target>(
             title: const Text('Tous'),
             value: Target.all,
             groupValue: _target,
@@ -127,40 +128,17 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        addRadioButon<QuestionType>(context,
+        GroupedRadioButton<QuestionType>(
             title: const Text('Texte'),
             value: QuestionType.text,
             groupValue: _questionType,
             onChanged: _setQuestionType),
-        addRadioButon<QuestionType>(context,
+        GroupedRadioButton<QuestionType>(
             title: const Text('Photo'),
             value: QuestionType.photo,
             groupValue: _questionType,
             onChanged: _setQuestionType),
       ],
-    );
-  }
-
-  Flexible addRadioButon<T>(
-    BuildContext context, {
-    required title,
-    required value,
-    required groupValue,
-    required onChanged,
-  }) {
-    return Flexible(
-      child: ListTile(
-        leading: Radio<T>(
-          groupValue: groupValue,
-          onChanged: onChanged,
-          value: value,
-          activeColor: Theme.of(context).colorScheme.secondary,
-        ),
-        title: Flexible(child: title),
-        horizontalTitleGap: 0,
-        contentPadding: const EdgeInsets.all(0),
-        onTap: () => onChanged(value),
-      ),
     );
   }
 }

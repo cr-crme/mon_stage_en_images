@@ -3,9 +3,11 @@ import 'package:provider/provider.dart';
 
 import './discussion_list_view.dart';
 import '../../../common/models/answer.dart';
+import '../../../common/models/enum.dart';
 import '../../../common/models/question.dart';
 import '../../../common/providers/all_students.dart';
 import '../../../common/widgets/are_you_sure_dialog.dart';
+import '../../../common/widgets/grouped_radio_button.dart';
 
 class QuestionAndAnswerTile extends StatefulWidget {
   const QuestionAndAnswerTile(
@@ -117,6 +119,7 @@ class AnswerPart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (answer == null) _QuestionTypeChooser(question: question),
           if (isActive && question.needPhoto && answer != null) _showPhoto(),
           if (isActive &&
               answer != null &&
@@ -180,6 +183,51 @@ class AnswerPart extends StatelessWidget {
               ),
             )
     ]);
+  }
+}
+
+class _QuestionTypeChooser extends StatefulWidget {
+  const _QuestionTypeChooser({
+    Key? key,
+    required this.question,
+  }) : super(key: key);
+
+  final Question question;
+
+  @override
+  State<_QuestionTypeChooser> createState() => _QuestionTypeChooserState();
+}
+
+class _QuestionTypeChooserState extends State<_QuestionTypeChooser> {
+  late QuestionType _questionType = QuestionType.photo;
+
+  @override
+  Widget build(BuildContext context) {
+    _questionType = widget.question.type;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Flexible(child: Text('Le type de question est : ')),
+        GroupedRadioButton<QuestionType>(
+            title: const Text('Texte'),
+            value: QuestionType.text,
+            groupValue: _questionType,
+            onChanged: (value) => _setQuestionType(context, value)),
+        GroupedRadioButton<QuestionType>(
+            title: const Text('Photo'),
+            value: QuestionType.photo,
+            groupValue: _questionType,
+            onChanged: (value) => _setQuestionType(context, value)),
+      ],
+    );
+  }
+
+  void _setQuestionType(BuildContext context, value) async {
+    widget.question.type = value;
+
+    _questionType = value;
+    setState(() {});
   }
 }
 
