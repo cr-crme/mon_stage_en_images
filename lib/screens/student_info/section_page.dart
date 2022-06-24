@@ -16,28 +16,56 @@ class SectionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final answers = student.allAnswers.fromSection(sectionIndex);
-    final activeQuestions = answers.activeQuestions;
+    final answeredQuestions = answers.answeredActiveQuestions;
+    final unansweredQuestions = answers.unansweredActiveQuestions;
     final inactiveQuestions = answers.inactiveQuestions;
 
+    debugPrint(unansweredQuestions.isNotEmpty.toString());
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
             padding: const EdgeInsets.only(left: 5, top: 10),
-            child:
-                const Text('Questions actives', style: TextStyle(fontSize: 20)),
+            child: const Text('Questions répondues',
+                style: TextStyle(fontSize: 20)),
           ),
-          activeQuestions.isNotEmpty
+          answeredQuestions.isNotEmpty
               ? ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemBuilder: (context, index) => QuestionAndAnswerTile(
-                    activeQuestions[index],
-                    answer: student.allAnswers[activeQuestions[index].id],
+                    answeredQuestions[index],
+                    answer: student.allAnswers[answeredQuestions[index].id],
                     onStateChange: onStateChange,
+                    isActive: true,
                   ),
-                  itemCount: activeQuestions.length,
+                  itemCount: answeredQuestions.length,
+                )
+              : Container(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: const Text(
+                    'Aucune question active',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ),
+          Container(
+            padding: const EdgeInsets.only(left: 5, top: 45),
+            child: const Text('Questions non répondues',
+                style: TextStyle(fontSize: 20)),
+          ),
+          unansweredQuestions.isNotEmpty
+              ? ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) => QuestionAndAnswerTile(
+                    unansweredQuestions[index],
+                    answer: student.allAnswers[unansweredQuestions[index].id],
+                    onStateChange: onStateChange,
+                    isActive: true,
+                  ),
+                  itemCount: unansweredQuestions.length,
                 )
               : Container(
                   padding: const EdgeInsets.only(top: 10),
@@ -60,6 +88,7 @@ class SectionPage extends StatelessWidget {
                     inactiveQuestions[index],
                     answer: student.allAnswers[inactiveQuestions[index].id],
                     onStateChange: onStateChange,
+                    isActive: false,
                   ),
                   itemCount: inactiveQuestions.length,
                 )

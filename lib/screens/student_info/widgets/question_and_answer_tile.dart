@@ -11,11 +11,14 @@ class QuestionAndAnswerTile extends StatefulWidget {
     Key? key,
     required this.answer,
     required this.onStateChange,
+    required this.isActive,
+
   }) : super(key: key);
 
   final Question question;
   final Answer? answer;
   final Function(VoidCallback) onStateChange;
+  final bool isActive;
 
   @override
   State<QuestionAndAnswerTile> createState() => _QuestionAndAnswerTileState();
@@ -38,7 +41,6 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
 
   @override
   Widget build(BuildContext context) {
-    var isQuestionActive = widget.answer != null && widget.answer!.isActive;
     return Card(
       elevation: 5,
       child: Column(
@@ -46,7 +48,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
           ListTile(
             title: QuestionPart(
               question: widget.question,
-              isActive: isQuestionActive,
+              isActive: widget.isActive,
             ),
             trailing:
                 Icon(_isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
