@@ -6,10 +6,12 @@ import './section_page.dart';
 import './widgets/metier_page_navigator.dart';
 import './widgets/new_question_alert_dialog.dart';
 import '../../common/models/question.dart';
+import '../../common/models/enum.dart';
 import '../../common/models/section.dart';
 import '../../common/models/student.dart';
 import '../../common/providers/all_students.dart';
 import '../../common/providers/all_questions.dart';
+import '../../common/providers/login_information.dart';
 
 class StudentScreen extends StatefulWidget {
   const StudentScreen({Key? key}) : super(key: key);
@@ -71,7 +73,7 @@ class _StudentScreenState extends State<StudentScreen> {
     setState(() {});
   }
 
-  AppBar _setAppBar(Student? student) {
+  AppBar _setAppBar(bool userIsStudent, Student? student) {
     return AppBar(
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,20 +89,26 @@ class _StudentScreenState extends State<StudentScreen> {
             ),
         ],
       ),
-      leading: BackButton(onPressed: _onBackPressed),
-      actions: [
-        IconButton(onPressed: _newQuestionCallback, icon: const Icon(Icons.add))
-      ],
+      leading: userIsStudent ? null : BackButton(onPressed: _onBackPressed),
+      actions: userIsStudent
+          ? null
+          : [
+              IconButton(
+                  onPressed: _newQuestionCallback, icon: const Icon(Icons.add))
+            ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final userIsStudent =
+        Provider.of<LoginInformation>(context, listen: false).loginType ==
+            LoginType.student;
     var student = ModalRoute.of(context)!.settings.arguments as Student?;
 
     return Consumer<AllQuestions>(builder: (context, questions, child) {
       return Scaffold(
-        appBar: _setAppBar(student),
+        appBar: _setAppBar(userIsStudent, student),
         body: Column(
           children: [
             METIERPageNavigator(

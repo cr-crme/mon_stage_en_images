@@ -17,8 +17,9 @@ class StudentListTile extends StatelessWidget {
       elevation: 5,
       child: ListTile(
         title: Text(student.toString()),
-        subtitle: Text(
-            'Questions répondues : ${student.allAnswers.numberAnswered} / ${student.allAnswers.numberActive}'),
+        subtitle:
+            Text('Questions répondues : ${student.allAnswers.numberAnswered} '
+                '/ ${student.allAnswers.numberActive}'),
         trailing: IconButton(
           icon: const Icon(
             Icons.delete,

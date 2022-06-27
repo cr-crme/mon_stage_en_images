@@ -5,7 +5,7 @@ import './dummy_data.dart';
 import './common/providers/all_questions.dart';
 import './common/providers/user.dart';
 import './common/providers/all_students.dart';
-import './common/providers/theme_provider.dart';
+import 'common/providers/login_information.dart';
 import './screens/all_students/students_screen.dart';
 import './screens/student_info/student_screen.dart';
 import './screens/login/login_screen.dart';
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = ThemeProvider();
+    final loginInformation = LoginInformation();
     final user = User(name: 'Pariterre');
     final students = AllStudents();
     final questions = AllQuestions();
@@ -27,12 +27,12 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => theme),
+        ChangeNotifierProvider(create: (context) => loginInformation),
         ChangeNotifierProvider(create: (context) => user),
         ChangeNotifierProvider(create: (context) => students),
         ChangeNotifierProvider(create: (context) => questions),
       ],
-      child: Consumer<ThemeProvider>(builder: (context, theme, child) {
+      child: Consumer<LoginInformation>(builder: (context, theme, child) {
         return MaterialApp(
           theme: theme.themeData,
           initialRoute: LoginScreen.routeName,

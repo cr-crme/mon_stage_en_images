@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../common/models/enum.dart';
 import '../../../common/models/student.dart';
 import '../../../common/providers/all_students.dart';
+import '../../../common/providers/login_information.dart';
 
 class CompanyTile extends StatefulWidget {
   const CompanyTile({Key? key, required this.studentId}) : super(key: key);
@@ -43,6 +45,9 @@ class _CompanyTileState extends State<CompanyTile> {
 
   @override
   Widget build(BuildContext context) {
+    final userIsStudent =
+        Provider.of<LoginInformation>(context, listen: false).loginType ==
+            LoginType.student;
     return widget.studentId == null
         ? Container()
         : ListTile(
@@ -61,15 +66,17 @@ class _CompanyTileState extends State<CompanyTile> {
                     : Text(student.company.toString());
               },
             ),
-            trailing: _isModifyingCompany
-                ? IconButton(
-                    icon: const Icon(Icons.save),
-                    onPressed: _saveCompany,
-                  )
-                : IconButton(
-                    icon: const Icon(Icons.mode),
-                    onPressed: _modifyCompany,
-                  ),
+            trailing: userIsStudent
+                ? null
+                : _isModifyingCompany
+                    ? IconButton(
+                        icon: const Icon(Icons.save),
+                        onPressed: _saveCompany,
+                      )
+                    : IconButton(
+                        icon: const Icon(Icons.mode),
+                        onPressed: _modifyCompany,
+                      ),
           );
   }
 }

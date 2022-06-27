@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../all_students/students_screen.dart';
+import '../student_info/student_screen.dart';
 import '../../common/models/enum.dart';
 import '../../common/models/exceptions.dart';
-import '../../common/providers/theme_provider.dart';
+import '../../common/models/themes.dart';
+import '../../common/providers/all_students.dart';
+import '../../common/providers/login_information.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -12,15 +15,17 @@ class LoginScreen extends StatelessWidget {
   static const routeName = '/login-screen';
 
   void _proceedToNextScreen(BuildContext context, LoginType loginType) {
-    final theme = Provider.of<ThemeProvider>(context, listen: false);
+    final theme = Provider.of<LoginInformation>(context, listen: false);
 
     switch (loginType) {
       case LoginType.student:
-        theme.changeTheme(LoginType.student);
-        Navigator.of(context).pushReplacementNamed(StudentsScreen.routeName);
+        final students = Provider.of<AllStudents>(context, listen: false);
+        theme.selectLoginType(LoginType.student);
+        Navigator.of(context).pushReplacementNamed(StudentScreen.routeName,
+            arguments: students[0]);
         break;
       case LoginType.teacher:
-        theme.changeTheme(LoginType.teacher);
+        theme.selectLoginType(LoginType.teacher);
         Navigator.of(context).pushReplacementNamed(StudentsScreen.routeName);
         break;
       default:

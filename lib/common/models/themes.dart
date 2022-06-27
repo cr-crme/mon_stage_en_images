@@ -1,28 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../models/enum.dart';
-import '../models/exceptions.dart';
-
-class ThemeProvider with ChangeNotifier {
-  LoginType loginType = LoginType.teacher;
-
-  void changeTheme(LoginType theme) {
-    loginType = theme;
-    notifyListeners();
-  }
-
-  ThemeData get themeData {
-    switch (loginType) {
-      case LoginType.student:
-        return studentTheme();
-      case LoginType.teacher:
-        return teacherTheme();
-      default:
-        throw const NotImplemented('This theme is not implemented yet');
-    }
-  }
-}
-
 ThemeData teacherTheme() {
   const primaryColor = Colors.amber;
   const fontFamily = 'Urbanist';
