@@ -19,7 +19,7 @@ class SectionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final allStudents = Provider.of<AllStudents>(context);
+    final allStudents = Provider.of<AllStudents>(context, listen: false);
     late Student? student;
 
     late final AllAnswers? answers;
@@ -27,8 +27,8 @@ class SectionPage extends StatelessWidget {
     late final AllQuestions? unansweredQuestions;
     late final AllQuestions? inactiveQuestions;
     if (studentId != null) {
-      final questions =
-          Provider.of<AllQuestions>(context).fromSection(sectionIndex);
+      final questions = Provider.of<AllQuestions>(context, listen: false)
+          .fromSection(sectionIndex);
       student = allStudents[studentId];
       answers = student.allAnswers.fromQuestions(questions);
       answeredQuestions = answers.answeredActiveQuestions(questions);
@@ -36,8 +36,8 @@ class SectionPage extends StatelessWidget {
       inactiveQuestions = answers.inactiveQuestions(questions);
     } else {
       student = null;
-      answeredQuestions =
-          Provider.of<AllQuestions>(context).fromSection(sectionIndex);
+      answeredQuestions = Provider.of<AllQuestions>(context, listen: false)
+          .fromSection(sectionIndex);
       unansweredQuestions = AllQuestions();
       inactiveQuestions = AllQuestions();
     }

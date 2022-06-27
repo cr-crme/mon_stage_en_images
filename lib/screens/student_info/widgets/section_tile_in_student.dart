@@ -17,8 +17,8 @@ class SectionTileInStudent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final questions =
-        Provider.of<AllQuestions>(context).fromSection(sectionIndex);
+    final questions = Provider.of<AllQuestions>(context, listen: false)
+        .fromSection(sectionIndex);
 
     late final AllAnswers? answers;
     late final int? answered;

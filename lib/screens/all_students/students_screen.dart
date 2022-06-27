@@ -98,7 +98,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             MenuItem(
-                title: 'Accueil',
+                title: 'Élèves',
                 onTap: () =>
                     Navigator.of(context).pushNamed(StudentsScreen.routeName)),
             MenuItem(
