@@ -32,16 +32,34 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(children: [
-          ElevatedButton(
-            onPressed: () => _proceedToNextScreen(context, LoginType.student),
-            child: const Text('coucou'),
-          )
-        ]),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('Se connecter en tant que...'),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () =>
+                      _proceedToNextScreen(context, LoginType.student),
+                  style: ElevatedButton.styleFrom(
+                      primary: studentTheme().colorScheme.primary),
+                  child: const Text('Élève'),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      primary: teacherTheme().colorScheme.primary),
+                  onPressed: () =>
+                      _proceedToNextScreen(context, LoginType.teacher),
+                  child: const Text('Enseignant'),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        Navigator.of(context).pushReplacementNamed(StudentsScreen.routeName);
-      }),
     );
   }
 }
