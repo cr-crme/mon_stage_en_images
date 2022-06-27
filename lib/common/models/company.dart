@@ -1,11 +1,11 @@
 class Company {
-  Company({required name}) : _name = name;
-
-  String? _name;
-  String get name => _name == null ? '' : _name!;
-  set name(String name) {
-    _name = name;
+  Company({required this.name});
+  Company copyWith({name}) {
+    name ??= this.name;
+    return Company(name: name);
   }
+
+  final String name;
 
   @override
   String toString() => name.toString();

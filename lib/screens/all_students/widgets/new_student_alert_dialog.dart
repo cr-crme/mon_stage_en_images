@@ -32,7 +32,7 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
       firstName: _firstName!,
       lastName: _lastName!,
       allAnswers: AllAnswers(),
-      company: Company(name: _companyName),
+      company: Company(name: _companyName ?? ''),
     );
     Navigator.pop(context, student);
   }

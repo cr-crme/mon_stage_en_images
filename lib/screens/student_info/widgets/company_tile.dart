@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../common/models/student.dart';
+import '../../../common/providers/all_students.dart';
 
 class CompanyTile extends StatefulWidget {
-  const CompanyTile({Key? key, required this.student}) : super(key: key);
+  const CompanyTile({Key? key, required this.studentId}) : super(key: key);
 
-  final Student? student;
+  final String? studentId;
 
   @override
   State<CompanyTile> createState() => _CompanyTileState();
@@ -16,7 +18,7 @@ class _CompanyTileState extends State<CompanyTile> {
 
   var _isModifyingCompany = false;
 
-  var _newCompanyName = "";
+  var _newCompanyName = '';
 
   void _modifyCompany() {
     _isModifyingCompany = true;
@@ -27,30 +29,38 @@ class _CompanyTileState extends State<CompanyTile> {
   void _saveCompany() {
     _isModifyingCompany = false;
 
-    setState(() {});
-
     _formKeyModifyCompany.currentState!.save();
-    if (_newCompanyName == "") return;
+    if (_newCompanyName == '') return;
 
+    final allStudents = Provider.of<AllStudents>(context, listen: false);
     final student = ModalRoute.of(context)!.settings.arguments as Student;
-    student.company.name = _newCompanyName;
+    final newCompany = student.company.copyWith(name: _newCompanyName);
+    final newStudent = student.copyWith(company: newCompany);
+    allStudents.replace(newStudent);
+
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return widget.student == null
+    return widget.studentId == null
         ? Container()
         : ListTile(
             title: const Text('Nom de l\'entreprise :'),
-            subtitle: _isModifyingCompany
-                ? Form(
-                    key: _formKeyModifyCompany,
-                    child: TextFormField(
-                      initialValue: widget.student!.company.toString(),
-                      onSaved: (value) => _newCompanyName = value as String,
-                    ),
-                  )
-                : Text(widget.student!.company.toString()),
+            subtitle: Consumer<AllStudents>(
+              builder: (context, students, child) {
+                final student = students[widget.studentId];
+                return _isModifyingCompany
+                    ? Form(
+                        key: _formKeyModifyCompany,
+                        child: TextFormField(
+                          initialValue: student.company.toString(),
+                          onSaved: (value) => _newCompanyName = value as String,
+                        ),
+                      )
+                    : Text(student.company.toString());
+              },
+            ),
             trailing: _isModifyingCompany
                 ? IconButton(
                     icon: const Icon(Icons.save),

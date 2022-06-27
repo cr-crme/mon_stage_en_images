@@ -45,6 +45,10 @@ abstract class ListSerializable<T> extends Iterable<T> {
     items.add(item);
   }
 
+  void replace(T item, {bool notify = true}) {
+    items[_getIndex((item as ItemSerializable).id)] = item;
+  }
+
   T operator [](value) {
     return items[_getIndex(value)];
   }

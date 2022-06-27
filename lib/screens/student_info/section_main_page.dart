@@ -28,7 +28,7 @@ class SectionMainPage extends StatelessWidget {
               if (student != null)
                 Text('Informations générales',
                     style: Theme.of(context).textTheme.titleLarge),
-              if (student != null) CompanyTile(student: student),
+              if (student != null) CompanyTile(studentId: student!.id),
               if (student != null) const SizedBox(height: 20),
               if (student != null)
                 Text('Résumé des réponses',
