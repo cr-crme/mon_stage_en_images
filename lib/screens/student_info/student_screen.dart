@@ -5,6 +5,7 @@ import './section_main_page.dart';
 import './section_page.dart';
 import './widgets/metier_page_navigator.dart';
 import './widgets/new_question_alert_dialog.dart';
+import '../../common/widgets/main_drawer.dart';
 import '../../common/models/question.dart';
 import '../../common/models/enum.dart';
 import '../../common/models/section.dart';
@@ -138,6 +139,7 @@ class _StudentScreenState extends State<StudentScreen> {
             ),
           ],
         ),
+        drawer: userIsStudent ? MainDrawer(student: student) : null,
       );
     });
   }
