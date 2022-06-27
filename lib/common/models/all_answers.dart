@@ -1,14 +1,14 @@
 import './answer.dart';
 
+import './enum.dart';
 import '../providers/all_questions.dart';
 import '../../misc/custom_containers/map_serializable.dart';
 
 class AllAnswers extends MapSerializable<Answer> {
   // Constructors and (de)serializer
-  AllAnswers({AllQuestions? questions}) : super() {
-    if (questions == null) return;
+  AllAnswers({required AllQuestions questions}) : super() {
     for (var question in questions) {
-      add(Answer(isActive: false, question: question, discussion: []));
+      this[question] = Answer(isActive: false, discussion: []);
     }
   }
   AllAnswers.fromSerialized(map) : super.fromSerialized(map);
@@ -31,80 +31,88 @@ class AllAnswers extends MapSerializable<Answer> {
   int get numberAnswered {
     int answered = 0;
     forEach((answer) {
-      if (answer.value.isActive && answer.value.isAnswered) answered++;
+      if (answer.value.isActive && answer.value.isAnswered(QuestionType.any)) {
+        answered++;
+      }
     });
     return answered;
   }
 
-  AllQuestions get activeQuestions {
+  AllAnswers fromQuestions(AllQuestions questions) {
+    var out = AllAnswers(questions: AllQuestions());
+    for (var question in questions) {
+      out[question] = this[question]!;
+    }
+    return out;
+  }
+
+  AllQuestions activeQuestions(AllQuestions questions) {
     var out = AllQuestions();
-    forEach((answer) {
-      if (answer.value.isActive) out.add(answer.value.question);
-    });
+    for (var question in questions) {
+      if (this[question]!.isActive) out.add(question);
+    }
     return out;
   }
 
-  AllAnswers get activeAnswers {
-    var out = AllAnswers();
-    forEach((answer) {
-      if (answer.value.isActive) out.add(answer.value);
-    });
+  AllAnswers activeAnswers(AllQuestions questions) {
+    var out = AllAnswers(questions: AllQuestions());
+    for (var question in questions) {
+      final answer = this[question]!;
+      if (answer.isActive) out[question] = answer;
+    }
     return out;
   }
 
-  AllQuestions get answeredActiveQuestions {
+  AllQuestions answeredActiveQuestions(AllQuestions questions) {
     var out = AllQuestions();
-    forEach((answer) {
-      if (answer.value.isActive && answer.value.isAnswered) {
-        out.add(answer.value.question);
+    for (var question in questions) {
+      final answer = this[question]!;
+      if (answer.isActive && answer.isAnswered(QuestionType.any)) {
+        out.add(question);
       }
-    });
+    }
     return out;
   }
 
-  AllQuestions get unansweredActiveQuestions {
+  AllQuestions unansweredActiveQuestions(AllQuestions questions) {
     var out = AllQuestions();
-    forEach((answer) {
-      if (answer.value.isActive && !answer.value.isAnswered) {
-        out.add(answer.value.question);
+    for (var question in questions) {
+      final answer = this[question]!;
+      if (answer.isActive && !answer.isAnswered(QuestionType.any)) {
+        out.add(question);
       }
-    });
+    }
     return out;
   }
 
-  AllAnswers get answeredActiveAnswers {
-    var out = AllAnswers();
-    forEach((answer) {
-      if (answer.value.isActive && answer.value.isAnswered) {
-        out.add(answer.value);
+  AllAnswers answeredActiveAnswers(AllQuestions questions) {
+    var out = AllAnswers(questions: AllQuestions());
+    for (var question in questions) {
+      final answer = this[question]!;
+      if (answer.isActive && answer.isAnswered(QuestionType.any)) {
+        out[question] = answer;
       }
-    });
+    }
     return out;
   }
 
-  AllAnswers get unansweredActiveAnswers {
-    var out = AllAnswers();
-    forEach((answer) {
-      if (answer.value.isActive && !answer.value.isAnswered) {
-        out.add(answer.value);
+  AllAnswers unansweredActiveAnswers(AllQuestions questions) {
+    var out = AllAnswers(questions: AllQuestions());
+    for (var question in questions) {
+      final answer = this[question]!;
+      if (answer.isActive && !answer.isAnswered(QuestionType.any)) {
+        out[question] = answer;
       }
-    });
+    }
     return out;
   }
 
-  AllQuestions get inactiveQuestions {
+  AllQuestions inactiveQuestions(AllQuestions questions) {
     var out = AllQuestions();
-    forEach((answer) {
-      if (!answer.value.isActive) out.add(answer.value.question);
-    });
-    return out;
-  }
-
-  AllAnswers fromSection(index) {
-    final AllAnswers out = AllAnswers();
-    forEach((answer) {
-      if (answer.value.question.section == index) out.add(answer.value);
-    });
+    for (var question in questions) {
+      final answer = this[question]!;
+      if (!answer.isActive) out.add(question);
+    }
     return out;
   }
 }

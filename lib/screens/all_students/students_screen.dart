@@ -35,8 +35,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
 
     // TODO: Find a way to remember that some specific question should be added to the new students.
     for (final question in questions) {
-      student.allAnswers
-          .add(Answer(isActive: false, discussion: [], question: question));
+      student.allAnswers[question] = Answer(isActive: false, discussion: []);
     }
     students.add(student);
   }

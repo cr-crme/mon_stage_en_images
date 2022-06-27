@@ -34,10 +34,10 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
     }
     _formKey.currentState!.save();
 
-    var question =
-        Question(_text!, type: _questionType, section: widget.section);
+    var question = Question(_text!,
+        type: _questionType, section: widget.section, defaultTarget: _target);
 
-    Navigator.pop(context, {'question': question, 'target': _target});
+    Navigator.pop(context, question);
   }
 
   void _setTarget(value) {

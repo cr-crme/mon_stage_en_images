@@ -5,29 +5,37 @@ import './widgets/question_and_answer_tile.dart';
 import '../../common/models/all_answers.dart';
 import '../../common/models/student.dart';
 import '../../common/providers/all_questions.dart';
+import '../../common/providers/all_students.dart';
 
 class SectionPage extends StatelessWidget {
   const SectionPage(this.sectionIndex,
-      {Key? key, required this.student, required this.onStateChange})
+      {Key? key, required this.studentId, required this.onStateChange})
       : super(key: key);
 
   static const routeName = '/section-screen';
   final int sectionIndex;
-  final Student? student;
+  final String? studentId;
   final Function(VoidCallback) onStateChange;
 
   @override
   Widget build(BuildContext context) {
+    final allStudents = Provider.of<AllStudents>(context);
+    late Student? student;
+
     late final AllAnswers? answers;
     late final AllQuestions? answeredQuestions;
     late final AllQuestions? unansweredQuestions;
     late final AllQuestions? inactiveQuestions;
-    if (student != null) {
-      answers = student!.allAnswers.fromSection(sectionIndex);
-      answeredQuestions = answers.answeredActiveQuestions;
-      unansweredQuestions = answers.unansweredActiveQuestions;
-      inactiveQuestions = answers.inactiveQuestions;
+    if (studentId != null) {
+      final questions =
+          Provider.of<AllQuestions>(context).fromSection(sectionIndex);
+      student = allStudents[studentId];
+      answers = student.allAnswers.fromQuestions(questions);
+      answeredQuestions = answers.answeredActiveQuestions(questions);
+      unansweredQuestions = answers.unansweredActiveQuestions(questions);
+      inactiveQuestions = answers.inactiveQuestions(questions);
     } else {
+      student = null;
       answeredQuestions =
           Provider.of<AllQuestions>(context).fromSection(sectionIndex);
       unansweredQuestions = AllQuestions();
@@ -90,7 +98,7 @@ class SectionPage extends StatelessWidget {
               shrinkWrap: true,
               itemBuilder: (context, index) => QuestionAndAnswerTile(
                 questions[index],
-                student: student,
+                studentId: studentId,
                 onStateChange: onStateChange,
                 isActive: isActive,
               ),

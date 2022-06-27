@@ -49,6 +49,15 @@ abstract class ListSerializable<T> extends Iterable<T> {
     items[_getIndex(item)] = item;
   }
 
+  @override
+  bool contains(Object? element) {
+    if (element is String) {
+      return items.any((item) => (item as ItemSerializable).id == element);
+    } else {
+      return items.contains(element);
+    }
+  }
+
   operator []=(value, T item) {
     items[_getIndex(value)] = item;
   }

@@ -1,8 +1,10 @@
-import 'package:defi_photo/common/models/all_answers.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../common/models/all_answers.dart';
 import '../../../common/models/section.dart';
 import '../../../common/models/student.dart';
+import '../../../common/providers/all_questions.dart';
 
 class SectionTileInStudent extends StatelessWidget {
   const SectionTileInStudent(this.sectionIndex,
@@ -15,11 +17,14 @@ class SectionTileInStudent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final questions =
+        Provider.of<AllQuestions>(context).fromSection(sectionIndex);
+
     late final AllAnswers? answers;
     late final int? answered;
     late final int? active;
     if (student != null) {
-      answers = student!.allAnswers.fromSection(sectionIndex);
+      answers = student!.allAnswers.fromQuestions(questions);
       answered = answers.numberAnswered;
       active = answers.numberActive;
     } else {

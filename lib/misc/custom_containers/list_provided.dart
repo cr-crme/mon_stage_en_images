@@ -10,6 +10,7 @@ abstract class ListProvided<T> extends ListSerializable<T> with ChangeNotifier {
   @override
   void add(T item, {bool notify = true}) {
     super.add(item);
+
     if (notify) notifyListeners();
   }
 

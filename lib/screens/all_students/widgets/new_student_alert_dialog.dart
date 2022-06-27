@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../common/models/all_answers.dart';
 import '../../../common/models/company.dart';
 import '../../../common/models/student.dart';
+import '../../../common/providers/all_questions.dart';
 
 class NewStudentAlertDialog extends StatefulWidget {
   const NewStudentAlertDialog({Key? key}) : super(key: key);
@@ -18,6 +20,8 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
   String? _companyName;
 
   void _finalize(BuildContext context, {bool hasCancelled = false}) {
+    final questions = Provider.of<AllQuestions>(context, listen: false);
+
     if (hasCancelled) {
       Navigator.pop(context);
       return;
@@ -31,7 +35,7 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
     var student = Student(
       firstName: _firstName!,
       lastName: _lastName!,
-      allAnswers: AllAnswers(),
+      allAnswers: AllAnswers(questions: questions),
       company: Company(name: _companyName ?? ''),
     );
     Navigator.pop(context, student);

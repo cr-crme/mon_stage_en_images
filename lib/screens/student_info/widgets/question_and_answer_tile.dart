@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import './discussion_list_view.dart';
-import '../../../common/models/answer.dart';
 import '../../../common/models/enum.dart';
 import '../../../common/models/question.dart';
-import '../../../common/models/student.dart';
 import '../../../common/providers/all_questions.dart';
 import '../../../common/providers/all_students.dart';
 import '../../../common/widgets/are_you_sure_dialog.dart';
@@ -15,12 +13,12 @@ class QuestionAndAnswerTile extends StatefulWidget {
   const QuestionAndAnswerTile(
     this.question, {
     Key? key,
-    required this.student,
+    required this.studentId,
     required this.onStateChange,
     required this.isActive,
   }) : super(key: key);
 
-  final Student? student;
+  final String? studentId;
   final Question question;
   final Function(VoidCallback) onStateChange;
   final bool isActive;
@@ -61,10 +59,9 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
           ),
           if (_isExpanded)
             AnswerPart(
-              widget.student?.allAnswers[widget.question],
+              widget.question,
               onStateChange: onStateChange,
-              student: widget.student,
-              question: widget.question,
+              studentId: widget.studentId,
             ),
         ],
       ),
@@ -90,33 +87,32 @@ class QuestionPart extends StatelessWidget {
 }
 
 class AnswerPart extends StatelessWidget {
-  const AnswerPart(
-    this.answer, {
-    Key? key,
-    required this.onStateChange,
-    required this.student,
-    required this.question,
-  }) : super(key: key);
+  const AnswerPart(this.question,
+      {Key? key, required this.onStateChange, required this.studentId})
+      : super(key: key);
 
-  final Student? student;
-  final Answer? answer;
+  final String? studentId;
   final Function(VoidCallback) onStateChange;
   final Question question;
 
   @override
   Widget build(BuildContext context) {
+    final students = Provider.of<AllStudents>(context, listen: false);
+    final student = studentId == null ? null : students[studentId];
+    final answer = student == null ? null : student.allAnswers[question];
+
     late final bool isActive;
     if (answer != null) {
-      isActive = answer!.isActive;
+      isActive = answer.isActive;
     } else {
       // Only active if active for all
-      var indexInactive = Provider.of<AllStudents>(context).indexWhere(
+      var indexInactive = students.indexWhere(
         (s) {
-          if (s.allAnswers[question] == null) false;
-          return s.allAnswers[question]!.isActive;
+          final answer = s.allAnswers[question];
+          return answer == null ? false : !answer.isActive;
         },
       );
-      isActive = indexInactive >= 0;
+      isActive = indexInactive < 0;
     }
 
     return Container(
@@ -124,16 +120,19 @@ class AnswerPart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (answer == null) _QuestionTypeChooser(question: question),
-          if (isActive && question.type == QuestionType.photo && answer != null)
-            _showPhoto(),
-          if (isActive && answer != null && question.type == QuestionType.text)
-            _showWrittenAnswer(),
-          if (isActive && answer != null) const SizedBox(height: 12),
-          if (isActive && answer != null) DiscussionListView(answer: answer),
+          if (studentId == null) _QuestionTypeChooser(question: question),
+          if (isActive &&
+              question.type == QuestionType.photo &&
+              studentId != null)
+            _showPhoto(answer),
+          if (isActive &&
+              studentId != null &&
+              question.type == QuestionType.text)
+            _showWrittenAnswer(answer),
+          if (isActive && studentId != null) const SizedBox(height: 12),
+          if (isActive && studentId != null) DiscussionListView(answer: answer),
           _ShowStatus(
-            student: student,
-            answer: answer,
+            studentId: studentId,
             question: question,
             onStateChange: onStateChange,
             initialStatus: isActive,
@@ -143,7 +142,7 @@ class AnswerPart extends StatelessWidget {
     );
   }
 
-  Widget _showPhoto() {
+  Widget _showPhoto(answer) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -170,7 +169,7 @@ class AnswerPart extends StatelessWidget {
     );
   }
 
-  Widget _showWrittenAnswer() {
+  Widget _showWrittenAnswer(answer) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const Text('Réponse écrite : ', style: TextStyle(color: Colors.grey)),
       const SizedBox(height: 4),
@@ -212,32 +211,24 @@ class _QuestionTypeChooserState extends State<_QuestionTypeChooser> {
       children: [
         const Flexible(child: Text('Le type de question est : ')),
         GroupedRadioButton<QuestionType>(
-            title: const Text('Texte'),
-            value: QuestionType.text,
-            groupValue: _questionType,
-            onChanged: (value) => _setQuestionType(context, value)),
+          title: const Text('Texte'),
+          value: QuestionType.text,
+          groupValue: _questionType,
+          onChanged: (value) => _setQuestionType(context, value),
+        ),
         GroupedRadioButton<QuestionType>(
-            title: const Text('Photo'),
-            value: QuestionType.photo,
-            groupValue: _questionType,
-            onChanged: (value) => _setQuestionType(context, value)),
+          title: const Text('Photo'),
+          value: QuestionType.photo,
+          groupValue: _questionType,
+          onChanged: (value) => _setQuestionType(context, value),
+        ),
       ],
     );
   }
 
   void _setQuestionType(BuildContext context, value) async {
     final questions = Provider.of<AllQuestions>(context, listen: false);
-    final students = Provider.of<AllStudents>(context, listen: false);
-
-    final newQuestion = widget.question.copyWith(type: value);
-
-    questions[widget.question] = newQuestion;
-
-    for (var student in students) {
-      final answer =
-          student.allAnswers[widget.question]!.copyWith(question: newQuestion);
-      student.allAnswers.replace(answer);
-    }
+    questions[widget.question] = widget.question.copyWith(type: value);
 
     _questionType = value;
     setState(() {});
@@ -247,15 +238,13 @@ class _QuestionTypeChooserState extends State<_QuestionTypeChooser> {
 class _ShowStatus extends StatefulWidget {
   const _ShowStatus(
       {Key? key,
-      required this.student,
-      required this.answer,
+      required this.studentId,
       required this.onStateChange,
       required this.initialStatus,
       required this.question})
       : super(key: key);
 
-  final Student? student;
-  final Answer? answer;
+  final String? studentId;
   final Question question;
   final bool initialStatus;
   final Function(VoidCallback) onStateChange;
@@ -269,6 +258,9 @@ class _ShowStatusState extends State<_ShowStatus> {
 
   Future<void> _toggleQuestion(value) async {
     final students = Provider.of<AllStudents>(context, listen: false);
+    final student =
+        widget.studentId == null ? null : students[widget.studentId];
+
     final sure = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
@@ -277,7 +269,7 @@ class _ShowStatusState extends State<_ShowStatus> {
           title: 'Confimer le choix',
           content:
               'Voulez-vous vraiment ${value ? 'activer' : 'désactiver'} cette '
-              'question${widget.student == null ? ' pour tous' : ''}?',
+              'question${widget.studentId == null ? ' pour tous' : ''}?',
         );
       },
     );
@@ -285,14 +277,13 @@ class _ShowStatusState extends State<_ShowStatus> {
     if (!sure!) return;
 
     _isActive = value;
-    if (widget.student != null) {
-      widget.student!.allAnswers
-          .replace(widget.answer!.copyWith(isActive: value));
+    if (student != null) {
+      student.allAnswers[widget.question] =
+          student.allAnswers[widget.question]!.copyWith(isActive: value);
     } else {
       for (var student in students) {
-        final answer =
+        student.allAnswers[widget.question] =
             student.allAnswers[widget.question]!.copyWith(isActive: value);
-        student.allAnswers.replace(answer);
       }
     }
     setState(() {});
@@ -309,7 +300,8 @@ class _ShowStatusState extends State<_ShowStatus> {
           child: Text(
             _isActive
                 ? 'Désactiver la question pour tous'
-                : 'Activer la question pour cet élève',
+                : 'Activer la question '
+                    '${widget.studentId == null ? 'pour tous' : 'pour cet élève'}',
             style: const TextStyle(color: Colors.grey),
           ),
         ),

@@ -1,5 +1,7 @@
+import './all_answers.dart';
 import './company.dart';
-import 'all_answers.dart';
+import './enum.dart';
+
 import '../../misc/custom_containers/item_serializable.dart';
 
 class Student extends ItemSerializable {
@@ -59,7 +61,7 @@ class Student extends ItemSerializable {
   int get nbQuestionsAnswered {
     int sum = 0;
     for (var element in allAnswers) {
-      sum += element.value.isAnswered ? 1 : 0;
+      sum += element.value.isAnswered(QuestionType.any) ? 1 : 0;
     }
     return sum;
   }

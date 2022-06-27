@@ -5,13 +5,11 @@ import './section_main_page.dart';
 import './section_page.dart';
 import './widgets/metier_page_navigator.dart';
 import './widgets/new_question_alert_dialog.dart';
-import '../../common/models/answer.dart';
-import '../../common/models/enum.dart';
 import '../../common/models/question.dart';
 import '../../common/models/section.dart';
 import '../../common/models/student.dart';
-import '../../common/providers/all_questions.dart';
 import '../../common/providers/all_students.dart';
+import '../../common/providers/all_questions.dart';
 
 class StudentScreen extends StatefulWidget {
   const StudentScreen({Key? key}) : super(key: key);
@@ -60,26 +58,15 @@ class _StudentScreenState extends State<StudentScreen> {
     final currentStudent =
         ModalRoute.of(context)!.settings.arguments as Student?;
 
-    final userInput = await showDialog<Map<String, dynamic>>(
+    final question = await showDialog<Question>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) => NewQuestionAlertDialog(
           section: _currentPage - 1, student: currentStudent),
     );
-    if (userInput == null) return;
-
-    final question = userInput['question'] as Question;
-    final target = userInput['target'] as Target;
-
-    questions.add(question);
-    for (var student in students) {
-      final isActive = target != Target.none &&
-          (target == Target.all ||
-              currentStudent == null ||
-              student.id == currentStudent.id);
-      student.allAnswers
-          .add(Answer(isActive: isActive, question: question, discussion: []));
-    }
+    if (question == null) return;
+    questions.addToAll(question,
+        students: students, currentStudent: currentStudent);
 
     setState(() {});
   }
@@ -127,17 +114,17 @@ class _StudentScreenState extends State<StudentScreen> {
                   SectionMainPage(
                       student: student, onPageChanged: onPageChangedRequest),
                   SectionPage(0,
-                      student: student, onStateChange: onStateChange),
+                      studentId: student?.id, onStateChange: onStateChange),
                   SectionPage(1,
-                      student: student, onStateChange: onStateChange),
+                      studentId: student?.id, onStateChange: onStateChange),
                   SectionPage(2,
-                      student: student, onStateChange: onStateChange),
+                      studentId: student?.id, onStateChange: onStateChange),
                   SectionPage(3,
-                      student: student, onStateChange: onStateChange),
+                      studentId: student?.id, onStateChange: onStateChange),
                   SectionPage(4,
-                      student: student, onStateChange: onStateChange),
+                      studentId: student?.id, onStateChange: onStateChange),
                   SectionPage(5,
-                      student: student, onStateChange: onStateChange),
+                      studentId: student?.id, onStateChange: onStateChange),
                 ],
               ),
             ),
