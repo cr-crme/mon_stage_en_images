@@ -19,7 +19,7 @@ class Question extends ItemSerializable {
     text ??= this.text;
     type ??= this.type;
     section ??= this.section;
-    defaultTarget ??= defaultTarget;
+    defaultTarget ??= this.defaultTarget;
     id ??= this.id;
     return Question(
       text,
