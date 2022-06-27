@@ -74,6 +74,9 @@ class _StudentScreenState extends State<StudentScreen> {
   }
 
   AppBar _setAppBar(bool userIsStudent, Student? student) {
+    final currentTheme = Theme.of(context).textTheme.titleLarge!;
+    final onPrimaryColor = Theme.of(context).colorScheme.onPrimary;
+
     return AppBar(
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,10 +85,7 @@ class _StudentScreenState extends State<StudentScreen> {
           if (_currentPage > 0)
             Text(
               Section.name(_currentPage - 1),
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge!
-                  .copyWith(fontSize: 15),
+              style: currentTheme.copyWith(fontSize: 15, color: onPrimaryColor),
             ),
         ],
       ),

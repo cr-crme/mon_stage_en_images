@@ -12,6 +12,8 @@ void prepareDummyData(AllStudents students, AllQuestions questions) {
   questions.add(Question('Photo 1',
       type: QuestionType.photo, section: 0, defaultTarget: Target.none));
   questions.add(Question('Texte 1',
+      type: QuestionType.text, section: 0, defaultTarget: Target.none));
+  questions.add(Question('Texte 2',
       type: QuestionType.text, section: 1, defaultTarget: Target.none));
   questions.add(Question('Photo 2',
       type: QuestionType.photo, section: 2, defaultTarget: Target.none));
@@ -21,13 +23,15 @@ void prepareDummyData(AllStudents students, AllQuestions questions) {
       type: QuestionType.photo, section: 4, defaultTarget: Target.none));
   questions.add(Question('Photo 5',
       type: QuestionType.photo, section: 5, defaultTarget: Target.none));
-  questions.add(Question('Texte 2',
+  questions.add(Question('Texte 3',
       type: QuestionType.text, section: 5, defaultTarget: Target.none));
   questions.add(Question('Photo 6',
       type: QuestionType.photo, section: 5, defaultTarget: Target.none));
 
   final benjaminAnswers = AllAnswers(questions: questions);
   benjaminAnswers[questions.fromSection(0)[0]] =
+      Answer(isActive: true, discussion: []);
+  benjaminAnswers[questions.fromSection(0)[1]] =
       Answer(isActive: true, discussion: []);
   benjaminAnswers[questions.fromSection(1)[0]] =
       Answer(isActive: true, text: 'Ma réponse!', discussion: []);

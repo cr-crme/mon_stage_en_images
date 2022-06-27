@@ -6,6 +6,7 @@ import '../../../common/models/enum.dart';
 import '../../../common/models/question.dart';
 import '../../../common/providers/all_questions.dart';
 import '../../../common/providers/all_students.dart';
+import '../../../common/providers/login_information.dart';
 import '../../../common/widgets/are_you_sure_dialog.dart';
 import '../../../common/widgets/grouped_radio_button.dart';
 
@@ -97,6 +98,9 @@ class AnswerPart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userIsStudent =
+        Provider.of<LoginInformation>(context, listen: false).loginType ==
+            LoginType.student;
     final students = Provider.of<AllStudents>(context, listen: false);
     final student = studentId == null ? null : students[studentId];
     final answer = student == null ? null : student.allAnswers[question];
@@ -124,34 +128,42 @@ class AnswerPart extends StatelessWidget {
           if (isActive &&
               question.type == QuestionType.photo &&
               studentId != null)
-            _showPhoto(answer),
+            _showPhoto(userIsStudent, answer),
           if (isActive &&
               studentId != null &&
               question.type == QuestionType.text)
-            _showWrittenAnswer(answer),
+            _showWrittenAnswer(userIsStudent, answer),
           if (isActive && studentId != null) const SizedBox(height: 12),
           if (isActive && studentId != null) DiscussionListView(answer: answer),
-          _ShowStatus(
-            studentId: studentId,
-            question: question,
-            onStateChange: onStateChange,
-            initialStatus: isActive,
-          ),
+          if (userIsStudent) const SizedBox(height: 15),
+          if (!userIsStudent)
+            _ShowStatus(
+              studentId: studentId,
+              question: question,
+              onStateChange: onStateChange,
+              initialStatus: isActive,
+            ),
         ],
       ),
     );
   }
 
-  Widget _showPhoto(answer) {
+  Widget _showPhoto(bool userIsStudent, answer) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text('Photo : ', style: TextStyle(color: Colors.grey)),
         const SizedBox(height: 4),
+        // TODO: Add the logic to take a picture when user is a student
         answer!.photoUrl == null
-            ? const Center(
-                child: Text('En attente de la photo de l\'étudiant',
-                    style: TextStyle(color: Colors.red)))
+            ? (userIsStudent
+                ? const Center(
+                    child: ElevatedButton(
+                        onPressed: null, child: Text('Prendre une photo')),
+                  )
+                : const Center(
+                    child: Text('En attente de la photo de l\'étudiant',
+                        style: TextStyle(color: Colors.red))))
             : Container(
                 padding: const EdgeInsets.only(left: 15),
                 child: FutureBuilder(builder: (context, snapshot) {
@@ -169,14 +181,20 @@ class AnswerPart extends StatelessWidget {
     );
   }
 
-  Widget _showWrittenAnswer(answer) {
+  Widget _showWrittenAnswer(bool userIsStudent, answer) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const Text('Réponse écrite : ', style: TextStyle(color: Colors.grey)),
       const SizedBox(height: 4),
+      // TODO: Add the logic to add text when user is a student
       answer!.text == null
-          ? const Center(
-              child: Text('En attente de la réponse de l\'étudiant',
-                  style: TextStyle(color: Colors.red)))
+          ? (userIsStudent
+              ? const Center(
+                  child: ElevatedButton(
+                      onPressed: null, child: Text('Écrire une réponse')),
+                )
+              : const Center(
+                  child: Text('En attente de la réponse de l\'étudiant',
+                      style: TextStyle(color: Colors.red))))
           : Container(
               padding: const EdgeInsets.only(left: 15),
               child: Row(
