@@ -7,6 +7,7 @@ import '../student_info/student_screen.dart';
 import '../../common/providers/all_questions.dart';
 import '../../common/providers/all_students.dart';
 import '../../common/models/answer.dart';
+import '../../common/models/enum.dart';
 import '../../common/models/student.dart';
 import '../../common/widgets/are_you_sure_dialog.dart';
 
@@ -33,9 +34,9 @@ class _StudentsScreenState extends State<StudentsScreen> {
     );
     if (student == null) return;
 
-    // TODO: Find a way to remember that some specific question should be added to the new students.
     for (final question in questions) {
-      student.allAnswers[question] = Answer(isActive: false, discussion: []);
+      student.allAnswers[question] = Answer(
+          isActive: question.defaultTarget == Target.all, discussion: []);
     }
     students.add(student);
   }
