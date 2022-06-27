@@ -5,6 +5,7 @@ import './discussion_list_view.dart';
 import '../../../common/models/answer.dart';
 import '../../../common/models/enum.dart';
 import '../../../common/models/question.dart';
+import '../../../common/models/student.dart';
 import '../../../common/providers/all_students.dart';
 import '../../../common/widgets/are_you_sure_dialog.dart';
 import '../../../common/widgets/grouped_radio_button.dart';
@@ -13,13 +14,13 @@ class QuestionAndAnswerTile extends StatefulWidget {
   const QuestionAndAnswerTile(
     this.question, {
     Key? key,
-    required this.answer,
+    required this.student,
     required this.onStateChange,
     required this.isActive,
   }) : super(key: key);
 
+  final Student? student;
   final Question question;
-  final Answer? answer;
   final Function(VoidCallback) onStateChange;
   final bool isActive;
 
@@ -59,8 +60,9 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
           ),
           if (_isExpanded)
             AnswerPart(
-              widget.answer,
+              widget.student?.allAnswers[widget.question],
               onStateChange: onStateChange,
+              student: widget.student,
               question: widget.question,
             ),
         ],
@@ -91,9 +93,11 @@ class AnswerPart extends StatelessWidget {
     this.answer, {
     Key? key,
     required this.onStateChange,
+    required this.student,
     required this.question,
   }) : super(key: key);
 
+  final Student? student;
   final Answer? answer;
   final Function(VoidCallback) onStateChange;
   final Question question;
@@ -106,9 +110,9 @@ class AnswerPart extends StatelessWidget {
     } else {
       // Only active if active for all
       var indexInactive = Provider.of<AllStudents>(context).indexWhere(
-        (student) {
-          if (student.allAnswers[question.id] == null) false;
-          return student.allAnswers[question.id]!.isActive;
+        (s) {
+          if (s.allAnswers[question] == null) false;
+          return s.allAnswers[question]!.isActive;
         },
       );
       isActive = indexInactive >= 0;
@@ -127,6 +131,7 @@ class AnswerPart extends StatelessWidget {
           if (isActive && answer != null) const SizedBox(height: 12),
           if (isActive && answer != null) DiscussionListView(answer: answer),
           _ShowStatus(
+            student: student,
             answer: answer,
             question: question,
             onStateChange: onStateChange,
@@ -230,12 +235,14 @@ class _QuestionTypeChooserState extends State<_QuestionTypeChooser> {
 class _ShowStatus extends StatefulWidget {
   const _ShowStatus(
       {Key? key,
+      required this.student,
       required this.answer,
       required this.onStateChange,
       required this.initialStatus,
       required this.question})
       : super(key: key);
 
+  final Student? student;
   final Answer? answer;
   final Question question;
   final bool initialStatus;
@@ -258,7 +265,7 @@ class _ShowStatusState extends State<_ShowStatus> {
           title: 'Confimer le choix',
           content:
               'Voulez-vous vraiment ${value ? 'activer' : 'désactiver'} cette '
-              'question${widget.answer == null ? ' pour tous' : ''}?',
+              'question${widget.student == null ? ' pour tous' : ''}?',
         );
       },
     );
@@ -266,11 +273,13 @@ class _ShowStatusState extends State<_ShowStatus> {
     if (!sure!) return;
 
     _isActive = value;
-    if (widget.answer != null) {
-      widget.answer!.isActive = value;
+    if (widget.student != null) {
+      widget.student!.allAnswers.add(widget.answer!.copyWith(isActive: value));
     } else {
       for (var student in students) {
-        student.allAnswers[widget.question.id]!.isActive = value;
+        final answer =
+            student.allAnswers[widget.question]!.copyWith(isActive: value);
+        student.allAnswers.add(answer);
       }
     }
     setState(() {});
@@ -286,7 +295,7 @@ class _ShowStatusState extends State<_ShowStatus> {
         Flexible(
           child: Text(
             _isActive
-                ? 'Désactiver la question'
+                ? 'Désactiver la question pour tous'
                 : 'Activer la question pour cet élève',
             style: const TextStyle(color: Colors.grey),
           ),

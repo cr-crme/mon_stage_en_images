@@ -6,19 +6,33 @@ import '../../misc/custom_containers/item_serializable.dart';
 class Answer extends ItemSerializable {
   // Constructors and (de)serializer
   Answer({
-    required isActive,
+    required this.isActive,
     required this.question,
     this.text,
     this.photoUrl,
     required this.discussion,
-  }) : _isActive = isActive;
+  });
   Answer.fromSerialized(Map<String, dynamic> map)
-      : _isActive = map['isActive'],
+      : isActive = map['isActive'],
         question = map['question'],
         text = map['text'],
         photoUrl = map['photoUrl'],
         discussion = map['discussion'],
         super.fromSerialized(map);
+  Answer copyWith({isActive, question, text, photoUrl, discussion}) {
+    isActive ??= this.isActive;
+    question ??= this.question;
+    text ??= this.text;
+    photoUrl ??= this.photoUrl;
+    discussion ??= this.discussion;
+    return Answer(
+      isActive: isActive,
+      question: question,
+      text: text,
+      photoUrl: photoUrl,
+      discussion: discussion,
+    );
+  }
 
   @override
   Answer deserializeItem(Map<String, dynamic> map) {
@@ -37,10 +51,7 @@ class Answer extends ItemSerializable {
   }
 
   // Attributes and methods
-  bool _isActive;
-  bool get isActive => _isActive;
-  set isActive(value) => _isActive = value;
-
+  final bool isActive;
   final Question question;
   final String? text;
   final String? photoUrl;

@@ -90,9 +90,7 @@ class SectionPage extends StatelessWidget {
               shrinkWrap: true,
               itemBuilder: (context, index) => QuestionAndAnswerTile(
                 questions[index],
-                answer: student != null
-                    ? student!.allAnswers[questions[index].id]
-                    : null,
+                student: student,
                 onStateChange: onStateChange,
                 isActive: isActive,
               ),
