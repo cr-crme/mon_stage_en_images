@@ -24,7 +24,7 @@ class GroupedRadioButton<T> extends StatelessWidget {
           value: value,
           activeColor: Theme.of(context).colorScheme.secondary,
         ),
-        title: Flexible(child: title),
+        title: title,
         horizontalTitleGap: 0,
         contentPadding: const EdgeInsets.all(0),
         onTap: () => onChanged(value),
