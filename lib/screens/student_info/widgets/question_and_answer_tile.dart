@@ -299,7 +299,8 @@ class _ShowStatusState extends State<_ShowStatus> {
         Flexible(
           child: Text(
             _isActive
-                ? 'Désactiver la question pour tous'
+                ? 'Désactiver la question '
+                    '${widget.studentId == null ? 'pour tous' : 'pour cet élève'}'
                 : 'Activer la question '
                     '${widget.studentId == null ? 'pour tous' : 'pour cet élève'}',
             style: const TextStyle(color: Colors.grey),
