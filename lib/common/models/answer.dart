@@ -11,7 +11,8 @@ class Answer extends ItemSerializable {
     this.text,
     this.photoUrl,
     required this.discussion,
-  });
+    id,
+  }) : super(id: id);
   Answer.fromSerialized(Map<String, dynamic> map)
       : isActive = map['isActive'],
         question = map['question'],
@@ -19,18 +20,20 @@ class Answer extends ItemSerializable {
         photoUrl = map['photoUrl'],
         discussion = map['discussion'],
         super.fromSerialized(map);
-  Answer copyWith({isActive, question, text, photoUrl, discussion}) {
+  Answer copyWith({isActive, question, text, photoUrl, discussion, id}) {
     isActive ??= this.isActive;
     question ??= this.question;
     text ??= this.text;
     photoUrl ??= this.photoUrl;
     discussion ??= this.discussion;
+    id ??= this.id;
     return Answer(
       isActive: isActive,
       question: question,
       text: text,
       photoUrl: photoUrl,
       discussion: discussion,
+      id: id,
     );
   }
 

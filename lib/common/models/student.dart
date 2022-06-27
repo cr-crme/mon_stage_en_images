@@ -12,13 +12,7 @@ class Student extends ItemSerializable {
     id,
   }) : super(id: id);
 
-  Student copyWith({
-    firstName,
-    lastName,
-    company,
-    allAnswers,
-    id,
-  }) {
+  Student copyWith({firstName, lastName, company, allAnswers, id}) {
     firstName ??= this.firstName;
     lastName ??= this.lastName;
     company ??= this.company;

@@ -20,6 +20,12 @@ abstract class ListProvided<T> extends ListSerializable<T> with ChangeNotifier {
   }
 
   @override
+  operator []=(value, T item) {
+    super[value] = item;
+    notifyListeners();
+  }
+
+  @override
   void remove(value, {bool notify = true}) {
     super.remove(value);
     if (notify) notifyListeners();

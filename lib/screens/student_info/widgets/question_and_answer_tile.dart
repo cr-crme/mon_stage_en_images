@@ -6,6 +6,7 @@ import '../../../common/models/answer.dart';
 import '../../../common/models/enum.dart';
 import '../../../common/models/question.dart';
 import '../../../common/models/student.dart';
+import '../../../common/providers/all_questions.dart';
 import '../../../common/providers/all_students.dart';
 import '../../../common/widgets/are_you_sure_dialog.dart';
 import '../../../common/widgets/grouped_radio_button.dart';
@@ -225,7 +226,18 @@ class _QuestionTypeChooserState extends State<_QuestionTypeChooser> {
   }
 
   void _setQuestionType(BuildContext context, value) async {
-    widget.question.type = value;
+    final questions = Provider.of<AllQuestions>(context, listen: false);
+    final students = Provider.of<AllStudents>(context, listen: false);
+
+    final newQuestion = widget.question.copyWith(type: value);
+
+    questions[widget.question] = newQuestion;
+
+    for (var student in students) {
+      final answer =
+          student.allAnswers[widget.question]!.copyWith(question: newQuestion);
+      student.allAnswers.replace(answer);
+    }
 
     _questionType = value;
     setState(() {});
@@ -274,12 +286,13 @@ class _ShowStatusState extends State<_ShowStatus> {
 
     _isActive = value;
     if (widget.student != null) {
-      widget.student!.allAnswers.add(widget.answer!.copyWith(isActive: value));
+      widget.student!.allAnswers
+          .replace(widget.answer!.copyWith(isActive: value));
     } else {
       for (var student in students) {
         final answer =
             student.allAnswers[widget.question]!.copyWith(isActive: value);
-        student.allAnswers.add(answer);
+        student.allAnswers.replace(answer);
       }
     }
     setState(() {});

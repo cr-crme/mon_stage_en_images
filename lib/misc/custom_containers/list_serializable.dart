@@ -46,7 +46,11 @@ abstract class ListSerializable<T> extends Iterable<T> {
   }
 
   void replace(T item, {bool notify = true}) {
-    items[_getIndex((item as ItemSerializable).id)] = item;
+    items[_getIndex(item)] = item;
+  }
+
+  operator []=(value, T item) {
+    items[_getIndex(value)] = item;
   }
 
   T operator [](value) {
@@ -71,6 +75,8 @@ abstract class ListSerializable<T> extends Iterable<T> {
     } else if (value is String) {
       return items
           .indexWhere((element) => (element as ItemSerializable).id == value);
+    } else if (value is ItemSerializable) {
+      return _getIndex(value.id);
     } else {
       throw const TypeException(
           'Wrong type for getting an element of the provided list');

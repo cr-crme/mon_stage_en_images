@@ -41,6 +41,7 @@ abstract class MapSerializable<T> extends Iterable<MapEntry<String, T>> {
 
   // Attributes and methods
   void add(T item) => items[(item as ItemSerializable).id] = item;
+  void replace(T item) => add(item);
 
   T? operator [](item) {
     return items[(item as ItemSerializable).id];

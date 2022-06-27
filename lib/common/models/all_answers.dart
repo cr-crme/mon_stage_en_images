@@ -100,9 +100,6 @@ class AllAnswers extends MapSerializable<Answer> {
     return out;
   }
 
-  @override
-  void add(Answer item) => items[item.question.id] = item;
-
   AllAnswers fromSection(index) {
     final AllAnswers out = AllAnswers();
     forEach((answer) {

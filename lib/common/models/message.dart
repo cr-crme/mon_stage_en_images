@@ -2,7 +2,7 @@ import '../../misc/custom_containers/item_serializable.dart';
 
 class Message extends ItemSerializable {
   // Constructors and (de)serializer
-  Message({required this.name, required this.text});
+  Message({required this.name, required this.text, id}) : super(id: id);
   Message.fromSerialized(Map<String, dynamic> map)
       : name = map['name'],
         text = map['text'],
