@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import './widgets/new_student_alert_dialog.dart';
 import './widgets/student_list_tile.dart';
+import '../login/login_screen.dart';
 import '../student_info/student_screen.dart';
 import '../../common/providers/all_questions.dart';
 import '../../common/providers/all_students.dart';
@@ -105,8 +106,10 @@ class _StudentsScreenState extends State<StudentsScreen> {
                 title: 'Gestion des questions',
                 onTap: () =>
                     Navigator.of(context).pushNamed(StudentScreen.routeName)),
-            const MenuItem(
-                title: 'Déconnexion', onTap: null, iconColor: Colors.grey),
+            MenuItem(
+                title: 'Déconnexion',
+                onTap: () => Navigator.of(context)
+                    .pushReplacementNamed(LoginScreen.routeName)),
           ],
         ),
       )),
