@@ -52,13 +52,13 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               TextFormField(
-                decoration: const InputDecoration(labelText: 'Prénom'),
+                decoration: const InputDecoration(labelText: 'Prénom*'),
                 validator: (value) =>
                     value == null || value.isEmpty ? 'Ajouter un prénom' : null,
                 onSaved: (value) => _firstName = value,
               ),
               TextFormField(
-                decoration: const InputDecoration(labelText: 'Nom'),
+                decoration: const InputDecoration(labelText: 'Nom*'),
                 validator: (value) =>
                     value == null || value.isEmpty ? 'Ajouter un nom' : null,
                 onSaved: (value) => _lastName = value,
