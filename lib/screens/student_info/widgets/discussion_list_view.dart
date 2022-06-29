@@ -91,23 +91,19 @@ class _MessageListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return discussion.isEmpty
-        ? const Center(
-            child: Text('Il n\'y a aucun message associé à cette question',
-                style: TextStyle(color: Colors.grey)))
-        : Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.only(left: 15),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) =>
-                      DiscussionTile(discussion: discussion[index]),
-                  itemCount: discussion.length,
-                ),
-              ),
-            ],
-          );
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.only(left: 15),
+          child: ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) =>
+                DiscussionTile(discussion: discussion[index]),
+            itemCount: discussion.length,
+          ),
+        ),
+      ],
+    );
   }
 }
