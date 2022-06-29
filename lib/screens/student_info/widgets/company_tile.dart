@@ -72,10 +72,12 @@ class _CompanyTileState extends State<CompanyTile> {
                     ? IconButton(
                         icon: const Icon(Icons.save),
                         onPressed: _saveCompany,
+                        color: Theme.of(context).colorScheme.secondary,
                       )
                     : IconButton(
                         icon: const Icon(Icons.mode),
                         onPressed: _modifyCompany,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
           );
   }
