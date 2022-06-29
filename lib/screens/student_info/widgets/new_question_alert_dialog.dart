@@ -65,9 +65,7 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
               const Text('Le type de la question est :'),
               _showQuestionType(context),
               const SizedBox(height: 25),
-              Text(widget.student == null
-                  ? 'Activer la question pour'
-                  : 'Ajouter la question à :'),
+              const Text('Activer la question pour :'),
               _showAddTo(context),
             ],
           ),
