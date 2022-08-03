@@ -3,12 +3,13 @@ import '../../common/models/enum.dart';
 
 class Question extends ItemSerializable {
   // Constructors and (de)serializer
-  Question(this.text,
-      {required this.type,
-      required this.section,
-      required this.defaultTarget,
-      id})
-      : super(id: id);
+  Question(
+    this.text, {
+    required this.type,
+    required this.section,
+    required this.defaultTarget,
+    id,
+  }) : super(id: id);
   Question.fromSerialized(Map<String, dynamic> map)
       : text = map['text'],
         type = map['type'],

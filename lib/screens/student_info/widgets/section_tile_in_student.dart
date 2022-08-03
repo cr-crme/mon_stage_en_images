@@ -15,16 +15,20 @@ class SectionTileInStudent extends StatelessWidget {
   final Student? student;
   final Function(int) onTap;
 
-  TextStyle _pickTextStyle(int? activeQuestions, int? answeredQuestions) {
-    // TODO: Add the "Requires attention" style in bold
-    if (activeQuestions == null || answeredQuestions == null) {
+  TextStyle _pickTextStyle(
+      int? activeQuestions, int? answeredQuestions, int? needAction) {
+    if (activeQuestions == null ||
+        answeredQuestions == null ||
+        needAction == null) {
       return const TextStyle();
     }
 
     return TextStyle(
-        color: activeQuestions > 0
-            ? (answeredQuestions >= activeQuestions ? Colors.black : Colors.red)
-            : Colors.grey);
+      color: activeQuestions > 0
+          ? (answeredQuestions >= activeQuestions ? Colors.black : Colors.red)
+          : Colors.grey,
+      fontWeight: needAction > 0 ? FontWeight.bold : FontWeight.normal,
+    );
   }
 
   @override
@@ -35,14 +39,17 @@ class SectionTileInStudent extends StatelessWidget {
     late final AllAnswers? answers;
     late final int? answered;
     late final int? active;
+    late final int? needAction;
     if (student != null) {
       answers = student!.allAnswers.fromQuestions(questions);
       answered = answers.numberAnswered;
       active = answers.numberActive;
+      needAction = answers.numberNeedTeacherAction;
     } else {
       answers = null;
       answered = null;
       active = null;
+      needAction = null;
     }
 
     return Card(
@@ -62,11 +69,11 @@ class SectionTileInStudent extends StatelessWidget {
           ),
           title: Text(
             Section.name(sectionIndex),
-            style: _pickTextStyle(active, answered),
+            style: _pickTextStyle(active, answered, needAction),
           ),
           trailing: answers != null
               ? Text('$answered / $active',
-                  style: _pickTextStyle(active, answered))
+                  style: _pickTextStyle(active, answered, needAction))
               : null,
           onTap: () => onTap(sectionIndex),
         ),

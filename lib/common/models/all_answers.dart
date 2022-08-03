@@ -8,7 +8,7 @@ class AllAnswers extends MapSerializable<Answer> {
   // Constructors and (de)serializer
   AllAnswers({required AllQuestions questions}) : super() {
     for (var question in questions) {
-      this[question] = Answer(isActive: false, discussion: []);
+      this[question] = Answer(status: AnswerStatus.deactivated, discussion: []);
     }
   }
   AllAnswers.fromSerialized(map) : super.fromSerialized(map);
@@ -31,11 +31,22 @@ class AllAnswers extends MapSerializable<Answer> {
   int get numberAnswered {
     int answered = 0;
     forEach((answer) {
-      if (answer.value.isActive && answer.value.isAnswered(QuestionType.any)) {
+      if (answer.value.isActive && answer.value.isAnswered()) {
         answered++;
       }
     });
     return answered;
+  }
+
+  int get numberNeedTeacherAction {
+    int number = 0;
+    forEach((answer) {
+      if (answer.value.isActive &&
+          answer.value.status == AnswerStatus.needTeacherAction) {
+        number++;
+      }
+    });
+    return number;
   }
 
   AllAnswers fromQuestions(AllQuestions questions) {
@@ -67,7 +78,7 @@ class AllAnswers extends MapSerializable<Answer> {
     var out = AllQuestions();
     for (var question in questions) {
       final answer = this[question]!;
-      if (answer.isActive && answer.isAnswered(QuestionType.any)) {
+      if (answer.isActive && answer.isAnswered()) {
         out.add(question);
       }
     }
@@ -78,7 +89,7 @@ class AllAnswers extends MapSerializable<Answer> {
     var out = AllQuestions();
     for (var question in questions) {
       final answer = this[question]!;
-      if (answer.isActive && !answer.isAnswered(QuestionType.any)) {
+      if (answer.isActive && !answer.isAnswered()) {
         out.add(question);
       }
     }
@@ -89,7 +100,7 @@ class AllAnswers extends MapSerializable<Answer> {
     var out = AllAnswers(questions: AllQuestions());
     for (var question in questions) {
       final answer = this[question]!;
-      if (answer.isActive && answer.isAnswered(QuestionType.any)) {
+      if (answer.isActive && answer.isAnswered()) {
         out[question] = answer;
       }
     }
@@ -100,7 +111,7 @@ class AllAnswers extends MapSerializable<Answer> {
     var out = AllAnswers(questions: AllQuestions());
     for (var question in questions) {
       final answer = this[question]!;
-      if (answer.isActive && !answer.isAnswered(QuestionType.any)) {
+      if (answer.isActive && !answer.isAnswered()) {
         out[question] = answer;
       }
     }

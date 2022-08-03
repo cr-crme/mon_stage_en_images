@@ -295,17 +295,30 @@ class _ShowStatusState extends State<_ShowStatus> {
     if (!sure!) return;
 
     _isActive = value;
+    var answerStatus =
+        value ? AnswerStatus.notAnswered : AnswerStatus.deactivated;
+
     if (student != null) {
-      student.allAnswers[widget.question] =
-          student.allAnswers[widget.question]!.copyWith(isActive: value);
+      setAnswer(student, answerStatus);
     } else {
       for (var student in students) {
-        student.allAnswers[widget.question] =
-            student.allAnswers[widget.question]!.copyWith(isActive: value);
+        setAnswer(student, answerStatus);
       }
     }
     setState(() {});
     widget.onStateChange(() {});
+  }
+
+  void setAnswer(student, answerStatus) {
+    // If the answer is flagged notAnswered as it is active, but for some reason
+    // was indeed answered, let know the teacher
+
+    if (answerStatus == AnswerStatus.notAnswered &&
+        student.allAnswers[widget.question]!.isAnswered()) {
+      answerStatus = AnswerStatus.needTeacherAction;
+    }
+    student.allAnswers[widget.question] =
+        student.allAnswers[widget.question]!.copyWith(status: answerStatus);
   }
 
   @override
