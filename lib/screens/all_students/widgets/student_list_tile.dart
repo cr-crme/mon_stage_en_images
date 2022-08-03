@@ -4,10 +4,14 @@ import '../../student_info/student_screen.dart';
 import '../../../common/models/student.dart';
 
 class StudentListTile extends StatelessWidget {
-  const StudentListTile(this.student,
-      {Key? key, required this.removeItemCallback})
-      : super(key: key);
+  const StudentListTile(
+    this.student, {
+    Key? key,
+    required this.removeItemCallback,
+    required this.modifyStudentCallback,
+  }) : super(key: key);
 
+  final Function(Student) modifyStudentCallback;
   final Function(Student) removeItemCallback;
   final Student student;
 
@@ -29,6 +33,7 @@ class StudentListTile extends StatelessWidget {
         ),
         onTap: () => Navigator.of(context)
             .pushNamed(StudentScreen.routeName, arguments: student),
+        onLongPress: () => modifyStudentCallback(student),
       ),
     );
   }

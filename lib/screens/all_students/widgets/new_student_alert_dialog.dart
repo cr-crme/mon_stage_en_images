@@ -7,7 +7,12 @@ import '../../../common/models/student.dart';
 import '../../../common/providers/all_questions.dart';
 
 class NewStudentAlertDialog extends StatefulWidget {
-  const NewStudentAlertDialog({Key? key}) : super(key: key);
+  const NewStudentAlertDialog({
+    Key? key,
+    this.student,
+  }) : super(key: key);
+
+  final Student? student;
 
   @override
   State<NewStudentAlertDialog> createState() => _NewStudentAlertDialogState();
@@ -18,6 +23,12 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
   String? _firstName;
   String? _lastName;
   String? _companyName;
+
+  @override
+  void initState() {
+    super.initState();
+    debugPrint("Coucou");
+  }
 
   void _finalize(BuildContext context, {bool hasCancelled = false}) {
     final questions = Provider.of<AllQuestions>(context, listen: false);
@@ -52,13 +63,15 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               TextFormField(
-                decoration: const InputDecoration(labelText: 'Prénom*'),
+                decoration: const InputDecoration(labelText: 'Prénom'),
+                initialValue: widget.student?.firstName,
                 validator: (value) =>
                     value == null || value.isEmpty ? 'Ajouter un prénom' : null,
                 onSaved: (value) => _firstName = value,
               ),
               TextFormField(
-                decoration: const InputDecoration(labelText: 'Nom*'),
+                decoration: const InputDecoration(labelText: 'Nom'),
+                initialValue: widget.student?.lastName,
                 validator: (value) =>
                     value == null || value.isEmpty ? 'Ajouter un nom' : null,
                 onSaved: (value) => _lastName = value,
@@ -66,7 +79,10 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
               TextFormField(
                 decoration:
                     const InputDecoration(labelText: 'Nom de l\'entreprise'),
-                validator: (value) => null,
+                initialValue: widget.student?.company.name,
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Ajouter un nom d\'entreprise'
+                    : null,
                 onSaved: (value) => _companyName = value,
               ),
             ],
@@ -82,7 +98,7 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
           onPressed: () => _finalize(context, hasCancelled: true),
         ),
         TextButton(
-          child: Text('Ajouter',
+          child: Text(widget.student == null ? 'Ajouter' : 'Modifier',
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).colorScheme.secondary)),
