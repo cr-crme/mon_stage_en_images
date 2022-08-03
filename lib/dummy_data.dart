@@ -91,6 +91,6 @@ void prepareDummyData(AllStudents students, AllQuestions questions) {
   students.add(Student(
       firstName: 'Aurélie',
       lastName: 'Tondoux',
-      company: Company(name: ''),
+      company: Company(name: 'Coucou'),
       allAnswers: aurelieAnswers));
 }

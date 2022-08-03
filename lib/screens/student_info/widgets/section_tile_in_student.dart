@@ -15,6 +15,18 @@ class SectionTileInStudent extends StatelessWidget {
   final Student? student;
   final Function(int) onTap;
 
+  TextStyle _pickTextStyle(int? activeQuestions, int? answeredQuestions) {
+    // TODO: Add the "Requires attention" style in bold
+    if (activeQuestions == null || answeredQuestions == null) {
+      return const TextStyle();
+    }
+
+    return TextStyle(
+        color: activeQuestions > 0
+            ? (answeredQuestions >= activeQuestions ? Colors.black : Colors.red)
+            : Colors.grey);
+  }
+
   @override
   Widget build(BuildContext context) {
     final questions = Provider.of<AllQuestions>(context, listen: false)
@@ -48,14 +60,14 @@ class SectionTileInStudent extends StatelessWidget {
             child: Text(Section.letter(sectionIndex),
                 style: const TextStyle(fontSize: 25, color: Colors.white)),
           ),
-          title: answers != null
-              ? Text('Réponses : $answered / $active',
-                  style: TextStyle(
-                      color: active! > 0
-                          ? (answered! >= active ? Colors.black : Colors.red)
-                          : Colors.grey))
-              : Text(Section.name(sectionIndex)),
-          trailing: const Icon(Icons.arrow_right, color: Colors.black),
+          title: Text(
+            Section.name(sectionIndex),
+            style: _pickTextStyle(active, answered),
+          ),
+          trailing: answers != null
+              ? Text('$answered / $active',
+                  style: _pickTextStyle(active, answered))
+              : null,
           onTap: () => onTap(sectionIndex),
         ),
       ),

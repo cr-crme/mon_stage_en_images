@@ -8,7 +8,6 @@ import './widgets/new_question_alert_dialog.dart';
 import '../../common/widgets/main_drawer.dart';
 import '../../common/models/question.dart';
 import '../../common/models/enum.dart';
-import '../../common/models/section.dart';
 import '../../common/models/student.dart';
 import '../../common/providers/all_students.dart';
 import '../../common/providers/all_questions.dart';
