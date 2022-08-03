@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './widgets/company_tile.dart';
 import './widgets/section_tile_in_student.dart';
 import '../../common/models/student.dart';
 import '../../common/providers/all_questions.dart';
@@ -25,11 +24,6 @@ class SectionMainPage extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 15),
-              if (student != null)
-                Text('Informations générales',
-                    style: Theme.of(context).textTheme.titleLarge),
-              if (student != null) CompanyTile(studentId: student!.id),
-              if (student != null) const SizedBox(height: 20),
               if (student != null)
                 Text('Résumé des réponses',
                     style: Theme.of(context).textTheme.titleLarge),

@@ -83,9 +83,9 @@ class _StudentScreenState extends State<StudentScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(student != null ? student.toString() : 'Gestion des questions'),
-          if (_currentPage > 0)
+          if (student != null)
             Text(
-              Section.name(_currentPage - 1),
+              student.company.name,
               style: currentTheme.copyWith(fontSize: 15, color: onPrimaryColor),
             ),
         ],
