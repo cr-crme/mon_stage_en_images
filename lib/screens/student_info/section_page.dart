@@ -30,7 +30,6 @@ class SectionPage extends StatelessWidget {
     late final AllAnswers? answers;
     late final AllQuestions? answeredQuestions;
     late final AllQuestions? unansweredQuestions;
-    late final AllQuestions? inactiveQuestions;
     if (studentId != null) {
       final questions = Provider.of<AllQuestions>(context, listen: false)
           .fromSection(sectionIndex);
@@ -38,13 +37,11 @@ class SectionPage extends StatelessWidget {
       answers = student.allAnswers.fromQuestions(questions);
       answeredQuestions = answers.answeredActiveQuestions(questions);
       unansweredQuestions = answers.unansweredActiveQuestions(questions);
-      inactiveQuestions = answers.inactiveQuestions(questions);
     } else {
       student = null;
       answeredQuestions = Provider.of<AllQuestions>(context, listen: false)
           .fromSection(sectionIndex);
       unansweredQuestions = AllQuestions();
-      inactiveQuestions = AllQuestions();
     }
 
     final answeredSection = _buildQuestionSection(context,
@@ -61,20 +58,11 @@ class SectionPage extends StatelessWidget {
         isActive: true,
         titleIfNone: 'Aucune question active',
         topSpacing: 45);
-    final inactiveSection = _buildQuestionSection(context,
-        title: 'Questions inactives',
-        titleColor: Colors.grey,
-        questions: inactiveQuestions,
-        isActive: false,
-        titleIfNone: 'Aucune question inactive',
-        topSpacing: 45);
 
     final firstSection = userIsStudent ? unansweredSection : answeredSection;
     final secondSection = userIsStudent
         ? answeredSection
         : (student == null ? [] : unansweredSection);
-    final thirdSection =
-        !userIsStudent && student != null ? inactiveSection : [];
 
     return SingleChildScrollView(
       child: Column(
@@ -82,7 +70,6 @@ class SectionPage extends StatelessWidget {
         children: [
           ...firstSection,
           ...secondSection,
-          ...thirdSection,
         ],
       ),
     );
