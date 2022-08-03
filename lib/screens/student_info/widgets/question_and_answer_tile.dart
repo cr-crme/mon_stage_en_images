@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import './discussion_list_view.dart';
+import '../../../common/models/answer.dart';
 import '../../../common/models/enum.dart';
 import '../../../common/models/question.dart';
+import '../../../common/models/student.dart';
 import '../../../common/providers/all_questions.dart';
 import '../../../common/providers/all_students.dart';
 import '../../../common/providers/login_information.dart';
@@ -16,13 +18,11 @@ class QuestionAndAnswerTile extends StatefulWidget {
     Key? key,
     required this.studentId,
     required this.onStateChange,
-    required this.isActive,
   }) : super(key: key);
 
   final String? studentId;
   final Question question;
   final Function(VoidCallback) onStateChange;
-  final bool isActive;
 
   @override
   State<QuestionAndAnswerTile> createState() => _QuestionAndAnswerTileState();
@@ -52,10 +52,12 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
           ListTile(
             title: QuestionPart(
               question: widget.question,
-              isActive: widget.isActive,
+              studentId: widget.studentId,
             ),
-            trailing:
-                Icon(_isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+            trailing: QuestionCheckmark(
+              question: widget.question,
+              studentId: widget.studentId,
+            ),
             onTap: _expand,
           ),
           if (_isExpanded)
@@ -74,16 +76,72 @@ class QuestionPart extends StatelessWidget {
   const QuestionPart({
     Key? key,
     required this.question,
-    required this.isActive,
+    required this.studentId,
   }) : super(key: key);
 
   final Question question;
-  final bool isActive;
+  final String? studentId;
+
+  TextStyle _pickTextStyle(Answer? answer) {
+    if (answer == null) {
+      return const TextStyle();
+    }
+
+    return TextStyle(
+      color: !answer.isAnswered() ? Colors.red : Colors.black,
+      fontWeight:
+          answer.needTeacherAction ? FontWeight.bold : FontWeight.normal,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Text(question.text,
-        style: TextStyle(color: isActive ? Colors.black : Colors.grey));
+    final students = Provider.of<AllStudents>(context, listen: false);
+    final student = studentId == null ? null : students[studentId];
+    final answer = student == null ? null : student.allAnswers[question];
+
+    return Text(question.text, style: _pickTextStyle(answer));
+  }
+}
+
+class QuestionCheckmark extends StatelessWidget {
+  const QuestionCheckmark({
+    Key? key,
+    required this.question,
+    required this.studentId,
+  }) : super(key: key);
+
+  final Question question;
+  final String? studentId;
+
+  void _validateAnswer(Student student, Answer answer) {
+    if (answer.isValidated) {
+      // TODO: Fix this replace
+      student.allAnswers.replace(
+          answer, answer.copyWith(status: AnswerStatus.needStudentAction));
+    } else {
+      // TODO: Fix this replace
+      student.allAnswers
+          .replace(answer, answer.copyWith(status: AnswerStatus.validated));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (studentId == null) return Container();
+
+    final students = Provider.of<AllStudents>(context, listen: false);
+    final student = studentId == null ? null : students[studentId];
+    final answer = student == null ? null : student.allAnswers[question];
+
+    return answer != null
+        ? IconButton(
+            onPressed: () => _validateAnswer(student!, answer),
+            icon: Icon(
+              Icons.check,
+              color: answer.isValidated ? Colors.green : Colors.grey,
+            ))
+        : Container();
   }
 }
 
@@ -296,7 +354,7 @@ class _ShowStatusState extends State<_ShowStatus> {
 
     _isActive = value;
     var answerStatus =
-        value ? AnswerStatus.notAnswered : AnswerStatus.deactivated;
+        value ? AnswerStatus.needStudentAction : AnswerStatus.deactivated;
 
     if (student != null) {
       setAnswer(student, answerStatus);
@@ -313,7 +371,7 @@ class _ShowStatusState extends State<_ShowStatus> {
     // If the answer is flagged notAnswered as it is active, but for some reason
     // was indeed answered, let know the teacher
 
-    if (answerStatus == AnswerStatus.notAnswered &&
+    if (answerStatus == AnswerStatus.needStudentAction &&
         student.allAnswers[widget.question]!.isAnswered()) {
       answerStatus = AnswerStatus.needTeacherAction;
     }

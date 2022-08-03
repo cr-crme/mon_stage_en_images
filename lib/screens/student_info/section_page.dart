@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import './widgets/question_and_answer_tile.dart';
 import '../../common/models/all_answers.dart';
 import '../../common/models/enum.dart';
+import '../../common/models/section.dart';
 import '../../common/models/student.dart';
 import '../../common/providers/all_questions.dart';
 import '../../common/providers/all_students.dart';
@@ -45,19 +46,17 @@ class SectionPage extends StatelessWidget {
     }
 
     final answeredSection = _buildQuestionSection(context,
-        title: student != null ? 'Questions répondues' : 'Questions',
+        title: Section.name(sectionIndex),
         titleColor: Colors.black,
         questions: answeredQuestions,
-        isActive: true,
-        titleIfNone: 'Aucune question active',
+        titleIfNothing: 'Pas de questions répondues',
         topSpacing: 15);
     final unansweredSection = _buildQuestionSection(context,
-        title: 'Questions non répondues',
+        title: '',
         titleColor: Colors.black,
         questions: unansweredQuestions,
-        isActive: true,
-        titleIfNone: 'Aucune question active',
-        topSpacing: 45);
+        titleIfNothing: '',
+        topSpacing: 15);
 
     final firstSection = userIsStudent ? unansweredSection : answeredSection;
     final secondSection = userIsStudent
@@ -77,22 +76,22 @@ class SectionPage extends StatelessWidget {
 
   List<Widget> _buildQuestionSection(
     BuildContext context, {
-    required String title,
+    required String? title,
     required Color titleColor,
     required AllQuestions questions,
-    required bool isActive,
-    required String titleIfNone,
+    required String titleIfNothing,
     required double topSpacing,
   }) {
     return [
-      Container(
-        padding: EdgeInsets.only(left: 5, top: topSpacing),
-        child: Text(title,
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge!
-                .copyWith(color: titleColor)),
-      ),
+      if (title != null)
+        Container(
+          padding: EdgeInsets.only(left: 5, top: topSpacing),
+          child: Text(title,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge!
+                  .copyWith(color: titleColor)),
+        ),
       questions.isNotEmpty
           ? ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
@@ -101,17 +100,12 @@ class SectionPage extends StatelessWidget {
                 questions[index],
                 studentId: studentId,
                 onStateChange: onStateChange,
-                isActive: isActive,
               ),
               itemCount: questions.length,
             )
           : Container(
               padding: const EdgeInsets.only(top: 10),
-              child: Text(
-                titleIfNone,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.grey),
-              ),
+              child: Text(titleIfNothing),
             ),
     ];
   }

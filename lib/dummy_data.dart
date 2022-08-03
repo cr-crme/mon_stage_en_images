@@ -30,9 +30,9 @@ void prepareDummyData(AllStudents students, AllQuestions questions) {
 
   final benjaminAnswers = AllAnswers(questions: questions);
   benjaminAnswers[questions.fromSection(0)[0]] =
-      Answer(status: AnswerStatus.notAnswered, discussion: []);
+      Answer(status: AnswerStatus.needStudentAction, discussion: []);
   benjaminAnswers[questions.fromSection(0)[1]] =
-      Answer(status: AnswerStatus.notAnswered, discussion: []);
+      Answer(status: AnswerStatus.needStudentAction, discussion: []);
   benjaminAnswers[questions.fromSection(1)[0]] = Answer(
       status: AnswerStatus.needTeacherAction,
       text: 'Ma réponse!',

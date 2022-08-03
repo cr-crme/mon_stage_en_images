@@ -57,6 +57,18 @@ class Answer extends ItemSerializable {
     return status != AnswerStatus.deactivated;
   }
 
+  bool get isValidated {
+    return status == AnswerStatus.validated;
+  }
+
+  bool get needTeacherAction {
+    return status == AnswerStatus.needTeacherAction;
+  }
+
+  bool get needStudentAction {
+    return status == AnswerStatus.needStudentAction;
+  }
+
   bool isTextAnswered(QuestionType qType) =>
       (qType == QuestionType.text || qType == QuestionType.any) && text != null;
   bool isPhotoAnswered(QuestionType qType) =>

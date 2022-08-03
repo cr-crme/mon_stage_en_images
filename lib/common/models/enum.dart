@@ -4,9 +4,8 @@ enum QuestionType { photo, text, any }
 
 enum AnswerStatus {
   deactivated,
-  notAnswered,
-  needTeacherAction,
   needStudentAction,
+  needTeacherAction,
   validated
 }
 
