@@ -112,8 +112,10 @@ class _StudentScreenState extends State<StudentScreen> {
         body: Column(
           children: [
             METIERPageNavigator(
-                selected: _currentPage - 1,
-                onPageChanged: onPageChangedRequest),
+              selected: _currentPage - 1,
+              onPageChanged: onPageChangedRequest,
+              student: student,
+            ),
             Expanded(
               child: PageView(
                 controller: _pageController,

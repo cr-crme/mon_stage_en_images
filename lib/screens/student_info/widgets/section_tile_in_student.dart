@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../common/models/all_answers.dart';
 import '../../../common/models/section.dart';
 import '../../../common/models/student.dart';
+import '../../../common/widgets/taking_action_notifier.dart';
 import '../../../common/providers/all_questions.dart';
 
 class SectionTileInStudent extends StatelessWidget {
@@ -56,26 +57,31 @@ class SectionTileInStudent extends StatelessWidget {
       elevation: 5,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 5),
-        child: ListTile(
-          leading: Container(
-            margin: const EdgeInsets.only(bottom: 2),
-            width: 50,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Section.color(sectionIndex)),
-            child: Text(Section.letter(sectionIndex),
-                style: const TextStyle(fontSize: 25, color: Colors.white)),
+        child: TakingActionNotifier(
+          left: 6,
+          top: -9,
+          title: needAction.toString(),
+          child: ListTile(
+            leading: Container(
+              margin: const EdgeInsets.only(bottom: 2),
+              width: 50,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Section.color(sectionIndex)),
+              child: Text(Section.letter(sectionIndex),
+                  style: const TextStyle(fontSize: 25, color: Colors.white)),
+            ),
+            title: Text(
+              Section.name(sectionIndex),
+              style: _pickTextStyle(active, answered, needAction),
+            ),
+            trailing: answers != null
+                ? Text('$answered / $active',
+                    style: _pickTextStyle(active, answered, needAction))
+                : null,
+            onTap: () => onTap(sectionIndex),
           ),
-          title: Text(
-            Section.name(sectionIndex),
-            style: _pickTextStyle(active, answered, needAction),
-          ),
-          trailing: answers != null
-              ? Text('$answered / $active',
-                  style: _pickTextStyle(active, answered, needAction))
-              : null,
-          onTap: () => onTap(sectionIndex),
         ),
       ),
     );
