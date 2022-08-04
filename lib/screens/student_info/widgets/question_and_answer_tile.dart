@@ -104,7 +104,7 @@ class QuestionPart extends StatelessWidget {
   }
 }
 
-class QuestionCheckmark extends StatelessWidget {
+class QuestionCheckmark extends StatefulWidget {
   const QuestionCheckmark({
     Key? key,
     required this.question,
@@ -114,32 +114,36 @@ class QuestionCheckmark extends StatelessWidget {
   final Question question;
   final String? studentId;
 
+  @override
+  State<QuestionCheckmark> createState() => _QuestionCheckmarkState();
+}
+
+class _QuestionCheckmarkState extends State<QuestionCheckmark> {
   void _validateAnswer(Student student, Answer answer) {
-    if (answer.isValidated) {
-      // TODO: Fix this replace
-      student.allAnswers.replace(
-          answer, answer.copyWith(status: AnswerStatus.needStudentAction));
-    } else {
-      // TODO: Fix this replace
-      student.allAnswers
-          .replace(answer, answer.copyWith(status: AnswerStatus.validated));
-    }
+    // Reverse the status of the answer
+    final newAnswer = answer.copyWith(
+        status: answer.isValidated
+            ? AnswerStatus.needStudentAction
+            : AnswerStatus.validated);
+    student.allAnswers[widget.question] = newAnswer;
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    if (studentId == null) return Container();
+    if (widget.studentId == null) return Container();
 
     final students = Provider.of<AllStudents>(context, listen: false);
-    final student = studentId == null ? null : students[studentId];
-    final answer = student == null ? null : student.allAnswers[question];
+    final student =
+        widget.studentId == null ? null : students[widget.studentId];
+    final answer = student == null ? null : student.allAnswers[widget.question];
 
     return answer != null
         ? IconButton(
             onPressed: () => _validateAnswer(student!, answer),
             icon: Icon(
               Icons.check,
-              color: answer.isValidated ? Colors.green : Colors.grey,
+              color: answer.isValidated ? Colors.green[600] : Colors.grey[300],
             ))
         : Container();
   }
