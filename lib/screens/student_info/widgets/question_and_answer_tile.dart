@@ -227,8 +227,6 @@ class AnswerPart extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Photo : ', style: TextStyle(color: Colors.grey)),
-        const SizedBox(height: 4),
         // TODO: Add the logic to take a picture when user is a student
         answer!.photoUrl == null
             ? (userIsStudent

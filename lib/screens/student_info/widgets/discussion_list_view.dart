@@ -55,8 +55,6 @@ class _DiscussionListViewState extends State<DiscussionListView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Commentaire(s) : ', style: TextStyle(color: Colors.grey)),
-        const SizedBox(height: 4),
         _MessageListView(
           discussion: widget.answer!.discussion,
         ),
