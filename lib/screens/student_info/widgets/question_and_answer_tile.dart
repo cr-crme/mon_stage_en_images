@@ -34,6 +34,16 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   void _expand() {
     _isExpanded = !_isExpanded;
 
+    final students = Provider.of<AllStudents>(context, listen: false);
+    final student =
+        widget.studentId == null ? null : students[widget.studentId];
+    final answer = student == null ? null : student.allAnswers[widget.question];
+    if (answer != null) {
+      // Flag the answer as being actionned
+      student!.allAnswers[widget.question] =
+          answer.copyWith(action: ActionRequired.none);
+    }
+
     setState(() {});
   }
 
@@ -122,7 +132,8 @@ class QuestionCheckmark extends StatefulWidget {
 class _QuestionCheckmarkState extends State<QuestionCheckmark> {
   void _validateAnswer(Student student, Answer answer) {
     // Reverse the status of the answer
-    final newAnswer = answer.copyWith(isValidated: !answer.isValidated);
+    final newAnswer = answer.copyWith(
+        isValidated: !answer.isValidated, action: ActionRequired.none);
     student.allAnswers[widget.question] = newAnswer;
     setState(() {});
   }
@@ -135,7 +146,6 @@ class _QuestionCheckmarkState extends State<QuestionCheckmark> {
     final student =
         widget.studentId == null ? null : students[widget.studentId];
     final answer = student == null ? null : student.allAnswers[widget.question];
-
     return answer != null
         ? IconButton(
             onPressed: () => _validateAnswer(student!, answer),

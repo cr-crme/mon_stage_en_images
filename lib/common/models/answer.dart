@@ -12,7 +12,7 @@ class Answer extends ItemSerializable {
     this.isValidated = false,
     ActionRequired action = ActionRequired.none,
     id,
-  })  : this.discussion = discussion ??= [],
+  })  : discussion = discussion ??= [],
         _action = action,
         super(id: id);
   Answer.fromSerialized(Map<String, dynamic> map)
