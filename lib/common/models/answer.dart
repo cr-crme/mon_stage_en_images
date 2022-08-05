@@ -5,29 +5,40 @@ import '../../misc/custom_containers/item_serializable.dart';
 class Answer extends ItemSerializable {
   // Constructors and (de)serializer
   Answer({
-    required this.status,
     this.text,
     this.photoUrl,
-    required this.discussion,
+    List<Message>? discussion,
+    this.isActive = true,
+    this.isValidated = false,
+    ActionRequired action = ActionRequired.none,
     id,
-  }) : super(id: id);
+  })  : this.discussion = discussion ??= [],
+        _action = action,
+        super(id: id);
   Answer.fromSerialized(Map<String, dynamic> map)
-      : status = map['status'],
+      : isActive = map['isActive'],
         text = map['text'],
         photoUrl = map['photoUrl'],
         discussion = map['discussion'],
+        isValidated = map['isValidated'],
+        _action = map['action'],
         super.fromSerialized(map);
-  Answer copyWith({status, text, photoUrl, discussion, id}) {
-    status ??= this.status;
+  Answer copyWith(
+      {isActive, text, photoUrl, discussion, isValidated, action, id}) {
+    isActive ??= this.isActive;
     text ??= this.text;
     photoUrl ??= this.photoUrl;
     discussion ??= this.discussion;
+    isValidated ??= this.isValidated;
+    action ??= _action;
     id ??= this.id;
     return Answer(
-      status: status,
+      isActive: isActive,
       text: text,
       photoUrl: photoUrl,
       discussion: discussion,
+      isValidated: isValidated,
+      action: action,
       id: id,
     );
   }
@@ -40,34 +51,23 @@ class Answer extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() {
     return {
-      'status': status,
+      'isActive': isActive,
       'text': text,
       'photoUrl': photoUrl,
       'discussion': discussion,
+      'isValidated': isValidated,
+      'action': _action,
     };
   }
 
   // Attributes and methods
-  final AnswerStatus status;
+  final bool isActive;
   final String? text;
   final String? photoUrl;
   final List<Message> discussion;
-
-  bool get isActive {
-    return status != AnswerStatus.deactivated;
-  }
-
-  bool get isValidated {
-    return status == AnswerStatus.validated;
-  }
-
-  bool get needTeacherAction {
-    return status == AnswerStatus.needTeacherAction;
-  }
-
-  bool get needStudentAction {
-    return status == AnswerStatus.needStudentAction;
-  }
+  final bool isValidated;
+  final ActionRequired _action;
+  ActionRequired get action => isActive ? _action : ActionRequired.none;
 
   bool isTextAnswered(QuestionType qType) =>
       (qType == QuestionType.text || qType == QuestionType.any) && text != null;

@@ -30,19 +30,19 @@ void prepareDummyData(AllStudents students, AllQuestions questions) {
 
   final benjaminAnswers = AllAnswers(questions: questions);
   benjaminAnswers[questions.fromSection(0)[0]] =
-      Answer(status: AnswerStatus.needStudentAction, discussion: []);
+      Answer(action: ActionRequired.fromStudent);
   benjaminAnswers[questions.fromSection(0)[1]] =
-      Answer(status: AnswerStatus.needStudentAction, discussion: []);
-  benjaminAnswers[questions.fromSection(1)[0]] = Answer(
-      status: AnswerStatus.needTeacherAction,
-      text: 'Ma réponse!',
-      discussion: []);
+      Answer(action: ActionRequired.fromStudent);
+  benjaminAnswers[questions.fromSection(1)[0]] =
+      Answer(action: ActionRequired.fromTeacher, text: 'Ma réponse!');
   benjaminAnswers[questions.fromSection(5)[1]] = Answer(
-      status: AnswerStatus.needStudentAction, text: 'coucou', discussion: []);
+    action: ActionRequired.fromStudent,
+    text: 'coucou',
+  );
   benjaminAnswers[questions.fromSection(5)[1]] =
-      Answer(status: AnswerStatus.validated, text: 'coucou2', discussion: []);
-  benjaminAnswers[questions.fromSection(5)[2]] = Answer(
-      status: AnswerStatus.needTeacherAction, text: 'coucou3', discussion: []);
+      Answer(isValidated: true, text: 'coucou2');
+  benjaminAnswers[questions.fromSection(5)[2]] =
+      Answer(action: ActionRequired.fromTeacher, text: 'coucou3');
 
   students.add(Student(
       firstName: 'Benjamin',
@@ -52,7 +52,7 @@ void prepareDummyData(AllStudents students, AllQuestions questions) {
 
   final aurelieAnswers = AllAnswers(questions: questions);
   aurelieAnswers[questions.fromSection(5)[2]] = Answer(
-      status: AnswerStatus.needTeacherAction,
+      action: ActionRequired.fromTeacher,
       photoUrl: 'https://cdn.photographycourse.net/wp-content/uploads/2014/11/'
           'Landscape-Photography-steps.jpg',
       discussion: [
@@ -76,8 +76,7 @@ void prepareDummyData(AllStudents students, AllQuestions questions) {
         Message(name: 'Aurélie', text: 'Non pas coucou'),
       ]);
   aurelieAnswers[questions.fromSection(5)[1]] = Answer(
-    status: AnswerStatus.validated,
-    discussion: [],
+    isValidated: true,
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
         'Praesent vel turpis quis augue efficitur dignissim sit amet '
         'vel sem. Orci varius natoque penatibus et magnis dis '

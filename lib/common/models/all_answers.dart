@@ -8,7 +8,7 @@ class AllAnswers extends MapSerializable<Answer> {
   // Constructors and (de)serializer
   AllAnswers({required AllQuestions questions}) : super() {
     for (var question in questions) {
-      this[question] = Answer(status: AnswerStatus.deactivated, discussion: []);
+      this[question] = Answer(isActive: false);
     }
   }
   AllAnswers.fromSerialized(map) : super.fromSerialized(map);
@@ -41,8 +41,7 @@ class AllAnswers extends MapSerializable<Answer> {
   int get numberNeedTeacherAction {
     int number = 0;
     forEach((answer) {
-      if (answer.value.isActive &&
-          answer.value.status == AnswerStatus.needTeacherAction) {
+      if (answer.value.action == ActionRequired.fromTeacher) {
         number++;
       }
     });

@@ -89,8 +89,9 @@ class QuestionPart extends StatelessWidget {
 
     return TextStyle(
       color: !answer.isAnswered() ? Colors.red : Colors.black,
-      fontWeight:
-          answer.needTeacherAction ? FontWeight.bold : FontWeight.normal,
+      fontWeight: answer.action == ActionRequired.fromTeacher
+          ? FontWeight.bold
+          : FontWeight.normal,
     );
   }
 
@@ -121,10 +122,7 @@ class QuestionCheckmark extends StatefulWidget {
 class _QuestionCheckmarkState extends State<QuestionCheckmark> {
   void _validateAnswer(Student student, Answer answer) {
     // Reverse the status of the answer
-    final newAnswer = answer.copyWith(
-        status: answer.isValidated
-            ? AnswerStatus.needStudentAction
-            : AnswerStatus.validated);
+    final newAnswer = answer.copyWith(isValidated: !answer.isValidated);
     student.allAnswers[widget.question] = newAnswer;
     setState(() {});
   }
@@ -336,7 +334,7 @@ class _ShowStatus extends StatefulWidget {
 class _ShowStatusState extends State<_ShowStatus> {
   var _isActive = false;
 
-  Future<void> _toggleQuestion(value) async {
+  Future<void> _toggleQuestionActiveState(value) async {
     final students = Provider.of<AllStudents>(context, listen: false);
     final student =
         widget.studentId == null ? null : students[widget.studentId];
@@ -357,30 +355,17 @@ class _ShowStatusState extends State<_ShowStatus> {
     if (!sure!) return;
 
     _isActive = value;
-    var answerStatus =
-        value ? AnswerStatus.needStudentAction : AnswerStatus.deactivated;
-
     if (student != null) {
-      setAnswer(student, answerStatus);
+      student.allAnswers[widget.question] =
+          student.allAnswers[widget.question]!.copyWith(isActive: _isActive);
     } else {
       for (var student in students) {
-        setAnswer(student, answerStatus);
+        student.allAnswers[widget.question] =
+            student.allAnswers[widget.question]!.copyWith(isActive: _isActive);
       }
     }
     setState(() {});
     widget.onStateChange(() {});
-  }
-
-  void setAnswer(student, answerStatus) {
-    // If the answer is flagged notAnswered as it is active, but for some reason
-    // was indeed answered, let know the teacher
-
-    if (answerStatus == AnswerStatus.needStudentAction &&
-        student.allAnswers[widget.question]!.isAnswered()) {
-      answerStatus = AnswerStatus.needTeacherAction;
-    }
-    student.allAnswers[widget.question] =
-        student.allAnswers[widget.question]!.copyWith(status: answerStatus);
   }
 
   @override
@@ -399,7 +384,7 @@ class _ShowStatusState extends State<_ShowStatus> {
             style: const TextStyle(color: Colors.grey),
           ),
         ),
-        Switch(onChanged: _toggleQuestion, value: _isActive),
+        Switch(onChanged: _toggleQuestionActiveState, value: _isActive),
       ],
     );
   }

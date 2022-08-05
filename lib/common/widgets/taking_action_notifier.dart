@@ -24,7 +24,7 @@ class TakingActionNotifier extends StatelessWidget {
             left: left,
             top: top,
             child: Container(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
                 color: Colors.blue,
                 shape: BoxShape.circle,
@@ -32,8 +32,10 @@ class TakingActionNotifier extends StatelessWidget {
               ),
               child: Text(
                 title ?? "",
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20),
               ),
             ),
           ),

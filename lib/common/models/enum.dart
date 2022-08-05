@@ -2,11 +2,10 @@ enum Target { none, individual, all }
 
 enum QuestionType { photo, text, any }
 
-enum AnswerStatus {
-  deactivated,
-  needStudentAction,
-  needTeacherAction,
-  validated
+enum ActionRequired {
+  none,
+  fromStudent,
+  fromTeacher,
 }
 
 enum LoginType { teacher, student }

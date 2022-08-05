@@ -36,9 +36,8 @@ class AllQuestions extends ListProvided<Question> with Section {
               currentStudent == null ||
               student.id == currentStudent.id);
       student.allAnswers[question] = Answer(
-          status: isActive
-              ? AnswerStatus.needStudentAction
-              : AnswerStatus.deactivated,
+          isActive: isActive,
+          action: ActionRequired.fromStudent,
           discussion: []);
     }
   }
