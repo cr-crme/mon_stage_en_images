@@ -7,12 +7,14 @@ class TakingActionNotifier extends StatelessWidget {
     this.title,
     this.left,
     this.top,
+    this.borderColor = Colors.white,
   }) : super(key: key);
 
   final Widget child;
   final String? title;
   final double? left;
   final double? top;
+  final Color borderColor;
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +30,14 @@ class TakingActionNotifier extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.blue,
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 2),
+                border: Border.all(color: borderColor, width: 2),
               ),
               child: Text(
                 title ?? "",
                 style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 20),
+                    fontSize: 18),
               ),
             ),
           ),
