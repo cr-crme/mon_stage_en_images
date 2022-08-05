@@ -5,6 +5,7 @@ import './section_main_page.dart';
 import './section_page.dart';
 import './widgets/metier_page_navigator.dart';
 import './widgets/new_question_alert_dialog.dart';
+import '../all_students/students_screen.dart';
 import '../../common/widgets/main_drawer.dart';
 import '../../common/models/question.dart';
 import '../../common/models/enum.dart';
@@ -46,7 +47,11 @@ class _StudentScreenState extends State<StudentScreen> {
   }
 
   void _onBackPressed() {
-    if (_currentPage == 0) Navigator.of(context).pop();
+    if (_currentPage == 0) {
+      // Replacement is used to force the redraw of the Notifier.
+      // If the redrawing is ever fixed, this can be replaced by a pop.
+      Navigator.of(context).pushReplacementNamed(StudentsScreen.routeName);
+    }
     onPageChangedRequest(-1);
   }
 

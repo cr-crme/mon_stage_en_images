@@ -11,6 +11,7 @@ import '../../../common/providers/all_students.dart';
 import '../../../common/providers/login_information.dart';
 import '../../../common/widgets/are_you_sure_dialog.dart';
 import '../../../common/widgets/grouped_radio_button.dart';
+import '../../../common/widgets/taking_action_notifier.dart';
 
 class QuestionAndAnswerTile extends StatefulWidget {
   const QuestionAndAnswerTile(
@@ -31,18 +32,24 @@ class QuestionAndAnswerTile extends StatefulWidget {
 class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   var _isExpanded = false;
 
+  Student? get _student {
+    final students = Provider.of<AllStudents>(context, listen: false);
+    return widget.studentId == null ? null : students[widget.studentId];
+  }
+
+  Answer? get _answer {
+    final student = _student;
+    return student == null ? null : student.allAnswers[widget.question];
+  }
+
   void _expand() {
     _isExpanded = !_isExpanded;
 
-    final students = Provider.of<AllStudents>(context, listen: false);
-    final student =
-        widget.studentId == null ? null : students[widget.studentId];
-    final answer = student == null ? null : student.allAnswers[widget.question];
+    final answer = _answer;
     if (answer != null && answer.action != ActionRequired.none) {
       // Flag the answer as being actionned
-      student!.allAnswers[widget.question] =
+      _student!.allAnswers[widget.question] =
           answer.copyWith(action: ActionRequired.none);
-      students.pleaseNotifyListener();
     }
 
     setState(() {});
@@ -56,28 +63,35 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Column(
-        children: [
-          ListTile(
-            title: QuestionPart(
-              question: widget.question,
-              studentId: widget.studentId,
+    final answer = _answer;
+    return TakingActionNotifier(
+      title: answer != null && answer.action == ActionRequired.fromTeacher
+          ? ""
+          : "0",
+      left: 10,
+      child: Card(
+        elevation: 5,
+        child: Column(
+          children: [
+            ListTile(
+              title: QuestionPart(
+                question: widget.question,
+                studentId: widget.studentId,
+              ),
+              trailing: QuestionCheckmark(
+                question: widget.question,
+                studentId: widget.studentId,
+              ),
+              onTap: _expand,
             ),
-            trailing: QuestionCheckmark(
-              question: widget.question,
-              studentId: widget.studentId,
-            ),
-            onTap: _expand,
-          ),
-          if (_isExpanded)
-            AnswerPart(
-              widget.question,
-              onStateChange: onStateChange,
-              studentId: widget.studentId,
-            ),
-        ],
+            if (_isExpanded)
+              AnswerPart(
+                widget.question,
+                onStateChange: onStateChange,
+                studentId: widget.studentId,
+              ),
+          ],
+        ),
       ),
     );
   }
