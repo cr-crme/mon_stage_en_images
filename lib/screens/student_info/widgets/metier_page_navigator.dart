@@ -20,6 +20,11 @@ class METIERPageNavigator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: There is a bug here, even using listen to true, there is no update
+    // of the widget so the notifier stays until one changes page. Fix that some
+    // day
+    final questions = Provider.of<AllQuestions>(context, listen: true);
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -37,26 +42,32 @@ class METIERPageNavigator extends StatelessWidget {
         children: [
           _createMETIERButton(context, student,
               sectionIndex: 0,
+              questions: questions,
               isSelected: selected == 0,
               onPressed: () => onPageChanged(0)),
           _createMETIERButton(context, student,
               sectionIndex: 1,
+              questions: questions,
               isSelected: selected == 1,
               onPressed: () => onPageChanged(1)),
           _createMETIERButton(context, student,
               sectionIndex: 2,
+              questions: questions,
               isSelected: selected == 2,
               onPressed: () => onPageChanged(2)),
           _createMETIERButton(context, student,
               sectionIndex: 3,
+              questions: questions,
               isSelected: selected == 3,
               onPressed: () => onPageChanged(3)),
           _createMETIERButton(context, student,
               sectionIndex: 4,
+              questions: questions,
               isSelected: selected == 4,
               onPressed: () => onPageChanged(4)),
           _createMETIERButton(context, student,
               sectionIndex: 5,
+              questions: questions,
               isSelected: selected == 5,
               onPressed: () => onPageChanged(5)),
         ],
@@ -64,11 +75,16 @@ class METIERPageNavigator extends StatelessWidget {
     );
   }
 
-  Widget _createMETIERButton(BuildContext context, Student? student,
-      {required sectionIndex, required isSelected, required onPressed}) {
-    final questions = Provider.of<AllQuestions>(context, listen: false)
-        .fromSection(sectionIndex);
-    final answers = student?.allAnswers.fromQuestions(questions);
+  Widget _createMETIERButton(
+    BuildContext context,
+    Student? student, {
+    required questions,
+    required sectionIndex,
+    required isSelected,
+    required onPressed,
+  }) {
+    final answers =
+        student?.allAnswers.fromQuestions(questions.fromSection(sectionIndex));
 
     return TakingActionNotifier(
       left: 8,

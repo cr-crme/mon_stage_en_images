@@ -38,10 +38,11 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     final student =
         widget.studentId == null ? null : students[widget.studentId];
     final answer = student == null ? null : student.allAnswers[widget.question];
-    if (answer != null) {
+    if (answer != null && answer.action != ActionRequired.none) {
       // Flag the answer as being actionned
       student!.allAnswers[widget.question] =
           answer.copyWith(action: ActionRequired.none);
+      students.pleaseNotifyListener();
     }
 
     setState(() {});

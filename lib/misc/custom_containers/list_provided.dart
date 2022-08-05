@@ -31,4 +31,8 @@ abstract class ListProvided<T> extends ListSerializable<T> with ChangeNotifier {
     super.remove(value);
     if (notify) notifyListeners();
   }
+
+  void pleaseNotifyListener() {
+    notifyListeners();
+  }
 }
