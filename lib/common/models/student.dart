@@ -60,7 +60,7 @@ class Student extends ItemSerializable {
   int get nbQuestionsAnswered {
     int sum = 0;
     for (var element in allAnswers) {
-      sum += element.value.isAnswered() ? 1 : 0;
+      sum += element.value.isAnswered ? 1 : 0;
     }
     return sum;
   }

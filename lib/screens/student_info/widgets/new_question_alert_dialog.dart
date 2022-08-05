@@ -21,7 +21,6 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
   final _formKey = GlobalKey<FormState>();
   String? _text;
   Target _target = Target.all;
-  QuestionType _questionType = QuestionType.photo;
 
   void _finalize(BuildContext context, {bool hasCancelled = false}) {
     if (hasCancelled) {
@@ -34,19 +33,14 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
     }
     _formKey.currentState!.save();
 
-    var question = Question(_text!,
-        type: _questionType, section: widget.section, defaultTarget: _target);
+    var question =
+        Question(_text!, section: widget.section, defaultTarget: _target);
 
     Navigator.pop(context, question);
   }
 
   void _setTarget(value) {
     _target = value;
-    setState(() {});
-  }
-
-  void _setQuestionType(value) {
-    _questionType = value;
     setState(() {});
   }
 
@@ -61,9 +55,6 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _showQuestionTextInput(),
-              const SizedBox(height: 25),
-              const Text('Le type de la question est :'),
-              _showQuestionType(context),
               const SizedBox(height: 25),
               const Text('Activer la question pour :'),
               _showAddTo(context),
@@ -120,24 +111,6 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
             value: Target.all,
             groupValue: _target,
             onChanged: _setTarget),
-      ],
-    );
-  }
-
-  Row _showQuestionType(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        GroupedRadioButton<QuestionType>(
-            title: const Text('Texte'),
-            value: QuestionType.text,
-            groupValue: _questionType,
-            onChanged: _setQuestionType),
-        GroupedRadioButton<QuestionType>(
-            title: const Text('Photo'),
-            value: QuestionType.photo,
-            groupValue: _questionType,
-            onChanged: _setQuestionType),
       ],
     );
   }

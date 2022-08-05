@@ -9,24 +9,15 @@ import './common/providers/all_questions.dart';
 import './common/providers/all_students.dart';
 
 void prepareDummyData(AllStudents students, AllQuestions questions) {
-  questions.add(Question('Photo 1',
-      type: QuestionType.photo, section: 0, defaultTarget: Target.none));
-  questions.add(Question('Texte 1',
-      type: QuestionType.text, section: 0, defaultTarget: Target.none));
-  questions.add(Question('Texte 2',
-      type: QuestionType.text, section: 1, defaultTarget: Target.none));
-  questions.add(Question('Photo 2',
-      type: QuestionType.photo, section: 2, defaultTarget: Target.none));
-  questions.add(Question('Photo 3',
-      type: QuestionType.photo, section: 3, defaultTarget: Target.none));
-  questions.add(Question('Photo 4',
-      type: QuestionType.photo, section: 4, defaultTarget: Target.none));
-  questions.add(Question('Photo 5',
-      type: QuestionType.photo, section: 5, defaultTarget: Target.none));
-  questions.add(Question('Texte 3',
-      type: QuestionType.text, section: 5, defaultTarget: Target.none));
-  questions.add(Question('Photo 6',
-      type: QuestionType.photo, section: 5, defaultTarget: Target.none));
+  questions.add(Question('Photo 1', section: 0, defaultTarget: Target.none));
+  questions.add(Question('Texte 1', section: 0, defaultTarget: Target.none));
+  questions.add(Question('Texte 2', section: 1, defaultTarget: Target.none));
+  questions.add(Question('Photo 2', section: 2, defaultTarget: Target.none));
+  questions.add(Question('Photo 3', section: 3, defaultTarget: Target.none));
+  questions.add(Question('Photo 4', section: 4, defaultTarget: Target.none));
+  questions.add(Question('Photo 5', section: 5, defaultTarget: Target.none));
+  questions.add(Question('Texte 3', section: 5, defaultTarget: Target.none));
+  questions.add(Question('Photo 6', section: 5, defaultTarget: Target.none));
 
   final benjaminAnswers = AllAnswers(questions: questions);
   benjaminAnswers[questions.fromSection(0)[0]] =
@@ -34,15 +25,12 @@ void prepareDummyData(AllStudents students, AllQuestions questions) {
   benjaminAnswers[questions.fromSection(0)[1]] =
       Answer(action: ActionRequired.fromStudent);
   benjaminAnswers[questions.fromSection(1)[0]] =
-      Answer(action: ActionRequired.fromTeacher, text: 'Ma réponse!');
-  benjaminAnswers[questions.fromSection(5)[1]] = Answer(
-    action: ActionRequired.fromStudent,
-    text: 'coucou',
-  );
+      Answer(action: ActionRequired.fromTeacher);
   benjaminAnswers[questions.fromSection(5)[1]] =
-      Answer(isValidated: true, text: 'coucou2');
+      Answer(action: ActionRequired.fromStudent);
+  benjaminAnswers[questions.fromSection(5)[1]] = Answer(isValidated: true);
   benjaminAnswers[questions.fromSection(5)[2]] =
-      Answer(action: ActionRequired.fromTeacher, text: 'coucou3');
+      Answer(action: ActionRequired.fromTeacher);
 
   students.add(Student(
       firstName: 'Benjamin',
@@ -75,19 +63,7 @@ void prepareDummyData(AllStudents students, AllQuestions questions) {
         Message(name: 'Prof', text: 'Coucou'),
         Message(name: 'Aurélie', text: 'Non pas coucou'),
       ]);
-  aurelieAnswers[questions.fromSection(5)[1]] = Answer(
-    isValidated: true,
-    text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
-        'Praesent vel turpis quis augue efficitur dignissim sit amet '
-        'vel sem. Orci varius natoque penatibus et magnis dis '
-        'parturient montes, nascetur ridiculus mus. Aliquam erat '
-        'volutpat. Quisque metus velit, lacinia ut lorem euismod, '
-        'rhoncus maximus erat. Phasellus sapien leo, consectetur eget '
-        'viverra id, molestie in leo. Nam vitae sapien augue. Nulla '
-        'pulvinar, lorem sit amet bibendum feugiat, dui odio convallis '
-        'ligula, nec dapibus velit mi a urna. Donec sit amet '
-        'risus lacus.',
-  );
+  aurelieAnswers[questions.fromSection(5)[1]] = Answer(isValidated: true);
 
   students.add(Student(
       firstName: 'Aurélie',

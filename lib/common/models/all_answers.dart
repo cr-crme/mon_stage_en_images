@@ -31,9 +31,7 @@ class AllAnswers extends MapSerializable<Answer> {
   int get numberAnswered {
     int answered = 0;
     forEach((answer) {
-      if (answer.value.isActive && answer.value.isAnswered()) {
-        answered++;
-      }
+      if (answer.value.isAnswered) answered++;
     });
     return answered;
   }
@@ -73,46 +71,20 @@ class AllAnswers extends MapSerializable<Answer> {
     return out;
   }
 
-  AllQuestions answeredActiveQuestions(AllQuestions questions) {
+  AllQuestions answeredQuestions(AllQuestions questions) {
     var out = AllQuestions();
     for (var question in questions) {
       final answer = this[question]!;
-      if (answer.isActive && answer.isAnswered()) {
-        out.add(question);
-      }
+      if (answer.isAnswered) out.add(question);
     }
     return out;
   }
 
-  AllQuestions unansweredActiveQuestions(AllQuestions questions) {
+  AllQuestions unansweredQuestions(AllQuestions questions) {
     var out = AllQuestions();
     for (var question in questions) {
       final answer = this[question]!;
-      if (answer.isActive && !answer.isAnswered()) {
-        out.add(question);
-      }
-    }
-    return out;
-  }
-
-  AllAnswers answeredActiveAnswers(AllQuestions questions) {
-    var out = AllAnswers(questions: AllQuestions());
-    for (var question in questions) {
-      final answer = this[question]!;
-      if (answer.isActive && answer.isAnswered()) {
-        out[question] = answer;
-      }
-    }
-    return out;
-  }
-
-  AllAnswers unansweredActiveAnswers(AllQuestions questions) {
-    var out = AllAnswers(questions: AllQuestions());
-    for (var question in questions) {
-      final answer = this[question]!;
-      if (answer.isActive && !answer.isAnswered()) {
-        out[question] = answer;
-      }
+      if (!answer.isAnswered) out.add(question);
     }
     return out;
   }

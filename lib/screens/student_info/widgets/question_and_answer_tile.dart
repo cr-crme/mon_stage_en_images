@@ -6,11 +6,9 @@ import '../../../common/models/answer.dart';
 import '../../../common/models/enum.dart';
 import '../../../common/models/question.dart';
 import '../../../common/models/student.dart';
-import '../../../common/providers/all_questions.dart';
 import '../../../common/providers/all_students.dart';
 import '../../../common/providers/login_information.dart';
 import '../../../common/widgets/are_you_sure_dialog.dart';
-import '../../../common/widgets/grouped_radio_button.dart';
 import '../../../common/widgets/taking_action_notifier.dart';
 
 class QuestionAndAnswerTile extends StatefulWidget {
@@ -113,7 +111,7 @@ class QuestionPart extends StatelessWidget {
     }
 
     return TextStyle(
-      color: !answer.isAnswered() ? Colors.red : Colors.black,
+      color: !answer.isAnswered ? Colors.red : Colors.black,
       fontWeight: answer.action == ActionRequired.fromTeacher
           ? FontWeight.bold
           : FontWeight.normal,
@@ -209,15 +207,7 @@ class AnswerPart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (studentId == null) _QuestionTypeChooser(question: question),
-          if (isActive &&
-              question.type == QuestionType.photo &&
-              studentId != null)
-            _showPhoto(userIsStudent, answer),
-          if (isActive &&
-              studentId != null &&
-              question.type == QuestionType.text)
-            _showWrittenAnswer(userIsStudent, answer),
+          if (isActive && studentId != null) _showPhoto(userIsStudent, answer),
           if (isActive && studentId != null) const SizedBox(height: 12),
           if (isActive && studentId != null) DiscussionListView(answer: answer),
           if (userIsStudent) const SizedBox(height: 15),
@@ -264,77 +254,6 @@ class AnswerPart extends StatelessWidget {
               ),
       ],
     );
-  }
-
-  Widget _showWrittenAnswer(bool userIsStudent, answer) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const Text('Réponse écrite : ', style: TextStyle(color: Colors.grey)),
-      const SizedBox(height: 4),
-      // TODO: Add the logic to add text when user is a student
-      answer!.text == null
-          ? (userIsStudent
-              ? const Center(
-                  child: ElevatedButton(
-                      onPressed: null, child: Text('Écrire une réponse')),
-                )
-              : const Center(
-                  child: Text('En attente de la réponse de l\'étudiant',
-                      style: TextStyle(color: Colors.red))))
-          : Container(
-              padding: const EdgeInsets.only(left: 15),
-              child: Row(
-                children: [Flexible(child: Text(answer!.text!.toString()))],
-              ),
-            )
-    ]);
-  }
-}
-
-class _QuestionTypeChooser extends StatefulWidget {
-  const _QuestionTypeChooser({
-    Key? key,
-    required this.question,
-  }) : super(key: key);
-
-  final Question question;
-
-  @override
-  State<_QuestionTypeChooser> createState() => _QuestionTypeChooserState();
-}
-
-class _QuestionTypeChooserState extends State<_QuestionTypeChooser> {
-  late QuestionType _questionType = QuestionType.photo;
-
-  @override
-  Widget build(BuildContext context) {
-    _questionType = widget.question.type;
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Flexible(child: Text('Le type de question est : ')),
-        GroupedRadioButton<QuestionType>(
-          title: const Text('Texte'),
-          value: QuestionType.text,
-          groupValue: _questionType,
-          onChanged: (value) => _setQuestionType(context, value),
-        ),
-        GroupedRadioButton<QuestionType>(
-          title: const Text('Photo'),
-          value: QuestionType.photo,
-          groupValue: _questionType,
-          onChanged: (value) => _setQuestionType(context, value),
-        ),
-      ],
-    );
-  }
-
-  void _setQuestionType(BuildContext context, value) async {
-    final questions = Provider.of<AllQuestions>(context, listen: false);
-    questions[widget.question] = widget.question.copyWith(type: value);
-
-    _questionType = value;
-    setState(() {});
   }
 }
 

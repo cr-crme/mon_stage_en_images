@@ -36,8 +36,8 @@ class SectionPage extends StatelessWidget {
           .fromSection(sectionIndex);
       student = allStudents[studentId];
       answers = student.allAnswers.fromQuestions(questions);
-      answeredQuestions = answers.answeredActiveQuestions(questions);
-      unansweredQuestions = answers.unansweredActiveQuestions(questions);
+      answeredQuestions = answers.answeredQuestions(questions);
+      unansweredQuestions = answers.unansweredQuestions(questions);
     } else {
       student = null;
       answeredQuestions = Provider.of<AllQuestions>(context, listen: false)
