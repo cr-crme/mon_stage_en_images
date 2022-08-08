@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../common/models/enum.dart';
 import '../../../common/models/question.dart';
 import '../../../common/models/student.dart';
+import '../../../common/widgets/are_you_sure_dialog.dart';
 
 class NewQuestionAlertDialog extends StatefulWidget {
   const NewQuestionAlertDialog({
@@ -10,13 +11,13 @@ class NewQuestionAlertDialog extends StatefulWidget {
     required this.section,
     required this.student,
     required this.title,
-    required this.canDelete,
+    required this.deleteCallback,
   }) : super(key: key);
 
   final int section;
   final Student? student;
   final String? title;
-  final bool canDelete;
+  final Function? deleteCallback;
 
   @override
   State<NewQuestionAlertDialog> createState() => _NewQuestionAlertDialogState();
@@ -66,10 +67,29 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
           ),
           onPressed: () => _finalize(context, hasCancelled: true),
         ),
-        if (widget.title != null && widget.canDelete)
-          const IconButton(onPressed: null, icon: Icon(Icons.delete)),
+        if (widget.title != null && widget.deleteCallback != null)
+          IconButton(
+              onPressed: _confirmDeleting, icon: const Icon(Icons.delete)),
       ],
     );
+  }
+
+  Future<void> _confirmDeleting() async {
+    final sure = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const AreYouSureDialog(
+          title: 'Suppression d\'une question',
+          content: 'Êtes-vous certain(e) de vouloir supprimer cette question?',
+        );
+      },
+    );
+    if (!sure! || !mounted) return;
+
+    widget.deleteCallback!();
+    Navigator.pop(context);
+    return;
   }
 
   TextFormField _showQuestionTextInput() {

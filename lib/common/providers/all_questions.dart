@@ -50,7 +50,7 @@ class AllQuestions extends ListProvided<Question> with Section {
     required AllStudents students,
     Student? currentStudent,
   }) {
-    replace(question);
+    replace(question, notify: notify);
 
     for (var student in students) {
       var answer = student.allAnswers[question]!;
@@ -58,6 +58,18 @@ class AllQuestions extends ListProvided<Question> with Section {
           actionRequired: answer.isActive
               ? ActionRequired.fromStudent
               : ActionRequired.none);
+    }
+  }
+
+  void removeToAll(
+    Question question, {
+    bool notify = true,
+    required AllStudents students,
+  }) {
+    remove(question, notify: notify);
+
+    for (var student in students) {
+      student.allAnswers.remove(question);
     }
   }
 

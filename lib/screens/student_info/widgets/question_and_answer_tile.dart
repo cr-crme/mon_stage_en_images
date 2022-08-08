@@ -75,7 +75,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     setState(() {});
   }
 
-  Future<void> _modifyQuestion() async {
+  Future<void> _addOrModifyQuestion() async {
     final questions = Provider.of<AllQuestions>(context, listen: false);
     final students = Provider.of<AllStudents>(context, listen: false);
     final currentStudent =
@@ -88,7 +88,9 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
         section: widget.sectionIndex,
         student: currentStudent,
         title: widget.question?.text,
-        canDelete: widget.questionView == QuestionView.modifyForAllStudents,
+        deleteCallback: widget.questionView == QuestionView.modifyForAllStudents
+            ? _deleteQuestionCallback
+            : null,
       ),
     );
     if (question == null) return;
@@ -101,6 +103,12 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
       questions.modifyToAll(newQuestion,
           students: students, currentStudent: currentStudent);
     }
+  }
+
+  void _deleteQuestionCallback() {
+    final questions = Provider.of<AllQuestions>(context, listen: false);
+    final students = Provider.of<AllStudents>(context, listen: false);
+    questions.removeToAll(widget.question!, students: students);
   }
 
   void onStateChange(VoidCallback func) {
@@ -129,7 +137,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
                   ? null
                   : widget.question == null
                       ? QuestionAddButton(
-                          newQuestionCallback: _modifyQuestion,
+                          newQuestionCallback: _addOrModifyQuestion,
                         )
                       : widget.questionView != QuestionView.normal
                           ? QuestionActivatedState(
@@ -144,7 +152,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
                             ),
               onTap: widget.questionView == QuestionView.normal
                   ? _expand
-                  : _modifyQuestion,
+                  : _addOrModifyQuestion,
             ),
             if (_isExpanded && widget.questionView == QuestionView.normal)
               AnswerPart(
