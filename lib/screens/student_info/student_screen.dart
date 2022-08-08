@@ -4,13 +4,10 @@ import 'package:provider/provider.dart';
 import 'main_metier_page.dart';
 import 'question_and_answer_page.dart';
 import 'widgets/metier_app_bar.dart';
-import './widgets/new_question_alert_dialog.dart';
 import '../all_students/students_screen.dart';
 import '../../common/widgets/main_drawer.dart';
-import '../../common/models/question.dart';
 import '../../common/models/enum.dart';
 import '../../common/models/student.dart';
-import '../../common/providers/all_students.dart';
 import '../../common/providers/all_questions.dart';
 import '../../common/providers/login_information.dart';
 
@@ -24,13 +21,33 @@ class StudentScreen extends StatefulWidget {
 }
 
 class _StudentScreenState extends State<StudentScreen> {
+  late final LoginType _loginType;
+  late final Student? _student;
+  QuestionView _questionView = QuestionView.normal;
+
   final _pageController = PageController();
   var _currentPage = 0;
-  VoidCallback? _newQuestionCallback;
+  VoidCallback? _switchModeCallback;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _loginType =
+        Provider.of<LoginInformation>(context, listen: false).loginType;
+    _student = ModalRoute.of(context)!.settings.arguments as Student?;
+    _questionView = _loginType == LoginType.teacher && _student == null
+        ? QuestionView.modifyForAllStudents
+        : QuestionView.normal;
+  }
 
   void onPageChanged(BuildContext context, int page) {
     _currentPage = page;
-    _newQuestionCallback = page > 0 ? () => _newQuestion(context) : null;
+    _switchModeCallback = _loginType == LoginType.student ||
+            _questionView == QuestionView.modifyForAllStudents ||
+            page < 1
+        ? null
+        : () => _switchToQuestionManagerMode(context);
     setState(() {});
   }
 
@@ -59,26 +76,17 @@ class _StudentScreenState extends State<StudentScreen> {
     setState(func);
   }
 
-  Future<void> _newQuestion(BuildContext context) async {
-    final questions = Provider.of<AllQuestions>(context, listen: false);
-    final students = Provider.of<AllStudents>(context, listen: false);
-    final currentStudent =
-        ModalRoute.of(context)!.settings.arguments as Student?;
+  void _switchToQuestionManagerMode(BuildContext context) {
+    if (_loginType == LoginType.student ||
+        _questionView == QuestionView.modifyForAllStudents) return;
 
-    final question = await showDialog<Question>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) => NewQuestionAlertDialog(
-          section: _currentPage - 1, student: currentStudent),
-    );
-    if (question == null) return;
-    questions.addToAll(question,
-        students: students, currentStudent: currentStudent);
-
+    _questionView = _questionView == QuestionView.normal
+        ? QuestionView.modifyForOneStudent
+        : QuestionView.normal;
     setState(() {});
   }
 
-  AppBar _setAppBar(bool userIsStudent, Student? student) {
+  AppBar _setAppBar(LoginType loginType, Student? student) {
     final currentTheme = Theme.of(context).textTheme.titleLarge!;
     final onPrimaryColor = Theme.of(context).colorScheme.onPrimary;
 
@@ -94,32 +102,32 @@ class _StudentScreenState extends State<StudentScreen> {
             ),
         ],
       ),
-      leading: userIsStudent ? null : BackButton(onPressed: _onBackPressed),
-      actions: userIsStudent
+      leading: loginType == LoginType.student
           ? null
-          : [
+          : BackButton(onPressed: _onBackPressed),
+      actions: _switchModeCallback != null
+          ? [
               IconButton(
-                  onPressed: _newQuestionCallback, icon: const Icon(Icons.add))
-            ],
+                  onPressed: _switchModeCallback,
+                  icon: Icon(_questionView != QuestionView.normal
+                      ? Icons.save_alt
+                      : Icons.edit_rounded))
+            ]
+          : null,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final userIsStudent =
-        Provider.of<LoginInformation>(context, listen: false).loginType ==
-            LoginType.student;
-    var student = ModalRoute.of(context)!.settings.arguments as Student?;
-
     return Consumer<AllQuestions>(builder: (context, questions, child) {
       return Scaffold(
-        appBar: _setAppBar(userIsStudent, student),
+        appBar: _setAppBar(_loginType, _student),
         body: Column(
           children: [
             MetierAppBar(
               selected: _currentPage - 1,
               onPageChanged: onPageChangedRequest,
-              student: student,
+              student: _student,
             ),
             Expanded(
               child: PageView(
@@ -127,25 +135,51 @@ class _StudentScreenState extends State<StudentScreen> {
                 onPageChanged: (value) => onPageChanged(context, value),
                 children: [
                   MainMetierPage(
-                      student: student, onPageChanged: onPageChangedRequest),
-                  QuestionAndAnswerPage(0,
-                      studentId: student?.id, onStateChange: onStateChange),
-                  QuestionAndAnswerPage(1,
-                      studentId: student?.id, onStateChange: onStateChange),
-                  QuestionAndAnswerPage(2,
-                      studentId: student?.id, onStateChange: onStateChange),
-                  QuestionAndAnswerPage(3,
-                      studentId: student?.id, onStateChange: onStateChange),
-                  QuestionAndAnswerPage(4,
-                      studentId: student?.id, onStateChange: onStateChange),
-                  QuestionAndAnswerPage(5,
-                      studentId: student?.id, onStateChange: onStateChange),
+                      student: _student, onPageChanged: onPageChangedRequest),
+                  QuestionAndAnswerPage(
+                    0,
+                    studentId: _student?.id,
+                    onStateChange: onStateChange,
+                    questionView: _questionView,
+                  ),
+                  QuestionAndAnswerPage(
+                    1,
+                    studentId: _student?.id,
+                    onStateChange: onStateChange,
+                    questionView: _questionView,
+                  ),
+                  QuestionAndAnswerPage(
+                    2,
+                    studentId: _student?.id,
+                    onStateChange: onStateChange,
+                    questionView: _questionView,
+                  ),
+                  QuestionAndAnswerPage(
+                    3,
+                    studentId: _student?.id,
+                    onStateChange: onStateChange,
+                    questionView: _questionView,
+                  ),
+                  QuestionAndAnswerPage(
+                    4,
+                    studentId: _student?.id,
+                    onStateChange: onStateChange,
+                    questionView: _questionView,
+                  ),
+                  QuestionAndAnswerPage(
+                    5,
+                    studentId: _student?.id,
+                    onStateChange: onStateChange,
+                    questionView: _questionView,
+                  ),
                 ],
               ),
             ),
           ],
         ),
-        drawer: userIsStudent ? MainDrawer(student: student) : null,
+        drawer: _loginType == LoginType.student
+            ? MainDrawer(student: _student)
+            : null,
       );
     });
   }

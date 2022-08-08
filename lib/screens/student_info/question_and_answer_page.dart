@@ -12,20 +12,23 @@ import '../../common/providers/login_information.dart';
 
 class QuestionAndAnswerPage extends StatelessWidget {
   const QuestionAndAnswerPage(this.sectionIndex,
-      {Key? key, required this.studentId, required this.onStateChange})
+      {Key? key,
+      required this.studentId,
+      required this.onStateChange,
+      required this.questionView})
       : super(key: key);
 
   static const routeName = '/question-and-answer-page';
   final int sectionIndex;
   final String? studentId;
   final Function(VoidCallback) onStateChange;
+  final QuestionView questionView;
 
   @override
   Widget build(BuildContext context) {
     final allStudents = Provider.of<AllStudents>(context, listen: false);
-    final userIsStudent =
-        Provider.of<LoginInformation>(context, listen: false).loginType ==
-            LoginType.student;
+    final loginType =
+        Provider.of<LoginInformation>(context, listen: false).loginType;
     late Student? student;
 
     late final AllAnswers? answers;
@@ -46,67 +49,65 @@ class QuestionAndAnswerPage extends StatelessWidget {
     }
 
     final answeredSection = _buildQuestionSection(context,
-        title: Section.name(sectionIndex),
-        titleColor: Colors.black,
         questions: answeredQuestions,
-        titleIfNothing: 'Pas de questions à répondre',
-        topSpacing: 15);
+        titleIfNothing: questionView == QuestionView.normal
+            ? 'Aucune question répondue'
+            : '');
     final unansweredSection = _buildQuestionSection(context,
-        title: '',
-        titleColor: Colors.black,
-        questions: unansweredQuestions,
-        titleIfNothing: '',
-        topSpacing: 15);
+        questions: unansweredQuestions, titleIfNothing: '');
 
-    final firstSection = userIsStudent ? unansweredSection : answeredSection;
-    final secondSection = userIsStudent
+    final firstSection =
+        loginType == LoginType.student ? unansweredSection : answeredSection;
+    final secondSection = loginType == LoginType.student
         ? answeredSection
-        : (student == null ? [] : unansweredSection);
+        : (student == null ? Container() : unansweredSection);
 
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          ...firstSection,
-          ...secondSection,
+          Container(
+            padding: const EdgeInsets.only(left: 5, top: 15),
+            child: Text(Section.name(sectionIndex),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge!
+                    .copyWith(color: Colors.black)),
+          ),
+          if (questionView != QuestionView.normal) const SizedBox(height: 10),
+          if (questionView != QuestionView.normal)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                    'Activer pour ${studentId == null ? 'tous' : 'cet élève'}'),
+                const SizedBox(width: 25)
+              ],
+            ),
+          firstSection,
+          secondSection,
         ],
       ),
     );
   }
 
-  List<Widget> _buildQuestionSection(
-    BuildContext context, {
-    required String? title,
-    required Color titleColor,
-    required AllQuestions questions,
-    required String titleIfNothing,
-    required double topSpacing,
-  }) {
-    return [
-      if (title != null)
-        Container(
-          padding: EdgeInsets.only(left: 5, top: topSpacing),
-          child: Text(title,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge!
-                  .copyWith(color: titleColor)),
-        ),
-      questions.isNotEmpty
-          ? ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemBuilder: (context, index) => QuestionAndAnswerTile(
-                questions[index],
-                studentId: studentId,
-                onStateChange: onStateChange,
-              ),
-              itemCount: questions.length,
-            )
-          : Container(
-              padding: const EdgeInsets.only(top: 10),
-              child: Text(titleIfNothing),
+  Widget _buildQuestionSection(BuildContext context,
+      {required AllQuestions questions, required String titleIfNothing}) {
+    return questions.isNotEmpty
+        ? ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemBuilder: (context, index) => QuestionAndAnswerTile(
+              questions[index],
+              studentId: studentId,
+              onStateChange: onStateChange,
+              questionView: questionView,
             ),
-    ];
+            itemCount: questions.length,
+          )
+        : Container(
+            padding: const EdgeInsets.only(top: 10, bottom: 30),
+            child: Text(titleIfNothing),
+          );
   }
 }

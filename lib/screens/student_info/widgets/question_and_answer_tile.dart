@@ -7,6 +7,7 @@ import '../../../common/models/enum.dart';
 import '../../../common/models/question.dart';
 import '../../../common/models/student.dart';
 import '../../../common/providers/all_students.dart';
+import '../../../common/providers/login_information.dart';
 import '../../../common/widgets/are_you_sure_dialog.dart';
 import '../../../common/widgets/taking_action_notifier.dart';
 
@@ -16,11 +17,13 @@ class QuestionAndAnswerTile extends StatefulWidget {
     Key? key,
     required this.studentId,
     required this.onStateChange,
+    required this.questionView,
   }) : super(key: key);
 
   final String? studentId;
   final Question question;
   final Function(VoidCallback) onStateChange;
+  final QuestionView questionView;
 
   @override
   State<QuestionAndAnswerTile> createState() => _QuestionAndAnswerTileState();
@@ -29,6 +32,7 @@ class QuestionAndAnswerTile extends StatefulWidget {
 class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   var _isExpanded = false;
 
+  late final LoginType _loginType;
   late final AllStudents _students;
   late final Student? _student;
   Answer? _answer;
@@ -38,6 +42,8 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   void initState() {
     super.initState();
 
+    _loginType =
+        Provider.of<LoginInformation>(context, listen: false).loginType;
     _students = Provider.of<AllStudents>(context, listen: false);
     _student = widget.studentId != null ? _students[widget.studentId] : null;
     _answer = _student?.allAnswers[widget.question];
@@ -87,20 +93,23 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
                 question: widget.question,
                 studentId: widget.studentId,
               ),
-              trailing: widget.studentId == null
-                  ? QuestionActivatedState(
-                      question: widget.question,
-                      studentId: widget.studentId,
-                      initialStatus: _isActive,
-                      onStateChange: onStateChange,
-                    )
-                  : QuestionValidateCheckmark(
-                      question: widget.question,
-                      studentId: widget.studentId!,
-                    ),
-              onTap: widget.studentId == null ? null : _expand,
+              trailing: _loginType == LoginType.student
+                  ? null
+                  : widget.questionView != QuestionView.normal
+                      ? QuestionActivatedState(
+                          question: widget.question,
+                          studentId: widget.studentId,
+                          initialStatus: _isActive,
+                          onStateChange: onStateChange,
+                        )
+                      : QuestionValidateCheckmark(
+                          question: widget.question,
+                          studentId: widget.studentId!,
+                        ),
+              onTap:
+                  widget.questionView == QuestionView.normal ? _expand : null,
             ),
-            if (_isExpanded)
+            if (_isExpanded && widget.questionView == QuestionView.normal)
               AnswerPart(
                 widget.question,
                 onStateChange: onStateChange,

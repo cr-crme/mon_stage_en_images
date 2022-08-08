@@ -7,3 +7,9 @@ enum ActionRequired {
 }
 
 enum LoginType { teacher, student }
+
+enum QuestionView {
+  normal,
+  modifyForOneStudent,
+  modifyForAllStudents,
+}
