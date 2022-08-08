@@ -71,6 +71,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
       _student!.allAnswers[widget.question] =
           answer.copyWith(actionRequired: ActionRequired.none);
     }
+    _answer = _student!.allAnswers[widget.question];
 
     setState(() {});
   }
