@@ -56,7 +56,11 @@ void prepareDummyData(AllStudents students, AllQuestions questions) {
     Message(name: 'Prof', text: 'Coucou'),
     Message(name: 'Aurélie', text: 'Non pas coucou'),
     Message(name: 'Prof', text: 'Coucou'),
-    Message(name: 'Aurélie', text: 'Non pas coucou'),
+    Message(
+        name: 'Aurélie',
+        text: 'https://cdn.photographycourse.net/wp-content/uploads/2014/11/'
+            'Landscape-Photography-steps.jpg',
+        isPhotoUrl: true),
     Message(name: 'Prof', text: 'Coucou'),
     Message(name: 'Aurélie', text: 'Non pas coucou'),
     Message(name: 'Prof', text: 'Coucou'),

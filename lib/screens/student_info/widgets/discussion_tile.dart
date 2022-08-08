@@ -13,21 +13,33 @@ class DiscussionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Flexible(
-                child: Text(
-              '${discussion.name} : ',
-              style: TextStyle(
-                  color: Colors.grey[600], fontWeight: FontWeight.bold),
-            )),
-            Flexible(child: Text(discussion.text)),
-          ],
-        ),
+        if (discussion.isPhotoUrl) _showNameOfSender(),
+        if (discussion.isPhotoUrl)
+          Container(
+            padding: const EdgeInsets.only(left: 15),
+            child: FutureBuilder(builder: (context, snapshot) {
+              return snapshot.connectionState == ConnectionState.waiting
+                  ? const Center(child: CircularProgressIndicator())
+                  : Image.network(discussion.text, fit: BoxFit.cover);
+            }),
+          ),
+        if (!discussion.isPhotoUrl)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Flexible(child: _showNameOfSender()),
+              Flexible(child: Text(discussion.text)),
+            ],
+          ),
         const SizedBox(height: 10),
       ],
     );
+  }
+
+  Widget _showNameOfSender() {
+    return Text('${discussion.name} : ',
+        style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.bold));
   }
 }
