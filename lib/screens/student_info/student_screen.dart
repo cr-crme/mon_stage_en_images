@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './section_main_page.dart';
-import './section_page.dart';
+import 'main_metier_page.dart';
+import 'question_and_answer_page.dart';
 import './widgets/metier_page_navigator.dart';
 import './widgets/new_question_alert_dialog.dart';
 import '../all_students/students_screen.dart';
@@ -116,7 +116,7 @@ class _StudentScreenState extends State<StudentScreen> {
         appBar: _setAppBar(userIsStudent, student),
         body: Column(
           children: [
-            METIERPageNavigator(
+            MetierPageNavigator(
               selected: _currentPage - 1,
               onPageChanged: onPageChangedRequest,
               student: student,
@@ -126,19 +126,19 @@ class _StudentScreenState extends State<StudentScreen> {
                 controller: _pageController,
                 onPageChanged: (value) => onPageChanged(context, value),
                 children: [
-                  SectionMainPage(
+                  MainMetierPage(
                       student: student, onPageChanged: onPageChangedRequest),
-                  SectionPage(0,
+                  QuestionAndAnswerPage(0,
                       studentId: student?.id, onStateChange: onStateChange),
-                  SectionPage(1,
+                  QuestionAndAnswerPage(1,
                       studentId: student?.id, onStateChange: onStateChange),
-                  SectionPage(2,
+                  QuestionAndAnswerPage(2,
                       studentId: student?.id, onStateChange: onStateChange),
-                  SectionPage(3,
+                  QuestionAndAnswerPage(3,
                       studentId: student?.id, onStateChange: onStateChange),
-                  SectionPage(4,
+                  QuestionAndAnswerPage(4,
                       studentId: student?.id, onStateChange: onStateChange),
-                  SectionPage(5,
+                  QuestionAndAnswerPage(5,
                       studentId: student?.id, onStateChange: onStateChange),
                 ],
               ),

@@ -10,12 +10,12 @@ import '../../common/providers/all_questions.dart';
 import '../../common/providers/all_students.dart';
 import '../../common/providers/login_information.dart';
 
-class SectionPage extends StatelessWidget {
-  const SectionPage(this.sectionIndex,
+class QuestionAndAnswerPage extends StatelessWidget {
+  const QuestionAndAnswerPage(this.sectionIndex,
       {Key? key, required this.studentId, required this.onStateChange})
       : super(key: key);
 
-  static const routeName = '/section-screen';
+  static const routeName = '/question-and-answer-page';
   final int sectionIndex;
   final String? studentId;
   final Function(VoidCallback) onStateChange;

@@ -7,8 +7,8 @@ import '../../../common/models/student.dart';
 import '../../../common/widgets/taking_action_notifier.dart';
 import '../../../common/providers/all_questions.dart';
 
-class SectionTileInStudent extends StatelessWidget {
-  const SectionTileInStudent(this.sectionIndex,
+class MetierTile extends StatelessWidget {
+  const MetierTile(this.sectionIndex,
       {Key? key, required this.student, required this.onTap})
       : super(key: key);
 

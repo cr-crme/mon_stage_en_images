@@ -6,8 +6,8 @@ import '../../../common/models/section.dart';
 import '../../../common/providers/all_questions.dart';
 import '../../../common/widgets/taking_action_notifier.dart';
 
-class METIERPageNavigator extends StatelessWidget {
-  const METIERPageNavigator({
+class MetierPageNavigator extends StatelessWidget {
+  const MetierPageNavigator({
     Key? key,
     required this.selected,
     required this.onPageChanged,
