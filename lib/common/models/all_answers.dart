@@ -21,11 +21,11 @@ class AllAnswers extends MapSerializable<Answer> {
   // Attributes and methods
   int get number => length;
   int get numberActive {
-    int answered = 0;
+    int active = 0;
     forEach((answer) {
-      if (answer.value.isActive) answered++;
+      if (answer.value.isActive) active++;
     });
-    return answered;
+    return active;
   }
 
   int get numberAnswered {
@@ -71,20 +71,24 @@ class AllAnswers extends MapSerializable<Answer> {
     return out;
   }
 
-  AllQuestions answeredQuestions(AllQuestions questions) {
+  AllQuestions answeredQuestions(AllQuestions questions,
+      {bool shouldBeActive = true}) {
     var out = AllQuestions();
     for (var question in questions) {
       final answer = this[question]!;
-      if (answer.isAnswered) out.add(question);
+      var activeState = !shouldBeActive || (shouldBeActive && answer.isActive);
+      if (activeState && answer.isAnswered) out.add(question);
     }
     return out;
   }
 
-  AllQuestions unansweredQuestions(AllQuestions questions) {
+  AllQuestions unansweredQuestions(AllQuestions questions,
+      {bool shouldBeActive = true}) {
     var out = AllQuestions();
     for (var question in questions) {
       final answer = this[question]!;
-      if (!answer.isAnswered) out.add(question);
+      var activeState = !shouldBeActive || (shouldBeActive && answer.isActive);
+      if (activeState && !answer.isAnswered) out.add(question);
     }
     return out;
   }

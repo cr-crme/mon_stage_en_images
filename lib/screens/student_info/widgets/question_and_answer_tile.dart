@@ -44,7 +44,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     _isExpanded = !_isExpanded;
 
     final answer = _answer;
-    if (answer != null && answer.action != ActionRequired.none) {
+    if (answer != null && answer.action == ActionRequired.fromTeacher) {
       // Flag the answer as being actionned
       _student!.allAnswers[widget.question] =
           answer.copyWith(action: ActionRequired.none);

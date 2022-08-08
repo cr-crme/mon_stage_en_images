@@ -49,7 +49,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
         title: Section.name(sectionIndex),
         titleColor: Colors.black,
         questions: answeredQuestions,
-        titleIfNothing: 'Pas de questions répondues',
+        titleIfNothing: 'Pas de questions à répondre',
         topSpacing: 15);
     final unansweredSection = _buildQuestionSection(context,
         title: '',

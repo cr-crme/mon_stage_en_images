@@ -62,7 +62,7 @@ class Answer extends ItemSerializable {
   final bool isValidated;
   final ActionRequired _action;
   ActionRequired get action => isActive ? _action : ActionRequired.none;
-  bool get isAnswered => action != ActionRequired.fromStudent;
+  bool get isAnswered => isActive && action != ActionRequired.fromStudent;
 
   void addMessage(Message message) => discussion.add(message);
 }
