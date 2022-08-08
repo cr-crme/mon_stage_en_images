@@ -5,13 +5,18 @@ import '../../../common/models/question.dart';
 import '../../../common/models/student.dart';
 
 class NewQuestionAlertDialog extends StatefulWidget {
-  const NewQuestionAlertDialog(
-      {Key? key, required this.section, required this.student, this.title})
-      : super(key: key);
+  const NewQuestionAlertDialog({
+    Key? key,
+    required this.section,
+    required this.student,
+    required this.title,
+    required this.canDelete,
+  }) : super(key: key);
 
   final int section;
   final Student? student;
   final String? title;
+  final bool canDelete;
 
   @override
   State<NewQuestionAlertDialog> createState() => _NewQuestionAlertDialogState();
@@ -47,9 +52,9 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
       ),
       actions: <Widget>[
         ElevatedButton(
-          child: const Text('Ajouter',
-              style:
-                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+          child: Text(widget.title == null ? 'Ajouter' : 'Modifier',
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold, color: Colors.white)),
           onPressed: () => _finalize(context),
         ),
         OutlinedButton(
@@ -61,7 +66,7 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
           ),
           onPressed: () => _finalize(context, hasCancelled: true),
         ),
-        if (widget.title != null)
+        if (widget.title != null && widget.canDelete)
           const IconButton(onPressed: null, icon: Icon(Icons.delete)),
       ],
     );

@@ -25,7 +25,7 @@ class QuestionAndAnswerTile extends StatefulWidget {
 
   final int sectionIndex;
   final String? studentId;
-  final Question question;
+  final Question? question;
   final Function(VoidCallback) onStateChange;
   final QuestionView questionView;
 
@@ -85,11 +85,22 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) => NewQuestionAlertDialog(
-          section: widget.sectionIndex, student: currentStudent),
+        section: widget.sectionIndex,
+        student: currentStudent,
+        title: widget.question?.text,
+        canDelete: widget.questionView == QuestionView.modifyForAllStudents,
+      ),
     );
     if (question == null) return;
-    questions.addToAll(question,
-        students: students, currentStudent: currentStudent);
+
+    if (widget.question == null) {
+      questions.addToAll(question,
+          students: students, currentStudent: currentStudent);
+    } else {
+      var newQuestion = widget.question!.copyWith(text: question.text);
+      questions.modifyToAll(newQuestion,
+          students: students, currentStudent: currentStudent);
+    }
   }
 
   void onStateChange(VoidCallback func) {
@@ -116,24 +127,28 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
               ),
               trailing: _loginType == LoginType.student
                   ? null
-                  : widget.questionView != QuestionView.normal
-                      ? QuestionActivatedState(
-                          question: widget.question,
-                          studentId: widget.studentId,
-                          initialStatus: _isActive,
-                          onStateChange: onStateChange,
+                  : widget.question == null
+                      ? QuestionAddButton(
+                          newQuestionCallback: _modifyQuestion,
                         )
-                      : QuestionValidateCheckmark(
-                          question: widget.question,
-                          studentId: widget.studentId!,
-                        ),
+                      : widget.questionView != QuestionView.normal
+                          ? QuestionActivatedState(
+                              question: widget.question!,
+                              studentId: widget.studentId,
+                              initialStatus: _isActive,
+                              onStateChange: onStateChange,
+                            )
+                          : QuestionValidateCheckmark(
+                              question: widget.question!,
+                              studentId: widget.studentId!,
+                            ),
               onTap: widget.questionView == QuestionView.normal
                   ? _expand
                   : _modifyQuestion,
             ),
             if (_isExpanded && widget.questionView == QuestionView.normal)
               AnswerPart(
-                widget.question,
+                widget.question!,
                 onStateChange: onStateChange,
                 studentId: widget.studentId,
               ),
@@ -151,7 +166,7 @@ class QuestionPart extends StatelessWidget {
     required this.studentId,
   }) : super(key: key);
 
-  final Question question;
+  final Question? question;
   final String? studentId;
 
   TextStyle _pickTextStyle(Answer? answer) {
@@ -173,7 +188,20 @@ class QuestionPart extends StatelessWidget {
     final student = studentId == null ? null : students[studentId];
     final answer = student == null ? null : student.allAnswers[question];
 
-    return Text(question.text, style: _pickTextStyle(answer));
+    return Text(question == null ? 'Nouvelle question' : question!.text,
+        style: _pickTextStyle(answer));
+  }
+}
+
+class QuestionAddButton extends StatelessWidget {
+  const QuestionAddButton({Key? key, required this.newQuestionCallback})
+      : super(key: key);
+  final VoidCallback newQuestionCallback;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+        onPressed: newQuestionCallback, icon: const Icon(Icons.add));
   }
 }
 

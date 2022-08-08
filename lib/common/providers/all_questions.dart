@@ -24,10 +24,12 @@ class AllQuestions extends ListProvided<Question> with Section {
     return out;
   }
 
-  void addToAll(Question question,
-      {bool notify = true,
-      required AllStudents students,
-      Student? currentStudent}) {
+  void addToAll(
+    Question question, {
+    bool notify = true,
+    required AllStudents students,
+    Student? currentStudent,
+  }) {
     super.add(question, notify: notify);
 
     for (var student in students) {
@@ -39,6 +41,23 @@ class AllQuestions extends ListProvided<Question> with Section {
           isActive: isActive,
           actionRequired: ActionRequired.fromStudent,
           discussion: []);
+    }
+  }
+
+  void modifyToAll(
+    Question question, {
+    bool notify = true,
+    required AllStudents students,
+    Student? currentStudent,
+  }) {
+    replace(question);
+
+    for (var student in students) {
+      var answer = student.allAnswers[question]!;
+      student.allAnswers[question] = answer.copyWith(
+          actionRequired: answer.isActive
+              ? ActionRequired.fromStudent
+              : ActionRequired.none);
     }
   }
 
