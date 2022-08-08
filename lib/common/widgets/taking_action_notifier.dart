@@ -4,14 +4,14 @@ class TakingActionNotifier extends StatelessWidget {
   const TakingActionNotifier({
     Key? key,
     required this.child,
-    this.title,
+    this.number,
     this.left,
     this.top,
     this.borderColor = Colors.white,
   }) : super(key: key);
 
   final Widget child;
-  final String? title;
+  final int? number;
   final double? left;
   final double? top;
   final Color borderColor;
@@ -21,7 +21,7 @@ class TakingActionNotifier extends StatelessWidget {
     return Stack(
       children: [
         child,
-        if (title != null && title != "0")
+        if (number != null)
           Positioned(
             left: left,
             top: top,
@@ -33,7 +33,7 @@ class TakingActionNotifier extends StatelessWidget {
                 border: Border.all(color: borderColor, width: 2),
               ),
               child: Text(
-                title ?? "",
+                number == 0 ? "" : number.toString(),
                 style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

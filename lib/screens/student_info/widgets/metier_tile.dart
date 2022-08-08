@@ -60,7 +60,7 @@ class MetierTile extends StatelessWidget {
         child: TakingActionNotifier(
           left: 6,
           top: -9,
-          title: needAction.toString(),
+          number: needAction == 0 ? null : needAction,
           child: ListTile(
             leading: Container(
               margin: const EdgeInsets.only(bottom: 2),

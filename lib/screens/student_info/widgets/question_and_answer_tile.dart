@@ -61,9 +61,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   Widget build(BuildContext context) {
     final answer = _answer;
     return TakingActionNotifier(
-      title: answer != null && answer.action == ActionRequired.fromTeacher
-          ? ""
-          : "0",
+      number: answer?.action == ActionRequired.fromTeacher ? 0 : null,
       left: 10,
       child: Card(
         elevation: 5,
@@ -202,7 +200,6 @@ class AnswerPart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (isActive && studentId != null) const SizedBox(height: 12),
           if (isActive && studentId != null) DiscussionListView(answer: answer),
           const SizedBox(height: 15)
         ],

@@ -20,9 +20,9 @@ class MetierAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: There is a bug here, even using listen to true, there is no update
-    // of the widget so the notifier stays until one changes page. Fix that some
-    // day
+    // There is a bug here, even using listen to true, there is no update of the
+    // widget so the takeactionnotifier stays until one changes page.
+    // It was worked around by hiding if the page is selected
     final questions = Provider.of<AllQuestions>(context, listen: true);
 
     return Container(
@@ -40,32 +40,32 @@ class MetierAppBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _createMETIERButton(context, student,
+          _createMetierButton(context, student,
               sectionIndex: 0,
               questions: questions,
               isSelected: selected == 0,
               onPressed: () => onPageChanged(0)),
-          _createMETIERButton(context, student,
+          _createMetierButton(context, student,
               sectionIndex: 1,
               questions: questions,
               isSelected: selected == 1,
               onPressed: () => onPageChanged(1)),
-          _createMETIERButton(context, student,
+          _createMetierButton(context, student,
               sectionIndex: 2,
               questions: questions,
               isSelected: selected == 2,
               onPressed: () => onPageChanged(2)),
-          _createMETIERButton(context, student,
+          _createMetierButton(context, student,
               sectionIndex: 3,
               questions: questions,
               isSelected: selected == 3,
               onPressed: () => onPageChanged(3)),
-          _createMETIERButton(context, student,
+          _createMetierButton(context, student,
               sectionIndex: 4,
               questions: questions,
               isSelected: selected == 4,
               onPressed: () => onPageChanged(4)),
-          _createMETIERButton(context, student,
+          _createMetierButton(context, student,
               sectionIndex: 5,
               questions: questions,
               isSelected: selected == 5,
@@ -75,7 +75,7 @@ class MetierAppBar extends StatelessWidget {
     );
   }
 
-  Widget _createMETIERButton(
+  Widget _createMetierButton(
     BuildContext context,
     Student? student, {
     required questions,
@@ -89,8 +89,10 @@ class MetierAppBar extends StatelessWidget {
     return TakingActionNotifier(
       left: 8,
       top: -7,
-      title:
-          answers == null || answers.numberNeedTeacherAction == 0 ? null : "",
+      number:
+          !isSelected && answers != null && answers.numberNeedTeacherAction > 0
+              ? 0
+              : null,
       child: TextButton(
         onPressed: onPressed,
         style: TextButton.styleFrom(

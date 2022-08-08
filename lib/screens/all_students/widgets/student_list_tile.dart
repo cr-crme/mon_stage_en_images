@@ -18,11 +18,13 @@ class StudentListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: There is a bug here as the main page Notifier does not update
+    // There is a bug here as the main page Notifier does not update
     // For now, it was worked around by forcing the redraw of the page from
     // PushReplacement instead of poping back the page
     return TakingActionNotifier(
-      title: student.allAnswers.numberNeedTeacherAction.toString(),
+      number: student.allAnswers.numberNeedTeacherAction == 0
+          ? null
+          : student.allAnswers.numberNeedTeacherAction,
       top: -6,
       left: 2,
       borderColor: Colors.black,
