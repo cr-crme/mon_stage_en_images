@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'main_metier_page.dart';
 import 'question_and_answer_page.dart';
-import './widgets/metier_page_navigator.dart';
+import 'widgets/metier_app_bar.dart';
 import './widgets/new_question_alert_dialog.dart';
 import '../all_students/students_screen.dart';
 import '../../common/widgets/main_drawer.dart';
@@ -116,7 +116,7 @@ class _StudentScreenState extends State<StudentScreen> {
         appBar: _setAppBar(userIsStudent, student),
         body: Column(
           children: [
-            MetierPageNavigator(
+            MetierAppBar(
               selected: _currentPage - 1,
               onPageChanged: onPageChangedRequest,
               student: student,

@@ -37,7 +37,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
     for (final question in questions) {
       student.allAnswers[question] = Answer(
           isActive: question.defaultTarget == Target.all,
-          action: ActionRequired.fromStudent,
+          actionRequired: ActionRequired.fromStudent,
           discussion: []);
     }
     students.add(student);

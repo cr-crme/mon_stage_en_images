@@ -21,16 +21,16 @@ void prepareDummyData(AllStudents students, AllQuestions questions) {
 
   final benjaminAnswers = AllAnswers(questions: questions);
   benjaminAnswers[questions.fromSection(0)[0]] =
-      Answer(action: ActionRequired.fromStudent);
+      Answer(actionRequired: ActionRequired.fromStudent);
   benjaminAnswers[questions.fromSection(0)[1]] =
-      Answer(action: ActionRequired.fromStudent);
+      Answer(actionRequired: ActionRequired.fromStudent);
   benjaminAnswers[questions.fromSection(1)[0]] =
-      Answer(action: ActionRequired.fromTeacher);
+      Answer(actionRequired: ActionRequired.fromTeacher);
   benjaminAnswers[questions.fromSection(5)[1]] =
-      Answer(action: ActionRequired.fromStudent);
+      Answer(actionRequired: ActionRequired.fromStudent);
   benjaminAnswers[questions.fromSection(5)[1]] = Answer(isValidated: true);
   benjaminAnswers[questions.fromSection(5)[2]] =
-      Answer(action: ActionRequired.fromTeacher);
+      Answer(actionRequired: ActionRequired.fromTeacher);
 
   students.add(Student(
       firstName: 'Benjamin',
@@ -39,30 +39,31 @@ void prepareDummyData(AllStudents students, AllQuestions questions) {
       allAnswers: benjaminAnswers));
 
   final aurelieAnswers = AllAnswers(questions: questions);
-  aurelieAnswers[questions.fromSection(5)[2]] = Answer(
-      action: ActionRequired.fromTeacher,
-      photoUrl: 'https://cdn.photographycourse.net/wp-content/uploads/2014/11/'
-          'Landscape-Photography-steps.jpg',
-      discussion: [
-        Message(name: 'Prof', text: 'Coucou'),
-        Message(name: 'Aurélie', text: 'Non pas coucou'),
-        Message(name: 'Prof', text: 'Coucou'),
-        Message(name: 'Aurélie', text: 'Non pas coucou'),
-        Message(name: 'Prof', text: 'Coucou'),
-        Message(name: 'Aurélie', text: 'Non pas coucou'),
-        Message(name: 'Prof', text: 'Coucou'),
-        Message(name: 'Aurélie', text: 'Non pas coucou'),
-        Message(name: 'Prof', text: 'Coucou'),
-        Message(name: 'Aurélie', text: 'Non pas coucou'),
-        Message(name: 'Prof', text: 'Coucou'),
-        Message(name: 'Aurélie', text: 'Non pas coucou'),
-        Message(name: 'Prof', text: 'Coucou'),
-        Message(name: 'Aurélie', text: 'Non pas coucou'),
-        Message(name: 'Prof', text: 'Coucou'),
-        Message(name: 'Aurélie', text: 'Non pas coucou'),
-        Message(name: 'Prof', text: 'Coucou'),
-        Message(name: 'Aurélie', text: 'Non pas coucou'),
-      ]);
+  aurelieAnswers[questions.fromSection(5)[2]] =
+      Answer(actionRequired: ActionRequired.fromTeacher, discussion: [
+    Message(name: 'Prof', text: 'Coucou'),
+    Message(name: 'Aurélie', text: 'Non pas coucou'),
+    Message(name: 'Prof', text: 'Coucou'),
+    Message(
+        name: 'Aurélie',
+        text: 'https://cdn.photographycourse.net/wp-content/uploads/2014/11/'
+            'Landscape-Photography-steps.jpg',
+        isPhotoUrl: true),
+    Message(name: 'Prof', text: 'Coucou'),
+    Message(name: 'Aurélie', text: 'Non pas coucou'),
+    Message(name: 'Prof', text: 'Coucou'),
+    Message(name: 'Aurélie', text: 'Non pas coucou'),
+    Message(name: 'Prof', text: 'Coucou'),
+    Message(name: 'Aurélie', text: 'Non pas coucou'),
+    Message(name: 'Prof', text: 'Coucou'),
+    Message(name: 'Aurélie', text: 'Non pas coucou'),
+    Message(name: 'Prof', text: 'Coucou'),
+    Message(name: 'Aurélie', text: 'Non pas coucou'),
+    Message(name: 'Prof', text: 'Coucou'),
+    Message(name: 'Aurélie', text: 'Non pas coucou'),
+    Message(name: 'Prof', text: 'Coucou'),
+    Message(name: 'Aurélie', text: 'Non pas coucou'),
+  ]);
   aurelieAnswers[questions.fromSection(5)[1]] = Answer(isValidated: true);
 
   students.add(Student(

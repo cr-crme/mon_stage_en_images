@@ -2,10 +2,12 @@ import '../../misc/custom_containers/item_serializable.dart';
 
 class Message extends ItemSerializable {
   // Constructors and (de)serializer
-  Message({required this.name, required this.text, id}) : super(id: id);
+  Message({required this.name, required this.text, this.isPhotoUrl = false, id})
+      : super(id: id);
   Message.fromSerialized(Map<String, dynamic> map)
       : name = map['name'],
         text = map['text'],
+        isPhotoUrl = map['isPhotoUrl'],
         super.fromSerialized(map);
   @override
   ItemSerializable deserializeItem(Map<String, dynamic> map) =>
@@ -16,10 +18,12 @@ class Message extends ItemSerializable {
     return {
       'name': name,
       'text': text,
+      'isPhotoUrl': isPhotoUrl,
     };
   }
 
   // Attributes and methods
   final String name;
   final String text;
+  final bool isPhotoUrl;
 }

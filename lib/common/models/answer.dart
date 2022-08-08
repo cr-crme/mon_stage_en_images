@@ -5,36 +5,32 @@ import '../../misc/custom_containers/item_serializable.dart';
 class Answer extends ItemSerializable {
   // Constructors and (de)serializer
   Answer({
-    this.photoUrl,
     List<Message>? discussion,
     this.isActive = true,
     this.isValidated = false,
-    ActionRequired action = ActionRequired.none,
+    ActionRequired actionRequired = ActionRequired.none,
     id,
   })  : discussion = discussion ??= [],
-        _action = action,
+        _actionRequired = actionRequired,
         super(id: id);
   Answer.fromSerialized(Map<String, dynamic> map)
-      : isActive = map['isActive'],
-        photoUrl = map['photoUrl'],
-        discussion = map['discussion'],
+      : discussion = map['discussion'],
+        isActive = map['isActive'],
         isValidated = map['isValidated'],
-        _action = map['action'],
+        _actionRequired = map['actionRequired'],
         super.fromSerialized(map);
   Answer copyWith(
-      {isActive, text, photoUrl, discussion, isValidated, action, id}) {
-    isActive ??= this.isActive;
-    photoUrl ??= this.photoUrl;
+      {discussion, isActive, text, isValidated, actionRequired, id}) {
     discussion ??= this.discussion;
+    isActive ??= this.isActive;
     isValidated ??= this.isValidated;
-    action ??= _action;
+    actionRequired ??= _actionRequired;
     id ??= this.id;
     return Answer(
-      isActive: isActive,
-      photoUrl: photoUrl,
       discussion: discussion,
+      isActive: isActive,
       isValidated: isValidated,
-      action: action,
+      actionRequired: actionRequired,
       id: id,
     );
   }
@@ -47,21 +43,19 @@ class Answer extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() {
     return {
-      'isActive': isActive,
-      'photoUrl': photoUrl,
       'discussion': discussion,
+      'isActive': isActive,
       'isValidated': isValidated,
-      'action': _action,
+      'actionRequired': _actionRequired,
     };
   }
 
   // Attributes and methods
   final bool isActive;
-  final String? photoUrl;
   final List<Message> discussion;
   final bool isValidated;
-  final ActionRequired _action;
-  ActionRequired get action => isActive ? _action : ActionRequired.none;
+  final ActionRequired _actionRequired;
+  ActionRequired get action => isActive ? _actionRequired : ActionRequired.none;
   bool get isAnswered => isActive && action != ActionRequired.fromStudent;
 
   void addMessage(Message message) => discussion.add(message);

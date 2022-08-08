@@ -7,7 +7,6 @@ import '../../../common/models/enum.dart';
 import '../../../common/models/question.dart';
 import '../../../common/models/student.dart';
 import '../../../common/providers/all_students.dart';
-import '../../../common/providers/login_information.dart';
 import '../../../common/widgets/taking_action_notifier.dart';
 
 class QuestionAndAnswerTile extends StatefulWidget {
@@ -46,7 +45,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     if (answer != null && answer.action == ActionRequired.fromTeacher) {
       // Flag the answer as being actionned
       _student!.allAnswers[widget.question] =
-          answer.copyWith(action: ActionRequired.none);
+          answer.copyWith(actionRequired: ActionRequired.none);
     }
 
     setState(() {});
@@ -145,7 +144,7 @@ class _QuestionCheckmarkState extends State<QuestionCheckmark> {
   void _validateAnswer(Student student, Answer answer) {
     // Reverse the status of the answer
     final newAnswer = answer.copyWith(
-        isValidated: !answer.isValidated, action: ActionRequired.none);
+        isValidated: !answer.isValidated, actionRequired: ActionRequired.none);
     student.allAnswers[widget.question] = newAnswer;
     setState(() {});
   }
@@ -180,9 +179,6 @@ class AnswerPart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userIsStudent =
-        Provider.of<LoginInformation>(context, listen: false).loginType ==
-            LoginType.student;
     final students = Provider.of<AllStudents>(context, listen: false);
     final student = studentId == null ? null : students[studentId];
     final answer = student == null ? null : student.allAnswers[question];
@@ -206,43 +202,11 @@ class AnswerPart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (isActive && studentId != null) _showPhoto(userIsStudent, answer),
           if (isActive && studentId != null) const SizedBox(height: 12),
           if (isActive && studentId != null) DiscussionListView(answer: answer),
           const SizedBox(height: 15)
         ],
       ),
-    );
-  }
-
-  Widget _showPhoto(bool userIsStudent, answer) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // TODO: Add the logic to take a picture when user is a student
-        answer!.photoUrl == null
-            ? (userIsStudent
-                ? const Center(
-                    child: ElevatedButton(
-                        onPressed: null, child: Text('Prendre une photo')),
-                  )
-                : const Center(
-                    child: Text('En attente de la photo de l\'étudiant',
-                        style: TextStyle(color: Colors.red))))
-            : Container(
-                padding: const EdgeInsets.only(left: 15),
-                child: FutureBuilder(builder: (context, snapshot) {
-                  return snapshot.connectionState == ConnectionState.waiting
-                      ? const Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : Image.network(
-                          answer!.photoUrl!,
-                          fit: BoxFit.cover,
-                        );
-                }),
-              ),
-      ],
     );
   }
 }
