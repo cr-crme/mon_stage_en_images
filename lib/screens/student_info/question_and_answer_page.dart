@@ -99,6 +99,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
             shrinkWrap: true,
             itemBuilder: (context, index) => QuestionAndAnswerTile(
               questions[index],
+              sectionIndex: sectionIndex,
               studentId: studentId,
               onStateChange: onStateChange,
               questionView: questionView,
