@@ -8,7 +8,6 @@ import '../../../common/models/question.dart';
 import '../../../common/models/student.dart';
 import '../../../common/providers/all_students.dart';
 import '../../../common/providers/login_information.dart';
-import '../../../common/widgets/are_you_sure_dialog.dart';
 import '../../../common/widgets/taking_action_notifier.dart';
 
 class QuestionAndAnswerTile extends StatefulWidget {
@@ -210,14 +209,7 @@ class AnswerPart extends StatelessWidget {
           if (isActive && studentId != null) _showPhoto(userIsStudent, answer),
           if (isActive && studentId != null) const SizedBox(height: 12),
           if (isActive && studentId != null) DiscussionListView(answer: answer),
-          if (userIsStudent) const SizedBox(height: 15),
-          if (!userIsStudent)
-            _ShowStatus(
-              studentId: studentId,
-              question: question,
-              onStateChange: onStateChange,
-              initialStatus: isActive,
-            ),
+          const SizedBox(height: 15)
         ],
       ),
     );
@@ -250,83 +242,6 @@ class AnswerPart extends StatelessWidget {
                         );
                 }),
               ),
-      ],
-    );
-  }
-}
-
-class _ShowStatus extends StatefulWidget {
-  const _ShowStatus(
-      {Key? key,
-      required this.studentId,
-      required this.onStateChange,
-      required this.initialStatus,
-      required this.question})
-      : super(key: key);
-
-  final String? studentId;
-  final Question question;
-  final bool initialStatus;
-  final Function(VoidCallback) onStateChange;
-
-  @override
-  State<_ShowStatus> createState() => _ShowStatusState();
-}
-
-class _ShowStatusState extends State<_ShowStatus> {
-  var _isActive = false;
-
-  Future<void> _toggleQuestionActiveState(value) async {
-    final students = Provider.of<AllStudents>(context, listen: false);
-    final student =
-        widget.studentId == null ? null : students[widget.studentId];
-
-    final sure = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AreYouSureDialog(
-          title: 'Confimer le choix',
-          content:
-              'Voulez-vous vraiment ${value ? 'activer' : 'désactiver'} cette '
-              'question${widget.studentId == null ? ' pour tous' : ''}?',
-        );
-      },
-    );
-
-    if (!sure!) return;
-
-    _isActive = value;
-    if (student != null) {
-      student.allAnswers[widget.question] =
-          student.allAnswers[widget.question]!.copyWith(isActive: _isActive);
-    } else {
-      for (var student in students) {
-        student.allAnswers[widget.question] =
-            student.allAnswers[widget.question]!.copyWith(isActive: _isActive);
-      }
-    }
-    setState(() {});
-    widget.onStateChange(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    _isActive = widget.initialStatus;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Flexible(
-          child: Text(
-            _isActive
-                ? 'Désactiver la question '
-                    '${widget.studentId == null ? 'pour tous' : 'pour cet élève'}'
-                : 'Activer la question '
-                    '${widget.studentId == null ? 'pour tous' : 'pour cet élève'}',
-            style: const TextStyle(color: Colors.grey),
-          ),
-        ),
-        Switch(onChanged: _toggleQuestionActiveState, value: _isActive),
       ],
     );
   }
