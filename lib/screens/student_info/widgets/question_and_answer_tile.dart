@@ -210,7 +210,11 @@ class QuestionAddButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-        onPressed: newQuestionCallback, icon: const Icon(Icons.add));
+        onPressed: newQuestionCallback,
+        icon: Icon(
+          Icons.add_circle,
+          color: Theme.of(context).colorScheme.primary,
+        ));
   }
 }
 

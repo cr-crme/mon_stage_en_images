@@ -110,7 +110,7 @@ class _StudentScreenState extends State<StudentScreen> {
               IconButton(
                   onPressed: _switchModeCallback,
                   icon: Icon(_questionView != QuestionView.normal
-                      ? Icons.save_alt
+                      ? Icons.save
                       : Icons.edit_rounded))
             ]
           : null,

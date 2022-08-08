@@ -84,6 +84,14 @@ class QuestionAndAnswerPage extends StatelessWidget {
                 const SizedBox(width: 25)
               ],
             ),
+          if (questionView != QuestionView.normal)
+            QuestionAndAnswerTile(
+              null,
+              sectionIndex: sectionIndex,
+              studentId: studentId,
+              onStateChange: onStateChange,
+              questionView: questionView,
+            ),
           firstSection,
           secondSection,
         ],
