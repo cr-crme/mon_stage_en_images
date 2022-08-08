@@ -7,6 +7,7 @@ import '../../../common/models/enum.dart';
 import '../../../common/models/question.dart';
 import '../../../common/models/student.dart';
 import '../../../common/providers/all_students.dart';
+import '../../../common/widgets/are_you_sure_dialog.dart';
 import '../../../common/widgets/taking_action_notifier.dart';
 
 class QuestionAndAnswerTile extends StatefulWidget {
@@ -28,14 +29,27 @@ class QuestionAndAnswerTile extends StatefulWidget {
 class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   var _isExpanded = false;
 
-  Student? get _student {
-    final students = Provider.of<AllStudents>(context, listen: false);
-    return widget.studentId == null ? null : students[widget.studentId];
-  }
+  late final AllStudents _students;
+  late final Student? _student;
+  Answer? _answer;
+  bool _isActive = false;
 
-  Answer? get _answer {
-    final student = _student;
-    return student == null ? null : student.allAnswers[widget.question];
+  @override
+  void initState() {
+    super.initState();
+
+    _students = Provider.of<AllStudents>(context, listen: false);
+    _student = widget.studentId != null ? _students[widget.studentId] : null;
+    _answer = _student?.allAnswers[widget.question];
+    _isActive = _answer != null
+        ? _answer!.isActive
+        : _students.indexWhere(
+              (s) {
+                final answer = s.allAnswers[widget.question];
+                return answer == null ? false : !answer.isActive;
+              },
+            ) <
+            0;
   }
 
   void _expand() {
@@ -60,6 +74,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   @override
   Widget build(BuildContext context) {
     final answer = _answer;
+
     return TakingActionNotifier(
       number: answer?.action == ActionRequired.fromTeacher ? 0 : null,
       left: 10,
@@ -72,11 +87,18 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
                 question: widget.question,
                 studentId: widget.studentId,
               ),
-              trailing: QuestionCheckmark(
-                question: widget.question,
-                studentId: widget.studentId,
-              ),
-              onTap: _expand,
+              trailing: widget.studentId == null
+                  ? QuestionActivatedState(
+                      question: widget.question,
+                      studentId: widget.studentId,
+                      initialStatus: _isActive,
+                      onStateChange: onStateChange,
+                    )
+                  : QuestionValidateCheckmark(
+                      question: widget.question,
+                      studentId: widget.studentId!,
+                    ),
+              onTap: widget.studentId == null ? null : _expand,
             ),
             if (_isExpanded)
               AnswerPart(
@@ -124,21 +146,89 @@ class QuestionPart extends StatelessWidget {
   }
 }
 
-class QuestionCheckmark extends StatefulWidget {
-  const QuestionCheckmark({
+class QuestionActivatedState extends StatefulWidget {
+  const QuestionActivatedState(
+      {Key? key,
+      required this.studentId,
+      required this.onStateChange,
+      required this.initialStatus,
+      required this.question})
+      : super(key: key);
+
+  final String? studentId;
+  final Question question;
+  final bool initialStatus;
+  final Function(VoidCallback) onStateChange;
+
+  @override
+  State<QuestionActivatedState> createState() => _QuestionActivator();
+}
+
+class _QuestionActivator extends State<QuestionActivatedState> {
+  var _isActive = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isActive = widget.initialStatus;
+  }
+
+  Future<void> _toggleQuestionActiveState(value) async {
+    final students = Provider.of<AllStudents>(context, listen: false);
+    final student =
+        widget.studentId == null ? null : students[widget.studentId];
+
+    final sure = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AreYouSureDialog(
+          title: 'Confimer le choix',
+          content:
+              'Voulez-vous vraiment ${value ? 'activer' : 'désactiver'} cette '
+              'question${widget.studentId == null ? ' pour tous' : ''}?',
+        );
+      },
+    );
+
+    if (!sure!) return;
+
+    _isActive = value;
+    if (student != null) {
+      student.allAnswers[widget.question] =
+          student.allAnswers[widget.question]!.copyWith(isActive: _isActive);
+    } else {
+      for (var student in students) {
+        student.allAnswers[widget.question] =
+            student.allAnswers[widget.question]!.copyWith(isActive: _isActive);
+      }
+    }
+    widget.onStateChange(() {});
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Switch(onChanged: _toggleQuestionActiveState, value: _isActive);
+  }
+}
+
+class QuestionValidateCheckmark extends StatefulWidget {
+  const QuestionValidateCheckmark({
     Key? key,
     required this.question,
     required this.studentId,
   }) : super(key: key);
 
   final Question question;
-  final String? studentId;
+  final String studentId;
 
   @override
-  State<QuestionCheckmark> createState() => _QuestionCheckmarkState();
+  State<QuestionValidateCheckmark> createState() =>
+      _QuestionValidateCheckmarkState();
 }
 
-class _QuestionCheckmarkState extends State<QuestionCheckmark> {
+class _QuestionValidateCheckmarkState extends State<QuestionValidateCheckmark> {
   void _validateAnswer(Student student, Answer answer) {
     // Reverse the status of the answer
     final newAnswer = answer.copyWith(
@@ -149,20 +239,15 @@ class _QuestionCheckmarkState extends State<QuestionCheckmark> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.studentId == null) return Container();
-
     final students = Provider.of<AllStudents>(context, listen: false);
-    final student =
-        widget.studentId == null ? null : students[widget.studentId];
-    final answer = student == null ? null : student.allAnswers[widget.question];
-    return answer != null
-        ? IconButton(
-            onPressed: () => _validateAnswer(student!, answer),
-            icon: Icon(
-              Icons.check,
-              color: answer.isValidated ? Colors.green[600] : Colors.grey[300],
-            ))
-        : Container();
+    final student = students[widget.studentId];
+    final answer = student.allAnswers[widget.question]!;
+    return IconButton(
+        onPressed: () => _validateAnswer(student, answer),
+        icon: Icon(
+          Icons.check,
+          color: answer.isValidated ? Colors.green[600] : Colors.grey[300],
+        ));
   }
 }
 
@@ -178,29 +263,16 @@ class AnswerPart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final students = Provider.of<AllStudents>(context, listen: false);
-    final student = studentId == null ? null : students[studentId];
-    final answer = student == null ? null : student.allAnswers[question];
-
-    late final bool isActive;
-    if (answer != null) {
-      isActive = answer.isActive;
-    } else {
-      // Only active if active for all
-      var indexInactive = students.indexWhere(
-        (s) {
-          final answer = s.allAnswers[question];
-          return answer == null ? false : !answer.isActive;
-        },
-      );
-      isActive = indexInactive < 0;
-    }
+    final student = students[studentId];
+    final answer = student.allAnswers[question]!;
 
     return Container(
       padding: const EdgeInsets.only(left: 40, right: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (isActive && studentId != null) DiscussionListView(answer: answer),
+          if (answer.isActive && studentId != null)
+            DiscussionListView(answer: answer),
           const SizedBox(height: 15)
         ],
       ),
