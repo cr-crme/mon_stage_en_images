@@ -107,7 +107,7 @@ class _StudentScreenState extends State<StudentScreen> {
             ),
         ],
       ),
-      leading: loginType == LoginType.student
+      leading: loginType == LoginType.student && _currentPage == 0
           ? null
           : BackButton(onPressed: _onBackPressed),
       actions: _switchQuestionModeCallback != null
