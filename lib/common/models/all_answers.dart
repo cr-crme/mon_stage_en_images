@@ -98,12 +98,16 @@ class AllAnswers extends MapSerializable<Answer> {
   }
 
   AllQuestions answeredQuestions(AllQuestions questions,
-      {bool shouldBeActive = true}) {
+      {bool shouldBeActive = true, bool skipIfValidated = false}) {
     var out = AllQuestions();
     for (var question in questions) {
       final answer = this[question]!;
-      var activeState = !shouldBeActive || (shouldBeActive && answer.isActive);
-      if (activeState && answer.isAnswered) out.add(question);
+      final activeState =
+          !shouldBeActive || (shouldBeActive && answer.isActive);
+      final shouldSkipIfValidated = !skipIfValidated || !answer.isValidated;
+      if (activeState && answer.isAnswered && shouldSkipIfValidated) {
+        out.add(question);
+      }
     }
     return out;
   }

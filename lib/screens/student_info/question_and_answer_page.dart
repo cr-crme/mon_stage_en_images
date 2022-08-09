@@ -40,7 +40,8 @@ class QuestionAndAnswerPage extends StatelessWidget {
     if (studentId != null) {
       student = allStudents[studentId];
       answers = student.allAnswers.fromQuestions(questions);
-      answeredQuestions = answers.answeredQuestions(questions);
+      answeredQuestions = answers.answeredQuestions(questions,
+          skipIfValidated: loginType == LoginType.student);
       unansweredQuestions = answers.unansweredQuestions(questions);
     } else {
       student = null;

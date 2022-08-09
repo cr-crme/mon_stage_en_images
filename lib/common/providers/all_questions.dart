@@ -16,7 +16,7 @@ class AllQuestions extends ListProvided<Question> with Section {
     return Question.fromSerialized(map);
   }
 
-  AllQuestions fromSection(index) {
+  AllQuestions fromSection(int index) {
     final out = AllQuestions();
     forEach((question) {
       if (question.section == index) out.add(question);
