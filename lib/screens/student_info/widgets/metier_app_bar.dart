@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../common/models/enum.dart';
 import '../../../common/models/student.dart';
 import '../../../common/models/section.dart';
 import '../../../common/providers/all_questions.dart';
+import '../../../common/providers/login_information.dart';
 import '../../../common/widgets/taking_action_notifier.dart';
 
 class MetierAppBar extends StatelessWidget {
@@ -86,6 +88,8 @@ class MetierAppBar extends StatelessWidget {
     final answers =
         student?.allAnswers.fromQuestions(questions.fromSection(sectionIndex));
 
+    final loginType = Provider.of<LoginInformation>(context).loginType;
+
     return TakingActionNotifier(
       left: 8,
       top: -7,
@@ -102,7 +106,12 @@ class MetierAppBar extends StatelessWidget {
                 : null),
         child: Text(
           Section.letter(sectionIndex),
-          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+          style: TextStyle(
+              color: loginType == LoginType.student
+                  ? isSelected
+                      ? Colors.white
+                      : Colors.black
+                  : Theme.of(context).colorScheme.onPrimary),
         ),
       ),
     );
