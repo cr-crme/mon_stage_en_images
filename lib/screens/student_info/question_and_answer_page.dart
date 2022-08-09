@@ -31,12 +31,12 @@ class QuestionAndAnswerPage extends StatelessWidget {
         Provider.of<LoginInformation>(context, listen: false).loginType;
     late Student? student;
 
+    final questions = Provider.of<AllQuestions>(context, listen: false)
+        .fromSection(sectionIndex);
     late final AllAnswers? answers;
     late final AllQuestions? answeredQuestions;
     late final AllQuestions? unansweredQuestions;
     if (studentId != null) {
-      final questions = Provider.of<AllQuestions>(context, listen: false)
-          .fromSection(sectionIndex);
       student = allStudents[studentId];
       answers = student.allAnswers.fromQuestions(questions);
       answeredQuestions = answers.answeredQuestions(questions);
@@ -48,6 +48,9 @@ class QuestionAndAnswerPage extends StatelessWidget {
       unansweredQuestions = AllQuestions();
     }
 
+    final allAnswersSection = _buildQuestionSection(context,
+        questions: questions,
+        titleIfNothing: 'Aucune question dans cette section');
     final answeredSection = _buildQuestionSection(context,
         questions: answeredQuestions,
         titleIfNothing: questionView == QuestionView.normal
@@ -56,11 +59,18 @@ class QuestionAndAnswerPage extends StatelessWidget {
     final unansweredSection = _buildQuestionSection(context,
         questions: unansweredQuestions, titleIfNothing: '');
 
-    final firstSection =
-        loginType == LoginType.student ? unansweredSection : answeredSection;
-    final secondSection = loginType == LoginType.student
-        ? answeredSection
-        : (student == null ? Container() : unansweredSection);
+    late final List<Widget> questionList = [];
+    if (loginType == LoginType.student) {
+      questionList.add(unansweredSection);
+      questionList.add(answeredSection);
+    } else {
+      if (questionView == QuestionView.normal) {
+        questionList.add(answeredSection);
+        if (student != null) questionList.add(unansweredSection);
+      } else {
+        questionList.add(allAnswersSection);
+      }
+    }
 
     return SingleChildScrollView(
       child: Column(
@@ -76,6 +86,14 @@ class QuestionAndAnswerPage extends StatelessWidget {
           ),
           if (questionView != QuestionView.normal) const SizedBox(height: 10),
           if (questionView != QuestionView.normal)
+            QuestionAndAnswerTile(
+              null,
+              sectionIndex: sectionIndex,
+              studentId: studentId,
+              onStateChange: onStateChange,
+              questionView: questionView,
+            ),
+          if (questionView != QuestionView.normal && questions.isNotEmpty)
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -84,16 +102,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
                 const SizedBox(width: 25)
               ],
             ),
-          if (questionView != QuestionView.normal)
-            QuestionAndAnswerTile(
-              null,
-              sectionIndex: sectionIndex,
-              studentId: studentId,
-              onStateChange: onStateChange,
-              questionView: questionView,
-            ),
-          firstSection,
-          secondSection,
+          ...questionList,
         ],
       ),
     );

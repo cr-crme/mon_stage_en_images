@@ -146,6 +146,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
                               studentId: widget.studentId,
                               initialStatus: _isActive,
                               onStateChange: onStateChange,
+                              questionView: widget.questionView,
                             )
                           : QuestionValidateCheckmark(
                               question: widget.question!,
@@ -219,18 +220,20 @@ class QuestionAddButton extends StatelessWidget {
 }
 
 class QuestionActivatedState extends StatefulWidget {
-  const QuestionActivatedState(
-      {Key? key,
-      required this.studentId,
-      required this.onStateChange,
-      required this.initialStatus,
-      required this.question})
-      : super(key: key);
+  const QuestionActivatedState({
+    Key? key,
+    required this.studentId,
+    required this.onStateChange,
+    required this.initialStatus,
+    required this.question,
+    required this.questionView,
+  }) : super(key: key);
 
   final String? studentId;
   final Question question;
   final bool initialStatus;
   final Function(VoidCallback) onStateChange;
+  final QuestionView questionView;
 
   @override
   State<QuestionActivatedState> createState() => _QuestionActivator();
@@ -250,18 +253,20 @@ class _QuestionActivator extends State<QuestionActivatedState> {
     final student =
         widget.studentId == null ? null : students[widget.studentId];
 
-    final sure = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AreYouSureDialog(
-          title: 'Confimer le choix',
-          content:
-              'Voulez-vous vraiment ${value ? 'activer' : 'désactiver'} cette '
-              'question${widget.studentId == null ? ' pour tous' : ''}?',
-        );
-      },
-    );
+    final sure = widget.questionView == QuestionView.modifyForAllStudents
+        ? await showDialog<bool>(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AreYouSureDialog(
+                title: 'Confimer le choix',
+                content:
+                    'Voulez-vous vraiment ${value ? 'activer' : 'désactiver'} '
+                    'cette question pour tous les élèves ?',
+              );
+            },
+          )
+        : true;
 
     if (!sure!) return;
 
