@@ -46,6 +46,16 @@ class AllAnswers extends MapSerializable<Answer> {
     return number;
   }
 
+  int get numberNeedStudentAction {
+    int number = 0;
+    forEach((answer) {
+      if (answer.value.action == ActionRequired.fromStudent) {
+        number++;
+      }
+    });
+    return number;
+  }
+
   AllAnswers fromQuestions(AllQuestions questions) {
     var out = AllAnswers(questions: AllQuestions());
     for (var question in questions) {

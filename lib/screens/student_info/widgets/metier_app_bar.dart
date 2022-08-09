@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../common/models/enum.dart';
+import '../../../common/models/exceptions.dart';
 import '../../../common/models/student.dart';
 import '../../../common/models/section.dart';
 import '../../../common/providers/all_questions.dart';
+import '../../../common/providers/login_information.dart';
 import '../../../common/widgets/taking_action_notifier.dart';
 
 class MetierAppBar extends StatelessWidget {
@@ -86,13 +89,21 @@ class MetierAppBar extends StatelessWidget {
     final answers =
         student?.allAnswers.fromQuestions(questions.fromSection(sectionIndex));
 
+    final loginType =
+        Provider.of<LoginInformation>(context, listen: false).loginType;
+    late final int numberOfActions;
+    if (loginType == LoginType.student) {
+      numberOfActions = answers != null ? answers.numberNeedStudentAction : 0;
+    } else if (loginType == LoginType.teacher) {
+      numberOfActions = answers != null ? answers.numberNeedTeacherAction : 0;
+    } else {
+      throw const NotLoggedIn();
+    }
+
     return TakingActionNotifier(
       left: 8,
       top: -7,
-      number:
-          !isSelected && answers != null && answers.numberNeedTeacherAction > 0
-              ? 0
-              : null,
+      number: !isSelected && numberOfActions > 0 ? 0 : null,
       child: TextButton(
         onPressed: onPressed,
         style: TextButton.styleFrom(

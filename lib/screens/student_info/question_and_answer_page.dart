@@ -72,7 +72,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
         questionList.add(allAnswersSection);
       }
     } else {
-      throw const NotImplemented('User must be logged in');
+      throw const NotLoggedIn();
     }
 
     return SingleChildScrollView(
