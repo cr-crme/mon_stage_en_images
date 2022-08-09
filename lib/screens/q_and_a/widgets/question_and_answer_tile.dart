@@ -112,16 +112,16 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     questions.removeToAll(widget.question!, students: students);
   }
 
-  void onStateChange(VoidCallback func) {
+  void _onStateChange(VoidCallback func) {
     _isExpanded = false;
     widget.onStateChange(() {});
     setState(() {});
   }
 
-  void addAnswer(String answerText) {
+  void _addComment(String answerText) {
     final currentAnswer = _student!.allAnswers[widget.question]!;
 
-    currentAnswer.addMessage(Message(
+    currentAnswer.addToDiscussion(Message(
       name: _loginInfo.user!.name,
       text: answerText,
     ));
@@ -175,9 +175,9 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
             if (_isExpanded && widget.questionView == QuestionView.normal)
               AnswerPart(
                 widget.question!,
-                onStateChange: onStateChange,
+                onStateChange: _onStateChange,
                 studentId: widget.studentId,
-                addAnswerCallback: addAnswer,
+                addAnswerCallback: _addComment,
               ),
           ],
         ),
@@ -203,7 +203,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
                   question: widget.question!,
                   studentId: widget.studentId,
                   initialStatus: _isActive,
-                  onStateChange: onStateChange,
+                  onStateChange: _onStateChange,
                   questionView: widget.questionView,
                 )
               : QuestionValidateCheckmark(
@@ -389,17 +389,34 @@ class AnswerPart extends StatelessWidget {
   final Question question;
   final Function(String) addAnswerCallback;
 
+  void _addPhoto() {
+    addAnswerCallback("Coucou");
+  }
+
   @override
   Widget build(BuildContext context) {
     final students = Provider.of<AllStudents>(context, listen: false);
     final student = students[studentId];
     final answer = student.allAnswers[question]!;
+    final loginInfo = Provider.of<LoginInformation>(context, listen: false);
 
     return Container(
       padding: const EdgeInsets.only(left: 40, right: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (loginInfo.loginType == LoginType.student)
+            TextButton(
+              onPressed: _addPhoto,
+              style: TextButton.styleFrom(primary: Colors.grey[700]),
+              child: Row(
+                children: const [
+                  Icon(Icons.camera_alt),
+                  SizedBox(width: 10),
+                  Text('Ajouter une photo'),
+                ],
+              ),
+            ),
           if (answer.isActive && studentId != null)
             DiscussionListView(
                 answer: answer, addMessageCallback: addAnswerCallback),

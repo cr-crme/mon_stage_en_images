@@ -59,5 +59,5 @@ class Answer extends ItemSerializable {
   bool get isAnswered => isActive && action != ActionRequired.fromStudent;
   bool get hasAnswer => discussion.isNotEmpty;
 
-  void addMessage(Message message) => discussion.add(message);
+  void addToDiscussion(Message message) => discussion.add(message);
 }

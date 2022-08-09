@@ -88,7 +88,8 @@ class MetierAppBar extends StatelessWidget {
     final answers =
         student?.allAnswers.fromQuestions(questions.fromSection(sectionIndex));
 
-    final loginType = Provider.of<LoginInformation>(context).loginType;
+    final loginType =
+        Provider.of<LoginInformation>(context, listen: false).loginType;
 
     return TakingActionNotifier(
       left: 8,
