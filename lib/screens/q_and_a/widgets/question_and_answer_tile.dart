@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import './discussion_list_view.dart';
-import '../../student_info/widgets/new_question_alert_dialog.dart';
+import '../../q_and_a/widgets/new_question_alert_dialog.dart';
 import '../../../common/models/answer.dart';
 import '../../../common/models/enum.dart';
 import '../../../common/models/exceptions.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../student_info/student_screen.dart';
+import '../../q_and_a/student_screen.dart';
 import '../../../common/models/student.dart';
 import '../../../common/widgets/taking_action_notifier.dart';
 

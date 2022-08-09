@@ -4,9 +4,9 @@ import 'package:provider/provider.dart';
 import './dummy_data.dart';
 import './common/providers/all_questions.dart';
 import './common/providers/all_students.dart';
-import 'common/providers/login_information.dart';
+import './common/providers/login_information.dart';
 import './screens/all_students/students_screen.dart';
-import './screens/student_info/student_screen.dart';
+import './screens/q_and_a/student_screen.dart';
 import './screens/login/login_screen.dart';
 
 void main() async {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../all_students/students_screen.dart';
-import '../student_info/student_screen.dart';
+import '../q_and_a/student_screen.dart';
 import '../../common/models/enum.dart';
 import '../../common/models/exceptions.dart';
 import '../../common/models/themes.dart';

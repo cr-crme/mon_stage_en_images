@@ -5,7 +5,7 @@ import '../models/enum.dart';
 import '../models/student.dart';
 import '../providers/login_information.dart';
 import '../../screens/login/login_screen.dart';
-import '../../screens/student_info/student_screen.dart';
+import '../../screens/q_and_a/student_screen.dart';
 import '../../screens/all_students/students_screen.dart';
 
 class MainDrawer extends StatelessWidget {
