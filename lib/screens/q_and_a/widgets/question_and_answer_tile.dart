@@ -1,5 +1,10 @@
+import 'dart:io';
+
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart' as syspath;
 
 import './discussion_list_view.dart';
 import '../../q_and_a/widgets/new_question_alert_dialog.dart';
@@ -118,12 +123,13 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     setState(() {});
   }
 
-  void _addComment(String answerText) {
+  void _addComment(String answerText, {required bool isPhoto}) {
     final currentAnswer = _student!.allAnswers[widget.question]!;
 
     currentAnswer.addToDiscussion(Message(
       name: _loginInfo.user!.name,
       text: answerText,
+      isPhotoUrl: isPhoto,
     ));
 
     // Inform the changing of status
@@ -387,10 +393,24 @@ class AnswerPart extends StatelessWidget {
   final String? studentId;
   final Function(VoidCallback) onStateChange;
   final Question question;
-  final Function(String) addAnswerCallback;
+  final Function(String, {required bool isPhoto}) addAnswerCallback;
 
-  void _addPhoto() {
-    addAnswerCallback("Coucou");
+  Future<void> _addPhoto() async {
+    final imagePicker = ImagePicker();
+    final imageXFile =
+        await imagePicker.pickImage(source: ImageSource.camera, maxWidth: 600);
+    if (imageXFile == null) return;
+
+    // Image is in cache (imageXFile.path) is temporary
+    final imageFile = File(imageXFile.path);
+
+    // Move to hard drive
+    final appDir = await syspath.getApplicationDocumentsDirectory();
+    final filename = path.basename(imageFile.path);
+    final imageFileOnHardDrive =
+        await imageFile.copy('${appDir.path}/$filename');
+
+    addAnswerCallback(imageFileOnHardDrive.path, isPhoto: true);
   }
 
   @override

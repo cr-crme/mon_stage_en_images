@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../../../common/models/message.dart';
@@ -12,6 +14,10 @@ class DiscussionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: Replace the Image.file by Image.network
+    // as such Image.network(discussion.text, fit: BoxFit.cover)
+    final image = Image.file(File(discussion.text), fit: BoxFit.cover);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -22,7 +28,7 @@ class DiscussionTile extends StatelessWidget {
             child: FutureBuilder(builder: (context, snapshot) {
               return snapshot.connectionState == ConnectionState.waiting
                   ? const Center(child: CircularProgressIndicator())
-                  : Image.network(discussion.text, fit: BoxFit.cover);
+                  : image;
             }),
           ),
         if (!discussion.isPhotoUrl)
