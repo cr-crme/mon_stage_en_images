@@ -97,7 +97,7 @@ class _StudentScreenState extends State<StudentScreen> {
         children: [
           Text(student != null ? student.toString() : 'Gestion des questions'),
           if (loginType == LoginType.student)
-            Text(Section.name(_currentPage - 1),
+            Text(Section.name(_currentPage > 0 ? _currentPage - 1 : 0),
                 style:
                     currentTheme.copyWith(fontSize: 15, color: onPrimaryColor)),
           if (loginType == LoginType.teacher && student != null)
