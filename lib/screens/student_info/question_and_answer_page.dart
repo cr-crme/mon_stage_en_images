@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import './widgets/question_and_answer_tile.dart';
 import '../../common/models/all_answers.dart';
 import '../../common/models/enum.dart';
+import '../../common/models/exceptions.dart';
 import '../../common/models/section.dart';
 import '../../common/models/student.dart';
 import '../../common/providers/all_questions.dart';
@@ -63,13 +64,15 @@ class QuestionAndAnswerPage extends StatelessWidget {
     if (loginType == LoginType.student) {
       questionList.add(unansweredSection);
       questionList.add(answeredSection);
-    } else {
+    } else if (loginType == LoginType.teacher) {
       if (questionView == QuestionView.normal) {
         questionList.add(answeredSection);
         if (student != null) questionList.add(unansweredSection);
       } else {
         questionList.add(allAnswersSection);
       }
+    } else {
+      throw const NotImplemented('User must be logged in');
     }
 
     return SingleChildScrollView(

@@ -29,7 +29,7 @@ class LoginScreen extends StatelessWidget {
         Navigator.of(context).pushReplacementNamed(StudentsScreen.routeName);
         break;
       default:
-        throw const NotImplemented('This theme is not implemented yet');
+        throw const NotImplemented('User must be logged in');
     }
   }
 

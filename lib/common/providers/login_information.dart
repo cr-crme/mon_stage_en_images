@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../models/enum.dart';
-import '../models/exceptions.dart';
 import '../models/themes.dart';
 
 class LoginInformation with ChangeNotifier {
-  LoginType loginType = LoginType.teacher;
+  LoginType loginType = LoginType.none;
 
   void selectLoginType(LoginType theme) {
     loginType = theme;
@@ -19,7 +18,7 @@ class LoginInformation with ChangeNotifier {
       case LoginType.teacher:
         return teacherTheme();
       default:
-        throw const NotImplemented('This theme is not implemented yet');
+        return teacherTheme();
     }
   }
 }

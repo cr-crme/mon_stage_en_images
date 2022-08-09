@@ -6,7 +6,7 @@ enum ActionRequired {
   fromTeacher,
 }
 
-enum LoginType { teacher, student }
+enum LoginType { none, teacher, student }
 
 enum QuestionView {
   normal,

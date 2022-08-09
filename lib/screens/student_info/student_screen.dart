@@ -21,8 +21,8 @@ class StudentScreen extends StatefulWidget {
 }
 
 class _StudentScreenState extends State<StudentScreen> {
-  late final LoginType _loginType;
-  late final Student? _student;
+  LoginType _loginType = LoginType.none;
+  Student? _student;
   QuestionView _questionView = QuestionView.normal;
 
   final _pageController = PageController();

@@ -15,9 +15,8 @@ class MainDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userIsStudent =
-        Provider.of<LoginInformation>(context, listen: false).loginType ==
-            LoginType.student;
+    final loginType =
+        Provider.of<LoginInformation>(context, listen: false).loginType;
 
     return Drawer(
       child: Scaffold(
@@ -26,18 +25,18 @@ class MainDrawer extends StatelessWidget {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (userIsStudent)
+            if (loginType == LoginType.student)
               MenuItem(
                   title: 'Retour',
                   onTap: () => Navigator.of(context).pushReplacementNamed(
                       StudentScreen.routeName,
                       arguments: student)),
-            if (!userIsStudent)
+            if (loginType == LoginType.teacher)
               MenuItem(
                   title: 'Élèves',
                   onTap: () => Navigator.of(context)
                       .pushNamed(StudentsScreen.routeName)),
-            if (!userIsStudent)
+            if (loginType == LoginType.teacher)
               MenuItem(
                   title: 'Gestion des questions',
                   onTap: () =>
