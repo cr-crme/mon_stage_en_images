@@ -6,6 +6,7 @@ import '../../student_info/widgets/new_question_alert_dialog.dart';
 import '../../../common/models/answer.dart';
 import '../../../common/models/enum.dart';
 import '../../../common/models/exceptions.dart';
+import '../../../common/models/message.dart';
 import '../../../common/models/question.dart';
 import '../../../common/models/student.dart';
 import '../../../common/providers/all_questions.dart';
@@ -37,7 +38,7 @@ class QuestionAndAnswerTile extends StatefulWidget {
 class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   var _isExpanded = false;
 
-  late final LoginType _loginType;
+  late final LoginInformation _loginInfo;
   late final AllStudents _students;
   late final Student? _student;
   Answer? _answer;
@@ -47,8 +48,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   void initState() {
     super.initState();
 
-    _loginType =
-        Provider.of<LoginInformation>(context, listen: false).loginType;
+    _loginInfo = Provider.of<LoginInformation>(context, listen: false);
     _students = Provider.of<AllStudents>(context, listen: false);
     _student = widget.studentId != null ? _students[widget.studentId] : null;
     _answer = _student?.allAnswers[widget.question];
@@ -79,7 +79,6 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
 
   Future<void> _addOrModifyQuestion() async {
     final questions = Provider.of<AllQuestions>(context, listen: false);
-    final students = Provider.of<AllStudents>(context, listen: false);
     final currentStudent =
         ModalRoute.of(context)!.settings.arguments as Student?;
 
@@ -99,11 +98,11 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
 
     if (widget.question == null) {
       questions.addToAll(question,
-          students: students, currentStudent: currentStudent);
+          students: _students, currentStudent: currentStudent);
     } else {
       var newQuestion = widget.question!.copyWith(text: question.text);
       questions.modifyToAll(newQuestion,
-          students: students, currentStudent: currentStudent);
+          students: _students, currentStudent: currentStudent);
     }
   }
 
@@ -119,21 +118,44 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     setState(() {});
   }
 
+  void addAnswer(String answerText) {
+    final currentAnswer = _student!.allAnswers[widget.question]!;
+
+    currentAnswer.addMessage(Message(
+      name: _loginInfo.user!.name,
+      text: answerText,
+    ));
+
+    // Inform the changing of status
+    late final ActionRequired newStatus;
+    if (_loginInfo.loginType == LoginType.student) {
+      newStatus = ActionRequired.fromTeacher;
+    } else if (_loginInfo.loginType == LoginType.teacher) {
+      newStatus = ActionRequired.fromStudent;
+    } else {
+      throw const NotLoggedIn();
+    }
+    _student!.allAnswers[widget.question] =
+        currentAnswer.copyWith(text: answerText, actionRequired: newStatus);
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final answer = _answer;
 
     late final bool hasAction;
-    if (_loginType == LoginType.student) {
+    if (_loginInfo.loginType == LoginType.student) {
       hasAction = answer != null && answer.action == ActionRequired.fromStudent;
-    } else if (_loginType == LoginType.teacher) {
+    } else if (_loginInfo.loginType == LoginType.teacher) {
       hasAction = answer != null && answer.action == ActionRequired.fromTeacher;
     } else {
       throw const NotLoggedIn();
     }
 
     return TakingActionNotifier(
-      number: _loginType == LoginType.teacher && hasAction ? 0 : null,
+      number: _loginInfo.loginType == LoginType.teacher && hasAction ? 0 : null,
       left: 10,
       child: Card(
         elevation: 5,
@@ -155,6 +177,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
                 widget.question!,
                 onStateChange: onStateChange,
                 studentId: widget.studentId,
+                addAnswerCallback: addAnswer,
               ),
           ],
         ),
@@ -163,14 +186,14 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   }
 
   Widget? _trailingBuilder(bool hasAction) {
-    if (_loginType == LoginType.student) {
+    if (_loginInfo.loginType == LoginType.student) {
       return TakingActionNotifier(
         number: hasAction ? 1 : null,
         forcedText: "?",
         borderColor: Colors.black,
         child: const Text(''),
       );
-    } else if (_loginType == LoginType.teacher) {
+    } else if (_loginInfo.loginType == LoginType.teacher) {
       return widget.question == null
           ? QuestionAddButton(
               newQuestionCallback: _addOrModifyQuestion,
@@ -353,13 +376,18 @@ class _QuestionValidateCheckmarkState extends State<QuestionValidateCheckmark> {
 }
 
 class AnswerPart extends StatelessWidget {
-  const AnswerPart(this.question,
-      {Key? key, required this.onStateChange, required this.studentId})
-      : super(key: key);
+  const AnswerPart(
+    this.question, {
+    Key? key,
+    required this.onStateChange,
+    required this.studentId,
+    required this.addAnswerCallback,
+  }) : super(key: key);
 
   final String? studentId;
   final Function(VoidCallback) onStateChange;
   final Question question;
+  final Function(String) addAnswerCallback;
 
   @override
   Widget build(BuildContext context) {
@@ -373,7 +401,8 @@ class AnswerPart extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (answer.isActive && studentId != null)
-            DiscussionListView(answer: answer),
+            DiscussionListView(
+                answer: answer, addMessageCallback: addAnswerCallback),
           const SizedBox(height: 15)
         ],
       ),

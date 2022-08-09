@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import './discussion_tile.dart';
 import '../../../common/models/answer.dart';
 import '../../../common/models/message.dart';
-import '../../../common/providers/login_information.dart';
 
 class DiscussionListView extends StatefulWidget {
   const DiscussionListView({
     Key? key,
     required this.answer,
+    required this.addMessageCallback,
   }) : super(key: key);
 
   final Answer? answer;
+  final Function(String) addMessageCallback;
 
   @override
   State<DiscussionListView> createState() => _DiscussionListViewState();
@@ -29,7 +29,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
     fieldText.dispose();
   }
 
-  void _clearText() {
+  void _clearFieldText() {
     fieldText.clear();
     setState(() {});
   }
@@ -41,12 +41,9 @@ class _DiscussionListViewState extends State<DiscussionListView> {
     _formKey.currentState!.save();
     if (_newMessage == null || _newMessage!.isEmpty) return;
 
-    widget.answer!.addMessage(Message(
-      name: Provider.of<LoginInformation>(context, listen: false).user!.name,
-      text: _newMessage!,
-    ));
+    widget.addMessageCallback(_newMessage!);
 
-    _clearText();
+    _clearFieldText();
     setState(() {});
   }
 
