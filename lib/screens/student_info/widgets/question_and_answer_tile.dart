@@ -133,7 +133,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     }
 
     return TakingActionNotifier(
-      number: hasAction ? 0 : null,
+      number: _loginType == LoginType.teacher && hasAction ? 0 : null,
       left: 10,
       child: Card(
         elevation: 5,
@@ -145,24 +145,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
                 studentId: widget.studentId,
                 hasAction: hasAction,
               ),
-              trailing: _loginType == LoginType.student
-                  ? null
-                  : widget.question == null
-                      ? QuestionAddButton(
-                          newQuestionCallback: _addOrModifyQuestion,
-                        )
-                      : widget.questionView != QuestionView.normal
-                          ? QuestionActivatedState(
-                              question: widget.question!,
-                              studentId: widget.studentId,
-                              initialStatus: _isActive,
-                              onStateChange: onStateChange,
-                              questionView: widget.questionView,
-                            )
-                          : QuestionValidateCheckmark(
-                              question: widget.question!,
-                              studentId: widget.studentId!,
-                            ),
+              trailing: _trailingBuilder(hasAction),
               onTap: widget.questionView == QuestionView.normal
                   ? _expand
                   : _addOrModifyQuestion,
@@ -177,6 +160,36 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
         ),
       ),
     );
+  }
+
+  Widget? _trailingBuilder(bool hasAction) {
+    if (_loginType == LoginType.student) {
+      return TakingActionNotifier(
+        number: hasAction ? 1 : null,
+        forcedText: "?",
+        borderColor: Colors.black,
+        child: const Text(''),
+      );
+    } else if (_loginType == LoginType.teacher) {
+      return widget.question == null
+          ? QuestionAddButton(
+              newQuestionCallback: _addOrModifyQuestion,
+            )
+          : widget.questionView != QuestionView.normal
+              ? QuestionActivatedState(
+                  question: widget.question!,
+                  studentId: widget.studentId,
+                  initialStatus: _isActive,
+                  onStateChange: onStateChange,
+                  questionView: widget.questionView,
+                )
+              : QuestionValidateCheckmark(
+                  question: widget.question!,
+                  studentId: widget.studentId!,
+                );
+    } else {
+      throw const NotLoggedIn();
+    }
   }
 }
 

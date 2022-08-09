@@ -5,6 +5,7 @@ class TakingActionNotifier extends StatelessWidget {
     Key? key,
     this.child,
     this.number,
+    this.forcedText,
     this.left,
     this.top,
     this.padding = 6,
@@ -17,9 +18,11 @@ class TakingActionNotifier extends StatelessWidget {
   final double? top;
   final double padding;
   final Color borderColor;
+  final String? forcedText;
 
   @override
   Widget build(BuildContext context) {
+    if (child == null && number == null) return Container();
     return Stack(
       children: [
         if (child != null) child!,
@@ -35,7 +38,11 @@ class TakingActionNotifier extends StatelessWidget {
                 border: Border.all(color: borderColor, width: 2),
               ),
               child: Text(
-                number == 0 ? "" : number.toString(),
+                forcedText != null
+                    ? forcedText!
+                    : number == 0
+                        ? ""
+                        : number.toString(),
                 style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
