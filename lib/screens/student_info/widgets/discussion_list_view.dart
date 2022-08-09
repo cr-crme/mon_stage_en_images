@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import './discussion_tile.dart';
 import '../../../common/models/answer.dart';
 import '../../../common/models/message.dart';
-import '../../../common/providers/user.dart';
+import '../../../common/providers/login_information.dart';
 
 class DiscussionListView extends StatefulWidget {
   const DiscussionListView({
@@ -42,7 +42,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
     if (_newMessage == null || _newMessage!.isEmpty) return;
 
     widget.answer!.addMessage(Message(
-      name: Provider.of<User>(context, listen: false).name,
+      name: Provider.of<LoginInformation>(context, listen: false).user!.name,
       text: _newMessage!,
     ));
 

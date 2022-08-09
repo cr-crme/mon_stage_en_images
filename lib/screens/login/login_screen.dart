@@ -20,12 +20,12 @@ class LoginScreen extends StatelessWidget {
     switch (loginType) {
       case LoginType.student:
         final students = Provider.of<AllStudents>(context, listen: false);
-        theme.selectLoginType(LoginType.student);
+        theme.login('Eleve', LoginType.student);
         Navigator.of(context).pushReplacementNamed(StudentScreen.routeName,
             arguments: students[0]);
         break;
       case LoginType.teacher:
-        theme.selectLoginType(LoginType.teacher);
+        theme.login('Professeur', LoginType.teacher);
         Navigator.of(context).pushReplacementNamed(StudentsScreen.routeName);
         break;
       default:

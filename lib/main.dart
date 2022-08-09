@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 
 import './dummy_data.dart';
 import './common/providers/all_questions.dart';
-import './common/providers/user.dart';
 import './common/providers/all_students.dart';
 import 'common/providers/login_information.dart';
 import './screens/all_students/students_screen.dart';
@@ -20,7 +19,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loginInformation = LoginInformation();
-    final user = User(name: 'Pariterre');
     final students = AllStudents();
     final questions = AllQuestions();
     prepareDummyData(students, questions);
@@ -28,7 +26,6 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => loginInformation),
-        ChangeNotifierProvider(create: (context) => user),
         ChangeNotifierProvider(create: (context) => students),
         ChangeNotifierProvider(create: (context) => questions),
       ],
