@@ -50,6 +50,12 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   bool _isActive = false;
 
   @override
+  void setState(VoidCallback fn) {
+    super.setState(fn);
+    widget.onStateChange(() {});
+  }
+
+  @override
   void initState() {
     super.initState();
 
@@ -109,17 +115,18 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
       questions.modifyToAll(newQuestion,
           students: _students, currentStudent: currentStudent);
     }
+    setState(() {});
   }
 
   void _deleteQuestionCallback() {
     final questions = Provider.of<AllQuestions>(context, listen: false);
     final students = Provider.of<AllStudents>(context, listen: false);
     questions.removeToAll(widget.question!, students: students);
+    setState(() {});
   }
 
   void _onStateChange(VoidCallback func) {
     _isExpanded = false;
-    widget.onStateChange(() {});
     setState(() {});
   }
 
@@ -144,6 +151,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     _student!.allAnswers[widget.question] =
         currentAnswer.copyWith(text: answerText, actionRequired: newStatus);
 
+    _answer = _student!.allAnswers[widget.question];
     setState(() {});
   }
 
@@ -240,7 +248,7 @@ class QuestionPart extends StatelessWidget {
     }
 
     return TextStyle(
-      color: !answer.isAnswered ? Colors.red : Colors.black,
+      color: answer.isAnswered ? Colors.black : Colors.red,
       fontWeight: hasAction ? FontWeight.bold : FontWeight.normal,
     );
   }
@@ -405,6 +413,7 @@ class AnswerPart extends StatelessWidget {
     final imageFile = File(imageXFile.path);
 
     // Move to hard drive
+    // TODO: Move to server
     final appDir = await syspath.getApplicationDocumentsDirectory();
     final filename = path.basename(imageFile.path);
     final imageFileOnHardDrive =
