@@ -7,6 +7,7 @@ import 'widgets/metier_app_bar.dart';
 import '../all_students/students_screen.dart';
 import '../../common/widgets/main_drawer.dart';
 import '../../common/models/enum.dart';
+import '../../common/models/section.dart';
 import '../../common/models/student.dart';
 import '../../common/providers/all_questions.dart';
 import '../../common/providers/login_information.dart';
@@ -27,7 +28,7 @@ class _StudentScreenState extends State<StudentScreen> {
 
   final _pageController = PageController();
   var _currentPage = 0;
-  VoidCallback? _switchModeCallback;
+  VoidCallback? _switchQuestionModeCallback;
 
   @override
   void didChangeDependencies() {
@@ -43,7 +44,7 @@ class _StudentScreenState extends State<StudentScreen> {
 
   void onPageChanged(BuildContext context, int page) {
     _currentPage = page;
-    _switchModeCallback = _loginType == LoginType.student ||
+    _switchQuestionModeCallback = _loginType == LoginType.student ||
             _questionView == QuestionView.modifyForAllStudents ||
             page < 1
         ? null
@@ -95,7 +96,11 @@ class _StudentScreenState extends State<StudentScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(student != null ? student.toString() : 'Gestion des questions'),
-          if (student != null)
+          if (loginType == LoginType.student)
+            Text(Section.name(_currentPage - 1),
+                style:
+                    currentTheme.copyWith(fontSize: 15, color: onPrimaryColor)),
+          if (loginType == LoginType.teacher && student != null)
             Text(
               student.company.name,
               style: currentTheme.copyWith(fontSize: 15, color: onPrimaryColor),
@@ -105,10 +110,10 @@ class _StudentScreenState extends State<StudentScreen> {
       leading: loginType == LoginType.student
           ? null
           : BackButton(onPressed: _onBackPressed),
-      actions: _switchModeCallback != null
+      actions: _switchQuestionModeCallback != null
           ? [
               IconButton(
-                  onPressed: _switchModeCallback,
+                  onPressed: _switchQuestionModeCallback,
                   icon: Icon(_questionView != QuestionView.normal
                       ? Icons.save
                       : Icons.edit_rounded))

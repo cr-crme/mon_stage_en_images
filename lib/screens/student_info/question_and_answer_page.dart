@@ -79,14 +79,15 @@ class QuestionAndAnswerPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            padding: const EdgeInsets.only(left: 5, top: 15),
-            child: Text(Section.name(sectionIndex),
-                style: Theme.of(context)
-                    .textTheme
-                    .titleLarge!
-                    .copyWith(color: Colors.black)),
-          ),
+          if (loginType == LoginType.teacher)
+            Container(
+              padding: const EdgeInsets.only(left: 5, top: 15),
+              child: Text(Section.name(sectionIndex),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge!
+                      .copyWith(color: Colors.black)),
+            ),
           if (questionView != QuestionView.normal) const SizedBox(height: 10),
           if (questionView != QuestionView.normal)
             QuestionAndAnswerTile(
