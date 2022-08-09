@@ -5,6 +5,7 @@ import './discussion_list_view.dart';
 import '../../student_info/widgets/new_question_alert_dialog.dart';
 import '../../../common/models/answer.dart';
 import '../../../common/models/enum.dart';
+import '../../../common/models/exceptions.dart';
 import '../../../common/models/question.dart';
 import '../../../common/models/student.dart';
 import '../../../common/providers/all_questions.dart';
@@ -122,8 +123,17 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   Widget build(BuildContext context) {
     final answer = _answer;
 
+    late final bool hasAction;
+    if (_loginType == LoginType.student) {
+      hasAction = answer != null && answer.action == ActionRequired.fromStudent;
+    } else if (_loginType == LoginType.teacher) {
+      hasAction = answer != null && answer.action == ActionRequired.fromTeacher;
+    } else {
+      throw const NotLoggedIn();
+    }
+
     return TakingActionNotifier(
-      number: answer?.action == ActionRequired.fromTeacher ? 0 : null,
+      number: hasAction ? 0 : null,
       left: 10,
       child: Card(
         elevation: 5,
@@ -133,6 +143,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
               title: QuestionPart(
                 question: widget.question,
                 studentId: widget.studentId,
+                hasAction: hasAction,
               ),
               trailing: _loginType == LoginType.student
                   ? null
@@ -174,10 +185,12 @@ class QuestionPart extends StatelessWidget {
     Key? key,
     required this.question,
     required this.studentId,
+    required this.hasAction,
   }) : super(key: key);
 
   final Question? question;
   final String? studentId;
+  final bool hasAction;
 
   TextStyle _pickTextStyle(Answer? answer) {
     if (answer == null) {
@@ -186,9 +199,7 @@ class QuestionPart extends StatelessWidget {
 
     return TextStyle(
       color: !answer.isAnswered ? Colors.red : Colors.black,
-      fontWeight: answer.action == ActionRequired.fromTeacher
-          ? FontWeight.bold
-          : FontWeight.normal,
+      fontWeight: hasAction ? FontWeight.bold : FontWeight.normal,
     );
   }
 

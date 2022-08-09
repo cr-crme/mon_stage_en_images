@@ -54,11 +54,15 @@ class QuestionAndAnswerPage extends StatelessWidget {
         titleIfNothing: 'Aucune question dans cette section');
     final answeredSection = _buildQuestionSection(context,
         questions: answeredQuestions,
-        titleIfNothing: questionView == QuestionView.normal
+        titleIfNothing: loginType == LoginType.teacher &&
+                questionView == QuestionView.normal
             ? 'Aucune question répondue'
             : '');
     final unansweredSection = _buildQuestionSection(context,
-        questions: unansweredQuestions, titleIfNothing: '');
+        questions: unansweredQuestions,
+        titleIfNothing: loginType == LoginType.student
+            ? 'Toutes les questions sont répondues'
+            : '');
 
     late final List<Widget> questionList = [];
     if (loginType == LoginType.student) {
