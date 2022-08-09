@@ -21,10 +21,9 @@ class StudentListTile extends StatelessWidget {
     // There is a bug here as the main page Notifier does not update
     // For now, it was worked around by forcing the redraw of the page from
     // PushReplacement instead of poping back the page
+    final numberOfActions = student.allAnswers.numberNeedTeacherAction;
     return TakingActionNotifier(
-      number: student.allAnswers.numberNeedTeacherAction == 0
-          ? null
-          : student.allAnswers.numberNeedTeacherAction,
+      number: numberOfActions == 0 ? null : numberOfActions,
       top: -6,
       left: 2,
       borderColor: Colors.black,
