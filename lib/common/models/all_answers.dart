@@ -44,28 +44,28 @@ class AllAnswers extends MapSerializable<Answer> {
     final loginType =
         Provider.of<LoginInformation>(context, listen: false).loginType;
     if (loginType == LoginType.student) {
-      return numberNeedStudentAction;
+      return numberNeedStudentAction(context);
     } else if (loginType == LoginType.teacher) {
-      return numberNeedTeacherAction;
+      return numberNeedTeacherAction(context);
     } else {
       throw const NotLoggedIn();
     }
   }
 
-  int get numberNeedTeacherAction {
+  int numberNeedTeacherAction(BuildContext context) {
     int number = 0;
     forEach((answer) {
-      if (answer.value.action == ActionRequired.fromTeacher) {
+      if (answer.value.action(context) == ActionRequired.fromTeacher) {
         number++;
       }
     });
     return number;
   }
 
-  int get numberNeedStudentAction {
+  int numberNeedStudentAction(BuildContext context) {
     int number = 0;
     forEach((answer) {
-      if (answer.value.action == ActionRequired.fromStudent) {
+      if (answer.value.action(context) == ActionRequired.fromStudent) {
         number++;
       }
     });

@@ -120,21 +120,47 @@ class QuestionAndAnswerPage extends StatelessWidget {
   Widget _buildQuestionSection(BuildContext context,
       {required AllQuestions questions, required String titleIfNothing}) {
     return questions.isNotEmpty
-        ? ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemBuilder: (context, index) => QuestionAndAnswerTile(
-              questions[index],
-              sectionIndex: sectionIndex,
-              studentId: studentId,
-              onStateChange: onStateChange,
-              questionView: questionView,
-            ),
-            itemCount: questions.length,
-          )
+        ? QAndAListView(questions,
+            sectionIndex: sectionIndex,
+            studentId: studentId,
+            onStateChange: onStateChange,
+            questionView: questionView)
         : Container(
             padding: const EdgeInsets.only(top: 10, bottom: 30),
             child: Text(titleIfNothing),
           );
+  }
+}
+
+class QAndAListView extends StatelessWidget {
+  const QAndAListView(
+    this.questions, {
+    Key? key,
+    required this.sectionIndex,
+    required this.studentId,
+    required this.onStateChange,
+    required this.questionView,
+  }) : super(key: key);
+
+  final AllQuestions questions;
+  final int sectionIndex;
+  final String? studentId;
+  final Function(VoidCallback p1) onStateChange;
+  final QuestionView questionView;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemBuilder: (context, index) => QuestionAndAnswerTile(
+        questions[index],
+        sectionIndex: sectionIndex,
+        studentId: studentId,
+        onStateChange: onStateChange,
+        questionView: questionView,
+      ),
+      itemCount: questions.length,
+    );
   }
 }

@@ -1,5 +1,10 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'message.dart';
-import '../../common/models/enum.dart';
+import '../models/enum.dart';
+import '../models/exceptions.dart';
+import '../providers/login_information.dart';
 import '../../misc/custom_containers/item_serializable.dart';
 
 class Answer extends ItemSerializable {
@@ -55,8 +60,28 @@ class Answer extends ItemSerializable {
   final List<Message> discussion;
   final bool isValidated;
   final ActionRequired _actionRequired;
-  ActionRequired get action => isActive ? _actionRequired : ActionRequired.none;
-  bool get isAnswered => isActive && action != ActionRequired.fromStudent;
+  ActionRequired action(BuildContext context) {
+    if (!isActive) return ActionRequired.none;
+
+    final loginType =
+        Provider.of<LoginInformation>(context, listen: false).loginType;
+    if (loginType == LoginType.none) {
+      throw const NotLoggedIn();
+    }
+
+    if (loginType == LoginType.student &&
+        _actionRequired == ActionRequired.fromStudent) {
+      return ActionRequired.fromStudent;
+    } else if (loginType == LoginType.teacher &&
+        _actionRequired == ActionRequired.fromTeacher) {
+      return ActionRequired.fromTeacher;
+    } else {
+      return ActionRequired.none;
+    }
+  }
+
+  bool get isAnswered =>
+      isActive && _actionRequired != ActionRequired.fromStudent;
   bool get hasAnswer => discussion.isNotEmpty;
 
   void addToDiscussion(Message message) => discussion.add(message);

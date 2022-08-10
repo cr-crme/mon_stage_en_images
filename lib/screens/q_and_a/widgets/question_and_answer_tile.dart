@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './discussion_list_view.dart';
+import './question_tile_part.dart';
+import './answer_tile_part.dart';
 import '../../q_and_a/widgets/new_question_alert_dialog.dart';
 import '../../../common/models/answer.dart';
 import '../../../common/models/enum.dart';
-import '../../../common/models/exceptions.dart';
-import '../../../common/models/message.dart';
 import '../../../common/models/question.dart';
 import '../../../common/models/student.dart';
 import '../../../common/providers/all_questions.dart';
 import '../../../common/providers/all_students.dart';
 import '../../../common/providers/login_information.dart';
-import '../../../common/widgets/are_you_sure_dialog.dart';
 import '../../../common/widgets/taking_action_notifier.dart';
 
 class QuestionAndAnswerTile extends StatefulWidget {
@@ -42,7 +40,6 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   late final AllStudents _students;
   late final Student? _student;
   Answer? _answer;
-  bool _isActive = false;
 
   @override
   void setState(VoidCallback fn) {
@@ -58,22 +55,14 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     _students = Provider.of<AllStudents>(context, listen: false);
     _student = widget.studentId != null ? _students[widget.studentId] : null;
     _answer = _student?.allAnswers[widget.question];
-    _isActive = _answer != null
-        ? _answer!.isActive
-        : _students.indexWhere(
-              (s) {
-                final answer = s.allAnswers[widget.question];
-                return answer == null ? false : !answer.isActive;
-              },
-            ) <
-            0;
   }
 
   void _expand() {
     _isExpanded = !_isExpanded;
 
     final answer = _answer;
-    if (answer != null && answer.action == ActionRequired.fromTeacher) {
+    if (answer != null &&
+        answer.action(context) == ActionRequired.fromTeacher) {
       // Flag the answer as being actionned
       _student!.allAnswers[widget.question] =
           answer.copyWith(actionRequired: ActionRequired.none);
@@ -122,47 +111,14 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
 
   void _onStateChange(VoidCallback func) {
     _isExpanded = false;
-    setState(() {});
-  }
-
-  void _addComment(String answerText, {bool isPhoto = false}) {
-    final currentAnswer = _student!.allAnswers[widget.question]!;
-
-    currentAnswer.addToDiscussion(Message(
-      name: _loginInfo.user!.name,
-      text: answerText,
-      isPhotoUrl: isPhoto,
-    ));
-
-    // Inform the changing of status
-    late final ActionRequired newStatus;
-    if (_loginInfo.loginType == LoginType.student) {
-      newStatus = ActionRequired.fromTeacher;
-    } else if (_loginInfo.loginType == LoginType.teacher) {
-      newStatus = ActionRequired.fromStudent;
-    } else {
-      throw const NotLoggedIn();
-    }
-    _student!.allAnswers[widget.question] =
-        currentAnswer.copyWith(text: answerText, actionRequired: newStatus);
-
     _answer = _student!.allAnswers[widget.question];
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    late final bool hasAction;
-    if (_loginInfo.loginType == LoginType.student) {
-      hasAction =
-          _answer != null && _answer!.action == ActionRequired.fromStudent;
-    } else if (_loginInfo.loginType == LoginType.teacher) {
-      hasAction =
-          _answer != null && _answer!.action == ActionRequired.fromTeacher;
-    } else {
-      throw const NotLoggedIn();
-    }
-
+    final hasAction = (_answer?.action(context) ?? ActionRequired.none) !=
+        ActionRequired.none;
     return TakingActionNotifier(
       number: _loginInfo.loginType == LoginType.teacher && hasAction ? 0 : null,
       left: 10,
@@ -170,250 +126,26 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
         elevation: 5,
         child: Column(
           children: [
-            ListTile(
-              title: QuestionPart(
-                question: widget.question,
-                studentId: widget.studentId,
-                hasAction: hasAction,
-              ),
-              trailing: _trailingBuilder(hasAction),
+            QuestionPart(
+              context,
+              question: widget.question,
+              questionView: widget.questionView,
+              studentId: widget.studentId,
+              answer: _answer,
+              onStateChange: _onStateChange,
               onTap: widget.questionView == QuestionView.normal
                   ? _expand
                   : _addOrModifyQuestion,
+              onChangeQuestionRequest: _addOrModifyQuestion,
             ),
             if (_isExpanded && widget.questionView == QuestionView.normal)
               AnswerPart(
                 widget.question!,
                 onStateChange: _onStateChange,
                 studentId: widget.studentId,
-                addAnswerCallback: _addComment,
               ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget? _trailingBuilder(bool hasAction) {
-    if (_loginInfo.loginType == LoginType.student) {
-      return TakingActionNotifier(
-        number: hasAction ? 1 : null,
-        forcedText: "?",
-        borderColor: Colors.black,
-        child: const Text(''),
-      );
-    } else if (_loginInfo.loginType == LoginType.teacher) {
-      return widget.question == null
-          ? QuestionAddButton(
-              newQuestionCallback: _addOrModifyQuestion,
-            )
-          : widget.questionView != QuestionView.normal
-              ? QuestionActivatedState(
-                  question: widget.question!,
-                  studentId: widget.studentId,
-                  initialStatus: _isActive,
-                  onStateChange: _onStateChange,
-                  questionView: widget.questionView,
-                )
-              : QuestionValidateCheckmark(
-                  question: widget.question!,
-                  studentId: widget.studentId!,
-                );
-    } else {
-      throw const NotLoggedIn();
-    }
-  }
-}
-
-class QuestionPart extends StatelessWidget {
-  const QuestionPart({
-    Key? key,
-    required this.question,
-    required this.studentId,
-    required this.hasAction,
-  }) : super(key: key);
-
-  final Question? question;
-  final String? studentId;
-  final bool hasAction;
-
-  TextStyle _pickTextStyle(Answer? answer) {
-    if (answer == null) {
-      return const TextStyle();
-    }
-
-    return TextStyle(
-      color: answer.isAnswered ? Colors.black : Colors.red,
-      fontWeight: hasAction ? FontWeight.bold : FontWeight.normal,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final students = Provider.of<AllStudents>(context, listen: false);
-    final student = studentId == null ? null : students[studentId];
-    final answer = student == null ? null : student.allAnswers[question];
-
-    return Text(question == null ? 'Nouvelle question' : question!.text,
-        style: _pickTextStyle(answer));
-  }
-}
-
-class QuestionAddButton extends StatelessWidget {
-  const QuestionAddButton({Key? key, required this.newQuestionCallback})
-      : super(key: key);
-  final VoidCallback newQuestionCallback;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-        onPressed: newQuestionCallback,
-        icon: Icon(
-          Icons.add_circle,
-          color: Theme.of(context).colorScheme.primary,
-        ));
-  }
-}
-
-class QuestionActivatedState extends StatefulWidget {
-  const QuestionActivatedState({
-    Key? key,
-    required this.studentId,
-    required this.onStateChange,
-    required this.initialStatus,
-    required this.question,
-    required this.questionView,
-  }) : super(key: key);
-
-  final String? studentId;
-  final Question question;
-  final bool initialStatus;
-  final Function(VoidCallback) onStateChange;
-  final QuestionView questionView;
-
-  @override
-  State<QuestionActivatedState> createState() => _QuestionActivator();
-}
-
-class _QuestionActivator extends State<QuestionActivatedState> {
-  var _isActive = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _isActive = widget.initialStatus;
-  }
-
-  Future<void> _toggleQuestionActiveState(value) async {
-    final students = Provider.of<AllStudents>(context, listen: false);
-    final student =
-        widget.studentId == null ? null : students[widget.studentId];
-
-    final sure = widget.questionView == QuestionView.modifyForAllStudents
-        ? await showDialog<bool>(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return AreYouSureDialog(
-                title: 'Confimer le choix',
-                content:
-                    'Voulez-vous vraiment ${value ? 'activer' : 'désactiver'} '
-                    'cette question pour tous les élèves ?',
-              );
-            },
-          )
-        : true;
-
-    if (!sure!) return;
-
-    _isActive = value;
-    if (student != null) {
-      student.allAnswers[widget.question] =
-          student.allAnswers[widget.question]!.copyWith(isActive: _isActive);
-    } else {
-      for (var student in students) {
-        student.allAnswers[widget.question] =
-            student.allAnswers[widget.question]!.copyWith(isActive: _isActive);
-      }
-    }
-    widget.onStateChange(() {});
-    setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Switch(onChanged: _toggleQuestionActiveState, value: _isActive);
-  }
-}
-
-class QuestionValidateCheckmark extends StatefulWidget {
-  const QuestionValidateCheckmark({
-    Key? key,
-    required this.question,
-    required this.studentId,
-  }) : super(key: key);
-
-  final Question question;
-  final String studentId;
-
-  @override
-  State<QuestionValidateCheckmark> createState() =>
-      _QuestionValidateCheckmarkState();
-}
-
-class _QuestionValidateCheckmarkState extends State<QuestionValidateCheckmark> {
-  void _validateAnswer(Student student, Answer answer) {
-    // Reverse the status of the answer
-    final newAnswer = answer.copyWith(
-        isValidated: !answer.isValidated, actionRequired: ActionRequired.none);
-    student.allAnswers[widget.question] = newAnswer;
-    setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final students = Provider.of<AllStudents>(context, listen: false);
-    final student = students[widget.studentId];
-    final answer = student.allAnswers[widget.question]!;
-    return IconButton(
-        onPressed: () => _validateAnswer(student, answer),
-        icon: Icon(
-          Icons.check,
-          color: answer.isValidated ? Colors.green[600] : Colors.grey[300],
-        ));
-  }
-}
-
-class AnswerPart extends StatelessWidget {
-  const AnswerPart(
-    this.question, {
-    Key? key,
-    required this.onStateChange,
-    required this.studentId,
-    required this.addAnswerCallback,
-  }) : super(key: key);
-
-  final String? studentId;
-  final Function(VoidCallback) onStateChange;
-  final Question question;
-  final Function(String, {bool isPhoto}) addAnswerCallback;
-
-  @override
-  Widget build(BuildContext context) {
-    final students = Provider.of<AllStudents>(context, listen: false);
-    final student = students[studentId];
-    final answer = student.allAnswers[question]!;
-
-    return Container(
-      padding: const EdgeInsets.only(left: 40, right: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (answer.isActive && studentId != null)
-            DiscussionListView(
-                answer: answer, addMessageCallback: addAnswerCallback),
-          const SizedBox(height: 15)
-        ],
       ),
     );
   }
