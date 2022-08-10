@@ -1,10 +1,5 @@
-import 'dart:io';
-
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart' as syspath;
 
 import './discussion_list_view.dart';
 import '../../q_and_a/widgets/new_question_alert_dialog.dart';
@@ -403,49 +398,17 @@ class AnswerPart extends StatelessWidget {
   final Question question;
   final Function(String, {bool isPhoto}) addAnswerCallback;
 
-  Future<void> _addPhoto() async {
-    final imagePicker = ImagePicker();
-    final imageXFile =
-        await imagePicker.pickImage(source: ImageSource.camera, maxWidth: 600);
-    if (imageXFile == null) return;
-
-    // Image is in cache (imageXFile.path) is temporary
-    final imageFile = File(imageXFile.path);
-
-    // Move to hard drive
-    // TODO: Move to server
-    final appDir = await syspath.getApplicationDocumentsDirectory();
-    final filename = path.basename(imageFile.path);
-    final imageFileOnHardDrive =
-        await imageFile.copy('${appDir.path}/$filename');
-
-    addAnswerCallback(imageFileOnHardDrive.path, isPhoto: true);
-  }
-
   @override
   Widget build(BuildContext context) {
     final students = Provider.of<AllStudents>(context, listen: false);
     final student = students[studentId];
     final answer = student.allAnswers[question]!;
-    final loginInfo = Provider.of<LoginInformation>(context, listen: false);
 
     return Container(
       padding: const EdgeInsets.only(left: 40, right: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (loginInfo.loginType == LoginType.student)
-            TextButton(
-              onPressed: _addPhoto,
-              style: TextButton.styleFrom(primary: Colors.grey[700]),
-              child: Row(
-                children: const [
-                  Icon(Icons.camera_alt),
-                  SizedBox(width: 10),
-                  Text('Ajouter une photo'),
-                ],
-              ),
-            ),
           if (answer.isActive && studentId != null)
             DiscussionListView(
                 answer: answer, addMessageCallback: addAnswerCallback),
