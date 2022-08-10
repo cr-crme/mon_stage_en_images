@@ -12,16 +12,16 @@ import '../../common/models/student.dart';
 import '../../common/providers/all_questions.dart';
 import '../../common/providers/login_information.dart';
 
-class StudentScreen extends StatefulWidget {
-  const StudentScreen({Key? key}) : super(key: key);
+class QAndAScreen extends StatefulWidget {
+  const QAndAScreen({Key? key}) : super(key: key);
 
-  static const routeName = '/student-screen';
+  static const routeName = '/q-and-a-screen';
 
   @override
-  State<StudentScreen> createState() => _StudentScreenState();
+  State<QAndAScreen> createState() => _QAndAScreenState();
 }
 
-class _StudentScreenState extends State<StudentScreen> {
+class _QAndAScreenState extends State<QAndAScreen> {
   LoginType _loginType = LoginType.none;
   Student? _student;
   QuestionView _questionView = QuestionView.normal;

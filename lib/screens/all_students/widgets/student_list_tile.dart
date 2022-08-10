@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../q_and_a/student_screen.dart';
+import '../../q_and_a/q_and_a_screen.dart';
 import '../../../common/models/student.dart';
 import '../../../common/widgets/taking_action_notifier.dart';
 
@@ -42,7 +42,7 @@ class StudentListTile extends StatelessWidget {
             onPressed: () => removeItemCallback(student),
           ),
           onTap: () => Navigator.of(context)
-              .pushNamed(StudentScreen.routeName, arguments: student),
+              .pushNamed(QAndAScreen.routeName, arguments: student),
           onLongPress: () => modifyStudentCallback(student),
         ),
       ),

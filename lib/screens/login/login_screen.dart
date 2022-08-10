@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../all_students/students_screen.dart';
-import '../q_and_a/student_screen.dart';
+import '../q_and_a/q_and_a_screen.dart';
 import '../../common/models/enum.dart';
 import '../../common/models/exceptions.dart';
 import '../../common/models/themes.dart';
@@ -21,7 +21,7 @@ class LoginScreen extends StatelessWidget {
       case LoginType.student:
         final students = Provider.of<AllStudents>(context, listen: false);
         theme.login('Eleve', LoginType.student);
-        Navigator.of(context).pushReplacementNamed(StudentScreen.routeName,
+        Navigator.of(context).pushReplacementNamed(QAndAScreen.routeName,
             arguments: students[0]);
         break;
       case LoginType.teacher:

@@ -5,7 +5,7 @@ import '../models/enum.dart';
 import '../models/student.dart';
 import '../providers/login_information.dart';
 import '../../screens/login/login_screen.dart';
-import '../../screens/q_and_a/student_screen.dart';
+import '../../screens/q_and_a/q_and_a_screen.dart';
 import '../../screens/all_students/students_screen.dart';
 
 class MainDrawer extends StatelessWidget {
@@ -29,7 +29,7 @@ class MainDrawer extends StatelessWidget {
               MenuItem(
                   title: 'Retour',
                   onTap: () => Navigator.of(context).pushReplacementNamed(
-                      StudentScreen.routeName,
+                      QAndAScreen.routeName,
                       arguments: student)),
             if (loginType == LoginType.teacher)
               MenuItem(
@@ -40,7 +40,7 @@ class MainDrawer extends StatelessWidget {
               MenuItem(
                   title: 'Gestion des questions',
                   onTap: () =>
-                      Navigator.of(context).pushNamed(StudentScreen.routeName)),
+                      Navigator.of(context).pushNamed(QAndAScreen.routeName)),
             MenuItem(
                 title: 'Déconnexion',
                 onTap: () => Navigator.of(context)
