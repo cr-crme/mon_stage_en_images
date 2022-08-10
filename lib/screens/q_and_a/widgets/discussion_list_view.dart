@@ -11,6 +11,7 @@ import '../../../common/models/answer.dart';
 import '../../../common/models/enum.dart';
 import '../../../common/models/message.dart';
 import '../../../common/providers/login_information.dart';
+import '../../../common/providers/speecher.dart';
 
 class DiscussionListView extends StatefulWidget {
   const DiscussionListView({
@@ -72,6 +73,17 @@ class _DiscussionListViewState extends State<DiscussionListView> {
         await imageFile.copy('${appDir.path}/$filename');
 
     widget.addMessageCallback(imageFileOnHardDrive.path, isPhoto: true);
+    setState(() {});
+  }
+
+  void _dictateMessage() {
+    final speecher = Provider.of<Speecher>(context, listen: false);
+    speecher.startListening(_onDictatedMessage);
+  }
+
+  void _onDictatedMessage(String message) {
+    widget.addMessageCallback(message);
+    setState(() {});
   }
 
   @override
@@ -109,7 +121,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.mic),
-                      onPressed: () => debugPrint('coucou'),
+                      onPressed: _dictateMessage,
                     ),
                     IconButton(
                       icon: const Icon(Icons.send),

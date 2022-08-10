@@ -152,13 +152,13 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
 
   @override
   Widget build(BuildContext context) {
-    final answer = _answer;
-
     late final bool hasAction;
     if (_loginInfo.loginType == LoginType.student) {
-      hasAction = answer != null && answer.action == ActionRequired.fromStudent;
+      hasAction =
+          _answer != null && _answer!.action == ActionRequired.fromStudent;
     } else if (_loginInfo.loginType == LoginType.teacher) {
-      hasAction = answer != null && answer.action == ActionRequired.fromTeacher;
+      hasAction =
+          _answer != null && _answer!.action == ActionRequired.fromTeacher;
     } else {
       throw const NotLoggedIn();
     }
