@@ -1,4 +1,3 @@
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,6 +22,9 @@ class QuestionPart extends StatelessWidget {
     required this.onTap,
     required this.onChangeQuestionRequest,
     required this.onStateChange,
+    required this.isReading,
+    required this.startReadingCallback,
+    required this.stopReadingCallback,
   }) : super(key: key);
 
   final Question? question;
@@ -33,6 +35,9 @@ class QuestionPart extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onChangeQuestionRequest;
   final Function(VoidCallback) onStateChange;
+  final bool isReading;
+  final VoidCallback startReadingCallback;
+  final VoidCallback stopReadingCallback;
 
   TextStyle _pickTextStyle(BuildContext context, Answer? answer) {
     if (answer == null) {
@@ -61,13 +66,16 @@ class QuestionPart extends StatelessWidget {
         hasAction: (answer?.action(context) ?? ActionRequired.none) !=
             ActionRequired.none,
         isAnswerShown: isAnswerShown,
+        isReading: isReading,
+        startReadingCallback: startReadingCallback,
+        stopReadingCallback: stopReadingCallback,
       ),
       onTap: onTap,
     );
   }
 }
 
-class _QuestionPartTrailing extends StatefulWidget {
+class _QuestionPartTrailing extends StatelessWidget {
   const _QuestionPartTrailing({
     Key? key,
     required this.question,
@@ -77,6 +85,9 @@ class _QuestionPartTrailing extends StatefulWidget {
     required this.onStateChange,
     required this.hasAction,
     required this.isAnswerShown,
+    required this.isReading,
+    required this.startReadingCallback,
+    required this.stopReadingCallback,
   }) : super(key: key);
 
   final Question? question;
@@ -86,95 +97,24 @@ class _QuestionPartTrailing extends StatefulWidget {
   final Function(VoidCallback p1) onStateChange;
   final bool hasAction;
   final bool isAnswerShown;
+  final bool isReading;
+  final VoidCallback startReadingCallback;
+  final VoidCallback stopReadingCallback;
 
-  @override
-  State<_QuestionPartTrailing> createState() => _QuestionPartTrailingState();
-}
-
-class _QuestionPartTrailingState extends State<_QuestionPartTrailing> {
-  late final FlutterTts _textToSpeech;
-  bool _isSpeaking = false;
-
-  @override
-  initState() {
-    super.initState();
-    _initTts();
-  }
-
-  Future _initTts() async {
-    _textToSpeech = FlutterTts();
-    await _textToSpeech.awaitSpeakCompletion(true);
-    await _textToSpeech.setVolume(1);
-    await _textToSpeech.setSpeechRate(0.5);
-    await _textToSpeech.setPitch(1);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _stopRead();
-  }
-
-  Future _stopRead() async {
-    await _textToSpeech.stop();
-    _isSpeaking = false;
-    if (mounted) setState(() {});
-  }
-
-  void _read() {
-    _isSpeaking = true;
-    _speak();
-    setState(() {});
-  }
-
-  Future _speak() async {
-    if (widget.question == null) return;
-    _isSpeaking = true;
-
-    await _textToSpeech.speak('La question est');
-    await _textToSpeech.speak(widget.question!.text);
-
-    final answer = _answer;
-    int imageCounter = 1;
-    if (answer == null || !widget.isAnswerShown) {
-      _stopRead();
-      return;
-    }
-    if (answer.discussion.isEmpty) {
-      await _textToSpeech.speak('Il n\'y a aucune réponse.');
-      _stopRead();
-      return;
-    }
-
-    await _textToSpeech.speak(answer.discussion.length == 1
-        ? 'La réponse est : '
-        : 'Les réponses sont : ');
-    for (final message in answer.discussion) {
-      if (message.isPhotoUrl) {
-        await _textToSpeech.speak('Photo $imageCounter de l\'élève.');
-        imageCounter++;
-      } else {
-        await _textToSpeech.speak(message.text);
-      }
-    }
-    _stopRead();
-  }
-
-  Answer? get _answer {
+  Answer? _answer(BuildContext context) {
     final students = Provider.of<AllStudents>(context, listen: false);
-    final student =
-        widget.studentId == null ? null : students[widget.studentId];
-    return student == null ? null : student.allAnswers[widget.question];
+    final student = studentId == null ? null : students[studentId];
+    return student == null ? null : student.allAnswers[question];
   }
 
-  bool get _isQuestionActive {
+  bool _isQuestionActive(BuildContext context) {
     final students = Provider.of<AllStudents>(context, listen: false);
 
-    return widget.questionView == QuestionView.modifyForAllStudents
-        ? widget.question != null
-            ? students.isQuestionActiveForAll(widget.question!)
+    return questionView == QuestionView.modifyForAllStudents
+        ? question != null
+            ? students.isQuestionActiveForAll(question!)
             : false
-        : _answer!.isActive;
+        : _answer(context)!.isActive;
   }
 
   @override
@@ -187,34 +127,33 @@ class _QuestionPartTrailingState extends State<_QuestionPartTrailing> {
         mainAxisSize: MainAxisSize.min,
         children: [
           TakingActionNotifier(
-            number: widget.hasAction ? 1 : null,
+            number: hasAction ? 1 : null,
             forcedText: "?",
             borderColor: Colors.black,
             child: const Text(''),
           ),
-          _isSpeaking
+          isReading
               ? IconButton(
-                  onPressed: _stopRead, icon: const Icon(Icons.volume_off))
-              : IconButton(onPressed: _read, icon: const Icon(Icons.volume_up)),
+                  onPressed: stopReadingCallback,
+                  icon: const Icon(Icons.volume_off))
+              : IconButton(
+                  onPressed: startReadingCallback,
+                  icon: const Icon(Icons.volume_up)),
         ],
       );
     } else if (loginType == LoginType.teacher) {
-      return widget.question == null
-          ? _QuestionAddButton(
-              newQuestionCallback: widget.onChangeQuestionRequest,
-            )
-          : widget.questionView != QuestionView.normal
+      return question == null
+          ? _QuestionAddButton(newQuestionCallback: onChangeQuestionRequest)
+          : questionView != QuestionView.normal
               ? _QuestionActivatedState(
-                  question: widget.question!,
-                  studentId: widget.studentId,
-                  initialStatus: _isQuestionActive,
-                  onStateChange: widget.onStateChange,
-                  questionView: widget.questionView,
+                  question: question!,
+                  studentId: studentId,
+                  initialStatus: _isQuestionActive(context),
+                  onStateChange: onStateChange,
+                  questionView: questionView,
                 )
               : _QuestionValidateCheckmark(
-                  question: widget.question!,
-                  studentId: widget.studentId!,
-                );
+                  question: question!, studentId: studentId!);
     } else {
       throw const NotLoggedIn();
     }

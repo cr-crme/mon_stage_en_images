@@ -1,3 +1,4 @@
+import 'package:defi_photo/common/models/text_reader.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -38,6 +39,8 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   late final AllStudents _students;
   late final Student? _student;
   Answer? _answer;
+  final _reader = TextReader();
+  bool _isReading = false;
 
   @override
   void initState() {
@@ -47,6 +50,12 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     _students = Provider.of<AllStudents>(context, listen: false);
     _student = widget.studentId != null ? _students[widget.studentId] : null;
     _answer = _student?.allAnswers[widget.question];
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _reader.stopReading();
   }
 
   void _expand() {
@@ -102,9 +111,26 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   }
 
   void _onStateChange(VoidCallback fn) {
-    _answer = _student!.allAnswers[widget.question];
+    if (_student != null) {
+      _answer = _student!.allAnswers[widget.question];
+    }
     fn();
     setState(() {});
+  }
+
+  void _startReading() {
+    if (widget.question == null) return;
+
+    _isReading = true;
+    _reader.read(widget.question!, _isExpanded ? _answer : null,
+        hasFinishedCallback: _stopReading);
+    setState(() {});
+  }
+
+  void _stopReading() {
+    _reader.stopReading();
+    _isReading = false;
+    if (mounted) setState(() {});
   }
 
   @override
@@ -129,6 +155,9 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
                   : _addOrModifyQuestion,
               onChangeQuestionRequest: _addOrModifyQuestion,
               isAnswerShown: _isExpanded,
+              isReading: _isReading,
+              startReadingCallback: _startReading,
+              stopReadingCallback: _stopReading,
             ),
             if (_isExpanded && widget.questionView == QuestionView.normal)
               AnswerPart(
