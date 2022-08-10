@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:speech_to_text/speech_to_text.dart';
+import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 
 class Speecher with ChangeNotifier {
@@ -9,24 +10,33 @@ class Speecher with ChangeNotifier {
 
   final _speechToText = SpeechToText();
   bool _speechEnabled = false;
+  VoidCallback? _onErrorUserCallback;
 
   void _initSpeech() async {
     /// This has to happen only once per app
-    _speechEnabled = await _speechToText.initialize();
+    _speechEnabled = await _speechToText.initialize(onError: _onErrorCallback);
   }
 
-  void startListening(Function(String) onResult) async {
+  void _onErrorCallback(SpeechRecognitionError error) {
+    if (_onErrorUserCallback == null) return;
+    _onErrorUserCallback!();
+  }
+
+  void startListening(
+      {required Function(String) onResultCallback,
+      VoidCallback? onErrorCallback}) async {
     if (!_speechEnabled) {
-      onResult('Assistance vocale non disponible.');
+      onResultCallback('Assistance vocale non disponible.');
       return;
     }
 
+    _onErrorUserCallback = onErrorCallback;
     await _speechToText.listen(
       listenMode: ListenMode.dictation,
       pauseFor: const Duration(seconds: 5),
       listenFor: const Duration(seconds: 20),
       onResult: (SpeechRecognitionResult result) =>
-          onResult(result.recognizedWords),
+          onResultCallback(result.recognizedWords),
       partialResults: false,
     );
   }

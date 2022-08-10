@@ -30,6 +30,7 @@ class DiscussionListView extends StatefulWidget {
 class _DiscussionListViewState extends State<DiscussionListView> {
   final fieldText = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _isVoiceRecording = false;
   String? _newMessage;
 
   @override
@@ -78,12 +79,23 @@ class _DiscussionListViewState extends State<DiscussionListView> {
 
   void _dictateMessage() {
     final speecher = Provider.of<Speecher>(context, listen: false);
-    speecher.startListening(_onDictatedMessage);
+    speecher.startListening(
+        onResultCallback: _onDictatedMessage,
+        onErrorCallback: _terminateDictate);
+    _isVoiceRecording = true;
+    setState(() {});
+  }
+
+  void _terminateDictate() {
+    final speecher = Provider.of<Speecher>(context, listen: false);
+    speecher.stopListening();
+    _isVoiceRecording = false;
+    setState(() {});
   }
 
   void _onDictatedMessage(String message) {
     widget.addMessageCallback(message);
-    setState(() {});
+    _terminateDictate();
   }
 
   @override
@@ -120,7 +132,10 @@ class _DiscussionListViewState extends State<DiscussionListView> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.mic),
+                      icon: Icon(
+                        Icons.mic,
+                        color: _isVoiceRecording ? Colors.red : Colors.grey,
+                      ),
                       onPressed: _dictateMessage,
                     ),
                     IconButton(
