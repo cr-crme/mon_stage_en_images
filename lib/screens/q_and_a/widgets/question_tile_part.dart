@@ -1,3 +1,4 @@
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,8 +13,7 @@ import '../../../common/widgets/are_you_sure_dialog.dart';
 import '../../../common/widgets/taking_action_notifier.dart';
 
 class QuestionPart extends StatelessWidget {
-  const QuestionPart(
-    this.context, {
+  const QuestionPart({
     Key? key,
     required this.question,
     required this.questionView,
@@ -24,7 +24,6 @@ class QuestionPart extends StatelessWidget {
     required this.onStateChange,
   }) : super(key: key);
 
-  final BuildContext context;
   final Question? question;
   final QuestionView questionView;
   final String? studentId;
@@ -33,7 +32,7 @@ class QuestionPart extends StatelessWidget {
   final VoidCallback onChangeQuestionRequest;
   final Function(VoidCallback) onStateChange;
 
-  TextStyle _pickTextStyle(Answer? answer) {
+  TextStyle _pickTextStyle(BuildContext context, Answer? answer) {
     if (answer == null) {
       return const TextStyle();
     }
@@ -46,64 +45,120 @@ class QuestionPart extends StatelessWidget {
     );
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+        title: Text(question == null ? 'Nouvelle question' : question!.text,
+            style: _pickTextStyle(context, answer)),
+        trailing: _QuestionPartTrailing(
+            question: question,
+            onChangeQuestionRequest: onChangeQuestionRequest,
+            questionView: questionView,
+            studentId: studentId,
+            onStateChange: onStateChange,
+            hasAction: (answer?.action(context) ?? ActionRequired.none) !=
+                ActionRequired.none),
+        onTap: onTap);
+  }
+}
+
+class _QuestionPartTrailing extends StatefulWidget {
+  const _QuestionPartTrailing({
+    Key? key,
+    required this.question,
+    required this.onChangeQuestionRequest,
+    required this.questionView,
+    required this.studentId,
+    required this.onStateChange,
+    required this.hasAction,
+  }) : super(key: key);
+
+  final Question? question;
+  final VoidCallback onChangeQuestionRequest;
+  final QuestionView questionView;
+  final String? studentId;
+  final Function(VoidCallback p1) onStateChange;
+  final bool hasAction;
+
+  @override
+  State<_QuestionPartTrailing> createState() => _QuestionPartTrailingState();
+}
+
+class _QuestionPartTrailingState extends State<_QuestionPartTrailing> {
+  late final FlutterTts textToSpeech;
+
+  @override
+  initState() {
+    super.initState();
+    _initTts();
+  }
+
+  Future _initTts() async {
+    textToSpeech = FlutterTts();
+    await textToSpeech.awaitSpeakCompletion(true);
+    await textToSpeech.setVolume(1);
+    await textToSpeech.setSpeechRate(0.5);
+    await textToSpeech.setPitch(1);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    textToSpeech.stop();
+  }
+
+  Future _speak() async {
+    if (widget.question == null) return;
+    await textToSpeech.speak(widget.question!.text);
+  }
+
   bool get _isQuestionActive {
     final students = Provider.of<AllStudents>(context, listen: false);
-    return questionView == QuestionView.modifyForAllStudents
-        ? question != null
-            ? students.isQuestionActiveForAll(question!)
+    final student =
+        widget.studentId == null ? null : students[widget.studentId];
+    final answer = student == null ? null : student.allAnswers[widget.question];
+
+    return widget.questionView == QuestionView.modifyForAllStudents
+        ? widget.question != null
+            ? students.isQuestionActiveForAll(widget.question!)
             : false
         : answer!.isActive;
   }
 
   @override
   Widget build(BuildContext context) {
-    final students = Provider.of<AllStudents>(context, listen: false);
-    final student = studentId == null ? null : students[studentId];
-    final answer = student == null ? null : student.allAnswers[question];
-
-    return ListTile(
-        title: Text(question == null ? 'Nouvelle question' : question!.text,
-            style: _pickTextStyle(answer)),
-        trailing: _trailingBuilder(
-            (answer?.action(context) ?? ActionRequired.none) !=
-                ActionRequired.none),
-        onTap: onTap);
-  }
-
-  Widget? _trailingBuilder(bool hasAction) {
     final loginType =
         Provider.of<LoginInformation>(context, listen: false).loginType;
+
     if (loginType == LoginType.student) {
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           TakingActionNotifier(
-            number: hasAction ? 1 : null,
+            number: widget.hasAction ? 1 : null,
             forcedText: "?",
             borderColor: Colors.black,
             child: const Text(''),
           ),
-          IconButton(
-              onPressed: () => debugPrint('coucou'),
-              icon: const Icon(Icons.volume_up)),
+          IconButton(onPressed: _speak, icon: const Icon(Icons.volume_up)),
         ],
       );
     } else if (loginType == LoginType.teacher) {
-      return question == null
+      return widget.question == null
           ? _QuestionAddButton(
-              newQuestionCallback: onChangeQuestionRequest,
+              newQuestionCallback: widget.onChangeQuestionRequest,
             )
-          : questionView != QuestionView.normal
+          : widget.questionView != QuestionView.normal
               ? _QuestionActivatedState(
-                  question: question!,
-                  studentId: studentId,
+                  question: widget.question!,
+                  studentId: widget.studentId,
                   initialStatus: _isQuestionActive,
-                  onStateChange: onStateChange,
-                  questionView: questionView,
+                  onStateChange: widget.onStateChange,
+                  questionView: widget.questionView,
                 )
               : _QuestionValidateCheckmark(
-                  question: question!,
-                  studentId: studentId!,
+                  question: widget.question!,
+                  studentId: widget.studentId!,
                 );
     } else {
       throw const NotLoggedIn();

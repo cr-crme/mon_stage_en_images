@@ -119,7 +119,6 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
         child: Column(
           children: [
             QuestionPart(
-              context,
               question: widget.question,
               questionView: widget.questionView,
               studentId: widget.studentId,
