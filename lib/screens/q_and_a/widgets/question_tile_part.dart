@@ -19,6 +19,7 @@ class QuestionPart extends StatelessWidget {
     required this.questionView,
     required this.studentId,
     required this.answer,
+    required this.isAnswerShown,
     required this.onTap,
     required this.onChangeQuestionRequest,
     required this.onStateChange,
@@ -28,6 +29,7 @@ class QuestionPart extends StatelessWidget {
   final QuestionView questionView;
   final String? studentId;
   final Answer? answer;
+  final bool isAnswerShown;
   final VoidCallback onTap;
   final VoidCallback onChangeQuestionRequest;
   final Function(VoidCallback) onStateChange;
@@ -48,17 +50,20 @@ class QuestionPart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        title: Text(question == null ? 'Nouvelle question' : question!.text,
-            style: _pickTextStyle(context, answer)),
-        trailing: _QuestionPartTrailing(
-            question: question,
-            onChangeQuestionRequest: onChangeQuestionRequest,
-            questionView: questionView,
-            studentId: studentId,
-            onStateChange: onStateChange,
-            hasAction: (answer?.action(context) ?? ActionRequired.none) !=
-                ActionRequired.none),
-        onTap: onTap);
+      title: Text(question == null ? 'Nouvelle question' : question!.text,
+          style: _pickTextStyle(context, answer)),
+      trailing: _QuestionPartTrailing(
+        question: question,
+        onChangeQuestionRequest: onChangeQuestionRequest,
+        questionView: questionView,
+        studentId: studentId,
+        onStateChange: onStateChange,
+        hasAction: (answer?.action(context) ?? ActionRequired.none) !=
+            ActionRequired.none,
+        isAnswerShown: isAnswerShown,
+      ),
+      onTap: onTap,
+    );
   }
 }
 
@@ -71,6 +76,7 @@ class _QuestionPartTrailing extends StatefulWidget {
     required this.studentId,
     required this.onStateChange,
     required this.hasAction,
+    required this.isAnswerShown,
   }) : super(key: key);
 
   final Question? question;
@@ -79,13 +85,15 @@ class _QuestionPartTrailing extends StatefulWidget {
   final String? studentId;
   final Function(VoidCallback p1) onStateChange;
   final bool hasAction;
+  final bool isAnswerShown;
 
   @override
   State<_QuestionPartTrailing> createState() => _QuestionPartTrailingState();
 }
 
 class _QuestionPartTrailingState extends State<_QuestionPartTrailing> {
-  late final FlutterTts textToSpeech;
+  late final FlutterTts _textToSpeech;
+  bool _isSpeaking = false;
 
   @override
   initState() {
@@ -94,35 +102,79 @@ class _QuestionPartTrailingState extends State<_QuestionPartTrailing> {
   }
 
   Future _initTts() async {
-    textToSpeech = FlutterTts();
-    await textToSpeech.awaitSpeakCompletion(true);
-    await textToSpeech.setVolume(1);
-    await textToSpeech.setSpeechRate(0.5);
-    await textToSpeech.setPitch(1);
+    _textToSpeech = FlutterTts();
+    await _textToSpeech.awaitSpeakCompletion(true);
+    await _textToSpeech.setVolume(1);
+    await _textToSpeech.setSpeechRate(0.5);
+    await _textToSpeech.setPitch(1);
   }
 
   @override
   void dispose() {
     super.dispose();
-    textToSpeech.stop();
+    _stopRead();
+  }
+
+  Future _stopRead() async {
+    await _textToSpeech.stop();
+    _isSpeaking = false;
+    if (mounted) setState(() {});
+  }
+
+  void _read() {
+    _isSpeaking = true;
+    _speak();
+    setState(() {});
   }
 
   Future _speak() async {
     if (widget.question == null) return;
-    await textToSpeech.speak(widget.question!.text);
+    _isSpeaking = true;
+
+    await _textToSpeech.speak('La question est');
+    await _textToSpeech.speak(widget.question!.text);
+
+    final answer = _answer;
+    int imageCounter = 1;
+    if (answer == null || !widget.isAnswerShown) {
+      _stopRead();
+      return;
+    }
+    if (answer.discussion.isEmpty) {
+      await _textToSpeech.speak('Il n\'y a aucune réponse.');
+      _stopRead();
+      return;
+    }
+
+    await _textToSpeech.speak(answer.discussion.length == 1
+        ? 'La réponse est : '
+        : 'Les réponses sont : ');
+    for (final message in answer.discussion) {
+      if (message.isPhotoUrl) {
+        await _textToSpeech.speak('Photo $imageCounter de l\'élève.');
+        imageCounter++;
+      } else {
+        await _textToSpeech.speak(message.text);
+      }
+    }
+    _stopRead();
+  }
+
+  Answer? get _answer {
+    final students = Provider.of<AllStudents>(context, listen: false);
+    final student =
+        widget.studentId == null ? null : students[widget.studentId];
+    return student == null ? null : student.allAnswers[widget.question];
   }
 
   bool get _isQuestionActive {
     final students = Provider.of<AllStudents>(context, listen: false);
-    final student =
-        widget.studentId == null ? null : students[widget.studentId];
-    final answer = student == null ? null : student.allAnswers[widget.question];
 
     return widget.questionView == QuestionView.modifyForAllStudents
         ? widget.question != null
             ? students.isQuestionActiveForAll(widget.question!)
             : false
-        : answer!.isActive;
+        : _answer!.isActive;
   }
 
   @override
@@ -140,7 +192,10 @@ class _QuestionPartTrailingState extends State<_QuestionPartTrailing> {
             borderColor: Colors.black,
             child: const Text(''),
           ),
-          IconButton(onPressed: _speak, icon: const Icon(Icons.volume_up)),
+          _isSpeaking
+              ? IconButton(
+                  onPressed: _stopRead, icon: const Icon(Icons.volume_off))
+              : IconButton(onPressed: _read, icon: const Icon(Icons.volume_up)),
         ],
       );
     } else if (loginType == LoginType.teacher) {

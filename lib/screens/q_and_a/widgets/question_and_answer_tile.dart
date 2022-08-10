@@ -128,6 +128,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
                   ? _expand
                   : _addOrModifyQuestion,
               onChangeQuestionRequest: _addOrModifyQuestion,
+              isAnswerShown: _isExpanded,
             ),
             if (_isExpanded && widget.questionView == QuestionView.normal)
               AnswerPart(
