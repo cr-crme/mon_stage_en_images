@@ -19,14 +19,12 @@ class QuestionAndAnswerTile extends StatefulWidget {
     Key? key,
     required this.studentId,
     required this.sectionIndex,
-    required this.onStateChange,
     required this.questionView,
   }) : super(key: key);
 
   final int sectionIndex;
   final String? studentId;
   final Question? question;
-  final Function(VoidCallback) onStateChange;
   final QuestionView questionView;
 
   @override
@@ -40,12 +38,6 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   late final AllStudents _students;
   late final Student? _student;
   Answer? _answer;
-
-  @override
-  void setState(VoidCallback fn) {
-    super.setState(fn);
-    widget.onStateChange(() {});
-  }
 
   @override
   void initState() {
@@ -109,9 +101,9 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     setState(() {});
   }
 
-  void _onStateChange(VoidCallback func) {
-    _isExpanded = false;
+  void _onStateChange(VoidCallback fn) {
     _answer = _student!.allAnswers[widget.question];
+    fn();
     setState(() {});
   }
 

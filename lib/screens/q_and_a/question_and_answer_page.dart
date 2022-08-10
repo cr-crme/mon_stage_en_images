@@ -13,16 +13,12 @@ import '../../common/providers/login_information.dart';
 
 class QuestionAndAnswerPage extends StatelessWidget {
   const QuestionAndAnswerPage(this.sectionIndex,
-      {Key? key,
-      required this.studentId,
-      required this.onStateChange,
-      required this.questionView})
+      {Key? key, required this.studentId, required this.questionView})
       : super(key: key);
 
   static const routeName = '/question-and-answer-page';
   final int sectionIndex;
   final String? studentId;
-  final Function(VoidCallback) onStateChange;
   final QuestionView questionView;
 
   @override
@@ -99,7 +95,6 @@ class QuestionAndAnswerPage extends StatelessWidget {
               null,
               sectionIndex: sectionIndex,
               studentId: studentId,
-              onStateChange: onStateChange,
               questionView: questionView,
             ),
           if (questionView != QuestionView.normal && questions.isNotEmpty)
@@ -123,7 +118,6 @@ class QuestionAndAnswerPage extends StatelessWidget {
         ? QAndAListView(questions,
             sectionIndex: sectionIndex,
             studentId: studentId,
-            onStateChange: onStateChange,
             questionView: questionView)
         : Container(
             padding: const EdgeInsets.only(top: 10, bottom: 30),
@@ -138,14 +132,12 @@ class QAndAListView extends StatelessWidget {
     Key? key,
     required this.sectionIndex,
     required this.studentId,
-    required this.onStateChange,
     required this.questionView,
   }) : super(key: key);
 
   final AllQuestions questions;
   final int sectionIndex;
   final String? studentId;
-  final Function(VoidCallback p1) onStateChange;
   final QuestionView questionView;
 
   @override
@@ -157,7 +149,6 @@ class QAndAListView extends StatelessWidget {
         questions[index],
         sectionIndex: sectionIndex,
         studentId: studentId,
-        onStateChange: onStateChange,
         questionView: questionView,
       ),
       itemCount: questions.length,

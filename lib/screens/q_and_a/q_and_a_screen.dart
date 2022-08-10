@@ -73,10 +73,6 @@ class _QAndAScreenState extends State<QAndAScreen> {
     onPageChangedRequest(-1);
   }
 
-  void onStateChange(VoidCallback func) {
-    setState(func);
-  }
-
   void _switchToQuestionManagerMode(BuildContext context) {
     if (_loginType == LoginType.student ||
         _questionView == QuestionView.modifyForAllStudents) return;
@@ -141,42 +137,18 @@ class _QAndAScreenState extends State<QAndAScreen> {
                 children: [
                   MainMetierPage(
                       student: _student, onPageChanged: onPageChangedRequest),
-                  QuestionAndAnswerPage(
-                    0,
-                    studentId: _student?.id,
-                    onStateChange: onStateChange,
-                    questionView: _questionView,
-                  ),
-                  QuestionAndAnswerPage(
-                    1,
-                    studentId: _student?.id,
-                    onStateChange: onStateChange,
-                    questionView: _questionView,
-                  ),
-                  QuestionAndAnswerPage(
-                    2,
-                    studentId: _student?.id,
-                    onStateChange: onStateChange,
-                    questionView: _questionView,
-                  ),
-                  QuestionAndAnswerPage(
-                    3,
-                    studentId: _student?.id,
-                    onStateChange: onStateChange,
-                    questionView: _questionView,
-                  ),
-                  QuestionAndAnswerPage(
-                    4,
-                    studentId: _student?.id,
-                    onStateChange: onStateChange,
-                    questionView: _questionView,
-                  ),
-                  QuestionAndAnswerPage(
-                    5,
-                    studentId: _student?.id,
-                    onStateChange: onStateChange,
-                    questionView: _questionView,
-                  ),
+                  QuestionAndAnswerPage(0,
+                      studentId: _student?.id, questionView: _questionView),
+                  QuestionAndAnswerPage(1,
+                      studentId: _student?.id, questionView: _questionView),
+                  QuestionAndAnswerPage(2,
+                      studentId: _student?.id, questionView: _questionView),
+                  QuestionAndAnswerPage(3,
+                      studentId: _student?.id, questionView: _questionView),
+                  QuestionAndAnswerPage(4,
+                      studentId: _student?.id, questionView: _questionView),
+                  QuestionAndAnswerPage(5,
+                      studentId: _student?.id, questionView: _questionView),
                 ],
               ),
             ),
