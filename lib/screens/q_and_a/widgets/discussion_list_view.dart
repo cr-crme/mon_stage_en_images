@@ -12,7 +12,7 @@ class DiscussionListView extends StatefulWidget {
   }) : super(key: key);
 
   final Answer? answer;
-  final Function(String, {required bool isPhoto}) addMessageCallback;
+  final Function(String) addMessageCallback;
 
   @override
   State<DiscussionListView> createState() => _DiscussionListViewState();
@@ -41,7 +41,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
     _formKey.currentState!.save();
     if (_newMessage == null || _newMessage!.isEmpty) return;
 
-    widget.addMessageCallback(_newMessage!, isPhoto: false);
+    widget.addMessageCallback(_newMessage!);
 
     _clearFieldText();
     setState(() {});

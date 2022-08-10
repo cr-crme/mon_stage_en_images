@@ -130,7 +130,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     setState(() {});
   }
 
-  void _addComment(String answerText, {required bool isPhoto}) {
+  void _addComment(String answerText, {bool isPhoto = false}) {
     final currentAnswer = _student!.allAnswers[widget.question]!;
 
     currentAnswer.addToDiscussion(Message(
@@ -401,7 +401,7 @@ class AnswerPart extends StatelessWidget {
   final String? studentId;
   final Function(VoidCallback) onStateChange;
   final Question question;
-  final Function(String, {required bool isPhoto}) addAnswerCallback;
+  final Function(String, {bool isPhoto}) addAnswerCallback;
 
   Future<void> _addPhoto() async {
     final imagePicker = ImagePicker();
