@@ -1,4 +1,4 @@
-import '../../misc/custom_containers/item_serializable.dart';
+import 'package:defi_photo/crcrme_enhanced_containers/lib/item_serializable.dart';
 
 class Message extends ItemSerializable {
   // Constructors and (de)serializer

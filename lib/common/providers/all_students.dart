@@ -1,6 +1,7 @@
-import '../models/student.dart';
+import 'package:defi_photo/crcrme_enhanced_containers/lib/list_provided.dart';
+
 import '../models/question.dart';
-import '../../misc/custom_containers/list_provided.dart';
+import '../models/student.dart';
 
 class AllStudents extends ListProvided<Student> {
   int get count => length;
