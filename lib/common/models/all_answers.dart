@@ -5,21 +5,24 @@ import 'package:provider/provider.dart';
 import './answer.dart';
 import './enum.dart';
 import './exceptions.dart';
-import '../providers/all_questions.dart';
+import '../models/question.dart';
 import '../providers/login_information.dart';
 
 class AllAnswers extends MapSerializable<Answer> {
   // Constructors and (de)serializer
-  AllAnswers({required AllQuestions questions}) : super() {
+  AllAnswers({required List<Question> questions}) : super() {
     for (var question in questions) {
       this[question] = Answer(isActive: false);
     }
   }
-  AllAnswers.fromSerialized(map) : super.fromSerialized(map);
+  AllAnswers.fromSerialized(map)
+      : super.fromSerialized(
+            (map as Map).map((key, value) => MapEntry(key.toString(), value)));
 
   @override
   Answer deserializeItem(data) {
-    return Answer.fromSerialized(data);
+    return Answer.fromSerialized(
+        (data as Map).map((key, value) => MapEntry(key.toString(), value)));
   }
 
   // Attributes and methods
@@ -38,6 +41,14 @@ class AllAnswers extends MapSerializable<Answer> {
       if (answer.value.isAnswered) answered++;
     });
     return answered;
+  }
+
+  void _addIfNotFound(Question question) {
+    if (this[question] != null) return;
+
+    this[question] = Answer(
+        actionRequired: ActionRequired.fromStudent,
+        isActive: question.defaultTarget == Target.all);
   }
 
   int numberOfActionsRequired(BuildContext context) {
@@ -72,63 +83,71 @@ class AllAnswers extends MapSerializable<Answer> {
     return number;
   }
 
-  AllAnswers fromQuestions(AllQuestions questions) {
-    var out = AllAnswers(questions: AllQuestions());
+  AllAnswers fromQuestions(List<Question> questions) {
+    var out = AllAnswers(questions: []);
     for (var question in questions) {
+      _addIfNotFound(question);
+
       out[question] = this[question]!;
     }
     return out;
   }
 
-  AllQuestions activeQuestions(AllQuestions questions) {
-    var out = AllQuestions();
-    for (var question in questions) {
-      if (this[question]!.isActive) out.add(question);
-    }
+  List<Question> activeQuestions(List<Question> questions) {
+    List<Question> out = questions.where((question) {
+      _addIfNotFound(question);
+
+      final answer = this[question]!;
+      return answer.isActive;
+    }).toList(growable: false);
     return out;
   }
 
-  AllAnswers activeAnswers(AllQuestions questions) {
-    var out = AllAnswers(questions: AllQuestions());
+  AllAnswers activeAnswers(List<Question> questions) {
+    var out = AllAnswers(questions: []);
     for (var question in questions) {
+      _addIfNotFound(question);
+
       final answer = this[question]!;
       if (answer.isActive) out[question] = answer;
     }
     return out;
   }
 
-  AllQuestions answeredQuestions(AllQuestions questions,
+  List<Question> answeredQuestions(List<Question> questions,
       {bool shouldBeActive = true, bool skipIfValidated = false}) {
-    var out = AllQuestions();
-    for (var question in questions) {
+    List<Question> out = questions.where((question) {
+      _addIfNotFound(question);
+
       final answer = this[question]!;
       final activeState =
           !shouldBeActive || (shouldBeActive && answer.isActive);
       final shouldSkipIfValidated = !skipIfValidated || !answer.isValidated;
-      if (activeState && answer.isAnswered && shouldSkipIfValidated) {
-        out.add(question);
-      }
-    }
+      return activeState && answer.isAnswered && shouldSkipIfValidated;
+    }).toList(growable: false);
     return out;
   }
 
-  AllQuestions unansweredQuestions(AllQuestions questions,
+  List<Question> unansweredQuestions(List<Question> questions,
       {bool shouldBeActive = true}) {
-    var out = AllQuestions();
-    for (var question in questions) {
+    List<Question> out = questions.where((question) {
+      _addIfNotFound(question);
+
       final answer = this[question]!;
-      var activeState = !shouldBeActive || (shouldBeActive && answer.isActive);
-      if (activeState && !answer.isAnswered) out.add(question);
-    }
+      final activeState =
+          !shouldBeActive || (shouldBeActive && answer.isActive);
+      return activeState && !answer.isAnswered;
+    }).toList(growable: false);
     return out;
   }
 
-  AllQuestions inactiveQuestions(AllQuestions questions) {
-    var out = AllQuestions();
-    for (var question in questions) {
+  List<Question> inactiveQuestions(List<Question> questions) {
+    List<Question> out = questions.where((question) {
+      _addIfNotFound(question);
+
       final answer = this[question]!;
-      if (!answer.isActive) out.add(question);
-    }
+      return !answer.isActive;
+    }).toList(growable: false);
     return out;
   }
 }

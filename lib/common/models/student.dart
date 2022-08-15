@@ -32,8 +32,9 @@ class Student extends ItemSerializable {
   Student.fromSerialized(Map<String, dynamic> map)
       : firstName = map['firstName'],
         lastName = map['lastName'],
-        allAnswers = map['allAnswers'],
-        company = map['company'],
+        allAnswers = AllAnswers.fromSerialized(map['allAnswers'] ?? {}),
+        company = Company.fromSerialized(((map['company'] ?? {}) as Map)
+            .map((key, value) => MapEntry(key.toString(), value))),
         super.fromSerialized(map);
 
   @override
@@ -41,8 +42,8 @@ class Student extends ItemSerializable {
     return {
       'firstName': firstName,
       'lastName': lastName,
-      'allAnswers': allAnswers,
-      'company': company,
+      'allAnswers': allAnswers.serialize(),
+      'company': company.serialize(),
     };
   }
 

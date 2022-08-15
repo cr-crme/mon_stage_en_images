@@ -109,12 +109,14 @@ class _QuestionPartTrailing extends StatelessWidget {
 
   bool _isQuestionActive(BuildContext context) {
     final students = Provider.of<AllStudents>(context, listen: false);
-
+    final answer = _answer(context);
     return questionView == QuestionView.modifyForAllStudents
         ? question != null
             ? students.isQuestionActiveForAll(question!)
             : false
-        : _answer(context)!.isActive;
+        : answer == null
+            ? false
+            : answer.isActive;
   }
 
   @override
@@ -228,6 +230,7 @@ class _QuestionActivator extends State<_QuestionActivatedState> {
     if (!sure!) return;
 
     _isActive = value;
+    // TODO: check if the question is already added, otherwise create
     if (student != null) {
       student.allAnswers[widget.question] =
           student.allAnswers[widget.question]!.copyWith(isActive: _isActive);

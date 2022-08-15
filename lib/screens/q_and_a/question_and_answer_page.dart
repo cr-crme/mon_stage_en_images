@@ -5,6 +5,7 @@ import './widgets/question_and_answer_tile.dart';
 import '../../common/models/all_answers.dart';
 import '../../common/models/enum.dart';
 import '../../common/models/exceptions.dart';
+import '../../common/models/question.dart';
 import '../../common/models/section.dart';
 import '../../common/models/student.dart';
 import '../../common/providers/all_questions.dart';
@@ -31,8 +32,8 @@ class QuestionAndAnswerPage extends StatelessWidget {
     final questions = Provider.of<AllQuestions>(context, listen: false)
         .fromSection(sectionIndex);
     late final AllAnswers? answers;
-    late final AllQuestions? answeredQuestions;
-    late final AllQuestions? unansweredQuestions;
+    late final List<Question>? answeredQuestions;
+    late final List<Question>? unansweredQuestions;
     if (studentId != null) {
       student = allStudents[studentId];
       answers = student.allAnswers.fromQuestions(questions);
@@ -41,13 +42,12 @@ class QuestionAndAnswerPage extends StatelessWidget {
       unansweredQuestions = answers.unansweredQuestions(questions);
     } else {
       student = null;
-      answeredQuestions = Provider.of<AllQuestions>(context, listen: false)
-          .fromSection(sectionIndex);
-      unansweredQuestions = AllQuestions();
+      answeredQuestions = [];
+      unansweredQuestions = [];
     }
 
     final allAnswersSection = _buildQuestionSection(context,
-        questions: questions,
+        questions: questions.toList(growable: false),
         titleIfNothing: 'Aucune question dans cette section');
     final answeredSection = _buildQuestionSection(context,
         questions: answeredQuestions,
@@ -113,9 +113,9 @@ class QuestionAndAnswerPage extends StatelessWidget {
   }
 
   Widget _buildQuestionSection(BuildContext context,
-      {required AllQuestions questions, required String titleIfNothing}) {
+      {required List<Question> questions, required String titleIfNothing}) {
     return questions.isNotEmpty
-        ? QAndAListView(questions,
+        ? QAndAListView(questions.toList(growable: false),
             sectionIndex: sectionIndex,
             studentId: studentId,
             questionView: questionView)
@@ -135,7 +135,7 @@ class QAndAListView extends StatelessWidget {
     required this.questionView,
   }) : super(key: key);
 
-  final AllQuestions questions;
+  final List<Question> questions;
   final int sectionIndex;
   final String? studentId;
   final QuestionView questionView;

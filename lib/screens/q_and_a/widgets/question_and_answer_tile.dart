@@ -49,7 +49,8 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     _loginInfo = Provider.of<LoginInformation>(context, listen: false);
     _students = Provider.of<AllStudents>(context, listen: false);
     _student = widget.studentId != null ? _students[widget.studentId] : null;
-    _answer = _student?.allAnswers[widget.question];
+    _answer =
+        widget.question != null ? _student?.allAnswers[widget.question] : null;
   }
 
   @override
@@ -92,12 +93,12 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     );
     if (question == null) return;
 
-    if (widget.question == null) {
-      questions.addToAll(question,
-          students: _students, currentStudent: currentStudent);
-    } else {
+    if (widget.question != null) {
       var newQuestion = widget.question!.copyWith(text: question.text);
       questions.modifyToAll(newQuestion,
+          students: _students, currentStudent: currentStudent);
+    } else {
+      questions.addToAll(question,
           students: _students, currentStudent: currentStudent);
     }
     setState(() {});

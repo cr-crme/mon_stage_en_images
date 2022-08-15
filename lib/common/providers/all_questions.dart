@@ -1,5 +1,4 @@
-import 'package:defi_photo/crcrme_enhanced_containers/lib/list_provided.dart';
-
+import 'package:defi_photo/crcrme_enhanced_containers/lib/firebase_list_provided.dart';
 import './all_students.dart';
 import '../models/answer.dart';
 import '../models/enum.dart';
@@ -7,21 +6,19 @@ import '../models/question.dart';
 import '../models/section.dart';
 import '../models/student.dart';
 
-class AllQuestions extends ListProvided<Question> with Section {
+class AllQuestions extends FirebaseListProvided<Question> with Section {
   // Constructors and (de)serializer
-  AllQuestions() : super();
-  AllQuestions.fromSerialized(map) : super.fromSerialized(map);
+  AllQuestions()
+      : super(availableIdsPath: 'questions-id', dataPath: 'questions');
 
   @override
   Question deserializeItem(data) {
     return Question.fromSerialized(data);
   }
 
-  AllQuestions fromSection(int index) {
-    final out = AllQuestions();
-    forEach((question) {
-      if (question.section == index) out.add(question);
-    });
+  List<Question> fromSection(int index) {
+    List<Question> out =
+        where((question) => question.section == index).toList(growable: false);
     return out;
   }
 
@@ -39,9 +36,7 @@ class AllQuestions extends ListProvided<Question> with Section {
               currentStudent == null ||
               student.id == currentStudent.id);
       student.allAnswers[question] = Answer(
-          isActive: isActive,
-          actionRequired: ActionRequired.fromStudent,
-          discussion: []);
+          isActive: isActive, actionRequired: ActionRequired.fromStudent);
     }
   }
 

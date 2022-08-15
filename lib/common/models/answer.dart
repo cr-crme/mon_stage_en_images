@@ -2,6 +2,7 @@ import 'package:defi_photo/crcrme_enhanced_containers/lib/item_serializable.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/discussion.dart';
 import '../models/enum.dart';
 import '../models/exceptions.dart';
 import '../providers/login_information.dart';
@@ -10,19 +11,19 @@ import 'message.dart';
 class Answer extends ItemSerializable {
   // Constructors and (de)serializer
   Answer({
-    List<Message>? discussion,
+    Discussion? discussion,
     this.isActive = true,
     this.isValidated = false,
     ActionRequired actionRequired = ActionRequired.none,
     id,
-  })  : discussion = discussion ??= [],
+  })  : discussion = discussion ??= Discussion(),
         _actionRequired = actionRequired,
         super(id: id);
   Answer.fromSerialized(Map<String, dynamic> map)
-      : discussion = map['discussion'],
+      : discussion = Discussion.fromSerialized(map['discussion'] ?? {}),
         isActive = map['isActive'],
         isValidated = map['isValidated'],
-        _actionRequired = map['actionRequired'],
+        _actionRequired = ActionRequired.values[map['actionRequired']],
         super.fromSerialized(map);
   Answer copyWith(
       {discussion, isActive, text, isValidated, actionRequired, id}) {
@@ -48,16 +49,16 @@ class Answer extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() {
     return {
-      'discussion': discussion,
+      'discussion': discussion.serialize(),
       'isActive': isActive,
       'isValidated': isValidated,
-      'actionRequired': _actionRequired,
+      'actionRequired': _actionRequired.index,
     };
   }
 
   // Attributes and methods
   final bool isActive;
-  final List<Message> discussion;
+  final Discussion discussion;
   final bool isValidated;
   final ActionRequired _actionRequired;
   ActionRequired action(BuildContext context) {

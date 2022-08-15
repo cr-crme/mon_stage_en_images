@@ -1,6 +1,7 @@
 import './common/models/all_answers.dart';
 import './common/models/answer.dart';
 import './common/models/company.dart';
+import './common/models/discussion.dart';
 import './common/models/enum.dart';
 import './common/models/message.dart';
 import './common/models/question.dart';
@@ -19,7 +20,8 @@ void prepareDummyData(AllStudents students, AllQuestions questions) {
   questions.add(Question('Texte 3', section: 5, defaultTarget: Target.none));
   questions.add(Question('Photo 6', section: 5, defaultTarget: Target.none));
 
-  final benjaminAnswers = AllAnswers(questions: questions);
+  final benjaminAnswers =
+      AllAnswers(questions: questions.toList(growable: false));
   benjaminAnswers[questions.fromSection(0)[0]] =
       Answer(actionRequired: ActionRequired.fromStudent);
   benjaminAnswers[questions.fromSection(0)[1]] =
@@ -38,36 +40,40 @@ void prepareDummyData(AllStudents students, AllQuestions questions) {
       company: Company(name: 'Ici'),
       allAnswers: benjaminAnswers));
 
-  final aurelieAnswers = AllAnswers(questions: questions);
-  aurelieAnswers[questions.fromSection(5)[2]] =
-      Answer(actionRequired: ActionRequired.fromTeacher, discussion: [
-    Message(name: 'Prof', text: 'Coucou'),
-    Message(name: 'Aurélie', text: 'Non pas coucou'),
-    Message(name: 'Prof', text: 'Coucou'),
-    Message(
-        name: 'Aurélie',
-        text: 'https://cdn.photographycourse.net/wp-content/uploads/2014/11/'
-            'Landscape-Photography-steps.jpg',
-        isPhotoUrl: true),
-    Message(name: 'Prof', text: 'Coucou'),
-    Message(name: 'Aurélie', text: 'Non pas coucou'),
-    Message(name: 'Prof', text: 'Coucou'),
-    Message(name: 'Aurélie', text: 'Non pas coucou'),
-    Message(name: 'Prof', text: 'Coucou'),
-    Message(name: 'Aurélie', text: 'Non pas coucou'),
-    Message(name: 'Prof', text: 'Coucou'),
-    Message(
-        name: 'Aurélie',
-        text: 'https://cdn.photographycourse.net/wp-content/uploads/2014/11/'
-            'Landscape-Photography-steps.jpg',
-        isPhotoUrl: true),
-    Message(name: 'Prof', text: 'Coucou'),
-    Message(name: 'Aurélie', text: 'Non pas coucou'),
-    Message(name: 'Prof', text: 'Coucou'),
-    Message(name: 'Aurélie', text: 'Non pas coucou'),
-    Message(name: 'Prof', text: 'Coucou'),
-    Message(name: 'Aurélie', text: 'Non pas coucou'),
-  ]);
+  final aurelieAnswers =
+      AllAnswers(questions: questions.toList(growable: false));
+  aurelieAnswers[questions.fromSection(5)[2]] = Answer(
+      actionRequired: ActionRequired.fromTeacher,
+      discussion: Discussion.fromList([
+        Message(name: 'Prof', text: 'Coucou'),
+        Message(name: 'Aurélie', text: 'Non pas coucou'),
+        Message(name: 'Prof', text: 'Coucou'),
+        Message(
+            name: 'Aurélie',
+            text:
+                'https://cdn.photographycourse.net/wp-content/uploads/2014/11/'
+                'Landscape-Photography-steps.jpg',
+            isPhotoUrl: true),
+        Message(name: 'Prof', text: 'Coucou'),
+        Message(name: 'Aurélie', text: 'Non pas coucou'),
+        Message(name: 'Prof', text: 'Coucou'),
+        Message(name: 'Aurélie', text: 'Non pas coucou'),
+        Message(name: 'Prof', text: 'Coucou'),
+        Message(name: 'Aurélie', text: 'Non pas coucou'),
+        Message(name: 'Prof', text: 'Coucou'),
+        Message(
+            name: 'Aurélie',
+            text:
+                'https://cdn.photographycourse.net/wp-content/uploads/2014/11/'
+                'Landscape-Photography-steps.jpg',
+            isPhotoUrl: true),
+        Message(name: 'Prof', text: 'Coucou'),
+        Message(name: 'Aurélie', text: 'Non pas coucou'),
+        Message(name: 'Prof', text: 'Coucou'),
+        Message(name: 'Aurélie', text: 'Non pas coucou'),
+        Message(name: 'Prof', text: 'Coucou'),
+        Message(name: 'Aurélie', text: 'Non pas coucou'),
+      ]));
   aurelieAnswers[questions.fromSection(5)[1]] = Answer(isValidated: true);
 
   students.add(Student(

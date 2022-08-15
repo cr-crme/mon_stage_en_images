@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:defi_photo/common/models/discussion.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
@@ -9,7 +10,7 @@ import 'package:provider/provider.dart';
 import './discussion_tile.dart';
 import '../../../common/models/answer.dart';
 import '../../../common/models/enum.dart';
-import '../../../common/models/message.dart';
+import '../../../common/models/discussion.dart';
 import '../../../common/providers/login_information.dart';
 import '../../../common/providers/speecher.dart';
 
@@ -160,7 +161,7 @@ class _MessageListView extends StatelessWidget {
   const _MessageListView({Key? key, required this.discussion})
       : super(key: key);
 
-  final List<Message> discussion;
+  final Discussion discussion;
 
   @override
   Widget build(BuildContext context) {

@@ -13,7 +13,7 @@ class Question extends ItemSerializable {
   Question.fromSerialized(Map<String, dynamic> map)
       : text = map['text'],
         section = map['section'],
-        defaultTarget = map['defaultTarget'],
+        defaultTarget = Target.values[map['defaultTarget']],
         super.fromSerialized(map);
   Question copyWith({text, section, defaultTarget, id}) {
     text ??= this.text;
@@ -38,7 +38,7 @@ class Question extends ItemSerializable {
     return {
       'text': text,
       'section': section,
-      'defaultTarget': defaultTarget,
+      'defaultTarget': defaultTarget.index,
     };
   }
 

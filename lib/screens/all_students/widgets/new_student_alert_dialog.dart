@@ -24,12 +24,6 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
   String? _lastName;
   String? _companyName;
 
-  @override
-  void initState() {
-    super.initState();
-    debugPrint("Coucou");
-  }
-
   void _finalize(BuildContext context, {bool hasCancelled = false}) {
     final questions = Provider.of<AllQuestions>(context, listen: false);
 
@@ -46,7 +40,7 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
     var student = Student(
       firstName: _firstName!,
       lastName: _lastName!,
-      allAnswers: AllAnswers(questions: questions),
+      allAnswers: AllAnswers(questions: questions.toList(growable: false)),
       company: Company(name: _companyName ?? ''),
     );
     Navigator.pop(context, student);
