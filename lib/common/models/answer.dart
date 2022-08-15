@@ -1,11 +1,11 @@
+import 'package:defi_photo/crcrme_enhanced_containers/lib/item_serializable.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'message.dart';
 import '../models/enum.dart';
 import '../models/exceptions.dart';
 import '../providers/login_information.dart';
-import '../../misc/custom_containers/item_serializable.dart';
+import 'message.dart';
 
 class Answer extends ItemSerializable {
   // Constructors and (de)serializer

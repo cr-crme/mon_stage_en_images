@@ -1,7 +1,7 @@
+import 'package:defi_photo/crcrme_enhanced_containers/lib/item_serializable.dart';
+
 import './all_answers.dart';
 import './company.dart';
-
-import '../../misc/custom_containers/item_serializable.dart';
 
 class Student extends ItemSerializable {
   // Constructors and (de)serializer

@@ -1,10 +1,11 @@
+import 'package:defi_photo/crcrme_enhanced_containers/lib/list_provided.dart';
+
 import './all_students.dart';
 import '../models/answer.dart';
-import '../models/question.dart';
 import '../models/enum.dart';
+import '../models/question.dart';
 import '../models/section.dart';
 import '../models/student.dart';
-import '../../misc/custom_containers/list_provided.dart';
 
 class AllQuestions extends ListProvided<Question> with Section {
   // Constructors and (de)serializer

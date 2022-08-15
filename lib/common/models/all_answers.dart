@@ -1,12 +1,12 @@
+import 'package:defi_photo/crcrme_enhanced_containers/lib/map_serializable.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import './answer.dart';
 import './enum.dart';
 import './exceptions.dart';
-import '../providers/login_information.dart';
 import '../providers/all_questions.dart';
-import '../../misc/custom_containers/map_serializable.dart';
+import '../providers/login_information.dart';
 
 class AllAnswers extends MapSerializable<Answer> {
   // Constructors and (de)serializer
