@@ -23,6 +23,7 @@ Rouler la commande suivante pour cloner les dépôts nécessaires pour compiler 
 3. Se connecter avec un compte ayant accès au projet Firebase et configurer le projet avec les paramètres par défaut.
 
         firebase login
+        firebase init
         flutterfire configure --project=defiphoto
 
 Pour plus d'informations, visitez [cette page](https://firebase.google.com/docs/flutter/setup).

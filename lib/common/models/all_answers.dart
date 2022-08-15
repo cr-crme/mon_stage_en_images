@@ -18,8 +18,8 @@ class AllAnswers extends MapSerializable<Answer> {
   AllAnswers.fromSerialized(map) : super.fromSerialized(map);
 
   @override
-  Answer deserializeItem(map) {
-    return Answer.fromSerialized(map);
+  Answer deserializeItem(data) {
+    return Answer.fromSerialized(data);
   }
 
   // Attributes and methods

@@ -13,8 +13,8 @@ class AllQuestions extends ListProvided<Question> with Section {
   AllQuestions.fromSerialized(map) : super.fromSerialized(map);
 
   @override
-  Question deserializeItem(map) {
-    return Question.fromSerialized(map);
+  Question deserializeItem(data) {
+    return Question.fromSerialized(data);
   }
 
   AllQuestions fromSection(int index) {

@@ -43,6 +43,7 @@ dependencies:
     cupertino_icons: ^1.0.2
     speech_to_text: ^5.6.1
     flutter_tts: ^3.5.0
+    nanoid: ^1.0.0
 
 dev_dependencies:
     # The "flutter_lints" package below contains a set of recommended lints to
