@@ -230,7 +230,6 @@ class _QuestionActivator extends State<_QuestionActivatedState> {
     if (!sure!) return;
 
     _isActive = value;
-    // TODO: check if the question is already added, otherwise create
     if (student != null) {
       student.allAnswers[widget.question] =
           student.allAnswers[widget.question]!.copyWith(isActive: _isActive);

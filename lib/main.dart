@@ -8,14 +8,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import './dummy_data.dart';
 import './common/providers/all_questions.dart';
 import './common/providers/all_students.dart';
 import './common/providers/login_information.dart';
 import './common/providers/speecher.dart';
 import './screens/all_students/students_screen.dart';
 import './screens/login/login_screen.dart';
-import 'screens/q_and_a/q_and_a_screen.dart';
-import 'firebase_options.dart';
+import './screens/q_and_a/q_and_a_screen.dart';
+import './firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
     final students = AllStudents();
     final questions = AllQuestions();
     final speecher = Speecher();
-    // prepareDummyData(students, questions);
+    prepareDummyData(students, questions);
 
     return MultiProvider(
       providers: [

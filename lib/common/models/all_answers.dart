@@ -43,12 +43,16 @@ class AllAnswers extends MapSerializable<Answer> {
     return answered;
   }
 
-  void _addIfNotFound(Question question) {
-    if (this[question] != null) return;
+  @override
+  Answer? operator [](key) {
+    // Add the answer to the pool if it does not exist
+    if (this[key] == null) {
+      super[key] = Answer(
+          actionRequired: ActionRequired.fromStudent,
+          isActive: key.defaultTarget == Target.all);
+    }
 
-    this[question] = Answer(
-        actionRequired: ActionRequired.fromStudent,
-        isActive: question.defaultTarget == Target.all);
+    return super[key];
   }
 
   int numberOfActionsRequired(BuildContext context) {
@@ -86,8 +90,6 @@ class AllAnswers extends MapSerializable<Answer> {
   AllAnswers fromQuestions(List<Question> questions) {
     var out = AllAnswers(questions: []);
     for (var question in questions) {
-      _addIfNotFound(question);
-
       out[question] = this[question]!;
     }
     return out;
@@ -95,8 +97,6 @@ class AllAnswers extends MapSerializable<Answer> {
 
   List<Question> activeQuestions(List<Question> questions) {
     List<Question> out = questions.where((question) {
-      _addIfNotFound(question);
-
       final answer = this[question]!;
       return answer.isActive;
     }).toList(growable: false);
@@ -106,8 +106,6 @@ class AllAnswers extends MapSerializable<Answer> {
   AllAnswers activeAnswers(List<Question> questions) {
     var out = AllAnswers(questions: []);
     for (var question in questions) {
-      _addIfNotFound(question);
-
       final answer = this[question]!;
       if (answer.isActive) out[question] = answer;
     }
@@ -117,8 +115,6 @@ class AllAnswers extends MapSerializable<Answer> {
   List<Question> answeredQuestions(List<Question> questions,
       {bool shouldBeActive = true, bool skipIfValidated = false}) {
     List<Question> out = questions.where((question) {
-      _addIfNotFound(question);
-
       final answer = this[question]!;
       final activeState =
           !shouldBeActive || (shouldBeActive && answer.isActive);
@@ -131,8 +127,6 @@ class AllAnswers extends MapSerializable<Answer> {
   List<Question> unansweredQuestions(List<Question> questions,
       {bool shouldBeActive = true}) {
     List<Question> out = questions.where((question) {
-      _addIfNotFound(question);
-
       final answer = this[question]!;
       final activeState =
           !shouldBeActive || (shouldBeActive && answer.isActive);
@@ -143,8 +137,6 @@ class AllAnswers extends MapSerializable<Answer> {
 
   List<Question> inactiveQuestions(List<Question> questions) {
     List<Question> out = questions.where((question) {
-      _addIfNotFound(question);
-
       final answer = this[question]!;
       return !answer.isActive;
     }).toList(growable: false);
