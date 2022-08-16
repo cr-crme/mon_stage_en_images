@@ -15,33 +15,38 @@ class Answer extends ItemSerializable {
     this.isActive = true,
     this.isValidated = false,
     ActionRequired actionRequired = ActionRequired.none,
-    id,
+    String? id,
+    int? creationTime,
   })  : discussion = discussion ??= Discussion(),
         _actionRequired = actionRequired,
-        super(id: id);
+        super(id: id, creationTime: creationTime);
   Answer.fromSerialized(map)
       : discussion = Discussion.fromSerialized(map['discussion'] ?? {}),
         isActive = map['isActive'],
         isValidated = map['isValidated'],
         _actionRequired = ActionRequired.values[map['actionRequired']],
         super.fromSerialized(map);
-  Answer copyWith(
-      {Discussion? discussion,
-      bool? isActive,
-      bool? isValidated,
-      ActionRequired? actionRequired,
-      id}) {
+  Answer copyWith({
+    Discussion? discussion,
+    bool? isActive,
+    bool? isValidated,
+    ActionRequired? actionRequired,
+    String? id,
+    int? creationTime,
+  }) {
     discussion ??= this.discussion;
     isActive ??= this.isActive;
     isValidated ??= this.isValidated;
     actionRequired ??= _actionRequired;
     id ??= this.id;
+    creationTime ??= this.creationTime;
     return Answer(
       discussion: discussion,
       isActive: isActive,
       isValidated: isValidated,
       actionRequired: actionRequired,
       id: id,
+      creationTime: creationTime,
     );
   }
 

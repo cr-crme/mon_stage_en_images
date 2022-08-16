@@ -10,21 +10,31 @@ class Student extends ItemSerializable {
     required this.lastName,
     required this.company,
     required this.allAnswers,
-    id,
-  }) : super(id: id);
+    String? id,
+    int? creationTime,
+  }) : super(id: id, creationTime: creationTime);
 
-  Student copyWith({firstName, lastName, company, allAnswers, id}) {
+  Student copyWith({
+    String? firstName,
+    String? lastName,
+    Company? company,
+    AllAnswers? allAnswers,
+    String? id,
+    int? creationTime,
+  }) {
     firstName ??= this.firstName;
     lastName ??= this.lastName;
     company ??= this.company;
     allAnswers ??= this.allAnswers;
     id ??= this.id;
+    creationTime ??= this.creationTime;
     return Student(
       firstName: firstName,
       lastName: lastName,
       company: company,
       allAnswers: allAnswers,
       id: id,
+      creationTime: creationTime,
     );
   }
 

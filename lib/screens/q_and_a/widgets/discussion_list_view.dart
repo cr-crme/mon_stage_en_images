@@ -1,5 +1,3 @@
-import 'package:defi_photo/common/models/discussion.dart';
-import 'package:defi_photo/common/models/student.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +6,8 @@ import './discussion_tile.dart';
 import '../../../common/misc/storage_service.dart';
 import '../../../common/models/answer.dart';
 import '../../../common/models/enum.dart';
-import '../../../common/models/discussion.dart';
+import '../../../common/models/message.dart';
+import '../../../common/models/student.dart';
 import '../../../common/providers/login_information.dart';
 import '../../../common/providers/speecher.dart';
 
@@ -109,7 +108,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _MessageListView(
-          discussion: widget.answer!.discussion,
+          discussion: widget.answer!.discussion.orderedByTime,
         ),
         if (loginInfo.loginType == LoginType.student)
           TextButton(
@@ -163,7 +162,7 @@ class _MessageListView extends StatelessWidget {
   const _MessageListView({Key? key, required this.discussion})
       : super(key: key);
 
-  final Discussion discussion;
+  final List<Message> discussion;
 
   @override
   Widget build(BuildContext context) {
