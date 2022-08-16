@@ -26,7 +26,8 @@ class AnswerPart extends StatefulWidget {
 }
 
 class _AnswerPartState extends State<AnswerPart> {
-  void _addAnswerCallback(String answerText, {bool isPhoto = false}) {
+  Future<void> _addAnswerCallback(String answerText,
+      {bool isPhoto = false}) async {
     final loginInfo = Provider.of<LoginInformation>(context, listen: false);
     final students = Provider.of<AllStudents>(context, listen: false);
     final student =
@@ -68,7 +69,9 @@ class _AnswerPartState extends State<AnswerPart> {
         children: [
           if (answer.isActive && widget.studentId != null)
             DiscussionListView(
-                answer: answer, addMessageCallback: _addAnswerCallback),
+                answer: answer,
+                student: student,
+                addMessageCallback: _addAnswerCallback),
           const SizedBox(height: 15)
         ],
       ),

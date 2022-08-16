@@ -46,7 +46,7 @@ class AllAnswers extends MapSerializable<Answer> {
   @override
   Answer? operator [](key) {
     // Add the answer to the pool if it does not exist
-    if (this[key] == null) {
+    if (super[key] == null) {
       super[key] = Answer(
           actionRequired: ActionRequired.fromStudent,
           isActive: key.defaultTarget == Target.all);

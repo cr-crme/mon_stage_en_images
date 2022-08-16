@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:defi_photo/common/models/discussion.dart';
+import 'package:defi_photo/common/models/student.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
@@ -8,6 +9,7 @@ import 'package:path_provider/path_provider.dart' as syspath;
 import 'package:provider/provider.dart';
 
 import './discussion_tile.dart';
+import '../../../common/misc/storage_service.dart';
 import '../../../common/models/answer.dart';
 import '../../../common/models/enum.dart';
 import '../../../common/models/discussion.dart';
@@ -18,10 +20,12 @@ class DiscussionListView extends StatefulWidget {
   const DiscussionListView({
     Key? key,
     required this.answer,
+    required this.student,
     required this.addMessageCallback,
   }) : super(key: key);
 
   final Answer? answer;
+  final Student student;
   final Function(String, {bool isPhoto}) addMessageCallback;
 
   @override
@@ -64,17 +68,19 @@ class _DiscussionListViewState extends State<DiscussionListView> {
         await imagePicker.pickImage(source: ImageSource.camera, maxWidth: 600);
     if (imageXFile == null) return;
 
-    // Image is in cache (imageXFile.path) is temporary
-    final imageFile = File(imageXFile.path);
+    // // Image is in cache (imageXFile.path) is temporary
+    // final imageFile = File(imageXFile.path);
 
-    // Move to hard drive
-    // TODO: Move to server
-    final appDir = await syspath.getApplicationDocumentsDirectory();
-    final filename = path.basename(imageFile.path);
-    final imageFileOnHardDrive =
-        await imageFile.copy('${appDir.path}/$filename');
+    // // Move to hard drive
+    // final appDir = await syspath.getApplicationDocumentsDirectory();
+    // final filename = path.basename(imageFile.path);
+    // final imageFileOnHardDrive =
+    //     await imageFile.copy('${appDir.path}/$filename');
 
-    widget.addMessageCallback(imageFileOnHardDrive.path, isPhoto: true);
+    final imagePath =
+        await StorageService.uploadImage(widget.student, imageXFile);
+
+    widget.addMessageCallback(imagePath, isPhoto: true);
     setState(() {});
   }
 
