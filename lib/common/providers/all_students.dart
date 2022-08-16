@@ -1,5 +1,6 @@
 import 'package:defi_photo/crcrme_enhanced_containers/lib/firebase_list_provided.dart';
 
+import '../models/answer.dart';
 import '../models/question.dart';
 import '../models/student.dart';
 
@@ -21,5 +22,14 @@ class AllStudents extends FirebaseListProvided<Student> {
           },
         ) <
         0;
+  }
+
+  void setAnswer({
+    required Student student,
+    required Question question,
+    required Answer answer,
+  }) {
+    student.allAnswers[question] = answer;
+    replace(student);
   }
 }

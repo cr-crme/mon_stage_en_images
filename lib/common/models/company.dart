@@ -7,7 +7,7 @@ class Company extends ItemSerializable {
     return Company(name: name);
   }
 
-  Company.fromSerialized(Map<String, dynamic> map)
+  Company.fromSerialized(map)
       : name = map['name'] ?? 'No name',
         super.fromSerialized(map);
 
@@ -17,7 +17,7 @@ class Company extends ItemSerializable {
   String toString() => name.toString();
 
   @override
-  Company deserializeItem(Map<String, dynamic> map) {
+  Company deserializeItem(map) {
     return Company.fromSerialized(map);
   }
 

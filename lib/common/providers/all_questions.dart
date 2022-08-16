@@ -35,8 +35,11 @@ class AllQuestions extends FirebaseListProvided<Question> with Section {
           (question.defaultTarget == Target.all ||
               currentStudent == null ||
               student.id == currentStudent.id);
-      student.allAnswers[question] = Answer(
-          isActive: isActive, actionRequired: ActionRequired.fromStudent);
+      students.setAnswer(
+          student: student,
+          question: question,
+          answer: Answer(
+              isActive: isActive, actionRequired: ActionRequired.fromStudent));
     }
   }
 
@@ -49,11 +52,14 @@ class AllQuestions extends FirebaseListProvided<Question> with Section {
     replace(question, notify: notify);
 
     for (var student in students) {
-      var answer = student.allAnswers[question]!;
-      student.allAnswers[question] = answer.copyWith(
-          actionRequired: answer.isActive
-              ? ActionRequired.fromStudent
-              : ActionRequired.none);
+      final answer = student.allAnswers[question]!;
+      students.setAnswer(
+          student: student,
+          question: question,
+          answer: answer.copyWith(
+              actionRequired: answer.isActive
+                  ? ActionRequired.fromStudent
+                  : ActionRequired.none));
     }
   }
 

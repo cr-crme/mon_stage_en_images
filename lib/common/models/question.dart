@@ -10,7 +10,7 @@ class Question extends ItemSerializable {
     required this.defaultTarget,
     id,
   }) : super(id: id);
-  Question.fromSerialized(Map<String, dynamic> map)
+  Question.fromSerialized(map)
       : text = map['text'],
         section = map['section'],
         defaultTarget = Target.values[map['defaultTarget']],
@@ -29,7 +29,7 @@ class Question extends ItemSerializable {
   }
 
   @override
-  ItemSerializable deserializeItem(Map<String, dynamic> map) {
+  ItemSerializable deserializeItem(map) {
     return Question.fromSerialized(map);
   }
 

@@ -1,11 +1,7 @@
-import 'dart:io';
-
 import 'package:defi_photo/common/models/discussion.dart';
 import 'package:defi_photo/common/models/student.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart' as syspath;
 import 'package:provider/provider.dart';
 
 import './discussion_tile.dart';

@@ -19,14 +19,18 @@ class Answer extends ItemSerializable {
   })  : discussion = discussion ??= Discussion(),
         _actionRequired = actionRequired,
         super(id: id);
-  Answer.fromSerialized(Map<String, dynamic> map)
+  Answer.fromSerialized(map)
       : discussion = Discussion.fromSerialized(map['discussion'] ?? {}),
         isActive = map['isActive'],
         isValidated = map['isValidated'],
         _actionRequired = ActionRequired.values[map['actionRequired']],
         super.fromSerialized(map);
   Answer copyWith(
-      {discussion, isActive, text, isValidated, actionRequired, id}) {
+      {Discussion? discussion,
+      bool? isActive,
+      bool? isValidated,
+      ActionRequired? actionRequired,
+      id}) {
     discussion ??= this.discussion;
     isActive ??= this.isActive;
     isValidated ??= this.isValidated;
@@ -42,7 +46,7 @@ class Answer extends ItemSerializable {
   }
 
   @override
-  Answer deserializeItem(Map<String, dynamic> map) {
+  Answer deserializeItem(map) {
     return Answer.fromSerialized(map);
   }
 

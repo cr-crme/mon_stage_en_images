@@ -15,14 +15,11 @@ class AllAnswers extends MapSerializable<Answer> {
       this[question] = Answer(isActive: false);
     }
   }
-  AllAnswers.fromSerialized(map)
-      : super.fromSerialized(
-            (map as Map).map((key, value) => MapEntry(key.toString(), value)));
+  AllAnswers.fromSerialized(map) : super.fromSerialized(map);
 
   @override
   Answer deserializeItem(data) {
-    return Answer.fromSerialized(
-        (data as Map).map((key, value) => MapEntry(key.toString(), value)));
+    return Answer.fromSerialized(data);
   }
 
   // Attributes and methods

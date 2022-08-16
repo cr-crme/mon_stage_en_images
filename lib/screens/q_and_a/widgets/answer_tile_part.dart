@@ -50,8 +50,10 @@ class _AnswerPartState extends State<AnswerPart> {
     } else {
       throw const NotLoggedIn();
     }
-    student.allAnswers[widget.question] =
-        currentAnswer.copyWith(text: answerText, actionRequired: newStatus);
+    students.setAnswer(
+        student: student,
+        question: widget.question,
+        answer: currentAnswer.copyWith(actionRequired: newStatus));
 
     widget.onStateChange(() {});
   }

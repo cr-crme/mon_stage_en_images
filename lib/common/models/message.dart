@@ -4,14 +4,13 @@ class Message extends ItemSerializable {
   // Constructors and (de)serializer
   Message({required this.name, required this.text, this.isPhotoUrl = false, id})
       : super(id: id);
-  Message.fromSerialized(Map<String, dynamic> map)
+  Message.fromSerialized(map)
       : name = map['name'],
         text = map['text'],
         isPhotoUrl = map['isPhotoUrl'],
         super.fromSerialized(map);
   @override
-  ItemSerializable deserializeItem(Map<String, dynamic> map) =>
-      Message.fromSerialized(map);
+  ItemSerializable deserializeItem(map) => Message.fromSerialized(map);
 
   @override
   Map<String, dynamic> serializedMap() {

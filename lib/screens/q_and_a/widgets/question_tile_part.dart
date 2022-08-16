@@ -231,12 +231,18 @@ class _QuestionActivator extends State<_QuestionActivatedState> {
 
     _isActive = value;
     if (student != null) {
-      student.allAnswers[widget.question] =
-          student.allAnswers[widget.question]!.copyWith(isActive: _isActive);
+      students.setAnswer(
+          student: student,
+          question: widget.question,
+          answer: student.allAnswers[widget.question]!
+              .copyWith(isActive: _isActive));
     } else {
       for (var student in students) {
-        student.allAnswers[widget.question] =
-            student.allAnswers[widget.question]!.copyWith(isActive: _isActive);
+        students.setAnswer(
+            student: student,
+            question: widget.question,
+            answer: student.allAnswers[widget.question]!
+                .copyWith(isActive: _isActive));
       }
     }
     widget.onStateChange(() {});
@@ -268,9 +274,13 @@ class _QuestionValidateCheckmarkState
     extends State<_QuestionValidateCheckmark> {
   void _validateAnswer(Student student, Answer answer) {
     // Reverse the status of the answer
-    final newAnswer = answer.copyWith(
-        isValidated: !answer.isValidated, actionRequired: ActionRequired.none);
-    student.allAnswers[widget.question] = newAnswer;
+    final allStudents = Provider.of<AllStudents>(context, listen: false);
+    allStudents.setAnswer(
+        student: student,
+        question: widget.question,
+        answer: answer.copyWith(
+            isValidated: !answer.isValidated,
+            actionRequired: ActionRequired.none));
     setState(() {});
   }
 

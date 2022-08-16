@@ -9,8 +9,7 @@ class Discussion extends ListSerializable<Message> {
       add(message);
     }
   }
-  Discussion.fromSerialized(Map<String, dynamic> map)
-      : super.fromSerialized(map);
+  Discussion.fromSerialized(map) : super.fromSerialized(map);
 
   @override
   Message deserializeItem(data) {
