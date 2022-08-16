@@ -23,6 +23,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Connect Firebase to local emulators
+  // When in production set android:usesCleartextTraffic to false in AndroidManifest.xml 
   assert(() {
     FirebaseAuth.instance.useAuthEmulator("localhost", 9099);
     FirebaseDatabase.instance.useDatabaseEmulator(
@@ -30,6 +31,7 @@ void main() async {
     FirebaseStorage.instance.useStorageEmulator("localhost", 9199);
     return true;
   }());
+  FirebaseAuth.instance.signInAnonymously();
 
   runApp(const MyApp());
 }

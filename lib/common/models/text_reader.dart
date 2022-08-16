@@ -46,7 +46,7 @@ class TextReader {
     // We make a copy of the discussion
     // so if it changes while reading, it won't crash
     List<String> discussion = [];
-    for (final message in answer.discussion) {
+    for (final message in answer.discussion.orderedByTime) {
       discussion.add(message.name);
       if (message.isPhotoUrl) {
         discussion.add('Photo $imageCounter de l\'élève.');
