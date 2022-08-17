@@ -23,7 +23,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Connect Firebase to local emulators
-  // When in production set android:usesCleartextTraffic to false in AndroidManifest.xml 
+  // When in production set android:usesCleartextTraffic to false in AndroidManifest.xml
   assert(() {
     FirebaseAuth.instance.useAuthEmulator("localhost", 9099);
     FirebaseDatabase.instance.useDatabaseEmulator(
@@ -31,19 +31,31 @@ void main() async {
     FirebaseStorage.instance.useStorageEmulator("localhost", 9199);
     return true;
   }());
-  FirebaseAuth.instance.signInAnonymously();
+  // FirebaseAuth.instance.signInAnonymously();
+  final authenticator = FirebaseAuth.instance;
+  // authenticator.createUserWithEmailAndPassword(
+  //     email: 'coucou@coucou.com', password: '123456');
+  authenticator.signInWithEmailAndPassword(
+      email: 'coucou@coucou.com', password: '123456');
 
-  runApp(const MyApp());
+  final login = LoginInformation();
+  const teacherName = 'Moi';
+  runApp(const MyApp(
+    teacherName: teacherName,
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({Key? key, required this.teacherName}) : super(key: key);
+
+  final String teacherName;
+  //final LoginInformation loginInformation;
 
   @override
   Widget build(BuildContext context) {
     final loginInformation = LoginInformation();
-    final students = AllStudents();
-    final questions = AllQuestions();
+    final students = AllStudents(teacherName: teacherName);
+    final questions = AllQuestions(teacherName: teacherName);
     final speecher = Speecher();
     prepareDummyData(students, questions);
 

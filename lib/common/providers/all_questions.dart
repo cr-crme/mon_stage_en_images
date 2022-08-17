@@ -8,8 +8,12 @@ import '../models/student.dart';
 
 class AllQuestions extends FirebaseListProvided<Question> with Section {
   // Constructors and (de)serializer
-  AllQuestions()
-      : super(availableIdsPath: 'questions-id', dataPath: 'questions');
+  static const String dataName = 'questions';
+
+  AllQuestions({required String teacherName})
+      : super(
+            availableIdsPath: '$teacherName/$dataName-id',
+            dataPath: '$teacherName/$dataName');
 
   @override
   Question deserializeItem(data) {

@@ -1,9 +1,9 @@
-import 'package:defi_photo/crcrme_enhanced_containers/lib/item_serializable.dart';
+import 'package:defi_photo/crcrme_enhanced_containers/lib/timed_item_serializable.dart';
 
 import './all_answers.dart';
 import './company.dart';
 
-class Student extends ItemSerializable {
+class Student extends TimedItemSerializable {
   // Constructors and (de)serializer
   Student({
     required this.firstName,
@@ -11,8 +11,8 @@ class Student extends ItemSerializable {
     required this.company,
     required this.allAnswers,
     String? id,
-    int? creationTime,
-  }) : super(id: id, creationTime: creationTime);
+    int? creationTimeStamp,
+  }) : super(id: id, creationTimeStamp: creationTimeStamp);
 
   Student copyWith({
     String? firstName,
@@ -20,21 +20,21 @@ class Student extends ItemSerializable {
     Company? company,
     AllAnswers? allAnswers,
     String? id,
-    int? creationTime,
+    int? creationTimeStamp,
   }) {
     firstName ??= this.firstName;
     lastName ??= this.lastName;
     company ??= this.company;
     allAnswers ??= this.allAnswers;
     id ??= this.id;
-    creationTime ??= this.creationTime;
+    creationTimeStamp ??= this.creationTimeStamp;
     return Student(
       firstName: firstName,
       lastName: lastName,
       company: company,
       allAnswers: allAnswers,
       id: id,
-      creationTime: creationTime,
+      creationTimeStamp: creationTimeStamp,
     );
   }
 

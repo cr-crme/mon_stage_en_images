@@ -1,3 +1,4 @@
+import 'package:defi_photo/crcrme_enhanced_containers/lib/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -85,7 +86,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final students = Provider.of<AllStudents>(context).orderedByTime;
+    final students = sortByCreationTime(Provider.of<AllStudents>(context));
     return Scaffold(
       appBar: AppBar(
         title: const Text('Élèves'),

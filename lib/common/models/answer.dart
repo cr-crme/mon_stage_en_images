@@ -1,4 +1,4 @@
-import 'package:defi_photo/crcrme_enhanced_containers/lib/item_serializable.dart';
+import 'package:defi_photo/crcrme_enhanced_containers/lib/timed_item_serializable.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,7 +8,7 @@ import '../models/exceptions.dart';
 import '../providers/login_information.dart';
 import 'message.dart';
 
-class Answer extends ItemSerializable {
+class Answer extends TimedItemSerializable {
   // Constructors and (de)serializer
   Answer({
     Discussion? discussion,
@@ -16,10 +16,10 @@ class Answer extends ItemSerializable {
     this.isValidated = false,
     ActionRequired actionRequired = ActionRequired.none,
     String? id,
-    int? creationTime,
+    int? creationTimeStamp,
   })  : discussion = discussion ??= Discussion(),
         _actionRequired = actionRequired,
-        super(id: id, creationTime: creationTime);
+        super(id: id, creationTimeStamp: creationTimeStamp);
   Answer.fromSerialized(map)
       : discussion = Discussion.fromSerialized(map['discussion'] ?? {}),
         isActive = map['isActive'],
@@ -32,21 +32,21 @@ class Answer extends ItemSerializable {
     bool? isValidated,
     ActionRequired? actionRequired,
     String? id,
-    int? creationTime,
+    int? creationTimeStamp,
   }) {
     discussion ??= this.discussion;
     isActive ??= this.isActive;
     isValidated ??= this.isValidated;
     actionRequired ??= _actionRequired;
     id ??= this.id;
-    creationTime ??= this.creationTime;
+    creationTimeStamp ??= this.creationTimeStamp;
     return Answer(
       discussion: discussion,
       isActive: isActive,
       isValidated: isValidated,
       actionRequired: actionRequired,
       id: id,
-      creationTime: creationTime,
+      creationTimeStamp: creationTimeStamp,
     );
   }
 

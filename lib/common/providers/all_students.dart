@@ -6,8 +6,12 @@ import '../models/student.dart';
 
 class AllStudents extends FirebaseListProvided<Student> {
   int get count => length;
+  static const String dataName = 'students';
 
-  AllStudents() : super(availableIdsPath: 'students-id', dataPath: 'students');
+  AllStudents({required String teacherName})
+      : super(
+            availableIdsPath: '$teacherName/$dataName-id',
+            dataPath: '$teacherName/$dataName');
 
   @override
   Student deserializeItem(data) {

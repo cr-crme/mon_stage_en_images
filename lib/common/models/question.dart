@@ -1,16 +1,16 @@
-import 'package:defi_photo/crcrme_enhanced_containers/lib/item_serializable.dart';
+import 'package:defi_photo/crcrme_enhanced_containers/lib/timed_item_serializable.dart';
 
 import '../../common/models/enum.dart';
 
-class Question extends ItemSerializable {
+class Question extends TimedItemSerializable {
   // Constructors and (de)serializer
   Question(
     this.text, {
     required this.section,
     required this.defaultTarget,
     String? id,
-    int? creationTime,
-  }) : super(id: id, creationTime: creationTime);
+    int? creationTimeStamp,
+  }) : super(id: id, creationTimeStamp: creationTimeStamp);
   Question.fromSerialized(map)
       : text = map['text'],
         section = map['section'],
@@ -21,24 +21,24 @@ class Question extends ItemSerializable {
     int? section,
     Target? defaultTarget,
     String? id,
-    int? creationTime,
+    int? creationTimeStamp,
   }) {
     text ??= this.text;
     section ??= this.section;
     defaultTarget ??= this.defaultTarget;
     id ??= this.id;
-    creationTime ??= this.creationTime;
+    creationTimeStamp ??= this.creationTimeStamp;
     return Question(
       text,
       section: section,
       defaultTarget: defaultTarget,
       id: id,
-      creationTime: creationTime,
+      creationTimeStamp: creationTimeStamp,
     );
   }
 
   @override
-  ItemSerializable deserializeItem(map) {
+  TimedItemSerializable deserializeItem(map) {
     return Question.fromSerialized(map);
   }
 

@@ -31,7 +31,8 @@ class QuestionAndAnswerPage extends StatelessWidget {
 
     final questions = Provider.of<AllQuestions>(context, listen: true)
         .fromSection(sectionIndex);
-    questions.sort((first, second) => first.creationTime - second.creationTime);
+    questions.sort(
+        (first, second) => first.creationTimeStamp - second.creationTimeStamp);
     late final AllAnswers? answers;
     late final List<Question>? answeredQuestions;
     late final List<Question>? unansweredQuestions;
