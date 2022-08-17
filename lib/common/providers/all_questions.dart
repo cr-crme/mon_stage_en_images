@@ -1,4 +1,5 @@
 import 'package:defi_photo/crcrme_enhanced_containers/lib/firebase_list_provided.dart';
+
 import './all_students.dart';
 import '../models/answer.dart';
 import '../models/enum.dart';
@@ -10,10 +11,9 @@ class AllQuestions extends FirebaseListProvided<Question> with Section {
   // Constructors and (de)serializer
   static const String dataName = 'questions';
 
-  AllQuestions({required String teacherName})
+  AllQuestions()
       : super(
-            availableIdsPath: '$teacherName/$dataName-id',
-            dataPath: '$teacherName/$dataName');
+            pathToData: dataName, pathToAvailableDataIds: '$dataName-generic');
 
   @override
   Question deserializeItem(data) {
@@ -24,6 +24,11 @@ class AllQuestions extends FirebaseListProvided<Question> with Section {
     List<Question> out =
         where((question) => question.section == index).toList(growable: false);
     return out;
+  }
+
+  @override
+  set pathToAvailableDataIds(String teacherName) {
+    super.pathToAvailableDataIds = '$dataName-$teacherName';
   }
 
   void addToAll(

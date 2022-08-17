@@ -24,7 +24,7 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
   String? _lastName;
   String? _companyName;
 
-  void _finalize(BuildContext context, {bool hasCancelled = false}) {
+  void _finalize({bool hasCancelled = false}) {
     final questions = Provider.of<AllQuestions>(context, listen: false);
 
     if (hasCancelled) {
@@ -89,14 +89,14 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).colorScheme.secondary)),
-          onPressed: () => _finalize(context, hasCancelled: true),
+          onPressed: () => _finalize(hasCancelled: true),
         ),
         TextButton(
           child: Text(widget.student == null ? 'Ajouter' : 'Modifier',
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).colorScheme.secondary)),
-          onPressed: () => _finalize(context),
+          onPressed: () => _finalize(),
         ),
       ],
     );

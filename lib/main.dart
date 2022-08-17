@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import './dummy_data.dart';
+import './common/models/enum.dart';
+import './common/models/user.dart' as local_user;
 import './common/providers/all_questions.dart';
 import './common/providers/all_students.dart';
 import './common/providers/login_information.dart';
@@ -17,6 +19,25 @@ import './screens/all_students/students_screen.dart';
 import './screens/login/login_screen.dart';
 import './screens/q_and_a/q_and_a_screen.dart';
 import './firebase_options.dart';
+
+Future<LoginStatus> login(local_user.User user, String password) async {
+  final authenticator = FirebaseAuth.instance;
+  // authenticator.createUserWithEmailAndPassword(
+  //     email: 'coucou@coucou.com', password: '123456');
+  try {
+    await authenticator.signInWithEmailAndPassword(
+        email: user.email, password: password);
+  } catch (e) {
+    if ((e as FirebaseAuthException).code == 'user-not-found') {
+      return LoginStatus.wrongUsername;
+    } else if (e.code == 'wrong-password') {
+      return LoginStatus.wrongPassword;
+    } else {
+      return LoginStatus.unrecognizedError;
+    }
+  }
+  return LoginStatus.connected;
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,31 +52,18 @@ void main() async {
     FirebaseStorage.instance.useStorageEmulator("localhost", 9199);
     return true;
   }());
-  // FirebaseAuth.instance.signInAnonymously();
-  final authenticator = FirebaseAuth.instance;
-  // authenticator.createUserWithEmailAndPassword(
-  //     email: 'coucou@coucou.com', password: '123456');
-  authenticator.signInWithEmailAndPassword(
-      email: 'coucou@coucou.com', password: '123456');
 
-  final login = LoginInformation();
-  const teacherName = 'Moi';
-  runApp(const MyApp(
-    teacherName: teacherName,
-  ));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key, required this.teacherName}) : super(key: key);
-
-  final String teacherName;
-  //final LoginInformation loginInformation;
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final loginInformation = LoginInformation();
-    final students = AllStudents(teacherName: teacherName);
-    final questions = AllQuestions(teacherName: teacherName);
+    final loginInformation = LoginInformation(loginCallback: login);
+    final students = AllStudents();
+    final questions = AllQuestions();
     final speecher = Speecher();
     prepareDummyData(students, questions);
 

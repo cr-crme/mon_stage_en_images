@@ -10,14 +10,18 @@ class AllStudents extends FirebaseListProvided<Student>
   int get count => length;
   static const String dataName = 'students';
 
-  AllStudents({required String teacherName})
+  AllStudents()
       : super(
-            availableIdsPath: '$teacherName/$dataName-id',
-            dataPath: '$teacherName/$dataName');
+            pathToData: dataName, pathToAvailableDataIds: '$dataName-generic');
 
   @override
   Student deserializeItem(data) {
     return Student.fromSerialized(data);
+  }
+
+  @override
+  set pathToAvailableDataIds(String teacherName) {
+    super.pathToAvailableDataIds = '$dataName-$teacherName';
   }
 
   bool isQuestionActiveForAll(Question question) {

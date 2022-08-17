@@ -1,4 +1,14 @@
-enum Target { none, individual, all }
+class TypeException implements Exception {
+  TypeException(this.message);
+
+  final String message;
+}
+
+enum Target {
+  none,
+  individual,
+  all,
+}
 
 enum ActionRequired {
   none,
@@ -6,7 +16,19 @@ enum ActionRequired {
   fromTeacher,
 }
 
-enum LoginType { none, teacher, student }
+enum LoginType {
+  none,
+  teacher,
+  student,
+}
+
+enum LoginStatus {
+  waitingForLogin,
+  connected,
+  wrongUsername,
+  wrongPassword,
+  unrecognizedError,
+}
 
 enum QuestionView {
   normal,
