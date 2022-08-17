@@ -29,7 +29,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
         Provider.of<LoginInformation>(context, listen: false).loginType;
     late Student? student;
 
-    final questions = Provider.of<AllQuestions>(context, listen: false)
+    final questions = Provider.of<AllQuestions>(context, listen: true)
         .fromSection(sectionIndex);
     questions.sort((first, second) => first.creationTime - second.creationTime);
     late final AllAnswers? answers;
