@@ -9,7 +9,6 @@ import '../../common/widgets/main_drawer.dart';
 import '../../common/models/enum.dart';
 import '../../common/models/section.dart';
 import '../../common/models/student.dart';
-import '../../common/providers/all_questions.dart';
 import '../../common/providers/login_information.dart';
 
 class QAndAScreen extends StatefulWidget {
@@ -120,44 +119,42 @@ class _QAndAScreenState extends State<QAndAScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AllQuestions>(builder: (context, questions, child) {
-      return Scaffold(
-        appBar: _setAppBar(_loginType, _student),
-        body: Column(
-          children: [
-            MetierAppBar(
-              selected: _currentPage - 1,
-              onPageChanged: onPageChangedRequest,
-              student: _student,
+    return Scaffold(
+      appBar: _setAppBar(_loginType, _student),
+      body: Column(
+        children: [
+          MetierAppBar(
+            selected: _currentPage - 1,
+            onPageChanged: onPageChangedRequest,
+            student: _student,
+          ),
+          Expanded(
+            child: PageView(
+              controller: _pageController,
+              onPageChanged: (value) => onPageChanged(context, value),
+              children: [
+                MainMetierPage(
+                    student: _student, onPageChanged: onPageChangedRequest),
+                QuestionAndAnswerPage(0,
+                    studentId: _student?.id, questionView: _questionView),
+                QuestionAndAnswerPage(1,
+                    studentId: _student?.id, questionView: _questionView),
+                QuestionAndAnswerPage(2,
+                    studentId: _student?.id, questionView: _questionView),
+                QuestionAndAnswerPage(3,
+                    studentId: _student?.id, questionView: _questionView),
+                QuestionAndAnswerPage(4,
+                    studentId: _student?.id, questionView: _questionView),
+                QuestionAndAnswerPage(5,
+                    studentId: _student?.id, questionView: _questionView),
+              ],
             ),
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: (value) => onPageChanged(context, value),
-                children: [
-                  MainMetierPage(
-                      student: _student, onPageChanged: onPageChangedRequest),
-                  QuestionAndAnswerPage(0,
-                      studentId: _student?.id, questionView: _questionView),
-                  QuestionAndAnswerPage(1,
-                      studentId: _student?.id, questionView: _questionView),
-                  QuestionAndAnswerPage(2,
-                      studentId: _student?.id, questionView: _questionView),
-                  QuestionAndAnswerPage(3,
-                      studentId: _student?.id, questionView: _questionView),
-                  QuestionAndAnswerPage(4,
-                      studentId: _student?.id, questionView: _questionView),
-                  QuestionAndAnswerPage(5,
-                      studentId: _student?.id, questionView: _questionView),
-                ],
-              ),
-            ),
-          ],
-        ),
-        drawer: _loginType == LoginType.student
-            ? MainDrawer(student: _student)
-            : null,
-      );
-    });
+          ),
+        ],
+      ),
+      drawer: _loginType == LoginType.student
+          ? MainDrawer(student: _student)
+          : null,
+    );
   }
 }

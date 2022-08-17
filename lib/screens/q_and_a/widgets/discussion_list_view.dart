@@ -60,7 +60,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
   Future<void> _addPhoto() async {
     final imagePicker = ImagePicker();
     final imageXFile =
-        await imagePicker.pickImage(source: ImageSource.camera, maxWidth: 600);
+        await imagePicker.pickImage(source: ImageSource.camera, maxWidth: 300);
     if (imageXFile == null) return;
 
     // // Image is in cache (imageXFile.path) is temporary

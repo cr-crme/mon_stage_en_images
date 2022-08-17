@@ -18,11 +18,12 @@ class DiscussionTile extends StatelessWidget {
         if (discussion.isPhotoUrl) _showNameOfSender(),
         if (discussion.isPhotoUrl)
           Container(
+            width: double.infinity,
             padding: const EdgeInsets.only(left: 15),
             child: FutureBuilder(builder: (context, snapshot) {
               return snapshot.connectionState == ConnectionState.waiting
                   ? const Center(child: CircularProgressIndicator())
-                  : Image.network(discussion.text, fit: BoxFit.cover);
+                  : Image.network(discussion.text, fit: BoxFit.contain);
             }),
           ),
         if (!discussion.isPhotoUrl)

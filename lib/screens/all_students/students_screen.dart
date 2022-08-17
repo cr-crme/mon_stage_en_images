@@ -85,6 +85,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final students = Provider.of<AllStudents>(context).orderedByTime;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Élèves'),
@@ -92,24 +93,22 @@ class _StudentsScreenState extends State<StudentsScreen> {
           IconButton(onPressed: _showNewStudent, icon: const Icon(Icons.add)),
         ],
       ),
-      body: Consumer<AllStudents>(
-        builder: (context, students, child) => Column(
-          children: [
-            const SizedBox(height: 15),
-            Text('Défi Photos', style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 3),
-            Expanded(
-              child: ListView.builder(
-                itemBuilder: (context, index) => StudentListTile(
-                  students[index],
-                  removeItemCallback: _removeStudent,
-                  modifyStudentCallback: _modifyStudent,
-                ),
-                itemCount: students.count,
+      body: Column(
+        children: [
+          const SizedBox(height: 15),
+          Text('Défi Photos', style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: 3),
+          Expanded(
+            child: ListView.builder(
+              itemBuilder: (context, index) => StudentListTile(
+                students[index],
+                removeItemCallback: _removeStudent,
+                modifyStudentCallback: _modifyStudent,
               ),
+              itemCount: students.length,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       drawer: const MainDrawer(),
     );
