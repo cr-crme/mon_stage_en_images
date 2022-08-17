@@ -7,6 +7,7 @@ import '../../../common/models/exceptions.dart';
 import '../../../common/models/question.dart';
 import '../../../common/models/student.dart';
 import '../../../common/providers/all_students.dart';
+import '../../../common/providers/all_questions.dart';
 import '../../../common/providers/login_information.dart';
 import '../../../common/widgets/are_you_sure_dialog.dart';
 import '../../../common/widgets/taking_action_notifier.dart';
@@ -208,6 +209,7 @@ class _QuestionActivator extends State<_QuestionActivatedState> {
   }
 
   Future<void> _toggleQuestionActiveState(value) async {
+    final questions = Provider.of<AllQuestions>(context, listen: false);
     final students = Provider.of<AllStudents>(context, listen: false);
     final student =
         widget.studentId == null ? null : students[widget.studentId];
@@ -230,6 +232,20 @@ class _QuestionActivator extends State<_QuestionActivatedState> {
     if (!sure!) return;
 
     _isActive = value;
+
+    // Modify the question on the server.
+    // If the default target ever was 'all' keep it like that, unless it is
+    // deactivate for all. If it was 'individual' keep it like that unless it
+    // should be promoted to 'all'
+    late final Target newTarget;
+    if (student == null) {
+      newTarget = _isActive ? Target.all : Target.none;
+    } else {
+      newTarget = widget.question.defaultTarget;
+    }
+    questions.replace(widget.question.copyWith(defaultTarget: newTarget));
+
+    // Modify the answers on the server
     if (student != null) {
       students.setAnswer(
           student: student,
