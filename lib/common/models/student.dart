@@ -8,6 +8,7 @@ class Student extends CreationTimeItemSerializable {
   Student({
     required this.firstName,
     required this.lastName,
+    required this.email,
     required this.company,
     required this.allAnswers,
     String? id,
@@ -17,6 +18,7 @@ class Student extends CreationTimeItemSerializable {
   Student copyWith({
     String? firstName,
     String? lastName,
+    String? email,
     Company? company,
     AllAnswers? allAnswers,
     String? id,
@@ -24,6 +26,7 @@ class Student extends CreationTimeItemSerializable {
   }) {
     firstName ??= this.firstName;
     lastName ??= this.lastName;
+    email ??= this.email;
     company ??= this.company;
     allAnswers ??= this.allAnswers;
     id ??= this.id;
@@ -31,6 +34,7 @@ class Student extends CreationTimeItemSerializable {
     return Student(
       firstName: firstName,
       lastName: lastName,
+      email: email,
       company: company,
       allAnswers: allAnswers,
       id: id,
@@ -42,6 +46,7 @@ class Student extends CreationTimeItemSerializable {
   Student.fromSerialized(map)
       : firstName = map['firstName'],
         lastName = map['lastName'],
+        email = map['email'],
         allAnswers = AllAnswers.fromSerialized(map['allAnswers'] ?? {}),
         company = Company.fromSerialized((map['company'] ?? {})),
         super.fromSerialized(map);
@@ -51,6 +56,7 @@ class Student extends CreationTimeItemSerializable {
     return {
       'firstName': firstName,
       'lastName': lastName,
+      'email': email,
       'allAnswers': allAnswers.serialize(),
       'company': company.serialize(),
     };
@@ -64,6 +70,7 @@ class Student extends CreationTimeItemSerializable {
   // Attributes and methods
   final String firstName;
   final String lastName;
+  final String email;
   final AllAnswers allAnswers;
   final Company company;
 

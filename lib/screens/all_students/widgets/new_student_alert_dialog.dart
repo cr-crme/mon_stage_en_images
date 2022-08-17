@@ -22,6 +22,7 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
   final _formKey = GlobalKey<FormState>();
   String? _firstName;
   String? _lastName;
+  String? _email;
   String? _companyName;
 
   void _finalize({bool hasCancelled = false}) {
@@ -40,6 +41,7 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
     var student = Student(
       firstName: _firstName!,
       lastName: _lastName!,
+      email: _email!,
       allAnswers: AllAnswers(questions: questions.toList(growable: false)),
       company: Company(name: _companyName ?? ''),
     );
@@ -69,6 +71,15 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
                 validator: (value) =>
                     value == null || value.isEmpty ? 'Ajouter un nom' : null,
                 onSaved: (value) => _lastName = value,
+              ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Courriel'),
+                initialValue: widget.student?.email,
+                validator: (value) => value == null || value.isEmpty
+                    // TODO: Check if email is actually an email
+                    ? 'Ajouter un courriel'
+                    : null,
+                onSaved: (value) => _email = value,
               ),
               TextFormField(
                 decoration:
