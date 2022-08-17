@@ -1,6 +1,6 @@
-import 'package:defi_photo/crcrme_enhanced_containers/lib/timed_item_serializable.dart';
+import 'package:defi_photo/crcrme_enhanced_containers/lib/creation_time_item_serializable.dart';
 
-class Message extends TimedItemSerializable {
+class Message extends CreationTimeItemSerializable {
   // Constructors and (de)serializer
   Message({
     required this.name,
@@ -15,7 +15,7 @@ class Message extends TimedItemSerializable {
         isPhotoUrl = map['isPhotoUrl'],
         super.fromSerialized(map);
   @override
-  TimedItemSerializable deserializeItem(map) => Message.fromSerialized(map);
+  Message deserializeItem(map) => Message.fromSerialized(map);
 
   @override
   Map<String, dynamic> serializedMap() {

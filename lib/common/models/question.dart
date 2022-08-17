@@ -1,8 +1,8 @@
-import 'package:defi_photo/crcrme_enhanced_containers/lib/timed_item_serializable.dart';
+import 'package:defi_photo/crcrme_enhanced_containers/lib/creation_time_item_serializable.dart';
 
 import '../../common/models/enum.dart';
 
-class Question extends TimedItemSerializable {
+class Question extends CreationTimeItemSerializable {
   // Constructors and (de)serializer
   Question(
     this.text, {
@@ -38,7 +38,7 @@ class Question extends TimedItemSerializable {
   }
 
   @override
-  TimedItemSerializable deserializeItem(map) {
+  Question deserializeItem(map) {
     return Question.fromSerialized(map);
   }
 

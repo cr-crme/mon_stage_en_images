@@ -1,4 +1,3 @@
-import 'package:defi_photo/crcrme_enhanced_containers/lib/helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -47,7 +46,7 @@ class TextReader {
     // We make a copy of the discussion
     // so if it changes while reading, it won't crash
     List<String> discussion = [];
-    for (final message in sortByCreationTime(answer.discussion)) {
+    for (final message in answer.discussion.toListByTime(reversed: true)) {
       discussion.add(message.name);
       if (message.isPhotoUrl) {
         discussion.add('Photo $imageCounter de l\'élève.');

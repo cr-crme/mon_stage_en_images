@@ -1,9 +1,9 @@
-import 'package:defi_photo/crcrme_enhanced_containers/lib/timed_item_serializable.dart';
+import 'package:defi_photo/crcrme_enhanced_containers/lib/creation_time_item_serializable.dart';
 
 import './all_answers.dart';
 import './company.dart';
 
-class Student extends TimedItemSerializable {
+class Student extends CreationTimeItemSerializable {
   // Constructors and (de)serializer
   Student({
     required this.firstName,

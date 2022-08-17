@@ -1,4 +1,3 @@
-import 'package:defi_photo/crcrme_enhanced_containers/lib/helper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -109,7 +108,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _MessageListView(
-          discussion: sortByCreationTime(widget.answer!.discussion),
+          discussion: widget.answer!.discussion.toListByTime(reversed: true),
         ),
         if (loginInfo.loginType == LoginType.student)
           TextButton(

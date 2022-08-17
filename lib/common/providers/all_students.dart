@@ -1,10 +1,12 @@
 import 'package:defi_photo/crcrme_enhanced_containers/lib/firebase_list_provided.dart';
+import 'package:defi_photo/crcrme_enhanced_containers/lib/list_serializable.dart';
 
 import '../models/answer.dart';
 import '../models/question.dart';
 import '../models/student.dart';
 
-class AllStudents extends FirebaseListProvided<Student> {
+class AllStudents extends FirebaseListProvided<Student>
+    with CreationTimedItems {
   int get count => length;
   static const String dataName = 'students';
 

@@ -1,4 +1,4 @@
-import 'package:defi_photo/crcrme_enhanced_containers/lib/timed_item_serializable.dart';
+import 'package:defi_photo/crcrme_enhanced_containers/lib/creation_time_item_serializable.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,7 +8,7 @@ import '../models/exceptions.dart';
 import '../providers/login_information.dart';
 import 'message.dart';
 
-class Answer extends TimedItemSerializable {
+class Answer extends CreationTimeItemSerializable {
   // Constructors and (de)serializer
   Answer({
     Discussion? discussion,
