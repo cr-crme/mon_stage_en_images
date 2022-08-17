@@ -49,7 +49,7 @@ class LoginInformation with ChangeNotifier {
       case LoginType.teacher:
         return teacherTheme();
       default:
-        return teacherTheme();
+        return studentTheme();
     }
   }
 }
