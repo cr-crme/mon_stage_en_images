@@ -13,6 +13,7 @@ import './common/models/enum.dart';
 import './common/models/user.dart' as local_user;
 import './common/providers/all_questions.dart';
 import './common/providers/all_students.dart';
+import 'common/providers/all_student_affiliations.dart';
 import './common/providers/login_information.dart';
 import './common/providers/speecher.dart';
 import './screens/all_students/students_screen.dart';
@@ -63,6 +64,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final loginInformation = LoginInformation(loginCallback: login);
     final students = AllStudents();
+    final studentAffiliations = AllStudentAffiliations();
     final questions = AllQuestions();
     final speecher = Speecher();
     prepareDummyData(students, questions);
@@ -71,6 +73,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => loginInformation),
         ChangeNotifierProvider(create: (context) => students),
+        ChangeNotifierProvider(create: (context) => studentAffiliations),
         ChangeNotifierProvider(create: (context) => questions),
         ChangeNotifierProvider(create: (context) => speecher),
       ],

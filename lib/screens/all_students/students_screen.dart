@@ -5,10 +5,13 @@ import './widgets/new_student_alert_dialog.dart';
 import './widgets/student_list_tile.dart';
 import '../../common/providers/all_questions.dart';
 import '../../common/providers/all_students.dart';
+import '../../common/providers/all_student_affiliations.dart';
+import '../../common/providers/login_information.dart';
 import '../../common/models/answer.dart';
 import '../../common/models/enum.dart';
 import '../../common/widgets/main_drawer.dart';
 import '../../common/models/student.dart';
+import '../../common/models/student_affiliation.dart';
 import '../../common/widgets/are_you_sure_dialog.dart';
 
 class StudentsScreen extends StatefulWidget {
@@ -22,6 +25,10 @@ class StudentsScreen extends StatefulWidget {
 
 class _StudentsScreenState extends State<StudentsScreen> {
   Future<void> _showNewStudent() async {
+    final loginInformation =
+        Provider.of<LoginInformation>(context, listen: false);
+    final studentAffiliation =
+        Provider.of<AllStudentAffiliations>(context, listen: false);
     final students = Provider.of<AllStudents>(context, listen: false);
     final questions = Provider.of<AllQuestions>(context, listen: false);
 
@@ -40,6 +47,9 @@ class _StudentsScreenState extends State<StudentsScreen> {
           actionRequired: ActionRequired.fromStudent);
     }
     students.add(student);
+    studentAffiliation.add(StudentAffiliation(
+        teacherEmail: loginInformation.user!.email,
+        studentEmail: student.email));
   }
 
   Future<void> _modifyStudent(Student student) async {
