@@ -41,7 +41,7 @@ class TakingActionNotifier extends StatelessWidget {
                 forcedText != null
                     ? forcedText!
                     : number == 0
-                        ? ""
+                        ? ''
                         : number.toString(),
                 style: const TextStyle(
                     color: Colors.white,

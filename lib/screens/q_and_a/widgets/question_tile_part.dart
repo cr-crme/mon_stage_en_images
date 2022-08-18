@@ -131,7 +131,7 @@ class _QuestionPartTrailing extends StatelessWidget {
         children: [
           TakingActionNotifier(
             number: hasAction ? 1 : null,
-            forcedText: "?",
+            forcedText: '?',
             borderColor: Colors.black,
             child: const Text(''),
           ),

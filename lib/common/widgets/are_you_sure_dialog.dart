@@ -17,14 +17,14 @@ class AreYouSureDialog extends StatelessWidget {
       content: Text(content),
       actions: [
         TextButton(
-          child: Text("Annuler",
+          child: Text('Annuler',
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).colorScheme.secondary)),
           onPressed: () => Navigator.pop(context, false),
         ),
         TextButton(
-          child: Text("Continuer",
+          child: Text('Continuer',
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).colorScheme.secondary)),

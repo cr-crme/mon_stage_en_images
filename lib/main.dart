@@ -45,12 +45,13 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Connect Firebase to local emulators
-  // When in production set android:usesCleartextTraffic to false in AndroidManifest.xml
+  // IMPORTANT: when in production set android:usesCleartextTraffic to 'false'
+  // in AndroidManifest.xml, to enforce 'https' connexions.
   assert(() {
-    FirebaseAuth.instance.useAuthEmulator("localhost", 9099);
+    FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
     FirebaseDatabase.instance.useDatabaseEmulator(
-        !kIsWeb && Platform.isAndroid ? "10.0.2.2" : "localhost", 9000);
-    FirebaseStorage.instance.useStorageEmulator("localhost", 9199);
+        !kIsWeb && Platform.isAndroid ? '10.0.2.2' : 'localhost', 9000);
+    FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
     return true;
   }());
 
