@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 
 import './database_abstract.dart';
 import './enum.dart';
+import './user.dart' as local_user;
 import '../../firebase_options.dart';
 
 class DatabaseFirebase implements DataBaseAbstract {
@@ -48,7 +49,7 @@ class DatabaseFirebase implements DataBaseAbstract {
         return LoginStatus.unrecognizedError;
       }
     }
-    return LoginStatus.connected;
+    return LoginStatus.signedIn;
   }
 
   @override
@@ -60,9 +61,15 @@ class DatabaseFirebase implements DataBaseAbstract {
   }
 
   @override
-  Future<T> get<T>(String path) async {
-    final map = FirebaseDatabase.instance.ref(path).get();
-    final item = (T as ItemSerializable).deserializeItem(map);
-    return item as T;
+  Future<local_user.User> getUser(String path) async {
+    final data = await FirebaseDatabase.instance.ref(path).get();
+    final user = local_user.User.fromSerialized(data.value);
+    return user;
+  }
+
+  @override
+  Future<T> get<T>(String path) {
+    // TODO: implement get
+    throw UnimplementedError();
   }
 }

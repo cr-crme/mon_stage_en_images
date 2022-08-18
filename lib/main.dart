@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import './dummy_data.dart';
 import './common/providers/all_questions.dart';
 import './common/providers/all_students.dart';
-import './common/providers/all_users.dart';
 import './common/providers/login_information.dart';
 import './common/providers/speecher.dart';
 import './common/models/database_abstract.dart';
@@ -28,7 +27,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final loginInformation = LoginInformation(database: database);
     final students = AllStudents();
-    final genericInformation = AllUsers(database: database);
     final questions = AllQuestions();
     final speecher = Speecher();
     prepareDummyData(students, questions);
@@ -37,7 +35,6 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => loginInformation),
         ChangeNotifierProvider(create: (context) => students),
-        ChangeNotifierProvider(create: (context) => genericInformation),
         ChangeNotifierProvider(create: (context) => questions),
         ChangeNotifierProvider(create: (context) => speecher),
       ],

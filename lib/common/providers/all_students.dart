@@ -20,8 +20,8 @@ class AllStudents extends FirebaseListProvided<Student>
   }
 
   @override
-  set pathToAvailableDataIds(String teacherName) {
-    super.pathToAvailableDataIds = '$dataName-$teacherName';
+  set pathToAvailableDataIds(String newPath) {
+    super.pathToAvailableDataIds = '$dataName-$newPath';
   }
 
   bool isQuestionActiveForAll(Question question) {

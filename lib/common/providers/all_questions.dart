@@ -27,8 +27,8 @@ class AllQuestions extends FirebaseListProvided<Question> with Section {
   }
 
   @override
-  set pathToAvailableDataIds(String teacherName) {
-    super.pathToAvailableDataIds = '$dataName-$teacherName';
+  set pathToAvailableDataIds(String newPath) {
+    super.pathToAvailableDataIds = '$dataName-$newPath';
   }
 
   void addToAll(

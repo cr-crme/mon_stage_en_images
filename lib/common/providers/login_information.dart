@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import './all_questions.dart';
 import './all_students.dart';
+import '../misc/database_helper.dart';
 import '../models/database_abstract.dart';
 import '../models/enum.dart';
 import '../models/themes.dart';
@@ -13,23 +14,20 @@ class LoginInformation with ChangeNotifier {
 
   LoginType loginType = LoginType.none;
   User? user;
-  final DataBaseAbstract database;
 
   Future<LoginStatus> login(
     BuildContext context, {
     required String email,
     required String password,
-    required LoginType loginType,
   }) async {
     final students = Provider.of<AllStudents>(context, listen: false);
     final questions = Provider.of<AllQuestions>(context, listen: false);
 
     final status = await database.login(email, password);
-    if (status != LoginStatus.connected) return status;
+    if (status != LoginStatus.signedIn) return status;
 
-    // TODO: Read the information from the server
-    user = User(firstName: '', lastName: '', email: email, addedBy: '');
-    _selectLoginType(loginType);
+    user = await getUserFromDatabase(email);
+    _selectLoginType(user!.isStudent ? LoginType.student : LoginType.teacher);
     _notifyAnotherProvider(students);
     _notifyAnotherProvider(questions);
     return status;
@@ -41,7 +39,11 @@ class LoginInformation with ChangeNotifier {
   }
 
   void _notifyAnotherProvider(provider) {
-    provider.pathToAvailableDataIds = user!;
+    if (user!.isStudent) {
+      provider.pathToAvailableDataIds = user!.addedBy;
+    } else {
+      provider.pathToAvailableDataIds = user!.id;
+    }
   }
 
   ThemeData get themeData {
@@ -53,5 +55,16 @@ class LoginInformation with ChangeNotifier {
       default:
         return studentTheme();
     }
+  }
+
+  final DataBaseAbstract database;
+  final String pathToUsers = 'users';
+  void addUserToDatabase(User userInformation) {
+    database.send(pathToUsers, userInformation);
+  }
+
+  Future<User> getUserFromDatabase(String email) async {
+    final id = emailToPath(email);
+    return database.getUser('$pathToUsers/$id');
   }
 }

@@ -1,8 +1,6 @@
 import 'package:defi_photo/crcrme_enhanced_containers/lib/item_serializable.dart';
 
-String emailToPath(String email) {
-  return 'tata__arobas__coucou__dot__com';
-}
+import '../misc/database_helper.dart';
 
 class User extends ItemSerializable {
   // Constructors and (de)serializer
@@ -11,12 +9,16 @@ class User extends ItemSerializable {
     required this.lastName,
     required this.email,
     required this.addedBy,
+    required this.isStudent,
+    this.studentId,
   }) : super(id: emailToPath(email));
   User.fromSerialized(map)
       : firstName = map['firstName'],
         lastName = map['lastName'],
         email = map['email'],
         addedBy = map['addedBy'],
+        isStudent = map['isStudent'],
+        studentId = map['studentId'],
         super.fromSerialized(map);
 
   @override
@@ -26,6 +28,8 @@ class User extends ItemSerializable {
       'lastName': lastName,
       'email': email,
       'addedBy': addedBy,
+      'isStudent': isStudent,
+      'studentId': studentId,
     };
   }
 
@@ -39,6 +43,8 @@ class User extends ItemSerializable {
   final String lastName;
   final String email;
   final String addedBy;
+  final bool isStudent;
+  final String? studentId;
 
   @override
   String toString() {

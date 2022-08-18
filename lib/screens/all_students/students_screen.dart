@@ -5,7 +5,6 @@ import './widgets/new_student_alert_dialog.dart';
 import './widgets/student_list_tile.dart';
 import '../../common/providers/all_questions.dart';
 import '../../common/providers/all_students.dart';
-import '../../common/providers/all_users.dart';
 import '../../common/providers/login_information.dart';
 import '../../common/models/answer.dart';
 import '../../common/models/enum.dart';
@@ -27,7 +26,6 @@ class _StudentsScreenState extends State<StudentsScreen> {
   Future<void> _showNewStudent() async {
     final loginInformation =
         Provider.of<LoginInformation>(context, listen: false);
-    final genericInformation = Provider.of<AllUsers>(context, listen: false);
     final students = Provider.of<AllStudents>(context, listen: false);
     final questions = Provider.of<AllQuestions>(context, listen: false);
 
@@ -46,11 +44,13 @@ class _StudentsScreenState extends State<StudentsScreen> {
           actionRequired: ActionRequired.fromStudent);
     }
     students.add(student);
-    genericInformation.addUser(User(
+    loginInformation.addUserToDatabase(User(
       firstName: student.firstName,
       lastName: student.lastName,
       email: student.email,
-      addedBy: loginInformation.user!.email,
+      addedBy: loginInformation.user!.id,
+      isStudent: true,
+      studentId: student.id,
     ));
   }
 

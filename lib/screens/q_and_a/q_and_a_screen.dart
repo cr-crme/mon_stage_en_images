@@ -9,6 +9,7 @@ import '../../common/widgets/main_drawer.dart';
 import '../../common/models/enum.dart';
 import '../../common/models/section.dart';
 import '../../common/models/student.dart';
+import '../../common/providers/all_students.dart';
 import '../../common/providers/login_information.dart';
 
 class QAndAScreen extends StatefulWidget {
@@ -33,9 +34,14 @@ class _QAndAScreenState extends State<QAndAScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _loginType =
-        Provider.of<LoginInformation>(context, listen: false).loginType;
-    _student = ModalRoute.of(context)!.settings.arguments as Student?;
+    final loginInformation =
+        Provider.of<LoginInformation>(context, listen: false);
+    _loginType = loginInformation.loginType;
+    if (_loginType == LoginType.student) {
+      final allStudents = Provider.of<AllStudents>(context, listen: false);
+      _student = allStudents.fromId(loginInformation.user!.studentId!);
+    }
+
     _questionView = _loginType == LoginType.teacher && _student == null
         ? QuestionView.modifyForAllStudents
         : QuestionView.normal;

@@ -18,41 +18,29 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  AllStudents? _allStudents;
   final _formKey = GlobalKey<FormState>();
   String? _email;
   String? _password;
   LoginStatus _loginStatus = LoginStatus.waitingForLogin;
+  LoginInformation? _logger;
 
-  Future<void> _proceedToNextScreen(LoginType loginType) async {
+  Future<void> _proceedToNextScreen() async {
     if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
       return;
     }
     _formKey.currentState!.save();
 
-    final navigator = Navigator.of(context);
-    final students = Provider.of<AllStudents>(context, listen: false);
-    final logger = Provider.of<LoginInformation>(context, listen: false);
-    _loginStatus = await logger.login(context,
-        email: _email!, password: _password!, loginType: loginType);
-    if (_loginStatus != LoginStatus.connected) {
-      setState(() {});
-      return;
-    }
-
-    if (loginType == LoginType.student) {
-      navigator.pushReplacementNamed(QAndAScreen.routeName,
-          arguments: students[0]);
-    } else if (loginType == LoginType.teacher) {
-      navigator.pushReplacementNamed(StudentsScreen.routeName);
-    } else {
-      _loginStatus = LoginStatus.unrecognizedError;
-    }
+    _logger = Provider.of<LoginInformation>(context, listen: false);
+    _loginStatus =
+        await _logger!.login(context, email: _email!, password: _password!);
+    setState(() {});
   }
 
   String _loginStatusToString() {
     if (_loginStatus == LoginStatus.waitingForLogin) {
       return '';
-    } else if (_loginStatus == LoginStatus.connected) {
+    } else if (_loginStatus == LoginStatus.signedIn) {
       return '';
     } else if (_loginStatus == LoginStatus.wrongUsername) {
       return 'Utilisateur non enregistré';
@@ -65,8 +53,22 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  void logAsStudent() {
+    if (_logger == null || _loginStatus != LoginStatus.signedIn) return;
+
+    if (_logger!.user!.isStudent) {
+      Navigator.of(context).pushReplacementNamed(QAndAScreen.routeName);
+    } else {
+      Navigator.of(context).pushReplacementNamed(StudentsScreen.routeName);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    _allStudents = Provider.of<AllStudents>(context, listen: true);
+    if (_allStudents!.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => logAsStudent());
+    }
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -135,51 +137,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       const SizedBox(height: 40),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: const [
-                          Text(
-                            'Se connecter en tant que...',
-                            style: TextStyle(fontSize: 15),
+                      ElevatedButton(
+                        onPressed: () => _proceedToNextScreen(),
+                        style: ElevatedButton.styleFrom(
+                            primary: teacherTheme().colorScheme.primary),
+                        child: Text(
+                          'Se connecter',
+                          style: TextStyle(
+                            color: teacherTheme().colorScheme.onPrimary,
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () =>
-                                _proceedToNextScreen(LoginType.student),
-                            style: ElevatedButton.styleFrom(
-                                primary: studentTheme().colorScheme.primary),
-                            child: Text(
-                              'Élève',
-                              style: TextStyle(
-                                color: studentTheme().colorScheme.onPrimary,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                primary: teacherTheme().colorScheme.primary),
-                            onPressed: () =>
-                                _proceedToNextScreen(LoginType.teacher),
-                            child: Text(
-                              'Enseignant',
-                              style: TextStyle(
-                                color: teacherTheme().colorScheme.onPrimary,
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                       if (_loginStatus != LoginStatus.waitingForLogin ||
-                          _loginStatus != LoginStatus.connected)
+                          _loginStatus != LoginStatus.signedIn)
                         const SizedBox(height: 15),
                       if (_loginStatus != LoginStatus.waitingForLogin ||
-                          _loginStatus != LoginStatus.connected)
+                          _loginStatus != LoginStatus.signedIn)
                         Text(
                           _loginStatusToString(),
                           style: const TextStyle(color: Colors.red),
