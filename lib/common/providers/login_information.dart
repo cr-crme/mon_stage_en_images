@@ -3,30 +3,32 @@ import 'package:provider/provider.dart';
 
 import './all_questions.dart';
 import './all_students.dart';
+import '../models/database_abstract.dart';
 import '../models/enum.dart';
 import '../models/themes.dart';
 import '../models/user.dart';
 
 class LoginInformation with ChangeNotifier {
-  LoginInformation({required this.loginCallback});
+  LoginInformation({required this.database});
 
   LoginType loginType = LoginType.none;
   User? user;
-  final Future<LoginStatus> Function(User, String password) loginCallback;
+  final DataBaseAbstract database;
 
   Future<LoginStatus> login(
     BuildContext context, {
-    required User user,
+    required String email,
     required String password,
     required LoginType loginType,
   }) async {
     final students = Provider.of<AllStudents>(context, listen: false);
     final questions = Provider.of<AllQuestions>(context, listen: false);
 
-    final status = await loginCallback(user, password);
+    final status = await database.login(email, password);
     if (status != LoginStatus.connected) return status;
 
-    this.user = user;
+    // TODO: Read the information from the server
+    user = User(firstName: '', lastName: '', email: email, addedBy: '');
     _selectLoginType(loginType);
     _notifyAnotherProvider(students);
     _notifyAnotherProvider(questions);
@@ -39,7 +41,7 @@ class LoginInformation with ChangeNotifier {
   }
 
   void _notifyAnotherProvider(provider) {
-    provider.pathToAvailableDataIds = user!.name;
+    provider.pathToAvailableDataIds = user!;
   }
 
   ThemeData get themeData {

@@ -1,71 +1,34 @@
-import 'dart:io';
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import './dummy_data.dart';
-import './common/models/enum.dart';
-import './common/models/user.dart' as local_user;
 import './common/providers/all_questions.dart';
 import './common/providers/all_students.dart';
-import 'common/providers/all_student_affiliations.dart';
+import './common/providers/all_users.dart';
 import './common/providers/login_information.dart';
 import './common/providers/speecher.dart';
+import './common/models/database_abstract.dart';
+import './common/models/database_firebase.dart';
 import './screens/all_students/students_screen.dart';
 import './screens/login/login_screen.dart';
 import './screens/q_and_a/q_and_a_screen.dart';
-import './firebase_options.dart';
-
-Future<LoginStatus> login(local_user.User user, String password) async {
-  final authenticator = FirebaseAuth.instance;
-  // authenticator.createUserWithEmailAndPassword(
-  //     email: 'coucou@coucou.com', password: '123456');
-  try {
-    await authenticator.signInWithEmailAndPassword(
-        email: user.email, password: password);
-  } catch (e) {
-    if ((e as FirebaseAuthException).code == 'user-not-found') {
-      return LoginStatus.wrongUsername;
-    } else if (e.code == 'wrong-password') {
-      return LoginStatus.wrongPassword;
-    } else {
-      return LoginStatus.unrecognizedError;
-    }
-  }
-  return LoginStatus.connected;
-}
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  // Connect Firebase to local emulators
-  // IMPORTANT: when in production set android:usesCleartextTraffic to 'false'
-  // in AndroidManifest.xml, to enforce 'https' connexions.
-  assert(() {
-    FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
-    FirebaseDatabase.instance.useDatabaseEmulator(
-        !kIsWeb && Platform.isAndroid ? '10.0.2.2' : 'localhost', 9000);
-    FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
-    return true;
-  }());
-
-  runApp(const MyApp());
+  final database = DatabaseFirebase();
+  await database.initialize();
+  runApp(MyApp(database: database));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({Key? key, required this.database}) : super(key: key);
+
+  final DataBaseAbstract database;
 
   @override
   Widget build(BuildContext context) {
-    final loginInformation = LoginInformation(loginCallback: login);
+    final loginInformation = LoginInformation(database: database);
     final students = AllStudents();
-    final studentAffiliations = AllStudentAffiliations();
+    final genericInformation = AllUsers(database: database);
     final questions = AllQuestions();
     final speecher = Speecher();
     prepareDummyData(students, questions);
@@ -74,7 +37,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => loginInformation),
         ChangeNotifierProvider(create: (context) => students),
-        ChangeNotifierProvider(create: (context) => studentAffiliations),
+        ChangeNotifierProvider(create: (context) => genericInformation),
         ChangeNotifierProvider(create: (context) => questions),
         ChangeNotifierProvider(create: (context) => speecher),
       ],

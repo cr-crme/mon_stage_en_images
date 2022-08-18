@@ -36,7 +36,7 @@ class _AnswerPartState extends State<AnswerPart> {
     final currentAnswer = student!.allAnswers[widget.question]!;
 
     currentAnswer.addToDiscussion(Message(
-      name: loginInfo.user!.name,
+      name: loginInfo.user!.firstName,
       text: answerText,
       isPhotoUrl: isPhoto,
     ));

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../common/models/user.dart';
 import '../q_and_a/q_and_a_screen.dart';
 import '../all_students/students_screen.dart';
 import '../../common/models/enum.dart';
@@ -33,9 +32,8 @@ class _LoginScreenState extends State<LoginScreen> {
     final navigator = Navigator.of(context);
     final students = Provider.of<AllStudents>(context, listen: false);
     final logger = Provider.of<LoginInformation>(context, listen: false);
-    final user = User(email: _email!);
     _loginStatus = await logger.login(context,
-        user: user, password: _password!, loginType: loginType);
+        email: _email!, password: _password!, loginType: loginType);
     if (_loginStatus != LoginStatus.connected) {
       setState(() {});
       return;

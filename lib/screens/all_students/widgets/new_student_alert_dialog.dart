@@ -45,6 +45,7 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
       allAnswers: AllAnswers(questions: questions.toList(growable: false)),
       company: Company(name: _companyName ?? ''),
     );
+
     Navigator.pop(context, student);
   }
 
@@ -75,6 +76,7 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Courriel'),
                 initialValue: widget.student?.email,
+                keyboardType: TextInputType.emailAddress,
                 validator: (value) => value == null || value.isEmpty
                     // TODO: Check if email is actually an email
                     ? 'Ajouter un courriel'
