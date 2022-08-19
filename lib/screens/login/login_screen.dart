@@ -118,91 +118,150 @@ class _LoginScreenState extends State<LoginScreen> {
     _allStudents = Provider.of<AllStudents>(context, listen: true);
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 25),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'DÉFI',
-                            style: TextStyle(
-                                fontSize: 40,
-                                color: teacherTheme().colorScheme.primary),
-                          ),
-                          const SizedBox(width: 15),
-                          Text(
-                            'PHOTO',
-                            style: TextStyle(
-                                fontSize: 40,
-                                color: studentTheme().colorScheme.primary),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 40),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: const [
-                          Text(
-                            'Informations de connexion',
-                            style: TextStyle(fontSize: 15),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: TextFormField(
-                          decoration:
-                              const InputDecoration(labelText: 'Courriel'),
-                          validator: (value) => value == null || value.isEmpty
-                              ? 'Inscrire un courriel'
-                              : null,
-                          onSaved: (value) => _email = value,
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: TextFormField(
-                          decoration:
-                              const InputDecoration(labelText: 'Mot de passe'),
-                          validator: (value) => value == null || value.isEmpty
-                              ? 'Entrer le mot de passe'
-                              : null,
-                          onSaved: (value) => _password = value,
-                          obscureText: true,
-                          enableSuggestions: false,
-                          autocorrect: false,
-                          keyboardType: TextInputType.visiblePassword,
-                        ),
-                      ),
-                      const SizedBox(height: 40),
-                      ElevatedButton(
-                        onPressed: () => _processConnexion(),
-                        style: ElevatedButton.styleFrom(
-                            primary: teacherTheme().colorScheme.primary),
-                        child: Text(
-                          'Se connecter',
-                          style: TextStyle(
-                            color: teacherTheme().colorScheme.onPrimary,
-                          ),
-                        ),
-                      ),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Stack(
+            children: [
+              Container(
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height -
+                    MediaQuery.of(context).viewInsets.bottom,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    end: const Alignment(0, 0.6),
+                    begin: const Alignment(0.5, 1.5),
+                    colors: [
+                      teacherTheme().colorScheme.primary,
+                      Colors.white,
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height -
+                    MediaQuery.of(context).viewInsets.bottom,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                  begin: const Alignment(-0.1, -1),
+                  end: const Alignment(0, -0.6),
+                  colors: [
+                    studentTheme().colorScheme.primary,
+                    Colors.white10,
+                  ],
+                )),
+                padding: const EdgeInsets.symmetric(horizontal: 25),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const MainTitle(),
+                    const SizedBox(height: 50),
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: const [
+                              Text(
+                                'Informations de connexion',
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: TextFormField(
+                              decoration:
+                                  const InputDecoration(labelText: 'Courriel'),
+                              validator: (value) =>
+                                  value == null || value.isEmpty
+                                      ? 'Inscrire un courriel'
+                                      : null,
+                              onSaved: (value) => _email = value,
+                              keyboardType: TextInputType.emailAddress,
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: TextFormField(
+                              decoration: const InputDecoration(
+                                  labelText: 'Mot de passe'),
+                              validator: (value) =>
+                                  value == null || value.isEmpty
+                                      ? 'Entrer le mot de passe'
+                                      : null,
+                              onSaved: (value) => _password = value,
+                              obscureText: true,
+                              enableSuggestions: false,
+                              autocorrect: false,
+                              keyboardType: TextInputType.visiblePassword,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    ElevatedButton(
+                      onPressed: () => _processConnexion(),
+                      style: ElevatedButton.styleFrom(
+                          primary: teacherTheme().colorScheme.primary),
+                      child: Text(
+                        'Se connecter',
+                        style: TextStyle(
+                          color: teacherTheme().colorScheme.onPrimary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class MainTitle extends StatelessWidget {
+  const MainTitle({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform(
+      alignment: FractionalOffset.center,
+      transform: Matrix4.identity()..rotateZ(-15 * 3.1415927 / 180),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ColoredBox(
+            color: studentTheme().colorScheme.primary,
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                'DÉFI',
+                style: TextStyle(
+                    fontSize: 40, color: studentTheme().colorScheme.onPrimary),
+              ),
+            ),
+          ),
+          ColoredBox(
+            color: teacherTheme().colorScheme.primary,
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                'PHOTO',
+                style: TextStyle(
+                    fontSize: 40, color: teacherTheme().colorScheme.onPrimary),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
