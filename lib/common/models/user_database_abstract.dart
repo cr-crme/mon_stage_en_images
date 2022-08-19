@@ -6,6 +6,7 @@ abstract class UserDataBaseAbstract {
   Future<void> initialize();
 
   Future<LoginStatus> login(String email, String password);
+  Future<LoginStatus> logout();
 
   Future<LoginStatus> updatePassword(User user, String newPassword);
   Future<LoginStatus> addUser({required User user, required String password});

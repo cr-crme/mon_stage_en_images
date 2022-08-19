@@ -51,6 +51,23 @@ class UserDatabaseFirebase extends UserDataBaseAbstract {
   }
 
   @override
+  Future<LoginStatus> logout() async {
+    final authenticator = FirebaseAuth.instance;
+    try {
+      await authenticator.signOut();
+    } catch (e) {
+      if ((e as FirebaseAuthException).code == 'user-not-found') {
+        return LoginStatus.wrongUsername;
+      } else if (e.code == 'wrong-password') {
+        return LoginStatus.wrongPassword;
+      } else {
+        return LoginStatus.unrecognizedError;
+      }
+    }
+    return LoginStatus.success;
+  }
+
+  @override
   Future<LoginStatus> updatePassword(
       local_user.User user, String newPassword) async {
     final authenticator = FirebaseAuth.instance;
