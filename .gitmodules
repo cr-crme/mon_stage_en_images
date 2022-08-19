@@ -1,0 +1,3 @@
+[submodule "lib/crcrme_enhanced_containers"]
+	path = lib/crcrme_enhanced_containers
+	url = https://github.com/cr-crme/enhanced_containers

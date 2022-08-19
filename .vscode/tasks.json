@@ -1,0 +1,40 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run Firebase Emulator",
+            "command": "firebase",
+            "args": ["emulators:start"], // TODO: Import/export data
+            "type": "shell",
+            "options": { "cwd": "${workspaceFolder}" },
+            "isBackground": true,
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "^Error\\s+:\\s+(.*)$",
+                    "message": 1
+                },
+                "background": {
+                    "activeOnStart": false,
+                    "beginsPattern": "Starting emulators",
+                    "endsPattern": "All emulators ready! It is now safe to connect your app."
+                }
+            },
+            "dependsOn": ["Open Firebase Emulator's Console"]
+        },
+        {
+            "label": "Open Firebase Emulator's Console",
+            "args": ["http://localhost:4000"],
+            "type": "shell",
+            "presentation": {
+                "echo": false,
+                "reveal": "never",
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "close": true
+            },
+            "windows": { "command": "start" },
+            "linux": { "command": "xdg-open" },
+            "osx": { "command": "open" }
+        }
+    ]
+}
