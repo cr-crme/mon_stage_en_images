@@ -36,6 +36,7 @@ class _NewUserAlertDialogState extends State<NewUserAlertDialog> {
       email: widget.email,
       addedBy: 'Administrator',
       isStudent: false,
+      shouldChangePassword: true,
     );
 
     Navigator.pop(context, user);

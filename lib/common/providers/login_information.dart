@@ -20,35 +20,39 @@ class LoginInformation with ChangeNotifier {
     required String email,
     required String password,
     required Function(String email) newUserUiCallback,
+    required Future<String> Function() changePasswordCallback,
   }) async {
     final students = Provider.of<AllStudents>(context, listen: false);
     final questions = Provider.of<AllQuestions>(context, listen: false);
-    final status = await userDatabase.login(email, password);
+    var status = await userDatabase.login(email, password);
     if (status != LoginStatus.success) return status;
 
     user = await userDatabase.getUser(email);
     if (user == null) {
       user = await newUserUiCallback(email);
       if (user == null) return LoginStatus.cancelled;
-      await addUserToDatabase(
-          newUser: user!, password: password, override: true);
+      status = await addUserToDatabase(newUser: user!, password: password);
+      if (status != LoginStatus.success) return status;
     }
-    _registerUser(students, questions);
+
+    if (user!.shouldChangePassword) {
+      String newPassword = await changePasswordCallback();
+      status = await userDatabase.updatePassword(user!, newPassword);
+      if (status != LoginStatus.success) return status;
+    }
+
+    _finalizeLogin(students, questions);
     return LoginStatus.success;
   }
 
-  void _registerUser(AllStudents students, AllQuestions questions) {
-    _selectLoginType(user!.isStudent ? LoginType.student : LoginType.teacher);
-    _notifyAnotherProvider(students);
-    _notifyAnotherProvider(questions);
-  }
-
-  void _selectLoginType(LoginType theme) {
-    loginType = theme;
+  void _finalizeLogin(AllStudents students, AllQuestions questions) {
+    loginType = user!.isStudent ? LoginType.student : LoginType.teacher;
+    _notifyProvider(students);
+    _notifyProvider(questions);
     notifyListeners();
   }
 
-  void _notifyAnotherProvider(provider) {
+  void _notifyProvider(provider) {
     if (user!.isStudent) {
       provider.pathToAvailableDataIds = user!.addedBy;
     } else {
@@ -70,9 +74,7 @@ class LoginInformation with ChangeNotifier {
   Future<LoginStatus> addUserToDatabase({
     required User newUser,
     required String password,
-    required bool override,
   }) async {
-    return userDatabase.send(
-        user: newUser, password: password, override: override);
+    return userDatabase.send(user: newUser, password: password);
   }
 }

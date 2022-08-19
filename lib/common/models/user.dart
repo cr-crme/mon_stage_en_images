@@ -10,6 +10,7 @@ class User extends ItemSerializable {
     required this.email,
     required this.addedBy,
     required this.isStudent,
+    required this.shouldChangePassword,
     this.studentId,
   }) : super(id: emailToPath(email));
   User.fromSerialized(map)
@@ -18,6 +19,7 @@ class User extends ItemSerializable {
         email = map['email'],
         addedBy = map['addedBy'],
         isStudent = map['isStudent'],
+        shouldChangePassword = map[shouldChangePasswordNameField],
         studentId = map['studentId'],
         super.fromSerialized(map);
 
@@ -29,6 +31,7 @@ class User extends ItemSerializable {
       'email': email,
       'addedBy': addedBy,
       'isStudent': isStudent,
+      shouldChangePasswordNameField: shouldChangePassword,
       'studentId': studentId,
     };
   }
@@ -44,6 +47,10 @@ class User extends ItemSerializable {
   final String email;
   final String addedBy;
   final bool isStudent;
+  final bool shouldChangePassword;
+
+  /// If [shouldChangePassword] ever change, the nameField should be updated
+  static const String shouldChangePasswordNameField = 'shouldChangePassword';
   final String? studentId;
 
   @override

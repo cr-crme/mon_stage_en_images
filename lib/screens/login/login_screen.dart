@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import './widgets/change_password_alert_dialog.dart';
 import './widgets/new_user_alert_dialog.dart';
 import '../q_and_a/q_and_a_screen.dart';
 import '../all_students/students_screen.dart';
@@ -24,7 +25,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   String? _email;
   String? _password;
-  LoginStatus _loginStatus = LoginStatus.waitingForLogin;
   LoginInformation? _logger;
 
   Future<User?> _createUser(String email) async {
@@ -38,18 +38,60 @@ class _LoginScreenState extends State<LoginScreen> {
     return user;
   }
 
+  Future<String> _changePassword() async {
+    final password = await showDialog<String>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return const ChangePasswordAlertDialog();
+      },
+    );
+    return password!;
+  }
+
+  void _showSnackbar(LoginStatus status, ScaffoldMessengerState scaffold) {
+    late final String message;
+    if (status == LoginStatus.waitingForLogin) {
+      message = '';
+    } else if (status == LoginStatus.cancelled) {
+      message = 'La connexion a été annulée';
+    } else if (status == LoginStatus.success) {
+      message = '';
+    } else if (status == LoginStatus.wrongUsername) {
+      message = 'Utilisateur non enregistré';
+    } else if (status == LoginStatus.wrongPassword) {
+      message = 'Mot de passe non reconnu';
+    } else {
+      message = 'Erreur de connexion inconnue';
+    }
+
+    scaffold.showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
   Future<void> _processConnexion() async {
     if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
       return;
     }
     _formKey.currentState!.save();
 
+    final scaffold = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
     _logger = Provider.of<LoginInformation>(context, listen: false);
-    _loginStatus = await _logger!.login(context,
-        email: _email!, password: _password!, newUserUiCallback: _createUser);
+    final status = await _logger!.login(context,
+        email: _email!,
+        password: _password!,
+        newUserUiCallback: _createUser,
+        changePasswordCallback: _changePassword);
     setState(() {});
-    if (_loginStatus != LoginStatus.success) return;
+    if (status != LoginStatus.success) {
+      _showSnackbar(status, scaffold);
+      return;
+    }
 
     if (_logger!.user!.isStudent) {
       _waitingRoomForStudent();
@@ -58,26 +100,8 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  String _loginStatusToString() {
-    if (_loginStatus == LoginStatus.waitingForLogin) {
-      return '';
-    } else if (_loginStatus == LoginStatus.cancelled) {
-      return 'La connexion a été annulée';
-    } else if (_loginStatus == LoginStatus.success) {
-      return '';
-    } else if (_loginStatus == LoginStatus.wrongUsername) {
-      return 'Utilisateur non enregistré';
-    } else if (_loginStatus == LoginStatus.wrongPassword) {
-      return 'Mot de passe non reconnu';
-    } else if (_loginStatus == LoginStatus.unrecognizedError) {
-      return 'Erreur de connexion inconnue';
-    } else {
-      throw TypeException('Unrecognized status');
-    }
-  }
-
   void _waitingRoomForStudent() {
-    if (_logger == null || _loginStatus != LoginStatus.success) return;
+    if (_logger == null) return;
 
     // Wait until the data are fetched
     if (_allStudents!.isEmpty) {
@@ -172,16 +196,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
-                      if (_loginStatus != LoginStatus.waitingForLogin ||
-                          _loginStatus != LoginStatus.success)
-                        const SizedBox(height: 15),
-                      if (_loginStatus != LoginStatus.waitingForLogin ||
-                          _loginStatus != LoginStatus.success)
-                        Text(
-                          _loginStatusToString(),
-                          style: const TextStyle(color: Colors.red),
-                          textAlign: TextAlign.center,
-                        ),
                     ],
                   ),
                 ),

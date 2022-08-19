@@ -51,21 +51,39 @@ class UserDatabaseFirebase extends UserDataBaseAbstract {
   }
 
   @override
+  Future<LoginStatus> updatePassword(
+      local_user.User user, String newPassword) async {
+    final authenticator = FirebaseAuth.instance;
+    try {
+      await authenticator.currentUser?.updatePassword(newPassword);
+    } catch (e) {
+      return LoginStatus.couldNotCreateUser;
+    }
+
+    final id = emailToPath(user.email);
+    try {
+      await FirebaseDatabase.instance
+          .ref(pathToAllUsers)
+          .child('$id/${local_user.User.shouldChangePasswordNameField}')
+          .set(false);
+    } catch (e) {
+      return LoginStatus.unrecognizedError;
+    }
+    return LoginStatus.success;
+  }
+
+  @override
   Future<LoginStatus> send({
     required local_user.User user,
     required String password,
-    bool override = false,
   }) async {
     final authenticator = FirebaseAuth.instance;
+
     try {
       await authenticator.createUserWithEmailAndPassword(
           email: user.email, password: password);
     } catch (e) {
-      if ((e as FirebaseAuthException).code == 'email-already-in-use') {
-        if (!override) return LoginStatus.couldNotCreateUser;
-      } else {
-        return LoginStatus.couldNotCreateUser;
-      }
+      return LoginStatus.couldNotCreateUser;
     }
 
     final id = emailToPath(user.email);

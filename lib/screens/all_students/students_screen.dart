@@ -22,8 +22,7 @@ class StudentsScreen extends StatefulWidget {
   State<StudentsScreen> createState() => _StudentsScreenState();
 }
 
-void _showCancelledSnackbar(
-    LoginStatus status, ScaffoldMessengerState scaffold) {
+void _showSnackbar(LoginStatus status, ScaffoldMessengerState scaffold) {
   late final String message;
   if (status == LoginStatus.cancelled) {
     message = 'Ajout de l\'étudiant(e) annulé';
@@ -58,7 +57,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
       },
     );
     if (student == null) {
-      _showCancelledSnackbar(LoginStatus.cancelled, scaffold);
+      _showSnackbar(LoginStatus.cancelled, scaffold);
       return;
     }
 
@@ -69,13 +68,13 @@ class _StudentsScreenState extends State<StudentsScreen> {
         email: student.email,
         addedBy: loginInformation.user!.id,
         isStudent: true,
+        shouldChangePassword: true,
         studentId: student.id,
       ),
-      password: '123456',
-      override: false,
+      password: 'defiPhoto',
     );
     if (status != LoginStatus.success) {
-      _showCancelledSnackbar(status, scaffold);
+      _showSnackbar(status, scaffold);
       return;
     }
 
