@@ -31,7 +31,7 @@ class LoginInformation with ChangeNotifier {
     if (user == null) {
       user = await newUserUiCallback(email);
       if (user == null) return LoginStatus.cancelled;
-      status = await addUserToDatabase(newUser: user!, password: password);
+      status = await modifyUserFromDatabase(user!);
       if (status != LoginStatus.success) return status;
     }
 
@@ -75,6 +75,18 @@ class LoginInformation with ChangeNotifier {
     required User newUser,
     required String password,
   }) async {
-    return userDatabase.send(user: newUser, password: password);
+    return userDatabase.addUser(user: newUser, password: password);
+  }
+
+  Future<User?> getUserFromDatabase(String email) async {
+    return userDatabase.getUser(email);
+  }
+
+  Future<LoginStatus> modifyUserFromDatabase(User user) async {
+    return userDatabase.modifyUser(user: user);
+  }
+
+  Future<LoginStatus> deleteUserFromDatabase(String email) async {
+    return userDatabase.deleteUser(email: email);
   }
 }

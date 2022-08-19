@@ -22,17 +22,7 @@ class StudentsScreen extends StatefulWidget {
   State<StudentsScreen> createState() => _StudentsScreenState();
 }
 
-void _showSnackbar(LoginStatus status, ScaffoldMessengerState scaffold) {
-  late final String message;
-  if (status == LoginStatus.cancelled) {
-    message = 'Ajout de l\'étudiant(e) annulé';
-  } else if (status == LoginStatus.couldNotCreateUser) {
-    message = 'Échec de l\'ajout de l\'étudiant(e). Il n\'est pas possible '
-        'd\'ajouter deux étudiant(e) avec la même adresse.';
-  } else {
-    message = 'Erreur inconnue lors de l\'ajout de l\'étudiant(e)';
-  }
-
+void _showSnackbar(String message, ScaffoldMessengerState scaffold) {
   scaffold.showSnackBar(
     SnackBar(
       content: Text(message),
@@ -57,7 +47,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
       },
     );
     if (student == null) {
-      _showSnackbar(LoginStatus.cancelled, scaffold);
+      _showSnackbar('Ajout de l\'étudiant(e) annulé', scaffold);
       return;
     }
 
@@ -74,7 +64,12 @@ class _StudentsScreenState extends State<StudentsScreen> {
       password: 'defiPhoto',
     );
     if (status != LoginStatus.success) {
-      _showSnackbar(status, scaffold);
+      final message = status == LoginStatus.couldNotCreateUser
+          ? 'Échec de l\'ajout de l\'étudiant(e). Il n\'est pas possible '
+              'd\'ajouter deux étudiant(e) avec la même adresse.'
+          : 'Erreur inconnue lors de l\'ajout de l\'étudiant(e)';
+
+      _showSnackbar(message, scaffold);
       return;
     }
 
@@ -87,6 +82,9 @@ class _StudentsScreenState extends State<StudentsScreen> {
   }
 
   Future<void> _modifyStudent(Student student) async {
+    final scaffold = ScaffoldMessenger.of(context);
+    final loginInformation =
+        Provider.of<LoginInformation>(context, listen: false);
     final students = Provider.of<AllStudents>(context, listen: false);
 
     final newInfo = await showDialog<Student>(
@@ -98,6 +96,19 @@ class _StudentsScreenState extends State<StudentsScreen> {
     );
     if (newInfo == null) return;
 
+    final user = await loginInformation.getUserFromDatabase(student.email);
+    if (user == null) {
+      _showSnackbar('Étudiant(e) n\'a pas été trouvé(e) dans la base de donnée',
+          scaffold);
+      return;
+    }
+    final status = await loginInformation.modifyUserFromDatabase(user.copyWith(
+        firstName: newInfo.firstName, lastName: newInfo.lastName, id: user.id));
+    if (status != LoginStatus.success) {
+      _showSnackbar('Échec de la modification de l\'étudiant', scaffold);
+      return;
+    }
+
     students.replace(
       student.copyWith(
         firstName: newInfo.firstName,
@@ -108,6 +119,9 @@ class _StudentsScreenState extends State<StudentsScreen> {
   }
 
   Future<void> _removeStudent(Student student) async {
+    final scaffold = ScaffoldMessenger.of(context);
+    final loginInformation =
+        Provider.of<LoginInformation>(context, listen: false);
     final students = Provider.of<AllStudents>(context, listen: false);
 
     final sure = await showDialog<bool>(
@@ -122,9 +136,19 @@ class _StudentsScreenState extends State<StudentsScreen> {
       },
     );
 
-    if (sure!) {
-      students.remove(student.id);
+    if (!sure!) {
+      _showSnackbar('Suppression de l\'étudiant annulée', scaffold);
+      return;
     }
+
+    var status = await loginInformation.deleteUserFromDatabase(student.email);
+    if (status != LoginStatus.success) {
+      _showSnackbar(
+          'la supression d\'étudiant n\'est pas encore disponible.', scaffold);
+      return;
+    }
+
+    students.remove(student.id);
   }
 
   @override

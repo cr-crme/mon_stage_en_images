@@ -77,10 +77,13 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
                 decoration: const InputDecoration(labelText: 'Courriel'),
                 initialValue: widget.student?.email,
                 keyboardType: TextInputType.emailAddress,
+                enabled: widget.student?.email == null,
                 validator: (value) => value == null || value.isEmpty
-                    // TODO: Check if email is actually an email
                     ? 'Ajouter un courriel'
-                    : null,
+                    : RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                            .hasMatch(value)
+                        ? null
+                        : 'Courriel non valide',
                 onSaved: (value) => _email = value,
               ),
               TextFormField(

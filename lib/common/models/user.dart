@@ -12,7 +12,8 @@ class User extends ItemSerializable {
     required this.isStudent,
     required this.shouldChangePassword,
     this.studentId,
-  }) : super(id: emailToPath(email));
+    id,
+  }) : super(id: id ??= emailToPath(email));
   User.fromSerialized(map)
       : firstName = map['firstName'],
         lastName = map['lastName'],
@@ -22,6 +23,33 @@ class User extends ItemSerializable {
         shouldChangePassword = map[shouldChangePasswordNameField],
         studentId = map['studentId'],
         super.fromSerialized(map);
+
+  User copyWith({
+    String? firstName,
+    String? lastName,
+    String? email,
+    String? addedBy,
+    bool? isStudent,
+    bool? shouldChangePassword,
+    String? id,
+  }) {
+    firstName ??= this.firstName;
+    lastName ??= this.lastName;
+    email ??= this.email;
+    addedBy ??= this.addedBy;
+    isStudent ??= this.isStudent;
+    shouldChangePassword ??= this.shouldChangePassword;
+    id ??= this.id;
+    return User(
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      addedBy: addedBy,
+      isStudent: isStudent,
+      shouldChangePassword: shouldChangePassword,
+      id: id,
+    );
+  }
 
   @override
   Map<String, dynamic> serializedMap() {

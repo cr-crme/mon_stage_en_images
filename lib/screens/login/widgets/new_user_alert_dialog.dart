@@ -45,7 +45,7 @@ class _NewUserAlertDialogState extends State<NewUserAlertDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Informations de l\'élève à ajouter'),
+      title: const Text('Entrez vos informations'),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,

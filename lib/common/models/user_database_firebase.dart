@@ -73,7 +73,7 @@ class UserDatabaseFirebase extends UserDataBaseAbstract {
   }
 
   @override
-  Future<LoginStatus> send({
+  Future<LoginStatus> addUser({
     required local_user.User user,
     required String password,
   }) async {
@@ -96,6 +96,23 @@ class UserDatabaseFirebase extends UserDataBaseAbstract {
       return LoginStatus.unrecognizedError;
     }
     return LoginStatus.success;
+  }
+
+  @override
+  Future<LoginStatus> modifyUser({required local_user.User user}) async {
+    final id = emailToPath(user.email);
+    await FirebaseDatabase.instance
+        .ref(pathToAllUsers)
+        .child(id)
+        .set(user.serialize());
+    return LoginStatus.success;
+  }
+
+  @override
+  Future<LoginStatus> deleteUser({required String email}) async {
+    // Firebase does not allow to delete a user without being logged in
+    // with this user
+    return LoginStatus.cancelled;
   }
 
   @override
