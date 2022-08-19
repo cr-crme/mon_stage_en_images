@@ -41,5 +41,6 @@ class AllStudents extends FirebaseListProvided<Student>
   }) {
     student.allAnswers[question] = answer;
     replace(student);
+    notifyListeners();
   }
 }

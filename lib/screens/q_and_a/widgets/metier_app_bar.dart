@@ -5,6 +5,7 @@ import '../../../common/models/enum.dart';
 import '../../../common/models/student.dart';
 import '../../../common/models/section.dart';
 import '../../../common/providers/all_questions.dart';
+import '../../../common/providers/all_students.dart';
 import '../../../common/providers/login_information.dart';
 import '../../../common/widgets/taking_action_notifier.dart';
 
@@ -25,6 +26,7 @@ class MetierAppBar extends StatelessWidget {
     // There is a bug here, even using listen to true, there is no update of the
     // widget so the takeactionnotifier stays until one changes page.
     // It was worked around by hiding if the page is selected
+    Provider.of<AllStudents>(context, listen: true);
     final questions = Provider.of<AllQuestions>(context, listen: true);
 
     return Container(
