@@ -22,8 +22,29 @@ class StudentsScreen extends StatefulWidget {
   State<StudentsScreen> createState() => _StudentsScreenState();
 }
 
+void _showCancelledSnackbar(
+    LoginStatus status, ScaffoldMessengerState scaffold) {
+  late final String message;
+  if (status == LoginStatus.cancelled) {
+    message = 'Ajout de l\'étudiant(e) annulé';
+  } else if (status == LoginStatus.couldNotCreateUser) {
+    message = 'Échec de l\'ajout de l\'étudiant(e). Il n\'est pas possible '
+        'd\'ajouter deux étudiant(e) avec la même adresse.';
+  } else {
+    message = 'Erreur inconnue lors de l\'ajout de l\'étudiant(e)';
+  }
+
+  scaffold.showSnackBar(
+    SnackBar(
+      content: Text(message),
+      duration: const Duration(seconds: 3),
+    ),
+  );
+}
+
 class _StudentsScreenState extends State<StudentsScreen> {
   Future<void> _showNewStudent() async {
+    final scaffold = ScaffoldMessenger.of(context);
     final loginInformation =
         Provider.of<LoginInformation>(context, listen: false);
     final students = Provider.of<AllStudents>(context, listen: false);
@@ -36,7 +57,27 @@ class _StudentsScreenState extends State<StudentsScreen> {
         return const NewStudentAlertDialog();
       },
     );
-    if (student == null) return;
+    if (student == null) {
+      _showCancelledSnackbar(LoginStatus.cancelled, scaffold);
+      return;
+    }
+
+    final status = await loginInformation.addUserToDatabase(
+      newUser: User(
+        firstName: student.firstName,
+        lastName: student.lastName,
+        email: student.email,
+        addedBy: loginInformation.user!.id,
+        isStudent: true,
+        studentId: student.id,
+      ),
+      password: '123456',
+      override: false,
+    );
+    if (status != LoginStatus.success) {
+      _showCancelledSnackbar(status, scaffold);
+      return;
+    }
 
     for (final question in questions) {
       student.allAnswers[question] = Answer(
@@ -44,14 +85,6 @@ class _StudentsScreenState extends State<StudentsScreen> {
           actionRequired: ActionRequired.fromStudent);
     }
     students.add(student);
-    loginInformation.addUserToDatabase(User(
-      firstName: student.firstName,
-      lastName: student.lastName,
-      email: student.email,
-      addedBy: loginInformation.user!.id,
-      isStudent: true,
-      studentId: student.id,
-    ));
   }
 
   Future<void> _modifyStudent(Student student) async {

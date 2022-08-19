@@ -24,8 +24,9 @@ enum LoginType {
 
 enum LoginStatus {
   waitingForLogin,
-  signedIn,
+  success,
   newUser,
+  couldNotCreateUser,
   wrongUsername,
   wrongPassword,
   unrecognizedError,

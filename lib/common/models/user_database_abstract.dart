@@ -7,6 +7,10 @@ abstract class UserDataBaseAbstract {
 
   Future<LoginStatus> login(String email, String password);
 
-  Future<void> send(User user);
+  Future<LoginStatus> send({
+    required User user,
+    required String password,
+    bool override = false,
+  });
   Future<User?> getUser(String email);
 }

@@ -47,16 +47,37 @@ class UserDatabaseFirebase extends UserDataBaseAbstract {
         return LoginStatus.unrecognizedError;
       }
     }
-    return LoginStatus.signedIn;
+    return LoginStatus.success;
   }
 
   @override
-  Future<void> send(local_user.User user) async {
+  Future<LoginStatus> send({
+    required local_user.User user,
+    required String password,
+    bool override = false,
+  }) async {
+    final authenticator = FirebaseAuth.instance;
+    try {
+      await authenticator.createUserWithEmailAndPassword(
+          email: user.email, password: password);
+    } catch (e) {
+      if ((e as FirebaseAuthException).code == 'email-already-in-use') {
+        if (!override) return LoginStatus.couldNotCreateUser;
+      } else {
+        return LoginStatus.couldNotCreateUser;
+      }
+    }
+
     final id = emailToPath(user.email);
-    return FirebaseDatabase.instance
-        .ref(pathToAllUsers)
-        .child(id)
-        .set(user.serialize());
+    try {
+      await FirebaseDatabase.instance
+          .ref(pathToAllUsers)
+          .child(id)
+          .set(user.serialize());
+    } catch (e) {
+      return LoginStatus.unrecognizedError;
+    }
+    return LoginStatus.success;
   }
 
   @override

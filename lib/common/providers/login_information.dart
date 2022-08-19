@@ -24,16 +24,17 @@ class LoginInformation with ChangeNotifier {
     final students = Provider.of<AllStudents>(context, listen: false);
     final questions = Provider.of<AllQuestions>(context, listen: false);
     final status = await userDatabase.login(email, password);
-    if (status != LoginStatus.signedIn) return status;
+    if (status != LoginStatus.success) return status;
 
     user = await userDatabase.getUser(email);
     if (user == null) {
       user = await newUserUiCallback(email);
       if (user == null) return LoginStatus.cancelled;
-      await addUserToDatabase(user!);
+      await addUserToDatabase(
+          newUser: user!, password: password, override: true);
     }
     _registerUser(students, questions);
-    return LoginStatus.signedIn;
+    return LoginStatus.success;
   }
 
   void _registerUser(AllStudents students, AllQuestions questions) {
@@ -66,7 +67,12 @@ class LoginInformation with ChangeNotifier {
     }
   }
 
-  Future<void> addUserToDatabase(User newUser) async {
-    return userDatabase.send(newUser);
+  Future<LoginStatus> addUserToDatabase({
+    required User newUser,
+    required String password,
+    required bool override,
+  }) async {
+    return userDatabase.send(
+        user: newUser, password: password, override: override);
   }
 }
