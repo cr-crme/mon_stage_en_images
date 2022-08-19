@@ -14,7 +14,7 @@ import './screens/q_and_a/q_and_a_screen.dart';
 
 void main() async {
   final userDatabase = UserDatabaseFirebase();
-  await userDatabase.initialize();
+  await userDatabase.initialize(useEmulator: true);
   runApp(MyApp(userDatabase: userDatabase));
 }
 

@@ -15,21 +15,23 @@ import '../../firebase_options.dart';
 
 class UserDatabaseFirebase extends UserDataBaseAbstract {
   @override
-  Future<void> initialize() async {
+  Future<void> initialize({bool useEmulator = false}) async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
 
-    // Connect Firebase to local emulators
-    // IMPORTANT: when in production set android:usesCleartextTraffic to 'false'
-    // in AndroidManifest.xml, to enforce 'https' connexions.
-    assert(() {
-      FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
-      FirebaseDatabase.instance.useDatabaseEmulator(
-          !kIsWeb && Platform.isAndroid ? '10.0.2.2' : 'localhost', 9000);
-      FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
-      return true;
-    }());
+    if (useEmulator) {
+      // Connect Firebase to local emulators
+      // IMPORTANT: when in production set android:usesCleartextTraffic to 'false'
+      // in AndroidManifest.xml, to enforce 'https' connexions.
+      assert(() {
+        FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+        FirebaseDatabase.instance.useDatabaseEmulator(
+            !kIsWeb && Platform.isAndroid ? '10.0.2.2' : 'localhost', 9000);
+        FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
+        return true;
+      }());
+    }
   }
 
   @override
