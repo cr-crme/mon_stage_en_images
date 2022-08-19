@@ -1,3 +1,4 @@
+import 'package:defi_photo/common/widgets/colored_corners.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -120,105 +121,86 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
-          child: Stack(
-            children: [
-              Container(
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height -
-                    MediaQuery.of(context).viewInsets.bottom,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    end: const Alignment(0, 0.6),
-                    begin: const Alignment(0.5, 1.5),
-                    colors: [
-                      teacherTheme().colorScheme.primary,
-                      Colors.white,
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height -
-                    MediaQuery.of(context).viewInsets.bottom,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                  begin: const Alignment(-0.1, -1),
-                  end: const Alignment(0, -0.6),
-                  colors: [
-                    studentTheme().colorScheme.primary,
-                    Colors.white10,
-                  ],
-                )),
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const MainTitle(),
-                    const SizedBox(height: 50),
-                    Form(
-                      key: _formKey,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: const [
-                              Text(
-                                'Informations de connexion',
-                                style: TextStyle(fontSize: 15),
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: TextFormField(
-                              decoration:
-                                  const InputDecoration(labelText: 'Courriel'),
-                              validator: (value) =>
-                                  value == null || value.isEmpty
-                                      ? 'Inscrire un courriel'
-                                      : null,
-                              onSaved: (value) => _email = value,
-                              keyboardType: TextInputType.emailAddress,
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: TextFormField(
-                              decoration: const InputDecoration(
-                                  labelText: 'Mot de passe'),
-                              validator: (value) =>
-                                  value == null || value.isEmpty
-                                      ? 'Entrer le mot de passe'
-                                      : null,
-                              onSaved: (value) => _password = value,
-                              obscureText: true,
-                              enableSuggestions: false,
-                              autocorrect: false,
-                              keyboardType: TextInputType.visiblePassword,
-                            ),
+          child: ColoredCorners(
+            firstColor: LinearGradient(
+              end: const Alignment(0, 0.6),
+              begin: const Alignment(0.5, 1.5),
+              colors: [
+                teacherTheme().colorScheme.primary,
+                Colors.white,
+              ],
+            ),
+            secondColor: LinearGradient(
+              begin: const Alignment(-0.1, -1),
+              end: const Alignment(0, -0.6),
+              colors: [
+                studentTheme().colorScheme.primary,
+                Colors.white10,
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const MainTitle(),
+                const SizedBox(height: 50),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: const [
+                          Text(
+                            'Informations de connexion',
+                            style: TextStyle(fontSize: 15),
                           ),
                         ],
                       ),
-                    ),
-                    const SizedBox(height: 40),
-                    ElevatedButton(
-                      onPressed: () => _processConnexion(),
-                      style: ElevatedButton.styleFrom(
-                          primary: teacherTheme().colorScheme.primary),
-                      child: Text(
-                        'Se connecter',
-                        style: TextStyle(
-                          color: teacherTheme().colorScheme.onPrimary,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: TextFormField(
+                          decoration:
+                              const InputDecoration(labelText: 'Courriel'),
+                          validator: (value) => value == null || value.isEmpty
+                              ? 'Inscrire un courriel'
+                              : null,
+                          onSaved: (value) => _email = value,
+                          keyboardType: TextInputType.emailAddress,
                         ),
                       ),
-                    ),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: TextFormField(
+                          decoration:
+                              const InputDecoration(labelText: 'Mot de passe'),
+                          validator: (value) => value == null || value.isEmpty
+                              ? 'Entrer le mot de passe'
+                              : null,
+                          onSaved: (value) => _password = value,
+                          obscureText: true,
+                          enableSuggestions: false,
+                          autocorrect: false,
+                          keyboardType: TextInputType.visiblePassword,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 40),
+                ElevatedButton(
+                  onPressed: () => _processConnexion(),
+                  style: ElevatedButton.styleFrom(
+                      primary: teacherTheme().colorScheme.primary),
+                  child: Text(
+                    'Se connecter',
+                    style: TextStyle(
+                      color: teacherTheme().colorScheme.onPrimary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

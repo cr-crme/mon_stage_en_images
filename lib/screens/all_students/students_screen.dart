@@ -8,9 +8,9 @@ import '../../common/providers/all_students.dart';
 import '../../common/providers/login_information.dart';
 import '../../common/models/answer.dart';
 import '../../common/models/enum.dart';
-import '../../common/widgets/main_drawer.dart';
 import '../../common/models/student.dart';
 import '../../common/models/user.dart';
+import '../../common/widgets/main_drawer.dart';
 import '../../common/widgets/are_you_sure_dialog.dart';
 
 class StudentsScreen extends StatefulWidget {
