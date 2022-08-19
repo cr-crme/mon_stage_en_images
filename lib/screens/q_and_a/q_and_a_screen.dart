@@ -38,7 +38,7 @@ class _QAndAScreenState extends State<QAndAScreen> {
         Provider.of<LoginInformation>(context, listen: false);
     _loginType = loginInformation.loginType;
     if (_loginType == LoginType.student) {
-      final allStudents = Provider.of<AllStudents>(context, listen: false);
+      final allStudents = Provider.of<AllStudents>(context, listen: true);
       _student = allStudents.fromId(loginInformation.user!.studentId!);
     } else {
       _student = ModalRoute.of(context)!.settings.arguments as Student?;
