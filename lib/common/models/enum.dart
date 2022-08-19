@@ -25,9 +25,11 @@ enum LoginType {
 enum LoginStatus {
   waitingForLogin,
   signedIn,
+  newUser,
   wrongUsername,
   wrongPassword,
   unrecognizedError,
+  cancelled,
 }
 
 enum QuestionView {

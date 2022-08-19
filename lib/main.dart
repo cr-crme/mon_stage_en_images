@@ -6,26 +6,26 @@ import './common/providers/all_questions.dart';
 import './common/providers/all_students.dart';
 import './common/providers/login_information.dart';
 import './common/providers/speecher.dart';
-import './common/models/database_abstract.dart';
-import './common/models/database_firebase.dart';
+import 'common/models/user_database_abstract.dart';
+import 'common/models/user_database_firebase.dart';
 import './screens/all_students/students_screen.dart';
 import './screens/login/login_screen.dart';
 import './screens/q_and_a/q_and_a_screen.dart';
 
 void main() async {
-  final database = DatabaseFirebase();
-  await database.initialize();
-  runApp(MyApp(database: database));
+  final userDatabase = UserDatabaseFirebase();
+  await userDatabase.initialize();
+  runApp(MyApp(userDatabase: userDatabase));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key, required this.database}) : super(key: key);
+  const MyApp({Key? key, required this.userDatabase}) : super(key: key);
 
-  final DataBaseAbstract database;
+  final UserDataBaseAbstract userDatabase;
 
   @override
   Widget build(BuildContext context) {
-    final loginInformation = LoginInformation(database: database);
+    final loginInformation = LoginInformation(userDatabase: userDatabase);
     final students = AllStudents();
     final questions = AllQuestions();
     final speecher = Speecher();

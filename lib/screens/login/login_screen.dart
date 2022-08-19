@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import './widgets/new_user_alert_dialog.dart';
 import '../q_and_a/q_and_a_screen.dart';
 import '../all_students/students_screen.dart';
 import '../../common/models/enum.dart';
 import '../../common/models/themes.dart';
+import '../../common/models/user.dart';
 import '../../common/providers/all_students.dart';
 import '../../common/providers/login_information.dart';
 
@@ -25,21 +27,42 @@ class _LoginScreenState extends State<LoginScreen> {
   LoginStatus _loginStatus = LoginStatus.waitingForLogin;
   LoginInformation? _logger;
 
-  Future<void> _proceedToNextScreen() async {
+  Future<User?> _createUser(String email) async {
+    final user = await showDialog<User>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return NewUserAlertDialog(email: email);
+      },
+    );
+    return user;
+  }
+
+  Future<void> _processConnexion() async {
     if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
       return;
     }
     _formKey.currentState!.save();
 
+    final navigator = Navigator.of(context);
     _logger = Provider.of<LoginInformation>(context, listen: false);
-    _loginStatus =
-        await _logger!.login(context, email: _email!, password: _password!);
+    _loginStatus = await _logger!.login(context,
+        email: _email!, password: _password!, newUserUiCallback: _createUser);
     setState(() {});
+    if (_loginStatus != LoginStatus.signedIn) return;
+
+    if (_logger!.user!.isStudent) {
+      _waitingRoomForStudent();
+    } else {
+      navigator.pushReplacementNamed(StudentsScreen.routeName);
+    }
   }
 
   String _loginStatusToString() {
     if (_loginStatus == LoginStatus.waitingForLogin) {
       return '';
+    } else if (_loginStatus == LoginStatus.cancelled) {
+      return 'La connexion a été annulée';
     } else if (_loginStatus == LoginStatus.signedIn) {
       return '';
     } else if (_loginStatus == LoginStatus.wrongUsername) {
@@ -53,22 +76,23 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  void logAsStudent() {
+  void _waitingRoomForStudent() {
     if (_logger == null || _loginStatus != LoginStatus.signedIn) return;
 
-    if (_logger!.user!.isStudent) {
-      Navigator.of(context).pushReplacementNamed(QAndAScreen.routeName);
-    } else {
-      Navigator.of(context).pushReplacementNamed(StudentsScreen.routeName);
+    // Wait until the data are fetched
+    if (_allStudents!.isEmpty) {
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => _waitingRoomForStudent());
+      return;
     }
+
+    Navigator.of(context).pushReplacementNamed(QAndAScreen.routeName);
   }
 
   @override
   Widget build(BuildContext context) {
     _allStudents = Provider.of<AllStudents>(context, listen: true);
-    if (_allStudents!.isNotEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => logAsStudent());
-    }
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -138,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 40),
                       ElevatedButton(
-                        onPressed: () => _proceedToNextScreen(),
+                        onPressed: () => _processConnexion(),
                         style: ElevatedButton.styleFrom(
                             primary: teacherTheme().colorScheme.primary),
                         child: Text(

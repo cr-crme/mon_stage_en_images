@@ -3,15 +3,15 @@ import 'package:provider/provider.dart';
 
 import './all_questions.dart';
 import './all_students.dart';
-import '../misc/database_helper.dart';
-import '../models/database_abstract.dart';
+import '../models/user_database_abstract.dart';
 import '../models/enum.dart';
 import '../models/themes.dart';
 import '../models/user.dart';
 
 class LoginInformation with ChangeNotifier {
-  LoginInformation({required this.database});
+  LoginInformation({required this.userDatabase});
 
+  final UserDataBaseAbstract userDatabase;
   LoginType loginType = LoginType.none;
   User? user;
 
@@ -19,18 +19,27 @@ class LoginInformation with ChangeNotifier {
     BuildContext context, {
     required String email,
     required String password,
+    required Function(String email) newUserUiCallback,
   }) async {
     final students = Provider.of<AllStudents>(context, listen: false);
     final questions = Provider.of<AllQuestions>(context, listen: false);
-
-    final status = await database.login(email, password);
+    final status = await userDatabase.login(email, password);
     if (status != LoginStatus.signedIn) return status;
 
-    user = await getUserFromDatabase(email);
+    user = await userDatabase.getUser(email);
+    if (user == null) {
+      user = await newUserUiCallback(email);
+      if (user == null) return LoginStatus.cancelled;
+      await addUserToDatabase(user!);
+    }
+    _registerUser(students, questions);
+    return LoginStatus.signedIn;
+  }
+
+  void _registerUser(AllStudents students, AllQuestions questions) {
     _selectLoginType(user!.isStudent ? LoginType.student : LoginType.teacher);
     _notifyAnotherProvider(students);
     _notifyAnotherProvider(questions);
-    return status;
   }
 
   void _selectLoginType(LoginType theme) {
@@ -57,14 +66,7 @@ class LoginInformation with ChangeNotifier {
     }
   }
 
-  final DataBaseAbstract database;
-  final String pathToUsers = 'users';
-  void addUserToDatabase(User userInformation) {
-    database.send(pathToUsers, userInformation);
-  }
-
-  Future<User> getUserFromDatabase(String email) async {
-    final id = emailToPath(email);
-    return database.getUser('$pathToUsers/$id');
+  Future<void> addUserToDatabase(User newUser) async {
+    return userDatabase.send(newUser);
   }
 }

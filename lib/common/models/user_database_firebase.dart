@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:defi_photo/crcrme_enhanced_containers/lib/item_serializable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -8,12 +7,13 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import './database_abstract.dart';
+import './user_database_abstract.dart';
 import './enum.dart';
 import './user.dart' as local_user;
+import '../misc/database_helper.dart';
 import '../../firebase_options.dart';
 
-class DatabaseFirebase implements DataBaseAbstract {
+class UserDatabaseFirebase extends UserDataBaseAbstract {
   @override
   Future<void> initialize() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -35,8 +35,6 @@ class DatabaseFirebase implements DataBaseAbstract {
   @override
   Future<LoginStatus> login(String email, String password) async {
     final authenticator = FirebaseAuth.instance;
-    // authenticator.createUserWithEmailAndPassword(
-    //     email: 'coucou@coucou.com', password: '123456');
     try {
       await authenticator.signInWithEmailAndPassword(
           email: email, password: password);
@@ -53,23 +51,21 @@ class DatabaseFirebase implements DataBaseAbstract {
   }
 
   @override
-  Future<void> send(String path, ItemSerializable item) async {
+  Future<void> send(local_user.User user) async {
+    final id = emailToPath(user.email);
     return FirebaseDatabase.instance
-        .ref(path)
-        .child(item.id)
-        .set(item.serialize());
+        .ref(pathToAllUsers)
+        .child(id)
+        .set(user.serialize());
   }
 
   @override
-  Future<local_user.User> getUser(String path) async {
-    final data = await FirebaseDatabase.instance.ref(path).get();
-    final user = local_user.User.fromSerialized(data.value);
-    return user;
-  }
-
-  @override
-  Future<T> get<T>(String path) {
-    // TODO: implement get
-    throw UnimplementedError();
+  Future<local_user.User?> getUser(String email) async {
+    final id = emailToPath(email);
+    final data =
+        await FirebaseDatabase.instance.ref('$pathToAllUsers/$id').get();
+    return data.value == null
+        ? null
+        : local_user.User.fromSerialized(data.value);
   }
 }
