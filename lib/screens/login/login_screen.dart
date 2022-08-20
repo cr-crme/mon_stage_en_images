@@ -27,6 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _email;
   String? _password;
   LoginInformation? _logger;
+  Future<LoginStatus>? _futureStatus;
 
   Future<User?> _createUser(String email) async {
     final user = await showDialog<User>(
@@ -74,9 +75,9 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<void> _processConnexion() async {
+  Future<LoginStatus> _processConnexion() async {
     if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
-      return;
+      return LoginStatus.cancelled;
     }
     _formKey.currentState!.save();
 
@@ -91,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {});
     if (status != LoginStatus.success) {
       _showSnackbar(status, scaffold);
-      return;
+      return status;
     }
 
     if (_logger!.user!.isStudent) {
@@ -99,6 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       navigator.pushReplacementNamed(StudentsScreen.routeName);
     }
+    return status;
   }
 
   void _waitingRoomForStudent() {
@@ -143,62 +145,83 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 const MainTitle(),
                 const SizedBox(height: 50),
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: const [
-                          Text(
-                            'Informations de connexion',
-                            style: TextStyle(fontSize: 15),
+                FutureBuilder<LoginStatus>(
+                    future: _futureStatus,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator(
+                          color: teacherTheme().colorScheme.primary,
+                        );
+                      }
+
+                      return Column(
+                        children: [
+                          Form(
+                            key: _formKey,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: const [
+                                    Text(
+                                      'Informations de connexion',
+                                      style: TextStyle(fontSize: 15),
+                                    ),
+                                  ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
+                                  child: TextFormField(
+                                    decoration: const InputDecoration(
+                                        labelText: 'Courriel'),
+                                    validator: (value) =>
+                                        value == null || value.isEmpty
+                                            ? 'Inscrire un courriel'
+                                            : null,
+                                    onSaved: (value) => _email = value,
+                                    keyboardType: TextInputType.emailAddress,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
+                                  child: TextFormField(
+                                    decoration: const InputDecoration(
+                                        labelText: 'Mot de passe'),
+                                    validator: (value) =>
+                                        value == null || value.isEmpty
+                                            ? 'Entrer le mot de passe'
+                                            : null,
+                                    onSaved: (value) => _password = value,
+                                    obscureText: true,
+                                    enableSuggestions: false,
+                                    autocorrect: false,
+                                    keyboardType: TextInputType.visiblePassword,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 40),
+                          ElevatedButton(
+                            onPressed: () {
+                              _futureStatus = _processConnexion();
+                              setState(() {});
+                            },
+                            style: ElevatedButton.styleFrom(
+                                primary: teacherTheme().colorScheme.primary),
+                            child: Text(
+                              'Se connecter',
+                              style: TextStyle(
+                                color: teacherTheme().colorScheme.onPrimary,
+                              ),
+                            ),
                           ),
                         ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: TextFormField(
-                          decoration:
-                              const InputDecoration(labelText: 'Courriel'),
-                          validator: (value) => value == null || value.isEmpty
-                              ? 'Inscrire un courriel'
-                              : null,
-                          onSaved: (value) => _email = value,
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: TextFormField(
-                          decoration:
-                              const InputDecoration(labelText: 'Mot de passe'),
-                          validator: (value) => value == null || value.isEmpty
-                              ? 'Entrer le mot de passe'
-                              : null,
-                          onSaved: (value) => _password = value,
-                          obscureText: true,
-                          enableSuggestions: false,
-                          autocorrect: false,
-                          keyboardType: TextInputType.visiblePassword,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 40),
-                ElevatedButton(
-                  onPressed: () => _processConnexion(),
-                  style: ElevatedButton.styleFrom(
-                      primary: teacherTheme().colorScheme.primary),
-                  child: Text(
-                    'Se connecter',
-                    style: TextStyle(
-                      color: teacherTheme().colorScheme.onPrimary,
-                    ),
-                  ),
-                ),
+                      );
+                    }),
               ],
             ),
           ),
