@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../common/models/message.dart';
+import '../../../common/models/themes.dart';
 
 class DiscussionTile extends StatelessWidget {
   const DiscussionTile({
@@ -20,11 +21,32 @@ class DiscussionTile extends StatelessWidget {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.only(left: 15),
-            child: FutureBuilder(builder: (context, snapshot) {
-              return snapshot.connectionState == ConnectionState.waiting
-                  ? const Center(child: CircularProgressIndicator())
-                  : Image.network(discussion.text, fit: BoxFit.contain);
-            }),
+            child: FutureBuilder(
+              builder: (context, snapshot) {
+                return snapshot.connectionState == ConnectionState.waiting
+                    ? Container(
+                        width: double.infinity,
+                        height: 150,
+                        color: Colors.black12,
+                        child: Center(
+                            child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Flexible(
+                              child: Text(
+                                'Téléchargement de\nl\'image en cours',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            CircularProgressIndicator(),
+                          ],
+                        )),
+                      )
+                    : Image.network(discussion.text, fit: BoxFit.contain);
+              },
+            ),
           ),
         if (!discussion.isPhotoUrl)
           Row(
