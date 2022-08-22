@@ -4,13 +4,17 @@ import 'package:provider/provider.dart';
 import '../models/enum.dart';
 import '../models/student.dart';
 import '../providers/login_information.dart';
+import '../../debug_database.dart';
 import '../../screens/login/login_screen.dart';
 import '../../screens/q_and_a/q_and_a_screen.dart';
 import '../../screens/all_students/students_screen.dart';
 
 class MainDrawer extends StatelessWidget {
-  const MainDrawer({Key? key, this.student}) : super(key: key);
+  const MainDrawer(
+      {Key? key, this.student, this.withPopulateWithFalseDataButton = false})
+      : super(key: key);
 
+  final bool withPopulateWithFalseDataButton;
   final Student? student;
 
   @override
@@ -41,6 +45,9 @@ class MainDrawer extends StatelessWidget {
                   title: 'Gestion des questions',
                   onTap: () =>
                       Navigator.of(context).pushNamed(QAndAScreen.routeName)),
+            if (loginType == LoginType.teacher &&
+                withPopulateWithFalseDataButton)
+              const DatabaseDebugger(),
             MenuItem(
                 title: 'Déconnexion',
                 onTap: () => Navigator.of(context)

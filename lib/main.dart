@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './dummy_data.dart';
 import './common/providers/all_questions.dart';
 import './common/providers/all_students.dart';
 import './common/providers/login_information.dart';
@@ -29,7 +28,6 @@ class MyApp extends StatelessWidget {
     final students = AllStudents();
     final questions = AllQuestions();
     final speecher = Speecher();
-    prepareDummyData(students, questions);
 
     return MultiProvider(
       providers: [
@@ -44,7 +42,8 @@ class MyApp extends StatelessWidget {
           initialRoute: LoginScreen.routeName,
           routes: {
             LoginScreen.routeName: (context) => const LoginScreen(),
-            StudentsScreen.routeName: (context) => const StudentsScreen(),
+            StudentsScreen.routeName: (context) =>
+                const StudentsScreen(withPopulateWithFalseDataButton: true),
             QAndAScreen.routeName: (context) => const QAndAScreen(),
           },
         );

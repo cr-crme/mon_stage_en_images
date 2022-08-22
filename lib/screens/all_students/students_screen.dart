@@ -14,9 +14,13 @@ import '../../common/widgets/main_drawer.dart';
 import '../../common/widgets/are_you_sure_dialog.dart';
 
 class StudentsScreen extends StatefulWidget {
-  const StudentsScreen({Key? key}) : super(key: key);
+  const StudentsScreen({
+    Key? key,
+    this.withPopulateWithFalseDataButton = false,
+  }) : super(key: key);
 
   static const routeName = '/students-screen';
+  final bool withPopulateWithFalseDataButton;
 
   @override
   State<StudentsScreen> createState() => _StudentsScreenState();
@@ -179,7 +183,9 @@ class _StudentsScreenState extends State<StudentsScreen> {
           ),
         ],
       ),
-      drawer: const MainDrawer(),
+      drawer: MainDrawer(
+          withPopulateWithFalseDataButton:
+              widget.withPopulateWithFalseDataButton),
     );
   }
 }

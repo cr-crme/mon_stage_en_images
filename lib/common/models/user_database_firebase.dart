@@ -135,6 +135,16 @@ class UserDatabaseFirebase extends UserDataBaseAbstract {
   }
 
   @override
+  Future<LoginStatus> deleteUsersInfo() async {
+    try {
+      FirebaseDatabase.instance.ref(pathToAllUsers).remove();
+    } catch (_) {
+      return LoginStatus.cancelled;
+    }
+    return LoginStatus.success;
+  }
+
+  @override
   Future<local_user.User?> getUser(String email) async {
     final id = emailToPath(email);
     final data =

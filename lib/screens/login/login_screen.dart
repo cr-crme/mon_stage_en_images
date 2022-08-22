@@ -84,11 +84,13 @@ class _LoginScreenState extends State<LoginScreen> {
     final scaffold = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
     _logger = Provider.of<LoginInformation>(context, listen: false);
-    final status = await _logger!.login(context,
-        email: _email!,
-        password: _password!,
-        newUserUiCallback: _createUser,
-        changePasswordCallback: _changePassword);
+    final status = await _logger!.login(
+      context,
+      email: _email!,
+      password: _password!,
+      newUserUiCallback: _createUser,
+      changePasswordCallback: _changePassword,
+    );
     setState(() {});
     if (status != LoginStatus.success) {
       _showSnackbar(status, scaffold);

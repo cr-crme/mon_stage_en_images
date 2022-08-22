@@ -12,5 +12,6 @@ abstract class UserDataBaseAbstract {
   Future<LoginStatus> addUser({required User user, required String password});
   Future<LoginStatus> modifyUser({required User user});
   Future<LoginStatus> deleteUser({required String email});
+  Future<LoginStatus> deleteUsersInfo();
   Future<User?> getUser(String email);
 }
