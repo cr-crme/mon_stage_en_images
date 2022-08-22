@@ -8,14 +8,17 @@ import '../q_and_a/q_and_a_screen.dart';
 import '../all_students/students_screen.dart';
 import '../../common/models/enum.dart';
 import '../../common/models/themes.dart';
+import '../../common/models/question.dart';
 import '../../common/models/user.dart';
 import '../../common/providers/all_students.dart';
 import '../../common/providers/login_information.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({Key? key, required this.defaultQuestions})
+      : super(key: key);
 
   static const routeName = '/login-screen';
+  final List<Question> defaultQuestions;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -90,6 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
       password: _password!,
       newUserUiCallback: _createUser,
       changePasswordCallback: _changePassword,
+      defaultQuestions: widget.defaultQuestions,
     );
     setState(() {});
     if (status != LoginStatus.success) {
