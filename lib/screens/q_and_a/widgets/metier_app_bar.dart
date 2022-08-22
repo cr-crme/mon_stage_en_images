@@ -95,9 +95,7 @@ class MetierAppBar extends StatelessWidget {
     return TakingActionNotifier(
       left: 8,
       top: -7,
-      number: !isSelected &&
-              answers != null &&
-              answers.numberOfActionsRequired(context) > 0
+      number: answers != null && answers.numberOfActionsRequired(context) > 0
           ? 0
           : null,
       child: TextButton(
