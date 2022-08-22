@@ -16,6 +16,9 @@ import './screens/q_and_a/q_and_a_screen.dart';
 
 void main() async {
   // These are the default questions when creating a new teacher
+  // [section] are : M=0, E=1, T=2, I=3, E=4, R=5 and [defaultTarget] should
+  // either be Target.all or Target.none depending if it should be automatically
+  // active for all or no one, respectively
   final defaultQuestions = [
     Question('Montre moi la couleur du tapis',
         section: 0, defaultTarget: Target.all),
@@ -23,8 +26,14 @@ void main() async {
         section: 5, defaultTarget: Target.all),
   ];
 
+  // Initialization of the user database. If [useEmulator] is set to [true],
+  // then a local database is created. To facilitate the filling of the database
+  // one can create a user, login with it, then in the drawer, select the
+  // 'Reinitialize the database' button.
   final userDatabase = UserDatabaseFirebase();
   await userDatabase.initialize(useEmulator: true);
+
+  // Run the app!
   runApp(MyApp(userDatabase: userDatabase, defaultQuestions: defaultQuestions));
 }
 
