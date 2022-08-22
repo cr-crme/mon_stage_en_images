@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
@@ -13,8 +14,13 @@ class Speecher with ChangeNotifier {
   VoidCallback? _onErrorUserCallback;
 
   void _initSpeech() async {
-    /// This has to happen only once per app
-    _speechEnabled = await _speechToText.initialize(onError: _onErrorCallback);
+    try {
+      /// This has to happen only once per app
+      _speechEnabled =
+          await _speechToText.initialize(onError: _onErrorCallback);
+    } on PlatformException catch (_) {
+      _speechEnabled = false;
+    }
   }
 
   void _onErrorCallback(SpeechRecognitionError error) {
