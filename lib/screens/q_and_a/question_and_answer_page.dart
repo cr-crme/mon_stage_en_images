@@ -49,10 +49,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
         titleIfNothing: 'Aucune question dans cette section');
     final activeQuestionsSection = _buildQuestionSection(context,
         questions: activeQuestions,
-        titleIfNothing: loginType == LoginType.teacher &&
-                questionView == QuestionView.normal
-            ? 'Aucune question répondue'
-            : '');
+        titleIfNothing: 'Aucune question dans cette section');
 
     return SingleChildScrollView(
       child: Column(
