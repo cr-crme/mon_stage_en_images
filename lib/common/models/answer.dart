@@ -14,17 +14,19 @@ class Answer extends CreationTimeItemSerializable {
     Discussion? discussion,
     this.isActive = true,
     this.isValidated = false,
-    ActionRequired actionRequired = ActionRequired.none,
+    this.actionRequired = ActionRequired.none,
+    this.previousActionRequired = ActionRequired.none,
     String? id,
     int? creationTimeStamp,
   })  : discussion = discussion ??= Discussion(),
-        _actionRequired = actionRequired,
         super(id: id, creationTimeStamp: creationTimeStamp);
   Answer.fromSerialized(map)
       : discussion = Discussion.fromSerialized(map['discussion'] ?? {}),
         isActive = map['isActive'],
         isValidated = map['isValidated'],
-        _actionRequired = ActionRequired.values[map['actionRequired']],
+        actionRequired = ActionRequired.values[map['actionRequired']],
+        previousActionRequired =
+            ActionRequired.values[map['previousActionRequired']],
         super.fromSerialized(map);
   Answer copyWith({
     Discussion? discussion,
@@ -37,7 +39,8 @@ class Answer extends CreationTimeItemSerializable {
     discussion ??= this.discussion;
     isActive ??= this.isActive;
     isValidated ??= this.isValidated;
-    actionRequired ??= _actionRequired;
+    final previousActionRequired = this.actionRequired;
+    actionRequired ??= this.actionRequired;
     id ??= this.id;
     creationTimeStamp ??= this.creationTimeStamp;
     return Answer(
@@ -45,6 +48,7 @@ class Answer extends CreationTimeItemSerializable {
       isActive: isActive,
       isValidated: isValidated,
       actionRequired: actionRequired,
+      previousActionRequired: previousActionRequired,
       id: id,
       creationTimeStamp: creationTimeStamp,
     );
@@ -61,7 +65,8 @@ class Answer extends CreationTimeItemSerializable {
       'discussion': discussion.serialize(),
       'isActive': isActive,
       'isValidated': isValidated,
-      'actionRequired': _actionRequired.index,
+      'actionRequired': actionRequired.index,
+      'previousActionRequired': previousActionRequired.index,
     };
   }
 
@@ -69,7 +74,8 @@ class Answer extends CreationTimeItemSerializable {
   final bool isActive;
   final Discussion discussion;
   final bool isValidated;
-  final ActionRequired _actionRequired;
+  final ActionRequired actionRequired;
+  final ActionRequired previousActionRequired;
   ActionRequired action(BuildContext context) {
     if (!isActive) return ActionRequired.none;
 
@@ -80,10 +86,10 @@ class Answer extends CreationTimeItemSerializable {
     }
 
     if (loginType == LoginType.student &&
-        _actionRequired == ActionRequired.fromStudent) {
+        actionRequired == ActionRequired.fromStudent) {
       return ActionRequired.fromStudent;
     } else if (loginType == LoginType.teacher &&
-        _actionRequired == ActionRequired.fromTeacher) {
+        actionRequired == ActionRequired.fromTeacher) {
       return ActionRequired.fromTeacher;
     } else {
       return ActionRequired.none;
@@ -91,7 +97,7 @@ class Answer extends CreationTimeItemSerializable {
   }
 
   bool get isAnswered =>
-      isActive && _actionRequired != ActionRequired.fromStudent;
+      isActive && actionRequired != ActionRequired.fromStudent;
   bool get hasAnswer => discussion.isNotEmpty;
 
   void addToDiscussion(Message message) => discussion.add(message);
