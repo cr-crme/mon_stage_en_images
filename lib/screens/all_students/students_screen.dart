@@ -174,7 +174,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
           Expanded(
             child: ListView.builder(
               itemBuilder: (context, index) => StudentListTile(
-                students[index],
+                students[index].id,
                 removeItemCallback: _removeStudent,
                 modifyStudentCallback: _modifyStudent,
               ),

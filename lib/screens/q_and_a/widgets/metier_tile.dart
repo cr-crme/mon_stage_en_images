@@ -5,18 +5,18 @@ import '../../../common/models/all_answers.dart';
 import '../../../common/models/enum.dart';
 import '../../../common/models/exceptions.dart';
 import '../../../common/models/section.dart';
-import '../../../common/models/student.dart';
 import '../../../common/widgets/taking_action_notifier.dart';
 import '../../../common/providers/all_questions.dart';
+import '../../../common/providers/all_students.dart';
 import '../../../common/providers/login_information.dart';
 
 class MetierTile extends StatelessWidget {
   const MetierTile(this.sectionIndex,
-      {Key? key, required this.student, required this.onTap})
+      {Key? key, required this.studentId, required this.onTap})
       : super(key: key);
 
   final int sectionIndex;
-  final Student? student;
+  final String? studentId;
   final Function(int) onTap;
 
   TextStyle _pickTextStyle(BuildContext context, int? activeQuestions,
@@ -38,6 +38,9 @@ class MetierTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final allStudents = Provider.of<AllStudents>(context);
+    final student = studentId != null ? allStudents.fromId(studentId!) : null;
+
     final questions = Provider.of<AllQuestions>(context, listen: false)
         .fromSection(sectionIndex);
     final loginType =
@@ -47,7 +50,7 @@ class MetierTile extends StatelessWidget {
     late final int? answered;
     late final int? active;
     if (student != null) {
-      answers = student!.allAnswers.fromQuestions(questions);
+      answers = student.allAnswers.fromQuestions(questions);
       answered = answers.numberAnswered;
       active = answers.numberActive;
     } else {

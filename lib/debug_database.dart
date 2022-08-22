@@ -87,7 +87,7 @@ class _DatabaseDebuggerState extends State<DatabaseDebugger> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _answerQuestions());
   }
 
-  void _answerQuestions() {
+  void _answerQuestions({int currentQuestion = 0}) {
     // Wait until student is ready to complete
     _students = Provider.of<AllStudents>(context, listen: false);
     _questions = Provider.of<AllQuestions>(context, listen: false);
@@ -97,73 +97,108 @@ class _DatabaseDebuggerState extends State<DatabaseDebugger> {
     }
 
     final benjamin = _students[0];
-    _students.setAnswer(
-        student: benjamin,
-        question: _questions.fromSection(0)[1],
-        answer: Answer(actionRequired: ActionRequired.fromStudent));
-    _students.setAnswer(
-        student: benjamin,
-        question: _questions.fromSection(1)[0],
-        answer: Answer(
-            discussion: Discussion.fromList(
-                [Message(name: benjamin.firstName, text: "Coucou")]),
-            actionRequired: ActionRequired.fromTeacher));
-    _students.setAnswer(
-        student: benjamin,
-        question: _questions.fromSection(5)[1],
-        answer: Answer(actionRequired: ActionRequired.fromStudent));
-    _students.setAnswer(
-        student: benjamin,
-        question: _questions.fromSection(5)[1],
-        answer: Answer(isValidated: true));
-    _students.setAnswer(
-        student: benjamin,
-        question: _questions.fromSection(5)[2],
-        answer: Answer(
-            discussion: Discussion.fromList(
-                [Message(name: benjamin.firstName, text: "Coucou")]),
-            actionRequired: ActionRequired.fromTeacher));
+    if (currentQuestion == 0) {
+      _students.setAnswer(
+          student: benjamin,
+          question: _questions.fromSection(0)[1],
+          answer: Answer(actionRequired: ActionRequired.fromStudent));
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => _answerQuestions(currentQuestion: 1));
+      return;
+    }
+    if (currentQuestion == 1) {
+      _students.setAnswer(
+          student: benjamin,
+          question: _questions.fromSection(1)[0],
+          answer: Answer(
+              discussion: Discussion.fromList(
+                  [Message(name: benjamin.firstName, text: "Coucou")]),
+              actionRequired: ActionRequired.fromTeacher));
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => _answerQuestions(currentQuestion: 2));
+      return;
+    }
+    if (currentQuestion == 2) {
+      _students.setAnswer(
+          student: benjamin,
+          question: _questions.fromSection(5)[1],
+          answer: Answer(actionRequired: ActionRequired.fromStudent));
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => _answerQuestions(currentQuestion: 3));
+      return;
+    }
+    if (currentQuestion == 3) {
+      _students.setAnswer(
+          student: benjamin,
+          question: _questions.fromSection(5)[1],
+          answer: Answer(isValidated: true));
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => _answerQuestions(currentQuestion: 4));
+      return;
+    }
+    if (currentQuestion == 4) {
+      _students.setAnswer(
+          student: benjamin,
+          question: _questions.fromSection(5)[2],
+          answer: Answer(
+              discussion: Discussion.fromList(
+                  [Message(name: benjamin.firstName, text: "Coucou")]),
+              actionRequired: ActionRequired.fromTeacher));
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => _answerQuestions(currentQuestion: 5));
+      return;
+    }
 
     final aurelie = _students[1];
-    _students.setAnswer(
-        student: aurelie,
-        question: _questions.fromSection(5)[2],
-        answer: Answer(
-            actionRequired: ActionRequired.fromTeacher,
-            discussion: Discussion.fromList([
-              Message(name: 'Prof', text: 'Coucou'),
-              Message(name: 'Aurélie', text: 'Non pas coucou'),
-              Message(name: 'Prof', text: 'Coucou'),
-              Message(
-                  name: 'Aurélie',
-                  text:
-                      'https://cdn.photographycourse.net/wp-content/uploads/2014/11/'
-                      'Landscape-Photography-steps.jpg',
-                  isPhotoUrl: true),
-              Message(name: 'Prof', text: 'Coucou'),
-              Message(name: 'Aurélie', text: 'Non pas coucou'),
-              Message(name: 'Prof', text: 'Coucou'),
-              Message(name: 'Aurélie', text: 'Non pas coucou'),
-              Message(name: 'Prof', text: 'Coucou'),
-              Message(name: 'Aurélie', text: 'Non pas coucou'),
-              Message(name: 'Prof', text: 'Coucou'),
-              Message(
-                  name: 'Aurélie',
-                  text:
-                      'https://cdn.photographycourse.net/wp-content/uploads/2014/11/'
-                      'Landscape-Photography-steps.jpg',
-                  isPhotoUrl: true),
-              Message(name: 'Prof', text: 'Coucou'),
-              Message(name: 'Aurélie', text: 'Non pas coucou'),
-              Message(name: 'Prof', text: 'Coucou'),
-              Message(name: 'Aurélie', text: 'Non pas coucou'),
-              Message(name: 'Prof', text: 'Coucou'),
-              Message(name: 'Aurélie', text: 'Non pas coucou'),
-            ])));
-    _students.setAnswer(
-        student: aurelie,
-        question: _questions.fromSection(5)[1],
-        answer: Answer(isValidated: true));
+    if (currentQuestion == 5) {
+      _students.setAnswer(
+          student: aurelie,
+          question: _questions.fromSection(5)[2],
+          answer: Answer(
+              actionRequired: ActionRequired.fromTeacher,
+              discussion: Discussion.fromList([
+                Message(name: 'Prof', text: 'Coucou'),
+                Message(name: 'Aurélie', text: 'Non pas coucou'),
+                Message(name: 'Prof', text: 'Coucou'),
+                Message(
+                    name: 'Aurélie',
+                    text:
+                        'https://cdn.photographycourse.net/wp-content/uploads/2014/11/'
+                        'Landscape-Photography-steps.jpg',
+                    isPhotoUrl: true),
+                Message(name: 'Prof', text: 'Coucou'),
+                Message(name: 'Aurélie', text: 'Non pas coucou'),
+                Message(name: 'Prof', text: 'Coucou'),
+                Message(name: 'Aurélie', text: 'Non pas coucou'),
+                Message(name: 'Prof', text: 'Coucou'),
+                Message(name: 'Aurélie', text: 'Non pas coucou'),
+                Message(name: 'Prof', text: 'Coucou'),
+                Message(
+                    name: 'Aurélie',
+                    text:
+                        'https://cdn.photographycourse.net/wp-content/uploads/2014/11/'
+                        'Landscape-Photography-steps.jpg',
+                    isPhotoUrl: true),
+                Message(name: 'Prof', text: 'Coucou'),
+                Message(name: 'Aurélie', text: 'Non pas coucou'),
+                Message(name: 'Prof', text: 'Coucou'),
+                Message(name: 'Aurélie', text: 'Non pas coucou'),
+                Message(name: 'Prof', text: 'Coucou'),
+                Message(name: 'Aurélie', text: 'Non pas coucou'),
+              ])));
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => _answerQuestions(currentQuestion: 6));
+      return;
+    }
+    if (currentQuestion == 6) {
+      _students.setAnswer(
+          student: aurelie,
+          question: _questions.fromSection(5)[1],
+          answer: Answer(isValidated: true));
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => _answerQuestions(currentQuestion: 7));
+      return;
+    }
 
     Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
   }
