@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../common/models/message.dart';
-import '../../../common/models/themes.dart';
 
 class DiscussionTile extends StatelessWidget {
   const DiscussionTile({

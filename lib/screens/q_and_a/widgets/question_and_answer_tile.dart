@@ -35,23 +35,12 @@ class QuestionAndAnswerTile extends StatefulWidget {
 class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   var _isExpanded = false;
 
-  late final LoginInformation _loginInfo;
-  late final AllStudents _students;
-  late final Student? _student;
+  late LoginInformation _loginInfo;
+  late AllStudents _students;
+  Student? _student;
   Answer? _answer;
   final _reader = TextReader();
   bool _isReading = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _loginInfo = Provider.of<LoginInformation>(context, listen: false);
-    _students = Provider.of<AllStudents>(context, listen: false);
-    _student = widget.studentId != null ? _students[widget.studentId] : null;
-    _answer =
-        widget.question != null ? _student?.allAnswers[widget.question] : null;
-  }
 
   @override
   void dispose() {
@@ -108,8 +97,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
 
   void _deleteQuestionCallback() {
     final questions = Provider.of<AllQuestions>(context, listen: false);
-    final students = Provider.of<AllStudents>(context, listen: false);
-    questions.removeToAll(widget.question!, students: students);
+    questions.removeToAll(widget.question!, students: _students);
     setState(() {});
   }
 
@@ -138,6 +126,12 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
 
   @override
   Widget build(BuildContext context) {
+    _loginInfo = Provider.of<LoginInformation>(context, listen: false);
+    _students = Provider.of<AllStudents>(context, listen: true);
+    _student = widget.studentId != null ? _students[widget.studentId] : null;
+    _answer =
+        widget.question != null ? _student?.allAnswers[widget.question] : null;
+
     final hasAction = (_answer?.action(context) ?? ActionRequired.none) !=
         ActionRequired.none;
     return TakingActionNotifier(

@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import './widgets/question_and_answer_tile.dart';
 import '../../common/models/all_answers.dart';
 import '../../common/models/enum.dart';
-import '../../common/models/exceptions.dart';
 import '../../common/models/question.dart';
 import '../../common/models/section.dart';
 import '../../common/models/student.dart';
@@ -34,49 +33,26 @@ class QuestionAndAnswerPage extends StatelessWidget {
     questions.sort(
         (first, second) => first.creationTimeStamp - second.creationTimeStamp);
     late final AllAnswers? answers;
-    late final List<Question>? answeredQuestions;
-    late final List<Question>? unansweredQuestions;
+    late final List<Question>? activeQuestions;
     if (studentId != null) {
       student = allStudents[studentId];
       answers = student.allAnswers.fromQuestions(questions);
-      answeredQuestions = answers.answeredQuestions(questions,
+      activeQuestions = answers.activeQuestions(questions,
           skipIfValidated: loginType == LoginType.student);
-      unansweredQuestions = answers.unansweredQuestions(questions);
     } else {
       student = null;
-      answeredQuestions = [];
-      unansweredQuestions = [];
+      activeQuestions = [];
     }
 
     final allAnswersSection = _buildQuestionSection(context,
         questions: questions.toList(growable: false),
         titleIfNothing: 'Aucune question dans cette section');
-    final answeredSection = _buildQuestionSection(context,
-        questions: answeredQuestions,
+    final activeQuestionsSection = _buildQuestionSection(context,
+        questions: activeQuestions,
         titleIfNothing: loginType == LoginType.teacher &&
                 questionView == QuestionView.normal
             ? 'Aucune question répondue'
             : '');
-    final unansweredSection = _buildQuestionSection(context,
-        questions: unansweredQuestions,
-        titleIfNothing: loginType == LoginType.student
-            ? 'Toutes les questions sont répondues'
-            : '');
-
-    late final List<Widget> questionList = [];
-    if (loginType == LoginType.student) {
-      questionList.add(unansweredSection);
-      questionList.add(answeredSection);
-    } else if (loginType == LoginType.teacher) {
-      if (questionView == QuestionView.normal) {
-        questionList.add(answeredSection);
-        if (student != null) questionList.add(unansweredSection);
-      } else {
-        questionList.add(allAnswersSection);
-      }
-    } else {
-      throw const NotLoggedIn();
-    }
 
     return SingleChildScrollView(
       child: Column(
@@ -108,7 +84,9 @@ class QuestionAndAnswerPage extends StatelessWidget {
                 const SizedBox(width: 25)
               ],
             ),
-          ...questionList,
+          questionView == QuestionView.normal
+              ? activeQuestionsSection
+              : allAnswersSection,
         ],
       ),
     );
