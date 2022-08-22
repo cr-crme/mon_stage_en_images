@@ -44,12 +44,15 @@ class QuestionPart extends StatelessWidget {
     if (answer == null) {
       return const TextStyle();
     }
+    final loginType =
+        Provider.of<LoginInformation>(context, listen: false).loginType;
 
     return TextStyle(
       color: answer.isAnswered ? Colors.black : Colors.red,
       fontWeight: answer.action(context) != ActionRequired.none
           ? FontWeight.bold
           : FontWeight.normal,
+      fontSize: loginType == LoginType.student ? 20 : null,
     );
   }
 

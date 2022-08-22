@@ -118,7 +118,10 @@ class _DiscussionListViewState extends State<DiscussionListView> {
               children: const [
                 Icon(Icons.camera_alt),
                 SizedBox(width: 10),
-                Text('Ajouter une photo'),
+                Text(
+                  'Ajouter une photo',
+                  style: TextStyle(fontSize: 16),
+                ),
               ],
             ),
           ),
@@ -168,10 +171,6 @@ class _MessageListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (discussion.isEmpty)
-          const Center(
-              child: Text('En attente d\'une réponse',
-                  style: TextStyle(color: Colors.red))),
         Container(
           padding: const EdgeInsets.only(left: 15),
           child: ListView.builder(

@@ -19,17 +19,20 @@ class MetierTile extends StatelessWidget {
   final Student? student;
   final Function(int) onTap;
 
-  TextStyle _pickTextStyle(
-      int? activeQuestions, int? answeredQuestions, int needAction) {
+  TextStyle _pickTextStyle(BuildContext context, int? activeQuestions,
+      int? answeredQuestions, int needAction) {
     if (activeQuestions == null || answeredQuestions == null) {
       return const TextStyle();
     }
+    final loginType =
+        Provider.of<LoginInformation>(context, listen: false).loginType;
 
     return TextStyle(
       color: activeQuestions > 0
           ? (answeredQuestions >= activeQuestions ? Colors.black : Colors.red)
           : Colors.grey,
       fontWeight: needAction > 0 ? FontWeight.bold : FontWeight.normal,
+      fontSize: loginType == LoginType.student ? 20 : null,
     );
   }
 
@@ -78,10 +81,10 @@ class MetierTile extends StatelessWidget {
             ),
             title: Text(
               Section.name(sectionIndex),
-              style: _pickTextStyle(active, answered, numberOfActions),
+              style: _pickTextStyle(context, active, answered, numberOfActions),
             ),
             trailing: _trailingBuilder(
-                loginType, numberOfActions, answers, answered, active),
+                context, loginType, numberOfActions, answers, answered, active),
             onTap: () => onTap(sectionIndex),
           ),
         ),
@@ -89,8 +92,8 @@ class MetierTile extends StatelessWidget {
     );
   }
 
-  Widget? _trailingBuilder(LoginType loginType, int numberOfActions,
-      AllAnswers? answers, int? answered, int? active) {
+  Widget? _trailingBuilder(BuildContext context, LoginType loginType,
+      int numberOfActions, AllAnswers? answers, int? answered, int? active) {
     if (loginType == LoginType.student) {
       return numberOfActions > 0
           ? TakingActionNotifier(
@@ -101,7 +104,7 @@ class MetierTile extends StatelessWidget {
     } else if (loginType == LoginType.teacher) {
       return answers != null
           ? Text('$answered / $active',
-              style: _pickTextStyle(active, answered, numberOfActions))
+              style: _pickTextStyle(context, active, answered, numberOfActions))
           : null;
     } else {
       throw const NotLoggedIn();

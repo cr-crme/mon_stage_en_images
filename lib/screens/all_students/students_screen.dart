@@ -144,7 +144,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
     var status = await loginInformation.deleteUserFromDatabase(student.email);
     if (status != LoginStatus.success) {
       _showSnackbar(
-          'la supression d\'étudiant n\'est pas encore disponible.', scaffold);
+          'La supression d\'étudiant n\'est pas encore disponible.', scaffold);
       return;
     }
 
