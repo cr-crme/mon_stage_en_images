@@ -60,7 +60,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
   Future<void> _addPhoto() async {
     final imagePicker = ImagePicker();
     final imageXFile =
-        await imagePicker.pickImage(source: ImageSource.camera, maxWidth: 300);
+        await imagePicker.pickImage(source: ImageSource.camera, maxWidth: 500);
     if (imageXFile == null) return;
 
     // // Image is in cache (imageXFile.path) is temporary
@@ -118,7 +118,10 @@ class _DiscussionListViewState extends State<DiscussionListView> {
               children: const [
                 Icon(Icons.camera_alt),
                 SizedBox(width: 10),
-                Text('Ajouter une photo'),
+                Text(
+                  'Ajouter une photo',
+                  style: TextStyle(fontSize: 16),
+                ),
               ],
             ),
           ),
@@ -168,10 +171,6 @@ class _MessageListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (discussion.isEmpty)
-          const Center(
-              child: Text('En attente d\'une réponse',
-                  style: TextStyle(color: Colors.red))),
         Container(
           padding: const EdgeInsets.only(left: 15),
           child: ListView.builder(

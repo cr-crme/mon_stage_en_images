@@ -1,3 +1,4 @@
+import 'package:defi_photo/common/widgets/colored_corners.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,14 +8,17 @@ import '../q_and_a/q_and_a_screen.dart';
 import '../all_students/students_screen.dart';
 import '../../common/models/enum.dart';
 import '../../common/models/themes.dart';
+import '../../common/models/question.dart';
 import '../../common/models/user.dart';
 import '../../common/providers/all_students.dart';
 import '../../common/providers/login_information.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({Key? key, required this.defaultQuestions})
+      : super(key: key);
 
   static const routeName = '/login-screen';
+  final List<Question> defaultQuestions;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -26,6 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _email;
   String? _password;
   LoginInformation? _logger;
+  Future<LoginStatus>? _futureStatus;
 
   Future<User?> _createUser(String email) async {
     final user = await showDialog<User>(
@@ -73,24 +78,27 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<void> _processConnexion() async {
+  Future<LoginStatus> _processConnexion() async {
     if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
-      return;
+      return LoginStatus.cancelled;
     }
     _formKey.currentState!.save();
 
     final scaffold = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
     _logger = Provider.of<LoginInformation>(context, listen: false);
-    final status = await _logger!.login(context,
-        email: _email!,
-        password: _password!,
-        newUserUiCallback: _createUser,
-        changePasswordCallback: _changePassword);
+    final status = await _logger!.login(
+      context,
+      email: _email!,
+      password: _password!,
+      newUserUiCallback: _createUser,
+      changePasswordCallback: _changePassword,
+      defaultQuestions: widget.defaultQuestions,
+    );
     setState(() {});
     if (status != LoginStatus.success) {
       _showSnackbar(status, scaffold);
-      return;
+      return status;
     }
 
     if (_logger!.user!.isStudent) {
@@ -98,6 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       navigator.pushReplacementNamed(StudentsScreen.routeName);
     }
+    return status;
   }
 
   void _waitingRoomForStudent() {
@@ -120,105 +129,107 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
-          child: Stack(
-            children: [
-              Container(
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height -
-                    MediaQuery.of(context).viewInsets.bottom,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    end: const Alignment(0, 0.6),
-                    begin: const Alignment(0.5, 1.5),
-                    colors: [
-                      teacherTheme().colorScheme.primary,
-                      Colors.white,
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height -
-                    MediaQuery.of(context).viewInsets.bottom,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                  begin: const Alignment(-0.1, -1),
-                  end: const Alignment(0, -0.6),
-                  colors: [
-                    studentTheme().colorScheme.primary,
-                    Colors.white10,
-                  ],
-                )),
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const MainTitle(),
-                    const SizedBox(height: 50),
-                    Form(
-                      key: _formKey,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+          child: ColoredCorners(
+            firstColor: LinearGradient(
+              end: const Alignment(0, 0.6),
+              begin: const Alignment(0.5, 1.5),
+              colors: [
+                teacherTheme().colorScheme.primary,
+                Colors.white,
+              ],
+            ),
+            secondColor: LinearGradient(
+              begin: const Alignment(-0.1, -1),
+              end: const Alignment(0, -0.6),
+              colors: [
+                studentTheme().colorScheme.primary,
+                Colors.white10,
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const MainTitle(),
+                const SizedBox(height: 50),
+                FutureBuilder<LoginStatus>(
+                    future: _futureStatus,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator(
+                          color: teacherTheme().colorScheme.primary,
+                        );
+                      }
+
+                      return Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: const [
-                              Text(
-                                'Informations de connexion',
-                                style: TextStyle(fontSize: 15),
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: TextFormField(
-                              decoration:
-                                  const InputDecoration(labelText: 'Courriel'),
-                              validator: (value) =>
-                                  value == null || value.isEmpty
-                                      ? 'Inscrire un courriel'
-                                      : null,
-                              onSaved: (value) => _email = value,
-                              keyboardType: TextInputType.emailAddress,
+                          Form(
+                            key: _formKey,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: const [
+                                    Text(
+                                      'Informations de connexion',
+                                      style: TextStyle(fontSize: 15),
+                                    ),
+                                  ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
+                                  child: TextFormField(
+                                    decoration: const InputDecoration(
+                                        labelText: 'Courriel'),
+                                    validator: (value) =>
+                                        value == null || value.isEmpty
+                                            ? 'Inscrire un courriel'
+                                            : null,
+                                    onSaved: (value) => _email = value,
+                                    keyboardType: TextInputType.emailAddress,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
+                                  child: TextFormField(
+                                    decoration: const InputDecoration(
+                                        labelText: 'Mot de passe'),
+                                    validator: (value) =>
+                                        value == null || value.isEmpty
+                                            ? 'Entrer le mot de passe'
+                                            : null,
+                                    onSaved: (value) => _password = value,
+                                    obscureText: true,
+                                    enableSuggestions: false,
+                                    autocorrect: false,
+                                    keyboardType: TextInputType.visiblePassword,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: TextFormField(
-                              decoration: const InputDecoration(
-                                  labelText: 'Mot de passe'),
-                              validator: (value) =>
-                                  value == null || value.isEmpty
-                                      ? 'Entrer le mot de passe'
-                                      : null,
-                              onSaved: (value) => _password = value,
-                              obscureText: true,
-                              enableSuggestions: false,
-                              autocorrect: false,
-                              keyboardType: TextInputType.visiblePassword,
+                          const SizedBox(height: 40),
+                          ElevatedButton(
+                            onPressed: () {
+                              _futureStatus = _processConnexion();
+                              setState(() {});
+                            },
+                            style: ElevatedButton.styleFrom(
+                                primary: teacherTheme().colorScheme.primary),
+                            child: Text(
+                              'Se connecter',
+                              style: TextStyle(
+                                color: teacherTheme().colorScheme.onPrimary,
+                              ),
                             ),
                           ),
                         ],
-                      ),
-                    ),
-                    const SizedBox(height: 40),
-                    ElevatedButton(
-                      onPressed: () => _processConnexion(),
-                      style: ElevatedButton.styleFrom(
-                          primary: teacherTheme().colorScheme.primary),
-                      child: Text(
-                        'Se connecter',
-                        style: TextStyle(
-                          color: teacherTheme().colorScheme.onPrimary,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+                      );
+                    }),
+              ],
+            ),
           ),
         ),
       ),

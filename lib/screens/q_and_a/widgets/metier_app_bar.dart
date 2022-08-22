@@ -14,20 +14,19 @@ class MetierAppBar extends StatelessWidget {
     Key? key,
     required this.selected,
     required this.onPageChanged,
-    this.student,
+    this.studentId,
   }) : super(key: key);
 
   final int selected;
   final Function(int) onPageChanged;
-  final Student? student;
+  final String? studentId;
 
   @override
   Widget build(BuildContext context) {
-    // There is a bug here, even using listen to true, there is no update of the
-    // widget so the takeactionnotifier stays until one changes page.
-    // It was worked around by hiding if the page is selected
-    Provider.of<AllStudents>(context, listen: true);
-    final questions = Provider.of<AllQuestions>(context, listen: true);
+    final allStudents = Provider.of<AllStudents>(context, listen: true);
+    final questions = Provider.of<AllQuestions>(context, listen: false);
+
+    final student = studentId != null ? allStudents.fromId(studentId!) : null;
 
     return Container(
       width: double.infinity,

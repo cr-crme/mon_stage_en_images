@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../q_and_a/q_and_a_screen.dart';
 import '../../../common/models/student.dart';
+import '../../../common/providers/all_students.dart';
 import '../../../common/widgets/taking_action_notifier.dart';
 
 class StudentListTile extends StatelessWidget {
   const StudentListTile(
-    this.student, {
+    this.studentId, {
     Key? key,
     required this.removeItemCallback,
     required this.modifyStudentCallback,
@@ -14,13 +16,13 @@ class StudentListTile extends StatelessWidget {
 
   final Function(Student) modifyStudentCallback;
   final Function(Student) removeItemCallback;
-  final Student student;
+  final String studentId;
 
   @override
   Widget build(BuildContext context) {
-    // There is a bug here as the main page Notifier does not update
-    // For now, it was worked around by forcing the redraw of the page from
-    // PushReplacement instead of poping back the page
+    final allStudents = Provider.of<AllStudents>(context);
+    final student = allStudents.fromId(studentId);
+
     final numberOfActions = student.allAnswers.numberNeedTeacherAction(context);
     return TakingActionNotifier(
       number: numberOfActions == 0 ? null : numberOfActions,
@@ -31,9 +33,14 @@ class StudentListTile extends StatelessWidget {
         elevation: 5,
         child: ListTile(
           title: Text(student.toString()),
-          subtitle:
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(student.company.name),
               Text('Questions répondues : ${student.allAnswers.numberAnswered} '
                   '/ ${student.allAnswers.numberActive}'),
+            ],
+          ),
           trailing: IconButton(
             icon: const Icon(
               Icons.delete,

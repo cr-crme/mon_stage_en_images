@@ -44,12 +44,15 @@ class QuestionPart extends StatelessWidget {
     if (answer == null) {
       return const TextStyle();
     }
+    final loginType =
+        Provider.of<LoginInformation>(context, listen: false).loginType;
 
     return TextStyle(
       color: answer.isAnswered ? Colors.black : Colors.red,
       fontWeight: answer.action(context) != ActionRequired.none
           ? FontWeight.bold
           : FontWeight.normal,
+      fontSize: loginType == LoginType.student ? 20 : null,
     );
   }
 
@@ -291,12 +294,15 @@ class _QuestionValidateCheckmarkState
   void _validateAnswer(Student student, Answer answer) {
     // Reverse the status of the answer
     final allStudents = Provider.of<AllStudents>(context, listen: false);
+
+    final isValided = !answer.isValidated;
+    final actionRequired =
+        isValided ? ActionRequired.none : answer.previousActionRequired;
     allStudents.setAnswer(
         student: student,
         question: widget.question,
         answer: answer.copyWith(
-            isValidated: !answer.isValidated,
-            actionRequired: ActionRequired.none));
+            isValidated: isValided, actionRequired: actionRequired));
     setState(() {});
   }
 

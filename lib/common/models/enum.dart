@@ -23,6 +23,7 @@ enum LoginType {
 }
 
 enum LoginStatus {
+  none,
   waitingForLogin,
   success,
   newUser,

@@ -5,6 +5,7 @@ import './all_questions.dart';
 import './all_students.dart';
 import '../models/user_database_abstract.dart';
 import '../models/enum.dart';
+import '../models/question.dart';
 import '../models/themes.dart';
 import '../models/user.dart';
 
@@ -21,6 +22,7 @@ class LoginInformation with ChangeNotifier {
     required String password,
     required Function(String email) newUserUiCallback,
     required Future<String> Function() changePasswordCallback,
+    required List<Question> defaultQuestions,
   }) async {
     final students = Provider.of<AllStudents>(context, listen: false);
     final questions = Provider.of<AllQuestions>(context, listen: false);
@@ -35,20 +37,28 @@ class LoginInformation with ChangeNotifier {
       if (status != LoginStatus.success) return status;
     }
 
+    final isNew = user!.shouldChangePassword;
     if (user!.shouldChangePassword) {
       String newPassword = await changePasswordCallback();
       status = await userDatabase.updatePassword(user!, newPassword);
       if (status != LoginStatus.success) return status;
     }
 
-    _finalizeLogin(students, questions);
+    _finalizeLogin(students, questions, defaultQuestions, isNew);
     return LoginStatus.success;
   }
 
-  void _finalizeLogin(AllStudents students, AllQuestions questions) {
+  void _finalizeLogin(AllStudents students, AllQuestions questions,
+      List<Question> defaultQuestions, bool isNew) {
     loginType = user!.isStudent ? LoginType.student : LoginType.teacher;
     _notifyProvider(students);
     _notifyProvider(questions);
+    if (loginType == LoginType.teacher && isNew) {
+      for (final question in defaultQuestions) {
+        questions.add(question);
+      }
+    }
+
     notifyListeners();
   }
 

@@ -5,36 +5,42 @@ import '../../../common/models/all_answers.dart';
 import '../../../common/models/enum.dart';
 import '../../../common/models/exceptions.dart';
 import '../../../common/models/section.dart';
-import '../../../common/models/student.dart';
 import '../../../common/widgets/taking_action_notifier.dart';
 import '../../../common/providers/all_questions.dart';
+import '../../../common/providers/all_students.dart';
 import '../../../common/providers/login_information.dart';
 
 class MetierTile extends StatelessWidget {
   const MetierTile(this.sectionIndex,
-      {Key? key, required this.student, required this.onTap})
+      {Key? key, required this.studentId, required this.onTap})
       : super(key: key);
 
   final int sectionIndex;
-  final Student? student;
+  final String? studentId;
   final Function(int) onTap;
 
-  TextStyle _pickTextStyle(
-      int? activeQuestions, int? answeredQuestions, int needAction) {
+  TextStyle _pickTextStyle(BuildContext context, int? activeQuestions,
+      int? answeredQuestions, int needAction) {
     if (activeQuestions == null || answeredQuestions == null) {
       return const TextStyle();
     }
+    final loginType =
+        Provider.of<LoginInformation>(context, listen: false).loginType;
 
     return TextStyle(
       color: activeQuestions > 0
           ? (answeredQuestions >= activeQuestions ? Colors.black : Colors.red)
           : Colors.grey,
       fontWeight: needAction > 0 ? FontWeight.bold : FontWeight.normal,
+      fontSize: loginType == LoginType.student ? 20 : null,
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final allStudents = Provider.of<AllStudents>(context);
+    final student = studentId != null ? allStudents.fromId(studentId!) : null;
+
     final questions = Provider.of<AllQuestions>(context, listen: false)
         .fromSection(sectionIndex);
     final loginType =
@@ -44,7 +50,7 @@ class MetierTile extends StatelessWidget {
     late final int? answered;
     late final int? active;
     if (student != null) {
-      answers = student!.allAnswers.fromQuestions(questions);
+      answers = student.allAnswers.fromQuestions(questions);
       answered = answers.numberAnswered;
       active = answers.numberActive;
     } else {
@@ -78,10 +84,10 @@ class MetierTile extends StatelessWidget {
             ),
             title: Text(
               Section.name(sectionIndex),
-              style: _pickTextStyle(active, answered, numberOfActions),
+              style: _pickTextStyle(context, active, answered, numberOfActions),
             ),
             trailing: _trailingBuilder(
-                loginType, numberOfActions, answers, answered, active),
+                context, loginType, numberOfActions, answers, answered, active),
             onTap: () => onTap(sectionIndex),
           ),
         ),
@@ -89,8 +95,8 @@ class MetierTile extends StatelessWidget {
     );
   }
 
-  Widget? _trailingBuilder(LoginType loginType, int numberOfActions,
-      AllAnswers? answers, int? answered, int? active) {
+  Widget? _trailingBuilder(BuildContext context, LoginType loginType,
+      int numberOfActions, AllAnswers? answers, int? answered, int? active) {
     if (loginType == LoginType.student) {
       return numberOfActions > 0
           ? TakingActionNotifier(
@@ -101,7 +107,7 @@ class MetierTile extends StatelessWidget {
     } else if (loginType == LoginType.teacher) {
       return answers != null
           ? Text('$answered / $active',
-              style: _pickTextStyle(active, answered, numberOfActions))
+              style: _pickTextStyle(context, active, answered, numberOfActions))
           : null;
     } else {
       throw const NotLoggedIn();

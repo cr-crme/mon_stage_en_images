@@ -8,15 +8,19 @@ import '../../common/providers/all_students.dart';
 import '../../common/providers/login_information.dart';
 import '../../common/models/answer.dart';
 import '../../common/models/enum.dart';
-import '../../common/widgets/main_drawer.dart';
 import '../../common/models/student.dart';
 import '../../common/models/user.dart';
+import '../../common/widgets/main_drawer.dart';
 import '../../common/widgets/are_you_sure_dialog.dart';
 
 class StudentsScreen extends StatefulWidget {
-  const StudentsScreen({Key? key}) : super(key: key);
+  const StudentsScreen({
+    Key? key,
+    this.withPopulateWithFalseDataButton = false,
+  }) : super(key: key);
 
   static const routeName = '/students-screen';
+  final bool withPopulateWithFalseDataButton;
 
   @override
   State<StudentsScreen> createState() => _StudentsScreenState();
@@ -144,7 +148,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
     var status = await loginInformation.deleteUserFromDatabase(student.email);
     if (status != LoginStatus.success) {
       _showSnackbar(
-          'la supression d\'étudiant n\'est pas encore disponible.', scaffold);
+          'La supression d\'étudiant n\'est pas encore disponible.', scaffold);
       return;
     }
 
@@ -170,7 +174,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
           Expanded(
             child: ListView.builder(
               itemBuilder: (context, index) => StudentListTile(
-                students[index],
+                students[index].id,
                 removeItemCallback: _removeStudent,
                 modifyStudentCallback: _modifyStudent,
               ),
@@ -179,7 +183,9 @@ class _StudentsScreenState extends State<StudentsScreen> {
           ),
         ],
       ),
-      drawer: const MainDrawer(),
+      drawer: MainDrawer(
+          withPopulateWithFalseDataButton:
+              widget.withPopulateWithFalseDataButton),
     );
   }
 }

@@ -92,10 +92,14 @@ class AllAnswers extends MapSerializable<Answer> {
     return out;
   }
 
-  List<Question> activeQuestions(List<Question> questions) {
+  List<Question> activeQuestions(List<Question> questions,
+      {bool shouldBeActive = true, bool skipIfValidated = false}) {
     List<Question> out = questions.where((question) {
       final answer = this[question]!;
-      return answer.isActive;
+      final activeState =
+          !shouldBeActive || (shouldBeActive && answer.isActive);
+      final shouldSkipIfValidated = !skipIfValidated || !answer.isValidated;
+      return activeState && shouldSkipIfValidated;
     }).toList(growable: false);
     return out;
   }

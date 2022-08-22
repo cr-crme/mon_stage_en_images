@@ -134,7 +134,7 @@ class _QAndAScreenState extends State<QAndAScreen> {
           MetierAppBar(
             selected: _currentPage - 1,
             onPageChanged: onPageChangedRequest,
-            student: _student,
+            studentId: _student?.id,
           ),
           Expanded(
             child: PageView(
