@@ -1,4 +1,3 @@
-import 'package:defi_photo/common/models/section.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
