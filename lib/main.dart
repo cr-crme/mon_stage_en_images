@@ -25,6 +25,12 @@ void main() async {
         section: 5, defaultTarget: Target.all),
     Question('Qui est le responsable du département mystère',
         section: 5, defaultTarget: Target.none),
+    Question(
+        'Prends en photo les différents produits '
+        'avec lesquels tu travailles et décris leurs caractéristiques ? '
+        '(par exemple : ce sont des marchandises lourdes, c’est un produit chimique dangereux) ',
+        section: 0,
+        defaultTarget: Target.none),
   ];
 
   // Initialization of the user database. If [useEmulator] is set to [true],
