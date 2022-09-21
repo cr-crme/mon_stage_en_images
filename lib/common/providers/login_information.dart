@@ -29,7 +29,12 @@ class LoginInformation with ChangeNotifier {
     var status = await userDatabase.login(email, password);
     if (status != LoginStatus.success) return status;
 
-    user = await userDatabase.getUser(email);
+    try {
+      user = await userDatabase.getUser(email);
+    } catch (e) {
+      return LoginStatus.unrecognizedError;
+    }
+
     if (user == null) {
       user = await newUserUiCallback(email);
       if (user == null) return LoginStatus.cancelled;

@@ -1,4 +1,3 @@
-import 'package:defi_photo/common/models/section.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -24,26 +23,37 @@ void main() async {
         section: 0, defaultTarget: Target.all),
     Question('Qui est le responsable des RH',
         section: 5, defaultTarget: Target.all),
+    Question('Qui est le responsable du département mystère',
+        section: 5, defaultTarget: Target.none),
   ];
 
   // Initialization of the user database. If [useEmulator] is set to [true],
   // then a local database is created. To facilitate the filling of the database
   // one can create a user, login with it, then in the drawer, select the
   // 'Reinitialize the database' button.
+  const useEmulator = false;
   final userDatabase = UserDatabaseFirebase();
-  await userDatabase.initialize(useEmulator: true);
+  await userDatabase.initialize(useEmulator: useEmulator);
 
   // Run the app!
-  runApp(MyApp(userDatabase: userDatabase, defaultQuestions: defaultQuestions));
+  runApp(MyApp(
+    userDatabase: userDatabase,
+    defaultQuestions: defaultQuestions,
+    allowDatabaseErase: useEmulator,
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp(
-      {Key? key, required this.userDatabase, required this.defaultQuestions})
-      : super(key: key);
+  const MyApp({
+    Key? key,
+    required this.userDatabase,
+    required this.defaultQuestions,
+    required this.allowDatabaseErase,
+  }) : super(key: key);
 
   final UserDataBaseAbstract userDatabase;
   final List<Question> defaultQuestions;
+  final bool allowDatabaseErase;
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +76,9 @@ class MyApp extends StatelessWidget {
           routes: {
             LoginScreen.routeName: (context) =>
                 LoginScreen(defaultQuestions: defaultQuestions),
-            StudentsScreen.routeName: (context) =>
-                const StudentsScreen(withPopulateWithFalseDataButton: true),
+            StudentsScreen.routeName: (context) => StudentsScreen(
+                  withPopulateWithFalseDataButton: allowDatabaseErase,
+                ),
             QAndAScreen.routeName: (context) => const QAndAScreen(),
           },
         );
