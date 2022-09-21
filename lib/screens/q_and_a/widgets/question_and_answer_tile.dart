@@ -134,36 +134,32 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
 
     final hasAction = (_answer?.action(context) ?? ActionRequired.none) !=
         ActionRequired.none;
-    return TakingActionNotifier(
-      number: _loginInfo.loginType == LoginType.teacher && hasAction ? 0 : null,
-      left: 10,
-      child: Card(
-        elevation: 5,
-        child: Column(
-          children: [
-            QuestionPart(
-              question: widget.question,
-              questionView: widget.questionView,
-              studentId: widget.studentId,
-              answer: _answer,
+    return Card(
+      elevation: 5,
+      child: Column(
+        children: [
+          QuestionPart(
+            question: widget.question,
+            questionView: widget.questionView,
+            studentId: widget.studentId,
+            answer: _answer,
+            onStateChange: _onStateChange,
+            onTap: widget.questionView == QuestionView.normal
+                ? _expand
+                : _addOrModifyQuestion,
+            onChangeQuestionRequest: _addOrModifyQuestion,
+            isAnswerShown: _isExpanded,
+            isReading: _isReading,
+            startReadingCallback: _startReading,
+            stopReadingCallback: _stopReading,
+          ),
+          if (_isExpanded && widget.questionView == QuestionView.normal)
+            AnswerPart(
+              widget.question!,
               onStateChange: _onStateChange,
-              onTap: widget.questionView == QuestionView.normal
-                  ? _expand
-                  : _addOrModifyQuestion,
-              onChangeQuestionRequest: _addOrModifyQuestion,
-              isAnswerShown: _isExpanded,
-              isReading: _isReading,
-              startReadingCallback: _startReading,
-              stopReadingCallback: _stopReading,
+              studentId: widget.studentId,
             ),
-            if (_isExpanded && widget.questionView == QuestionView.normal)
-              AnswerPart(
-                widget.question!,
-                onStateChange: _onStateChange,
-                studentId: widget.studentId,
-              ),
-          ],
-        ),
+        ],
       ),
     );
   }
