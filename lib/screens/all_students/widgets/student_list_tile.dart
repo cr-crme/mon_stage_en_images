@@ -10,12 +10,10 @@ class StudentListTile extends StatelessWidget {
   const StudentListTile(
     this.studentId, {
     Key? key,
-    required this.removeItemCallback,
     required this.modifyStudentCallback,
   }) : super(key: key);
 
   final Function(Student) modifyStudentCallback;
-  final Function(Student) removeItemCallback;
   final String studentId;
 
   @override
@@ -46,7 +44,7 @@ class StudentListTile extends StatelessWidget {
               Icons.delete,
               color: Colors.red,
             ),
-            onPressed: () => removeItemCallback(student),
+            onPressed: null,
           ),
           onTap: () => Navigator.of(context)
               .pushNamed(QAndAScreen.routeName, arguments: student),

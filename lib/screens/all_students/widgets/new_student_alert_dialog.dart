@@ -10,9 +10,11 @@ class NewStudentAlertDialog extends StatefulWidget {
   const NewStudentAlertDialog({
     Key? key,
     this.student,
+    this.deleteCallback,
   }) : super(key: key);
 
   final Student? student;
+  final Function(Student)? deleteCallback;
 
   @override
   State<NewStudentAlertDialog> createState() => _NewStudentAlertDialogState();
@@ -114,6 +116,14 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
                   color: Theme.of(context).colorScheme.secondary)),
           onPressed: () => _finalize(),
         ),
+        if (widget.student != null && widget.deleteCallback != null)
+          IconButton(
+            onPressed: () {
+              _finalize(hasCancelled: true);
+              widget.deleteCallback!(widget.student!);
+            },
+            icon: const Icon(Icons.delete),
+          ),
       ],
     );
   }

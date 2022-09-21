@@ -95,7 +95,10 @@ class _StudentsScreenState extends State<StudentsScreen> {
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return NewStudentAlertDialog(student: student);
+        return NewStudentAlertDialog(
+          student: student,
+          deleteCallback: _removeStudent,
+        );
       },
     );
     if (newInfo == null) return;
@@ -175,7 +178,6 @@ class _StudentsScreenState extends State<StudentsScreen> {
             child: ListView.builder(
               itemBuilder: (context, index) => StudentListTile(
                 students[index].id,
-                removeItemCallback: _removeStudent,
                 modifyStudentCallback: _modifyStudent,
               ),
               itemCount: students.length,
