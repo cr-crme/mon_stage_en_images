@@ -111,8 +111,12 @@ class _DatabaseDebuggerState extends State<DatabaseDebugger> {
           student: benjamin,
           question: _questions.fromSection(1)[0],
           answer: Answer(
-              discussion: Discussion.fromList(
-                  [Message(name: benjamin.firstName, text: "Coucou")]),
+              discussion: Discussion.fromList([
+                Message(
+                    name: benjamin.firstName,
+                    text: "Coucou",
+                    creatorId: benjamin.id)
+              ]),
               actionRequired: ActionRequired.fromTeacher));
       WidgetsBinding.instance
           .addPostFrameCallback((_) => _answerQuestions(currentQuestion: 2));
@@ -141,8 +145,12 @@ class _DatabaseDebuggerState extends State<DatabaseDebugger> {
           student: benjamin,
           question: _questions.fromSection(5)[2],
           answer: Answer(
-              discussion: Discussion.fromList(
-                  [Message(name: benjamin.firstName, text: "Coucou")]),
+              discussion: Discussion.fromList([
+                Message(
+                    name: benjamin.firstName,
+                    text: "Coucou",
+                    creatorId: benjamin.id)
+              ]),
               actionRequired: ActionRequired.fromTeacher));
       WidgetsBinding.instance
           .addPostFrameCallback((_) => _answerQuestions(currentQuestion: 5));
@@ -157,34 +165,66 @@ class _DatabaseDebuggerState extends State<DatabaseDebugger> {
           answer: Answer(
               actionRequired: ActionRequired.fromTeacher,
               discussion: Discussion.fromList([
-                Message(name: 'Prof', text: 'Coucou'),
-                Message(name: 'Aurélie', text: 'Non pas coucou'),
-                Message(name: 'Prof', text: 'Coucou'),
+                Message(
+                    name: 'Prof', text: 'Coucou', creatorId: _login.user!.id),
+                Message(
+                    name: 'Aurélie',
+                    text: 'Non pas coucou',
+                    creatorId: aurelie.id),
+                Message(
+                    name: 'Prof', text: 'Coucou', creatorId: _login.user!.id),
                 Message(
                     name: 'Aurélie',
                     text:
                         'https://cdn.photographycourse.net/wp-content/uploads/2014/11/'
                         'Landscape-Photography-steps.jpg',
-                    isPhotoUrl: true),
-                Message(name: 'Prof', text: 'Coucou'),
-                Message(name: 'Aurélie', text: 'Non pas coucou'),
-                Message(name: 'Prof', text: 'Coucou'),
-                Message(name: 'Aurélie', text: 'Non pas coucou'),
-                Message(name: 'Prof', text: 'Coucou'),
-                Message(name: 'Aurélie', text: 'Non pas coucou'),
-                Message(name: 'Prof', text: 'Coucou'),
+                    isPhotoUrl: true,
+                    creatorId: aurelie.id),
+                Message(
+                    name: 'Prof', text: 'Coucou', creatorId: _login.user!.id),
+                Message(
+                    name: 'Aurélie',
+                    text: 'Non pas coucou',
+                    creatorId: aurelie.id),
+                Message(
+                    name: 'Prof', text: 'Coucou', creatorId: _login.user!.id),
+                Message(
+                    name: 'Aurélie',
+                    text: 'Non pas coucou',
+                    creatorId: aurelie.id),
+                Message(
+                    name: 'Prof', text: 'Coucou', creatorId: _login.user!.id),
+                Message(
+                    name: 'Aurélie',
+                    text: 'Non pas coucou',
+                    creatorId: aurelie.id),
+                Message(
+                    name: 'Prof', text: 'Coucou', creatorId: _login.user!.id),
                 Message(
                     name: 'Aurélie',
                     text:
                         'https://cdn.photographycourse.net/wp-content/uploads/2014/11/'
                         'Landscape-Photography-steps.jpg',
-                    isPhotoUrl: true),
-                Message(name: 'Prof', text: 'Coucou'),
-                Message(name: 'Aurélie', text: 'Non pas coucou'),
-                Message(name: 'Prof', text: 'Coucou'),
-                Message(name: 'Aurélie', text: 'Non pas coucou'),
-                Message(name: 'Prof', text: 'Coucou'),
-                Message(name: 'Aurélie', text: 'Non pas coucou'),
+                    isPhotoUrl: true,
+                    creatorId: aurelie.id),
+                Message(
+                    name: 'Prof', text: 'Coucou', creatorId: _login.user!.id),
+                Message(
+                    name: 'Aurélie',
+                    text: 'Non pas coucou',
+                    creatorId: aurelie.id),
+                Message(
+                    name: 'Prof', text: 'Coucou', creatorId: _login.user!.id),
+                Message(
+                    name: 'Aurélie',
+                    text: 'Non pas coucou',
+                    creatorId: aurelie.id),
+                Message(
+                    name: 'Prof', text: 'Coucou', creatorId: _login.user!.id),
+                Message(
+                    name: 'Aurélie',
+                    text: 'Non pas coucou',
+                    creatorId: aurelie.id),
               ])));
       WidgetsBinding.instance
           .addPostFrameCallback((_) => _answerQuestions(currentQuestion: 6));

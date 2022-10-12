@@ -11,8 +11,6 @@ import '../../../common/models/question.dart';
 import '../../../common/models/student.dart';
 import '../../../common/providers/all_questions.dart';
 import '../../../common/providers/all_students.dart';
-import '../../../common/providers/login_information.dart';
-import '../../../common/widgets/taking_action_notifier.dart';
 
 class QuestionAndAnswerTile extends StatefulWidget {
   const QuestionAndAnswerTile(
@@ -35,7 +33,6 @@ class QuestionAndAnswerTile extends StatefulWidget {
 class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   var _isExpanded = false;
 
-  late LoginInformation _loginInfo;
   late AllStudents _students;
   Student? _student;
   Answer? _answer;
@@ -126,44 +123,37 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
 
   @override
   Widget build(BuildContext context) {
-    _loginInfo = Provider.of<LoginInformation>(context, listen: false);
     _students = Provider.of<AllStudents>(context, listen: true);
     _student = widget.studentId != null ? _students[widget.studentId] : null;
     _answer =
         widget.question != null ? _student?.allAnswers[widget.question] : null;
 
-    final hasAction = (_answer?.action(context) ?? ActionRequired.none) !=
-        ActionRequired.none;
-    return TakingActionNotifier(
-      number: _loginInfo.loginType == LoginType.teacher && hasAction ? 0 : null,
-      left: 10,
-      child: Card(
-        elevation: 5,
-        child: Column(
-          children: [
-            QuestionPart(
-              question: widget.question,
-              questionView: widget.questionView,
-              studentId: widget.studentId,
-              answer: _answer,
+    return Card(
+      elevation: 5,
+      child: Column(
+        children: [
+          QuestionPart(
+            question: widget.question,
+            questionView: widget.questionView,
+            studentId: widget.studentId,
+            answer: _answer,
+            onStateChange: _onStateChange,
+            onTap: widget.questionView == QuestionView.normal
+                ? _expand
+                : _addOrModifyQuestion,
+            onChangeQuestionRequest: _addOrModifyQuestion,
+            isAnswerShown: _isExpanded,
+            isReading: _isReading,
+            startReadingCallback: _startReading,
+            stopReadingCallback: _stopReading,
+          ),
+          if (_isExpanded && widget.questionView == QuestionView.normal)
+            AnswerPart(
+              widget.question!,
               onStateChange: _onStateChange,
-              onTap: widget.questionView == QuestionView.normal
-                  ? _expand
-                  : _addOrModifyQuestion,
-              onChangeQuestionRequest: _addOrModifyQuestion,
-              isAnswerShown: _isExpanded,
-              isReading: _isReading,
-              startReadingCallback: _startReading,
-              stopReadingCallback: _stopReading,
+              studentId: widget.studentId,
             ),
-            if (_isExpanded && widget.questionView == QuestionView.normal)
-              AnswerPart(
-                widget.question!,
-                onStateChange: _onStateChange,
-                studentId: widget.studentId,
-              ),
-          ],
-        ),
+        ],
       ),
     );
   }

@@ -48,9 +48,14 @@ class QuestionPart extends StatelessWidget {
         Provider.of<LoginInformation>(context, listen: false).loginType;
 
     return TextStyle(
-      color: answer.isAnswered ? Colors.black : Colors.red,
+      color: loginType == LoginType.teacher &&
+              (!answer.isAnswered && !answer.isValidated)
+          ? Colors.red
+          : Colors.black,
       fontWeight: answer.action(context) != ActionRequired.none
-          ? FontWeight.bold
+          ? loginType == LoginType.teacher
+              ? FontWeight.w900
+              : FontWeight.bold
           : FontWeight.normal,
       fontSize: loginType == LoginType.student ? 20 : null,
     );

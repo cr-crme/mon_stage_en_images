@@ -110,7 +110,8 @@ class _DiscussionListViewState extends State<DiscussionListView> {
         _MessageListView(
           discussion: widget.answer!.discussion.toListByTime(reversed: true),
         ),
-        if (loginInfo.loginType == LoginType.student)
+        if (loginInfo.loginType == LoginType.student &&
+            !widget.answer!.isValidated)
           TextButton(
             onPressed: _addPhoto,
             style: TextButton.styleFrom(primary: Colors.grey[700]),
@@ -125,45 +126,48 @@ class _DiscussionListViewState extends State<DiscussionListView> {
               ],
             ),
           ),
-        Container(
-          padding: const EdgeInsets.only(left: 15),
-          child: Form(
-            key: _formKey,
-            child: TextFormField(
-              decoration: InputDecoration(
-                labelText: 'Ajouter un commentaire',
-                suffixIcon: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.mic,
-                        color: _isVoiceRecording ? Colors.red : Colors.grey,
+        if (!widget.answer!.isValidated)
+          Container(
+            padding: const EdgeInsets.only(left: 15),
+            child: Form(
+              key: _formKey,
+              child: TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Ajouter un commentaire',
+                  suffixIcon: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.mic,
+                          color: _isVoiceRecording ? Colors.red : Colors.grey,
+                        ),
+                        onPressed: _dictateMessage,
                       ),
-                      onPressed: _dictateMessage,
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.send),
-                      onPressed: _sendMessage,
-                    ),
-                  ],
+                      IconButton(
+                        icon: const Icon(Icons.send),
+                        onPressed: _sendMessage,
+                      ),
+                    ],
+                  ),
                 ),
+                onSaved: (value) => _newMessage = value,
+                onFieldSubmitted: (value) => _sendMessage(),
+                controller: fieldText,
               ),
-              onSaved: (value) => _newMessage = value,
-              onFieldSubmitted: (value) => _sendMessage(),
-              controller: fieldText,
             ),
           ),
-        ),
       ],
     );
   }
 }
 
 class _MessageListView extends StatelessWidget {
-  const _MessageListView({Key? key, required this.discussion})
-      : super(key: key);
+  const _MessageListView({
+    Key? key,
+    required this.discussion,
+  }) : super(key: key);
 
   final List<Message> discussion;
 
@@ -172,12 +176,17 @@ class _MessageListView extends StatelessWidget {
     return Column(
       children: [
         Container(
+          //constraints: BoxConstraints(maxHeight: 300),
           padding: const EdgeInsets.only(left: 15),
           child: ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) =>
+            itemBuilder: (context, index) => Column(
+              children: [
                 DiscussionTile(discussion: discussion[index]),
+                const SizedBox(height: 10),
+              ],
+            ),
             itemCount: discussion.length,
           ),
         ),

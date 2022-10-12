@@ -10,12 +10,10 @@ class StudentListTile extends StatelessWidget {
   const StudentListTile(
     this.studentId, {
     Key? key,
-    required this.removeItemCallback,
     required this.modifyStudentCallback,
   }) : super(key: key);
 
   final Function(Student) modifyStudentCallback;
-  final Function(Student) removeItemCallback;
   final String studentId;
 
   @override
@@ -24,34 +22,27 @@ class StudentListTile extends StatelessWidget {
     final student = allStudents.fromId(studentId);
 
     final numberOfActions = student.allAnswers.numberNeedTeacherAction(context);
-    return TakingActionNotifier(
-      number: numberOfActions == 0 ? null : numberOfActions,
-      top: -6,
-      left: 2,
-      borderColor: Colors.black,
-      child: Card(
-        elevation: 5,
-        child: ListTile(
-          title: Text(student.toString()),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(student.company.name),
-              Text('Questions répondues : ${student.allAnswers.numberAnswered} '
-                  '/ ${student.allAnswers.numberActive}'),
-            ],
-          ),
-          trailing: IconButton(
-            icon: const Icon(
-              Icons.delete,
-              color: Colors.red,
-            ),
-            onPressed: () => removeItemCallback(student),
-          ),
-          onTap: () => Navigator.of(context)
-              .pushNamed(QAndAScreen.routeName, arguments: student),
-          onLongPress: () => modifyStudentCallback(student),
+    return Card(
+      elevation: 5,
+      child: ListTile(
+        title: Text(student.toString()),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(student.company.name),
+            Text('Questions répondues : ${student.allAnswers.numberAnswered} '
+                '/ ${student.allAnswers.numberActive}'),
+          ],
         ),
+        trailing: TakingActionNotifier(
+          number: numberOfActions == 0 ? null : numberOfActions,
+          padding: 10,
+          borderColor: Colors.black,
+          child: const Text(""),
+        ),
+        onTap: () => Navigator.of(context)
+            .pushNamed(QAndAScreen.routeName, arguments: student),
+        onLongPress: () => modifyStudentCallback(student),
       ),
     );
   }

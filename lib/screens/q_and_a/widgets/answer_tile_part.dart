@@ -39,6 +39,7 @@ class _AnswerPartState extends State<AnswerPart> {
       name: loginInfo.user!.firstName,
       text: answerText,
       isPhotoUrl: isPhoto,
+      creatorId: loginInfo.user!.id,
     ));
 
     // Inform the changing of status
@@ -71,9 +72,10 @@ class _AnswerPartState extends State<AnswerPart> {
         children: [
           if (answer.isActive && widget.studentId != null)
             DiscussionListView(
-                answer: answer,
-                student: student,
-                addMessageCallback: _addAnswerCallback),
+              answer: answer,
+              student: student,
+              addMessageCallback: _addAnswerCallback,
+            ),
           const SizedBox(height: 15)
         ],
       ),

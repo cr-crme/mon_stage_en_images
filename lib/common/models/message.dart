@@ -8,11 +8,13 @@ class Message extends CreationTimeItemSerializable {
     this.isPhotoUrl = false,
     String? id,
     int? creationTimeStamp,
+    required this.creatorId,
   }) : super(id: id, creationTimeStamp: creationTimeStamp);
   Message.fromSerialized(map)
       : name = map['name'],
         text = map['text'],
         isPhotoUrl = map['isPhotoUrl'],
+        creatorId = map['creatorId'],
         super.fromSerialized(map);
   @override
   Message deserializeItem(map) => Message.fromSerialized(map);
@@ -23,6 +25,7 @@ class Message extends CreationTimeItemSerializable {
       'name': name,
       'text': text,
       'isPhotoUrl': isPhotoUrl,
+      'creatorId': creatorId
     };
   }
 
@@ -30,4 +33,5 @@ class Message extends CreationTimeItemSerializable {
   final String name;
   final String text;
   final bool isPhotoUrl;
+  final String creatorId;
 }
