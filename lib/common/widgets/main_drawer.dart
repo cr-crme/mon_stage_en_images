@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import './database_clearer.dart';
 import '../models/enum.dart';
 import '../models/student.dart';
 import '../providers/login_information.dart';
-import '../../debug_database.dart';
 import '../../screens/login/login_screen.dart';
 import '../../screens/q_and_a/q_and_a_screen.dart';
 import '../../screens/all_students/students_screen.dart';
 
 class MainDrawer extends StatelessWidget {
-  const MainDrawer(
-      {Key? key, this.student, this.withPopulateWithFalseDataButton = false})
+  const MainDrawer({Key? key, this.student, this.databaseClearerOptions})
       : super(key: key);
 
-  final bool withPopulateWithFalseDataButton;
   final Student? student;
+  final DatabaseClearerOptions? databaseClearerOptions;
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +45,15 @@ class MainDrawer extends StatelessWidget {
                   onTap: () =>
                       Navigator.of(context).pushNamed(QAndAScreen.routeName)),
             if (loginType == LoginType.teacher &&
-                withPopulateWithFalseDataButton)
-              const DatabaseDebugger(),
+                databaseClearerOptions != null &&
+                databaseClearerOptions!.allowClearing)
+              DatabaseClearer(
+                options: databaseClearerOptions!,
+                child: const MenuItem(
+                    title: "Réinitialiser la\nbase de donnée",
+                    iconColor: Colors.red),
+              ),
+            // const DatabaseDebugger(),
             MenuItem(
                 title: 'Déconnexion',
                 onTap: () => Navigator.of(context)
@@ -60,8 +66,7 @@ class MainDrawer extends StatelessWidget {
 }
 
 class MenuItem extends StatelessWidget {
-  const MenuItem(
-      {Key? key, required this.title, required this.onTap, this.iconColor})
+  const MenuItem({Key? key, required this.title, this.onTap, this.iconColor})
       : super(key: key);
 
   final String title;

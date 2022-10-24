@@ -10,17 +10,18 @@ import '../../common/models/answer.dart';
 import '../../common/models/enum.dart';
 import '../../common/models/student.dart';
 import '../../common/models/user.dart';
+import '../../common/widgets/database_clearer.dart';
 import '../../common/widgets/main_drawer.dart';
 import '../../common/widgets/are_you_sure_dialog.dart';
 
 class StudentsScreen extends StatefulWidget {
   const StudentsScreen({
     Key? key,
-    this.withPopulateWithFalseDataButton = false,
+    required this.databaseClearerOptions,
   }) : super(key: key);
 
   static const routeName = '/students-screen';
-  final bool withPopulateWithFalseDataButton;
+  final DatabaseClearerOptions databaseClearerOptions;
 
   @override
   State<StudentsScreen> createState() => _StudentsScreenState();
@@ -185,9 +186,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
           ),
         ],
       ),
-      drawer: MainDrawer(
-          withPopulateWithFalseDataButton:
-              widget.withPopulateWithFalseDataButton),
+      drawer: MainDrawer(databaseClearerOptions: widget.databaseClearerOptions),
     );
   }
 }
