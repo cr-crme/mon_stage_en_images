@@ -119,6 +119,11 @@ class _QuestionPartTrailing extends StatelessWidget {
   bool _isQuestionActive(BuildContext context) {
     final students = Provider.of<AllStudents>(context, listen: false);
     final answer = _answer(context);
+
+    if (students.count == 0) {
+      return question != null && question?.defaultTarget == Target.all;
+    }
+
     return questionView == QuestionView.modifyForAllStudents
         ? question != null
             ? students.isQuestionActiveForAll(question!)
