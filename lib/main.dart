@@ -7,6 +7,7 @@ import './common/providers/all_questions.dart';
 import './common/providers/all_students.dart';
 import './common/providers/login_information.dart';
 import './common/providers/speecher.dart';
+import './common/widgets/database_clearer.dart';
 import './screens/all_students/students_screen.dart';
 import './screens/login/login_screen.dart';
 import './screens/q_and_a/q_and_a_screen.dart';
@@ -20,22 +21,24 @@ void main() async {
   final userDatabase = UserDatabaseFirebase();
   await userDatabase.initialize(useEmulator: useEmulator);
 
+  const databaseClearerOptions = DatabaseClearerOptions(
+      allowClearing: useEmulator, populateWithDummyData: false);
+
   // Run the app!
   runApp(MyApp(
-    userDatabase: userDatabase,
-    allowDatabaseErase: useEmulator,
-  ));
+      userDatabase: userDatabase,
+      databaseClearerOptions: databaseClearerOptions));
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({
     Key? key,
     required this.userDatabase,
-    required this.allowDatabaseErase,
+    required this.databaseClearerOptions,
   }) : super(key: key);
 
   final UserDataBaseAbstract userDatabase;
-  final bool allowDatabaseErase;
+  final DatabaseClearerOptions databaseClearerOptions;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +61,7 @@ class MyApp extends StatelessWidget {
           routes: {
             LoginScreen.routeName: (context) => const LoginScreen(),
             StudentsScreen.routeName: (context) => StudentsScreen(
-                  withPopulateWithFalseDataButton: allowDatabaseErase,
+                  databaseClearerOptions: databaseClearerOptions,
                 ),
             QAndAScreen.routeName: (context) => const QAndAScreen(),
           },

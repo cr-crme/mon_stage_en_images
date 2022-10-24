@@ -3,32 +3,60 @@ import 'package:defi_photo/common/widgets/are_you_sure_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './common/models/all_answers.dart';
-import './common/models/answer.dart';
-import './common/models/company.dart';
-import './common/models/enum.dart';
-import './common/models/message.dart';
-import './common/models/question.dart';
-import './common/models/student.dart';
-import './common/providers/login_information.dart';
-import './common/providers/all_questions.dart';
-import './common/providers/all_students.dart';
-import './common/widgets/main_drawer.dart' as md;
-import '../../screens/login/login_screen.dart';
+import '../models/all_answers.dart';
+import '../models/answer.dart';
+import '../models/company.dart';
+import '../models/enum.dart';
+import '../models/message.dart';
+import '../models/question.dart';
+import '../models/student.dart';
+import '../providers/login_information.dart';
+import '../providers/all_questions.dart';
+import '../providers/all_students.dart';
+import '../../../../screens/login/login_screen.dart';
 
-class DatabaseDebugger extends StatefulWidget {
-  const DatabaseDebugger({Key? key}) : super(key: key);
+class DatabaseClearerOptions {
+  const DatabaseClearerOptions({
+    this.allowClearing = false,
+    this.populateWithDummyData = false,
+  });
 
-  @override
-  State<DatabaseDebugger> createState() => _DatabaseDebuggerState();
+  final bool allowClearing;
+  final bool populateWithDummyData;
 }
 
-class _DatabaseDebuggerState extends State<DatabaseDebugger> {
+class DatabaseClearer extends StatefulWidget {
+  const DatabaseClearer({
+    Key? key,
+    required this.child,
+    required this.options,
+    this.title,
+    this.onTap,
+    this.iconColor,
+  }) : super(key: key);
+
+  final Widget child;
+  final DatabaseClearerOptions options;
+  final String? title;
+  final VoidCallback? onTap;
+  final MaterialColor? iconColor;
+
+  @override
+  State<DatabaseClearer> createState() => _DatabaseClearerState();
+}
+
+class _DatabaseClearerState extends State<DatabaseClearer> {
   late LoginInformation _login;
   late AllStudents _students;
   late AllQuestions _questions;
 
-  void _confirm() async {
+  void _clear() async {
+    if (await _confirm()) {
+      _clearAll();
+    }
+  }
+
+  Future<bool> _confirm() async {
     final sure = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
@@ -40,16 +68,19 @@ class _DatabaseDebuggerState extends State<DatabaseDebugger> {
         );
       },
     );
-    if (sure != null && sure) {
-      _clearAll();
-    }
+    return sure != null && sure;
   }
 
   void _clearAll() {
     _login.userDatabase.deleteUsersInfo();
     _questions.clear(confirm: true);
     _students.clear(confirm: true);
-    //WidgetsBinding.instance.addPostFrameCallback((_) => _addDummyData());
+
+    if (widget.options.populateWithDummyData) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _addDummyData());
+    } else {
+      _switchToMainLoginPage();
+    }
   }
 
   void _addDummyData() {
@@ -88,9 +119,10 @@ class _DatabaseDebuggerState extends State<DatabaseDebugger> {
   }
 
   void _answerQuestions({int currentQuestion = 0}) {
-    // Wait until student is ready to complete
     _students = Provider.of<AllStudents>(context, listen: false);
     _questions = Provider.of<AllQuestions>(context, listen: false);
+
+    // Wait until student is ready to complete
     if (_students.length != 2 || _questions.length != 9) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _answerQuestions());
       return;
@@ -240,6 +272,10 @@ class _DatabaseDebuggerState extends State<DatabaseDebugger> {
       return;
     }
 
+    _switchToMainLoginPage();
+  }
+
+  void _switchToMainLoginPage() {
     Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
   }
 
@@ -248,9 +284,10 @@ class _DatabaseDebuggerState extends State<DatabaseDebugger> {
     _login = Provider.of<LoginInformation>(context, listen: false);
     _students = Provider.of<AllStudents>(context, listen: false);
     _questions = Provider.of<AllQuestions>(context, listen: false);
-    return md.MenuItem(
-        title: "Réinitialiser la\nbase de donnée",
-        onTap: () => _confirm(),
-        iconColor: Colors.red);
+
+    return GestureDetector(
+      onTap: _clear,
+      child: widget.child,
+    );
   }
 }
