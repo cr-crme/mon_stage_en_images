@@ -49,7 +49,7 @@ class _DatabaseDebuggerState extends State<DatabaseDebugger> {
     _login.userDatabase.deleteUsersInfo();
     _questions.clear(confirm: true);
     _students.clear(confirm: true);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _addDummyData());
+    //WidgetsBinding.instance.addPostFrameCallback((_) => _addDummyData());
   }
 
   void _addDummyData() {
