@@ -13,11 +13,11 @@ import '../../../common/providers/speecher.dart';
 
 class DiscussionListView extends StatefulWidget {
   const DiscussionListView({
-    Key? key,
+    super.key,
     required this.answer,
     required this.student,
     required this.addMessageCallback,
-  }) : super(key: key);
+  });
 
   final Answer? answer;
   final Student student;
@@ -114,7 +114,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
             !widget.answer!.isValidated)
           TextButton(
             onPressed: _addPhoto,
-            style: TextButton.styleFrom(primary: Colors.grey[700]),
+            style: TextButton.styleFrom(backgroundColor: Colors.grey[700]),
             child: Row(
               children: const [
                 Icon(Icons.camera_alt),
@@ -164,10 +164,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
 }
 
 class _MessageListView extends StatelessWidget {
-  const _MessageListView({
-    Key? key,
-    required this.discussion,
-  }) : super(key: key);
+  const _MessageListView({required this.discussion});
 
   final List<Message> discussion;
 

@@ -13,7 +13,7 @@ import '../../common/providers/all_students.dart';
 import '../../common/providers/login_information.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   static const routeName = '/login-screen';
 
@@ -213,7 +213,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               setState(() {});
                             },
                             style: ElevatedButton.styleFrom(
-                                primary: teacherTheme().colorScheme.primary),
+                                backgroundColor:
+                                    teacherTheme().colorScheme.primary),
                             child: Text(
                               'Se connecter',
                               style: TextStyle(
@@ -235,8 +236,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
 class MainTitle extends StatelessWidget {
   const MainTitle({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

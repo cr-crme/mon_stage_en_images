@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class ChangePasswordAlertDialog extends StatefulWidget {
   const ChangePasswordAlertDialog({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<ChangePasswordAlertDialog> createState() =>

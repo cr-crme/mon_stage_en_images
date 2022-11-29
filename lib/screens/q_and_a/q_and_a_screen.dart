@@ -13,7 +13,7 @@ import '../../common/providers/all_students.dart';
 import '../../common/providers/login_information.dart';
 
 class QAndAScreen extends StatefulWidget {
-  const QAndAScreen({Key? key}) : super(key: key);
+  const QAndAScreen({super.key});
 
   static const routeName = '/q-and-a-screen';
 

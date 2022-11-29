@@ -7,12 +7,12 @@ import '../../../common/widgets/are_you_sure_dialog.dart';
 
 class NewQuestionAlertDialog extends StatefulWidget {
   const NewQuestionAlertDialog({
-    Key? key,
+    super.key,
     required this.section,
     required this.student,
     required this.title,
     required this.deleteCallback,
-  }) : super(key: key);
+  });
 
   final int section;
   final Student? student;

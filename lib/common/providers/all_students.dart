@@ -12,7 +12,9 @@ class AllStudents extends FirebaseListProvided<Student>
 
   AllStudents()
       : super(
-            pathToData: dataName, pathToAvailableDataIds: '$dataName-generic');
+          pathToData: dataName,
+          pathToAvailableDataIds: '$dataName-generic',
+        );
 
   @override
   Student deserializeItem(data) {

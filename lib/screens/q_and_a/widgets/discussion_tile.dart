@@ -8,9 +8,9 @@ import '../../../common/providers/login_information.dart';
 
 class DiscussionTile extends StatelessWidget {
   const DiscussionTile({
-    Key? key,
+    super.key,
     required this.discussion,
-  }) : super(key: key);
+  });
 
   final Message discussion;
 

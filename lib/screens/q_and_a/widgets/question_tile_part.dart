@@ -14,7 +14,7 @@ import '../../../common/widgets/taking_action_notifier.dart';
 
 class QuestionPart extends StatelessWidget {
   const QuestionPart({
-    Key? key,
+    super.key,
     required this.question,
     required this.questionView,
     required this.studentId,
@@ -26,7 +26,7 @@ class QuestionPart extends StatelessWidget {
     required this.isReading,
     required this.startReadingCallback,
     required this.stopReadingCallback,
-  }) : super(key: key);
+  });
 
   final Question? question;
   final QuestionView questionView;
@@ -86,7 +86,6 @@ class QuestionPart extends StatelessWidget {
 
 class _QuestionPartTrailing extends StatelessWidget {
   const _QuestionPartTrailing({
-    Key? key,
     required this.question,
     required this.onChangeQuestionRequest,
     required this.questionView,
@@ -97,7 +96,7 @@ class _QuestionPartTrailing extends StatelessWidget {
     required this.isReading,
     required this.startReadingCallback,
     required this.stopReadingCallback,
-  }) : super(key: key);
+  });
 
   final Question? question;
   final VoidCallback onChangeQuestionRequest;
@@ -177,8 +176,7 @@ class _QuestionPartTrailing extends StatelessWidget {
 }
 
 class _QuestionAddButton extends StatelessWidget {
-  const _QuestionAddButton({Key? key, required this.newQuestionCallback})
-      : super(key: key);
+  const _QuestionAddButton({required this.newQuestionCallback});
   final VoidCallback newQuestionCallback;
 
   @override
@@ -194,13 +192,12 @@ class _QuestionAddButton extends StatelessWidget {
 
 class _QuestionActivatedState extends StatefulWidget {
   const _QuestionActivatedState({
-    Key? key,
     required this.studentId,
     required this.onStateChange,
     required this.initialStatus,
     required this.question,
     required this.questionView,
-  }) : super(key: key);
+  });
 
   final String? studentId;
   final Question question;
@@ -286,10 +283,9 @@ class _QuestionActivator extends State<_QuestionActivatedState> {
 
 class _QuestionValidateCheckmark extends StatefulWidget {
   const _QuestionValidateCheckmark({
-    Key? key,
     required this.question,
     required this.studentId,
-  }) : super(key: key);
+  });
 
   final Question question;
   final String studentId;

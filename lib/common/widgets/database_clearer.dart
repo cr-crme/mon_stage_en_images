@@ -27,13 +27,13 @@ class DatabaseClearerOptions {
 
 class DatabaseClearer extends StatefulWidget {
   const DatabaseClearer({
-    Key? key,
+    super.key,
     required this.child,
     required this.options,
     this.title,
     this.onTap,
     this.iconColor,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final DatabaseClearerOptions options;

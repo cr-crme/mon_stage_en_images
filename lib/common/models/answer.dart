@@ -16,10 +16,9 @@ class Answer extends CreationTimeItemSerializable {
     this.isValidated = false,
     this.actionRequired = ActionRequired.none,
     this.previousActionRequired = ActionRequired.none,
-    String? id,
-    int? creationTimeStamp,
-  })  : discussion = discussion ??= Discussion(),
-        super(id: id, creationTimeStamp: creationTimeStamp);
+    super.id,
+    super.creationTimeStamp,
+  }) : discussion = discussion ??= Discussion();
   Answer.fromSerialized(map)
       : discussion = Discussion.fromSerialized(map['discussion'] ?? {}),
         isActive = map['isActive'],

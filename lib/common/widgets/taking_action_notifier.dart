@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class TakingActionNotifier extends StatelessWidget {
   const TakingActionNotifier({
-    Key? key,
+    super.key,
     this.child,
     this.number,
     this.forcedText,
@@ -10,7 +10,7 @@ class TakingActionNotifier extends StatelessWidget {
     this.top,
     this.padding = 6,
     this.borderColor = Colors.white,
-  }) : super(key: key);
+  });
 
   final Widget? child;
   final int? number;

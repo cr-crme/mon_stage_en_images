@@ -49,8 +49,7 @@ class LoginInformation with ChangeNotifier {
       if (status != LoginStatus.success) return status;
     }
 
-    final defaultQuestions = DefaultQuestion.questions;
-    _finalizeLogin(students, questions, defaultQuestions, isNew);
+    _finalizeLogin(students, questions, DefaultQuestion.questions, isNew);
     return LoginStatus.success;
   }
 

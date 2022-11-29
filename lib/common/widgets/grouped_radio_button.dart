@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 class GroupedRadioButton<T> extends StatelessWidget {
   const GroupedRadioButton({
-    Key? key,
+    super.key,
     required this.title,
     required this.groupValue,
     required this.onChanged,
     required this.value,
-  }) : super(key: key);
+  });
 
   final Widget title;
   final T groupValue;

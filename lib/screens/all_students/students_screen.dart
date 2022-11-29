@@ -16,9 +16,9 @@ import '../../common/widgets/are_you_sure_dialog.dart';
 
 class StudentsScreen extends StatefulWidget {
   const StudentsScreen({
-    Key? key,
+    super.key,
     required this.databaseClearerOptions,
-  }) : super(key: key);
+  });
 
   static const routeName = '/students-screen';
   final DatabaseClearerOptions databaseClearerOptions;

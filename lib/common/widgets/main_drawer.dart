@@ -10,8 +10,7 @@ import '../../screens/q_and_a/q_and_a_screen.dart';
 import '../../screens/all_students/students_screen.dart';
 
 class MainDrawer extends StatelessWidget {
-  const MainDrawer({Key? key, this.student, this.databaseClearerOptions})
-      : super(key: key);
+  const MainDrawer({super.key, this.student, this.databaseClearerOptions});
 
   final Student? student;
   final DatabaseClearerOptions? databaseClearerOptions;
@@ -66,8 +65,7 @@ class MainDrawer extends StatelessWidget {
 }
 
 class MenuItem extends StatelessWidget {
-  const MenuItem({Key? key, required this.title, this.onTap, this.iconColor})
-      : super(key: key);
+  const MenuItem({super.key, required this.title, this.onTap, this.iconColor});
 
   final String title;
   final VoidCallback? onTap;

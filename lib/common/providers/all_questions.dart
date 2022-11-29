@@ -13,7 +13,9 @@ class AllQuestions extends FirebaseListProvided<Question> with Section {
 
   AllQuestions()
       : super(
-            pathToData: dataName, pathToAvailableDataIds: '$dataName-generic');
+          pathToData: dataName,
+          pathToAvailableDataIds: '$dataName-generic',
+        );
 
   @override
   Question deserializeItem(data) {

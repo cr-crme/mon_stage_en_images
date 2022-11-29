@@ -10,7 +10,7 @@ import '../providers/login_information.dart';
 
 class AllAnswers extends MapSerializable<Answer> {
   // Constructors and (de)serializer
-  AllAnswers({required List<Question> questions}) : super() {
+  AllAnswers({required List<Question> questions}) {
     for (var question in questions) {
       this[question] = Answer(isActive: false);
     }

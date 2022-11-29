@@ -4,9 +4,9 @@ import '../../../common/models/user.dart';
 
 class NewUserAlertDialog extends StatefulWidget {
   const NewUserAlertDialog({
-    Key? key,
+    super.key,
     required this.email,
-  }) : super(key: key);
+  });
 
   final String email;
 

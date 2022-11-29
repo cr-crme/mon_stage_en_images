@@ -11,9 +11,9 @@ class Student extends CreationTimeItemSerializable {
     required this.email,
     required this.company,
     required this.allAnswers,
-    String? id,
-    int? creationTimeStamp,
-  }) : super(id: id, creationTimeStamp: creationTimeStamp);
+    super.id,
+    super.creationTimeStamp,
+  });
 
   Student copyWith({
     String? firstName,

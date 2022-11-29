@@ -5,10 +5,10 @@ import '../../common/models/student.dart';
 
 class MainMetierPage extends StatelessWidget {
   const MainMetierPage({
-    Key? key,
+    super.key,
     required this.student,
     required this.onPageChanged,
-  }) : super(key: key);
+  });
 
   static const routeName = '/main-metier-page';
   final Student? student;

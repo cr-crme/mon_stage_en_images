@@ -13,8 +13,7 @@ import '../../common/providers/login_information.dart';
 
 class QuestionAndAnswerPage extends StatelessWidget {
   const QuestionAndAnswerPage(this.sectionIndex,
-      {Key? key, required this.studentId, required this.questionView})
-      : super(key: key);
+      {super.key, required this.studentId, required this.questionView});
 
   static const routeName = '/question-and-answer-page';
   final int sectionIndex;
@@ -105,11 +104,11 @@ class QuestionAndAnswerPage extends StatelessWidget {
 class QAndAListView extends StatelessWidget {
   const QAndAListView(
     this.questions, {
-    Key? key,
+    super.key,
     required this.sectionIndex,
     required this.studentId,
     required this.questionView,
-  }) : super(key: key);
+  });
 
   final List<Question> questions;
   final int sectionIndex;

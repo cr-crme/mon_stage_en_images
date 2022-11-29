@@ -12,8 +12,7 @@ import '../../../common/providers/login_information.dart';
 
 class MetierTile extends StatelessWidget {
   const MetierTile(this.sectionIndex,
-      {Key? key, required this.studentId, required this.onTap})
-      : super(key: key);
+      {super.key, required this.studentId, required this.onTap});
 
   final int sectionIndex;
   final String? studentId;

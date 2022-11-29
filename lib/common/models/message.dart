@@ -6,10 +6,10 @@ class Message extends CreationTimeItemSerializable {
     required this.name,
     required this.text,
     this.isPhotoUrl = false,
-    String? id,
-    int? creationTimeStamp,
+    super.id,
+    super.creationTimeStamp,
     required this.creatorId,
-  }) : super(id: id, creationTimeStamp: creationTimeStamp);
+  });
   Message.fromSerialized(map)
       : name = map['name'],
         text = map['text'],

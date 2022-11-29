@@ -1,7 +1,7 @@
 import 'package:defi_photo/crcrme_enhanced_containers/lib/item_serializable.dart';
 
 class Company extends ItemSerializable {
-  Company({required this.name, String? id}) : super(id: id);
+  Company({required this.name, super.id});
   Company copyWith({String? name, String? id}) {
     name ??= this.name;
     id ??= this.id;

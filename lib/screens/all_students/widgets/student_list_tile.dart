@@ -9,9 +9,9 @@ import '../../../common/widgets/taking_action_notifier.dart';
 class StudentListTile extends StatelessWidget {
   const StudentListTile(
     this.studentId, {
-    Key? key,
+    super.key,
     required this.modifyStudentCallback,
-  }) : super(key: key);
+  });
 
   final Function(Student) modifyStudentCallback;
   final String studentId;

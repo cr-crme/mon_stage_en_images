@@ -15,11 +15,11 @@ import '../../../common/providers/all_students.dart';
 class QuestionAndAnswerTile extends StatefulWidget {
   const QuestionAndAnswerTile(
     this.question, {
-    Key? key,
+    super.key,
     required this.studentId,
     required this.sectionIndex,
     required this.questionView,
-  }) : super(key: key);
+  });
 
   final int sectionIndex;
   final String? studentId;

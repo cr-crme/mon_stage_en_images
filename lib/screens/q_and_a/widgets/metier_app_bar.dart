@@ -11,11 +11,11 @@ import '../../../common/widgets/taking_action_notifier.dart';
 
 class MetierAppBar extends StatelessWidget {
   const MetierAppBar({
-    Key? key,
+    super.key,
     required this.selected,
     required this.onPageChanged,
     this.studentId,
-  }) : super(key: key);
+  });
 
   final int selected;
   final Function(int) onPageChanged;

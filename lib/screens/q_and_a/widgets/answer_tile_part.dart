@@ -12,10 +12,10 @@ import '../../../common/providers/login_information.dart';
 class AnswerPart extends StatefulWidget {
   const AnswerPart(
     this.question, {
-    Key? key,
+    super.key,
     required this.studentId,
     required this.onStateChange,
-  }) : super(key: key);
+  });
 
   final String? studentId;
   final Function(VoidCallback) onStateChange;

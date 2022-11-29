@@ -32,10 +32,10 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({
-    Key? key,
+    super.key,
     required this.userDatabase,
     required this.databaseClearerOptions,
-  }) : super(key: key);
+  });
 
   final UserDataBaseAbstract userDatabase;
   final DatabaseClearerOptions databaseClearerOptions;

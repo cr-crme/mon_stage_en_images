@@ -8,9 +8,9 @@ class Question extends CreationTimeItemSerializable {
     this.text, {
     required this.section,
     required this.defaultTarget,
-    String? id,
-    int? creationTimeStamp,
-  }) : super(id: id, creationTimeStamp: creationTimeStamp);
+    super.id,
+    super.creationTimeStamp,
+  });
   Question.fromSerialized(map)
       : text = map['text'],
         section = map['section'],

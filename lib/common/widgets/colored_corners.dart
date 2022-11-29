@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class ColoredCorners extends StatelessWidget {
   const ColoredCorners({
-    Key? key,
+    super.key,
     this.firstColor,
     this.secondColor,
     required this.child,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final LinearGradient? firstColor;

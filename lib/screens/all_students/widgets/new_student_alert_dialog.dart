@@ -8,10 +8,10 @@ import '../../../common/providers/all_questions.dart';
 
 class NewStudentAlertDialog extends StatefulWidget {
   const NewStudentAlertDialog({
-    Key? key,
+    super.key,
     this.student,
     this.deleteCallback,
-  }) : super(key: key);
+  });
 
   final Student? student;
   final Function(Student)? deleteCallback;
