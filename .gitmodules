@@ -1,0 +1,3 @@
+[submodule "external/enhanced_containers"]
+	path = external/enhanced_containers
+	url = git@github.com:cr-crme/enhanced_containers.git
