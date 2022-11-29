@@ -1,4 +1,4 @@
-import 'package:defi_photo/crcrme_enhanced_containers/lib/item_serializable.dart';
+import 'package:enhanced_containers/enhanced_containers.dart';
 
 import '../misc/database_helper.dart';
 
@@ -64,7 +64,6 @@ class User extends ItemSerializable {
     };
   }
 
-  @override
   User deserializeItem(map) {
     return User.fromSerialized(map);
   }

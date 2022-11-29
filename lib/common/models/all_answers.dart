@@ -1,4 +1,4 @@
-import 'package:defi_photo/crcrme_enhanced_containers/lib/map_serializable.dart';
+import 'package:enhanced_containers/map_serializable.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

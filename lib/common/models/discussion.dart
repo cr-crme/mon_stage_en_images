@@ -1,8 +1,8 @@
-import 'package:defi_photo/crcrme_enhanced_containers/lib/list_serializable.dart';
+import 'package:enhanced_containers/list_serializable.dart';
 
 import './message.dart';
 
-class Discussion extends ListSerializable<Message> with CreationTimedItems {
+class Discussion extends ListSerializable<Message> with ItemsWithCreationTimed {
   Discussion();
   Discussion.fromList(List<Message> discussion) {
     for (final message in discussion) {

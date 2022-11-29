@@ -1,4 +1,4 @@
-import 'package:defi_photo/crcrme_enhanced_containers/lib/firebase_list_provided.dart';
+import 'package:enhanced_containers/enhanced_containers.dart';
 
 import './all_students.dart';
 import '../models/answer.dart';

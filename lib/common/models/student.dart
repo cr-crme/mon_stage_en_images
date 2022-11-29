@@ -1,9 +1,9 @@
-import 'package:defi_photo/crcrme_enhanced_containers/lib/creation_time_item_serializable.dart';
+import 'package:enhanced_containers/item_serializable_with_creation_time.dart';
 
 import './all_answers.dart';
 import './company.dart';
 
-class Student extends CreationTimeItemSerializable {
+class Student extends ItemSerializableWithCreationTime {
   // Constructors and (de)serializer
   Student({
     required this.firstName,
@@ -62,7 +62,6 @@ class Student extends CreationTimeItemSerializable {
     };
   }
 
-  @override
   Student deserializeItem(map) {
     return Student.fromSerialized(map);
   }

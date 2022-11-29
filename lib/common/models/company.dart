@@ -1,4 +1,4 @@
-import 'package:defi_photo/crcrme_enhanced_containers/lib/item_serializable.dart';
+import 'package:enhanced_containers/item_serializable.dart';
 
 class Company extends ItemSerializable {
   Company({required this.name, super.id});
@@ -17,7 +17,6 @@ class Company extends ItemSerializable {
   @override
   String toString() => name.toString();
 
-  @override
   Company deserializeItem(map) {
     return Company.fromSerialized(map);
   }

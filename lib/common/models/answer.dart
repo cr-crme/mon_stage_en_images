@@ -1,4 +1,4 @@
-import 'package:defi_photo/crcrme_enhanced_containers/lib/creation_time_item_serializable.dart';
+import 'package:enhanced_containers/item_serializable_with_creation_time.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,7 +8,7 @@ import '../models/exceptions.dart';
 import '../providers/login_information.dart';
 import 'message.dart';
 
-class Answer extends CreationTimeItemSerializable {
+class Answer extends ItemSerializableWithCreationTime {
   // Constructors and (de)serializer
   Answer({
     Discussion? discussion,
@@ -53,7 +53,6 @@ class Answer extends CreationTimeItemSerializable {
     );
   }
 
-  @override
   Answer deserializeItem(map) {
     return Answer.fromSerialized(map);
   }
