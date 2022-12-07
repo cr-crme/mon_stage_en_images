@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../q_and_a/q_and_a_screen.dart';
-import '../../../common/models/student.dart';
-import '../../../common/providers/all_students.dart';
-import '../../../common/widgets/taking_action_notifier.dart';
+import '/common/models/student.dart';
+import '/common/providers/all_students.dart';
+import '/common/widgets/taking_action_notifier.dart';
+import '/screens/q_and_a/q_and_a_screen.dart';
 
 class StudentListTile extends StatelessWidget {
   const StudentListTile(

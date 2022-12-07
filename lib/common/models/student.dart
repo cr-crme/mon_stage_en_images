@@ -1,7 +1,7 @@
-import 'package:enhanced_containers/item_serializable_with_creation_time.dart';
+import 'package:enhanced_containers/enhanced_containers.dart';
 
-import './all_answers.dart';
-import './company.dart';
+import 'all_answers.dart';
+import 'company.dart';
 
 class Student extends ItemSerializableWithCreationTime {
   // Constructors and (de)serializer

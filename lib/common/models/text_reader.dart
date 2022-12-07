@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
-import './answer.dart';
-import './question.dart';
+import 'answer.dart';
+import 'question.dart';
 
 class TextReader {
   TextReader() {

@@ -1,6 +1,6 @@
-import 'package:enhanced_containers/list_serializable.dart';
+import 'package:enhanced_containers/enhanced_containers.dart';
 
-import './message.dart';
+import 'message.dart';
 
 class Discussion extends ListSerializable<Message> with ItemsWithCreationTimed {
   Discussion();

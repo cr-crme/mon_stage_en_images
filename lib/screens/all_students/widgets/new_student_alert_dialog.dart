@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../common/models/all_answers.dart';
-import '../../../common/models/company.dart';
-import '../../../common/models/student.dart';
-import '../../../common/providers/all_questions.dart';
+import '/common/models/all_answers.dart';
+import '/common/models/company.dart';
+import '/common/models/student.dart';
+import '/common/providers/all_questions.dart';
 
 class NewStudentAlertDialog extends StatefulWidget {
   const NewStudentAlertDialog({

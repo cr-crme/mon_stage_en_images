@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './discussion_list_view.dart';
-import '../../../common/models/enum.dart';
-import '../../../common/models/exceptions.dart';
-import '../../../common/models/message.dart';
-import '../../../common/models/question.dart';
-import '../../../common/providers/all_students.dart';
-import '../../../common/providers/login_information.dart';
+import '/common/models/enum.dart';
+import '/common/models/exceptions.dart';
+import '/common/models/message.dart';
+import '/common/models/question.dart';
+import '/common/providers/all_students.dart';
+import '/common/providers/login_information.dart';
+import 'discussion_list_view.dart';
 
 class AnswerPart extends StatefulWidget {
   const AnswerPart(

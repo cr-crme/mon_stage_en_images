@@ -2,15 +2,15 @@ import 'package:defi_photo/common/models/text_reader.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './question_tile_part.dart';
-import './answer_tile_part.dart';
-import '../../q_and_a/widgets/new_question_alert_dialog.dart';
-import '../../../common/models/answer.dart';
-import '../../../common/models/enum.dart';
-import '../../../common/models/question.dart';
-import '../../../common/models/student.dart';
-import '../../../common/providers/all_questions.dart';
-import '../../../common/providers/all_students.dart';
+import '/common/models/answer.dart';
+import '/common/models/enum.dart';
+import '/common/models/question.dart';
+import '/common/models/student.dart';
+import '/common/providers/all_questions.dart';
+import '/common/providers/all_students.dart';
+import '/screens/q_and_a/widgets/new_question_alert_dialog.dart';
+import 'answer_tile_part.dart';
+import 'question_tile_part.dart';
 
 class QuestionAndAnswerTile extends StatefulWidget {
   const QuestionAndAnswerTile(

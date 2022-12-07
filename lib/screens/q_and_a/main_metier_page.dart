@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '/common/models/student.dart';
 import 'widgets/metier_tile.dart';
-import '../../common/models/student.dart';
 
 class MainMetierPage extends StatelessWidget {
   const MainMetierPage({

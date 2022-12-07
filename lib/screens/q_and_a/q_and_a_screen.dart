@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/common/models/enum.dart';
+import '/common/models/section.dart';
+import '/common/models/student.dart';
+import '/common/providers/all_students.dart';
+import '/common/providers/login_information.dart';
+import '/common/widgets/main_drawer.dart';
+import '/screens/all_students/students_screen.dart';
 import 'main_metier_page.dart';
 import 'question_and_answer_page.dart';
 import 'widgets/metier_app_bar.dart';
-import '../all_students/students_screen.dart';
-import '../../common/widgets/main_drawer.dart';
-import '../../common/models/enum.dart';
-import '../../common/models/section.dart';
-import '../../common/models/student.dart';
-import '../../common/providers/all_students.dart';
-import '../../common/providers/login_information.dart';
 
 class QAndAScreen extends StatefulWidget {
   const QAndAScreen({super.key});

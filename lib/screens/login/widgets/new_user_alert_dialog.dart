@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../common/models/user.dart';
+import '/common/models/user.dart';
 
 class NewUserAlertDialog extends StatefulWidget {
   const NewUserAlertDialog({

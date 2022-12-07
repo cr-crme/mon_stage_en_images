@@ -1,15 +1,15 @@
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import './discussion_tile.dart';
-import '../../../common/misc/storage_service.dart';
-import '../../../common/models/answer.dart';
-import '../../../common/models/enum.dart';
-import '../../../common/models/message.dart';
-import '../../../common/models/student.dart';
-import '../../../common/providers/login_information.dart';
-import '../../../common/providers/speecher.dart';
+import '/common/misc/storage_service.dart';
+import '/common/models/answer.dart';
+import '/common/models/enum.dart';
+import '/common/models/message.dart';
+import '/common/models/student.dart';
+import '/common/providers/login_information.dart';
+import '/common/providers/speecher.dart';
+import 'discussion_tile.dart';
 
 class DiscussionListView extends StatefulWidget {
   const DiscussionListView({

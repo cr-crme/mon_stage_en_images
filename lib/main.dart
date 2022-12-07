@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './common/models/user_database_abstract.dart';
-import './common/models/user_database_firebase.dart';
-import './common/providers/all_questions.dart';
-import './common/providers/all_students.dart';
-import './common/providers/login_information.dart';
-import './common/providers/speecher.dart';
-import './common/widgets/database_clearer.dart';
-import './screens/all_students/students_screen.dart';
-import './screens/login/login_screen.dart';
-import './screens/q_and_a/q_and_a_screen.dart';
+import '/common/models/user_database_abstract.dart';
+import '/common/models/user_database_firebase.dart';
+import '/common/providers/all_questions.dart';
+import '/common/providers/all_students.dart';
+import '/common/providers/login_information.dart';
+import '/common/providers/speecher.dart';
+import '/common/widgets/database_clearer.dart';
+import '/screens/all_students/students_screen.dart';
+import '/screens/login/login_screen.dart';
+import '/screens/q_and_a/q_and_a_screen.dart';
 
 void main() async {
   // Initialization of the user database. If [useEmulator] is set to [true],

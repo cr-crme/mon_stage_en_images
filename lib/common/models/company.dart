@@ -1,4 +1,4 @@
-import 'package:enhanced_containers/item_serializable.dart';
+import 'package:enhanced_containers/enhanced_containers.dart';
 
 class Company extends ItemSerializable {
   Company({required this.name, super.id});

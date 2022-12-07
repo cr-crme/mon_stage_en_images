@@ -7,11 +7,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import './user_database_abstract.dart';
-import './enum.dart';
-import './user.dart' as local_user;
+import '/firebase_options.dart';
 import '../misc/database_helper.dart';
-import '../../firebase_options.dart';
+import 'enum.dart';
+import 'user.dart' as local_user;
+import 'user_database_abstract.dart';
 
 class UserDatabaseFirebase extends UserDataBaseAbstract {
   @override

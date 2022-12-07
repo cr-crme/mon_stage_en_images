@@ -3,6 +3,7 @@ import 'package:defi_photo/common/widgets/are_you_sure_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/screens/login/login_screen.dart';
 import '../models/all_answers.dart';
 import '../models/answer.dart';
 import '../models/company.dart';
@@ -10,10 +11,9 @@ import '../models/enum.dart';
 import '../models/message.dart';
 import '../models/question.dart';
 import '../models/student.dart';
-import '../providers/login_information.dart';
 import '../providers/all_questions.dart';
 import '../providers/all_students.dart';
-import '../../../../screens/login/login_screen.dart';
+import '../providers/login_information.dart';
 
 class DatabaseClearerOptions {
   const DatabaseClearerOptions({

@@ -1,11 +1,11 @@
 import 'package:enhanced_containers/enhanced_containers.dart';
 
-import './all_students.dart';
 import '../models/answer.dart';
 import '../models/enum.dart';
 import '../models/question.dart';
 import '../models/section.dart';
 import '../models/student.dart';
+import 'all_students.dart';
 
 class AllQuestions extends FirebaseListProvided<Question> with Section {
   // Constructors and (de)serializer

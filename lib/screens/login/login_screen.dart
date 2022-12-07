@@ -2,15 +2,15 @@ import 'package:defi_photo/common/widgets/colored_corners.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './widgets/change_password_alert_dialog.dart';
-import './widgets/new_user_alert_dialog.dart';
-import '../q_and_a/q_and_a_screen.dart';
+import '/common/models/enum.dart';
+import '/common/models/themes.dart';
+import '/common/models/user.dart';
+import '/common/providers/all_students.dart';
+import '/common/providers/login_information.dart';
 import '../all_students/students_screen.dart';
-import '../../common/models/enum.dart';
-import '../../common/models/themes.dart';
-import '../../common/models/user.dart';
-import '../../common/providers/all_students.dart';
-import '../../common/providers/login_information.dart';
+import '../q_and_a/q_and_a_screen.dart';
+import 'widgets/change_password_alert_dialog.dart';
+import 'widgets/new_user_alert_dialog.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

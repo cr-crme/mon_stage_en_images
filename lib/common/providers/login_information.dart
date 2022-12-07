@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './all_questions.dart';
-import './all_students.dart';
-import '../../default_questions.dart';
-import '../models/user_database_abstract.dart';
+import '/default_questions.dart';
 import '../models/enum.dart';
 import '../models/question.dart';
 import '../models/themes.dart';
 import '../models/user.dart';
+import '../models/user_database_abstract.dart';
+import 'all_questions.dart';
+import 'all_students.dart';
 
 class LoginInformation with ChangeNotifier {
   LoginInformation({required this.userDatabase});

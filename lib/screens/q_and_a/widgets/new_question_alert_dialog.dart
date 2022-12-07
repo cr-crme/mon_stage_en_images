@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../common/models/enum.dart';
-import '../../../common/models/question.dart';
-import '../../../common/models/student.dart';
-import '../../../common/widgets/are_you_sure_dialog.dart';
+import '/common/models/enum.dart';
+import '/common/models/question.dart';
+import '/common/models/student.dart';
+import '/common/widgets/are_you_sure_dialog.dart';
 
 class NewQuestionAlertDialog extends StatefulWidget {
   const NewQuestionAlertDialog({

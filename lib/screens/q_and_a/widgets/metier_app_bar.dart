@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../common/models/enum.dart';
-import '../../../common/models/student.dart';
-import '../../../common/models/section.dart';
-import '../../../common/providers/all_questions.dart';
-import '../../../common/providers/all_students.dart';
-import '../../../common/providers/login_information.dart';
-import '../../../common/widgets/taking_action_notifier.dart';
+import '/common/models/enum.dart';
+import '/common/models/student.dart';
+import '/common/models/section.dart';
+import '/common/providers/all_questions.dart';
+import '/common/providers/all_students.dart';
+import '/common/providers/login_information.dart';
+import '/common/widgets/taking_action_notifier.dart';
 
 class MetierAppBar extends StatelessWidget {
   const MetierAppBar({

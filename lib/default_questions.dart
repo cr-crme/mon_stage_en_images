@@ -1,5 +1,5 @@
-import './common/models/enum.dart';
-import './common/models/question.dart';
+import '/common/models/enum.dart';
+import '/common/models/question.dart';
 
 class DefaultQuestion {
   // These are the default questions when creating a new teacher

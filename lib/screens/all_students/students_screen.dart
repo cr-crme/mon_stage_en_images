@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './widgets/new_student_alert_dialog.dart';
-import './widgets/student_list_tile.dart';
-import '../../common/providers/all_questions.dart';
-import '../../common/providers/all_students.dart';
-import '../../common/providers/login_information.dart';
-import '../../common/models/answer.dart';
-import '../../common/models/enum.dart';
-import '../../common/models/student.dart';
-import '../../common/models/user.dart';
-import '../../common/widgets/database_clearer.dart';
-import '../../common/widgets/main_drawer.dart';
-import '../../common/widgets/are_you_sure_dialog.dart';
+import '/common/models/answer.dart';
+import '/common/models/enum.dart';
+import '/common/models/student.dart';
+import '/common/models/user.dart';
+import '/common/providers/all_questions.dart';
+import '/common/providers/all_students.dart';
+import '/common/providers/login_information.dart';
+import '/common/widgets/are_you_sure_dialog.dart';
+import '/common/widgets/database_clearer.dart';
+import '/common/widgets/main_drawer.dart';
+import 'widgets/new_student_alert_dialog.dart';
+import 'widgets/student_list_tile.dart';
 
 class StudentsScreen extends StatefulWidget {
   const StudentsScreen({

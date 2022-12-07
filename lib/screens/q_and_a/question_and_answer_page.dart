@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './widgets/question_and_answer_tile.dart';
-import '../../common/models/all_answers.dart';
-import '../../common/models/enum.dart';
-import '../../common/models/question.dart';
-import '../../common/models/section.dart';
-import '../../common/models/student.dart';
-import '../../common/providers/all_questions.dart';
-import '../../common/providers/all_students.dart';
-import '../../common/providers/login_information.dart';
+import '/common/models/all_answers.dart';
+import '/common/models/enum.dart';
+import '/common/models/question.dart';
+import '/common/models/section.dart';
+import '/common/models/student.dart';
+import '/common/providers/all_questions.dart';
+import '/common/providers/all_students.dart';
+import '/common/providers/login_information.dart';
+import 'widgets/question_and_answer_tile.dart';
 
 class QuestionAndAnswerPage extends StatelessWidget {
   const QuestionAndAnswerPage(this.sectionIndex,

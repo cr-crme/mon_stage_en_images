@@ -1,6 +1,6 @@
-import 'package:enhanced_containers/item_serializable_with_creation_time.dart';
+import 'package:enhanced_containers/enhanced_containers.dart';
 
-import '../../common/models/enum.dart';
+import '../models/enum.dart';
 
 class Question extends ItemSerializableWithCreationTime {
   // Constructors and (de)serializer

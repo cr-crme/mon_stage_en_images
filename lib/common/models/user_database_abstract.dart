@@ -1,5 +1,5 @@
-import './enum.dart';
-import './user.dart';
+import 'enum.dart';
+import 'user.dart';
 
 abstract class UserDataBaseAbstract {
   String pathToAllUsers = 'users';
