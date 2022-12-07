@@ -28,7 +28,10 @@ class MetierTile extends StatelessWidget {
 
     return TextStyle(
       color: activeQuestions > 0
-          ? (answeredQuestions >= activeQuestions ? Colors.black : Colors.red)
+          ? (answeredQuestions >= activeQuestions ||
+                  loginType == LoginType.student
+              ? Colors.black
+              : Colors.red)
           : Colors.grey,
       fontWeight: needAction > 0 ? FontWeight.bold : FontWeight.normal,
       fontSize: loginType == LoginType.student ? 20 : null,
