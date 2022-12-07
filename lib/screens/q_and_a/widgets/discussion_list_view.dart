@@ -28,7 +28,7 @@ class DiscussionListView extends StatefulWidget {
 }
 
 class _DiscussionListViewState extends State<DiscussionListView> {
-  final fieldText = TextEditingController();
+  final _fieldText = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isVoiceRecording = false;
   String? _newMessage;
@@ -36,11 +36,11 @@ class _DiscussionListViewState extends State<DiscussionListView> {
   @override
   void dispose() {
     super.dispose();
-    fieldText.dispose();
+    _fieldText.dispose();
   }
 
   void _clearFieldText() {
-    fieldText.clear();
+    _fieldText.clear();
     setState(() {});
   }
 
@@ -96,7 +96,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
   }
 
   void _onDictatedMessage(String message) {
-    widget.addMessageCallback(message);
+    _fieldText.text += ' $message';
     _terminateDictate();
   }
 
@@ -140,12 +140,12 @@ class _DiscussionListViewState extends State<DiscussionListView> {
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      IconButton(
-                        icon: Icon(
+                      GestureDetector(
+                        onTapDown: (_) => _dictateMessage(),
+                        child: Icon(
                           Icons.mic,
                           color: _isVoiceRecording ? Colors.red : Colors.grey,
                         ),
-                        onPressed: _dictateMessage,
                       ),
                       IconButton(
                         icon: const Icon(Icons.send),
@@ -156,7 +156,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
                 ),
                 onSaved: (value) => _newMessage = value,
                 onFieldSubmitted: (value) => _sendMessage(),
-                controller: fieldText,
+                controller: _fieldText,
               ),
             ),
           ),
