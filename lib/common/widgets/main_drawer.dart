@@ -27,20 +27,16 @@ class MainDrawer extends StatelessWidget {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (loginType == LoginType.student)
-              MenuItem(
-                  title: 'Retour',
-                  onTap: () => Navigator.of(context).pushReplacementNamed(
-                      QAndAScreen.routeName,
-                      arguments: student)),
             if (loginType == LoginType.teacher)
               MenuItem(
                   title: 'Élèves',
+                  icon: Icons.person,
                   onTap: () => Navigator.of(context)
                       .pushNamed(StudentsScreen.routeName)),
             if (loginType == LoginType.teacher)
               MenuItem(
                   title: 'Gestion des questions',
+                  icon: Icons.question_answer,
                   onTap: () =>
                       Navigator.of(context).pushNamed(QAndAScreen.routeName)),
             if (loginType == LoginType.teacher &&
@@ -50,11 +46,13 @@ class MainDrawer extends StatelessWidget {
                 options: databaseClearerOptions!,
                 child: const MenuItem(
                     title: "Réinitialiser la\nbase de donnée",
+                    icon: Icons.delete,
                     iconColor: Colors.red),
               ),
             // const DatabaseDebugger(),
             MenuItem(
                 title: 'Déconnexion',
+                icon: Icons.exit_to_app,
                 onTap: () => Navigator.of(context)
                     .pushReplacementNamed(LoginScreen.routeName)),
           ],
@@ -65,11 +63,17 @@ class MainDrawer extends StatelessWidget {
 }
 
 class MenuItem extends StatelessWidget {
-  const MenuItem({super.key, required this.title, this.onTap, this.iconColor});
+  const MenuItem(
+      {super.key,
+      required this.title,
+      required this.icon,
+      this.onTap,
+      this.iconColor});
 
   final String title;
   final VoidCallback? onTap;
   final Color? iconColor;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +81,7 @@ class MenuItem extends StatelessWidget {
       elevation: 1,
       child: ListTile(
         leading: Icon(
-          Icons.cottage,
+          icon,
           color: iconColor ?? Theme.of(context).colorScheme.secondary,
         ),
         title: Text(title, style: Theme.of(context).textTheme.titleLarge),
