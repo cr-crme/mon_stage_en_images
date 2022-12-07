@@ -64,6 +64,32 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
 
   Future<void> _addOrModifyQuestion() async {
     final questions = Provider.of<AllQuestions>(context, listen: false);
+
+    // Make sure no student already responded to the question
+    // If so, prevent from modifying it
+    var hasAnswers = false;
+    if (widget.question != null) {
+      for (final student in _students) {
+        if (student.allAnswers[widget.question!]!.hasAnswer) {
+          hasAnswers = true;
+          break;
+        }
+      }
+    }
+
+    if (hasAnswers) {
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) => const AlertDialog(
+          content: Text(
+            'Il n\'est pas possible de modifier le libellé d\'une question '
+            'si au moins un élève a déjà répondu',
+          ),
+        ),
+      );
+      return;
+    }
+
     final currentStudent =
         ModalRoute.of(context)!.settings.arguments as Student?;
 
