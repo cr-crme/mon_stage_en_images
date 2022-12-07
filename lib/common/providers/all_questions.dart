@@ -67,10 +67,7 @@ class AllQuestions extends FirebaseListProvided<Question> with Section {
       students.setAnswer(
           student: student,
           question: question,
-          answer: answer.copyWith(
-              actionRequired: answer.isActive
-                  ? ActionRequired.fromStudent
-                  : ActionRequired.none));
+          answer: answer.copyWith(isActive: answer.isActive));
     }
   }
 
