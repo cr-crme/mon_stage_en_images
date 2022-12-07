@@ -132,6 +132,8 @@ class _DiscussionListViewState extends State<DiscussionListView> {
             child: Form(
               key: _formKey,
               child: TextFormField(
+                autocorrect:
+                    loginInfo.loginType == LoginType.student ? false : true,
                 decoration: InputDecoration(
                   labelText: 'Ajouter un commentaire',
                   suffixIcon: Row(
