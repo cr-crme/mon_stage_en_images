@@ -1,35 +1,34 @@
-import 'package:enhanced_containers/enhanced_containers.dart';
+import 'package:ezlogin/ezlogin.dart';
 
-import '../misc/database_helper.dart';
+import 'enum.dart';
 
-class User extends ItemSerializable {
+class User extends EzloginUser {
   // Constructors and (de)serializer
   User({
     required this.firstName,
     required this.lastName,
-    required this.email,
+    required super.email,
     required this.addedBy,
-    required this.isStudent,
-    required this.shouldChangePassword,
+    required this.userType,
+    required super.shouldChangePassword,
     this.studentId,
-    id,
-  }) : super(id: id ??= emailToPath(email));
+    super.id,
+  });
   User.fromSerialized(map)
       : firstName = map['firstName'],
         lastName = map['lastName'],
-        email = map['email'],
         addedBy = map['addedBy'],
-        isStudent = map['isStudent'],
-        shouldChangePassword = map[shouldChangePasswordNameField],
+        userType = UserType.values[map['userType']],
         studentId = map['studentId'],
         super.fromSerialized(map);
 
+  @override
   User copyWith({
     String? firstName,
     String? lastName,
     String? email,
     String? addedBy,
-    bool? isStudent,
+    UserType? userType,
     bool? shouldChangePassword,
     String? id,
   }) {
@@ -37,7 +36,7 @@ class User extends ItemSerializable {
     lastName ??= this.lastName;
     email ??= this.email;
     addedBy ??= this.addedBy;
-    isStudent ??= this.isStudent;
+    userType ??= this.userType;
     shouldChangePassword ??= this.shouldChangePassword;
     id ??= this.id;
     return User(
@@ -45,7 +44,7 @@ class User extends ItemSerializable {
       lastName: lastName,
       email: email,
       addedBy: addedBy,
-      isStudent: isStudent,
+      userType: userType,
       shouldChangePassword: shouldChangePassword,
       id: id,
     );
@@ -53,17 +52,17 @@ class User extends ItemSerializable {
 
   @override
   Map<String, dynamic> serializedMap() {
-    return {
-      'firstName': firstName,
-      'lastName': lastName,
-      'email': email,
-      'addedBy': addedBy,
-      'isStudent': isStudent,
-      shouldChangePasswordNameField: shouldChangePassword,
-      'studentId': studentId,
-    };
+    return super.serializedMap()
+      ..addAll({
+        'firstName': firstName,
+        'lastName': lastName,
+        'addedBy': addedBy,
+        'userType': userType.index,
+        'studentId': studentId,
+      });
   }
 
+  @override
   User deserializeItem(map) {
     return User.fromSerialized(map);
   }
@@ -71,13 +70,8 @@ class User extends ItemSerializable {
   // Attributes and methods
   final String firstName;
   final String lastName;
-  final String email;
   final String addedBy;
-  final bool isStudent;
-  final bool shouldChangePassword;
-
-  /// If [shouldChangePassword] ever change, the nameField should be updated
-  static const String shouldChangePasswordNameField = 'shouldChangePassword';
+  final UserType userType;
   final String? studentId;
 
   @override

@@ -16,22 +16,10 @@ enum ActionRequired {
   fromTeacher,
 }
 
-enum LoginType {
+enum UserType {
   none,
   teacher,
   student,
-}
-
-enum LoginStatus {
-  none,
-  waitingForLogin,
-  success,
-  newUser,
-  couldNotCreateUser,
-  wrongUsername,
-  wrongPassword,
-  unrecognizedError,
-  cancelled,
 }
 
 enum QuestionView {

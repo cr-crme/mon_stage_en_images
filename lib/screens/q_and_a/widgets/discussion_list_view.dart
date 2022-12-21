@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 
 import '/common/misc/storage_service.dart';
 import '/common/models/answer.dart';
+import '/common/models/database.dart';
 import '/common/models/enum.dart';
 import '/common/models/message.dart';
 import '/common/models/student.dart';
-import '/common/providers/login_information.dart';
 import '/common/providers/speecher.dart';
 import 'discussion_tile.dart';
 
@@ -102,7 +102,8 @@ class _DiscussionListViewState extends State<DiscussionListView> {
 
   @override
   Widget build(BuildContext context) {
-    final loginInfo = Provider.of<LoginInformation>(context, listen: false);
+    final userType =
+        Provider.of<Database>(context, listen: false).currentUser!.userType;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,8 +111,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
         _MessageListView(
           discussion: widget.answer!.discussion.toListByTime(reversed: true),
         ),
-        if (loginInfo.loginType == LoginType.student &&
-            !widget.answer!.isValidated)
+        if (userType == UserType.student && !widget.answer!.isValidated)
           TextButton(
             onPressed: _addPhoto,
             style: TextButton.styleFrom(backgroundColor: Colors.grey[700]),
@@ -132,8 +132,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
             child: Form(
               key: _formKey,
               child: TextFormField(
-                autocorrect:
-                    loginInfo.loginType == LoginType.student ? false : true,
+                autocorrect: userType == UserType.student ? false : true,
                 decoration: InputDecoration(
                   labelText: 'Ajouter un commentaire',
                   suffixIcon: Row(

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/all_answers.dart';
+import '/common/models/database.dart';
 import '/common/models/enum.dart';
 import '/common/models/question.dart';
 import '/common/models/section.dart';
 import '/common/models/student.dart';
 import '/common/providers/all_questions.dart';
 import '/common/providers/all_students.dart';
-import '/common/providers/login_information.dart';
 import 'widgets/question_and_answer_tile.dart';
 
 class QuestionAndAnswerPage extends StatelessWidget {
@@ -23,8 +23,8 @@ class QuestionAndAnswerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final allStudents = Provider.of<AllStudents>(context, listen: false);
-    final loginType =
-        Provider.of<LoginInformation>(context, listen: false).loginType;
+    final userType =
+        Provider.of<Database>(context, listen: false).currentUser!.userType;
     late Student? student;
 
     final questions = Provider.of<AllQuestions>(context, listen: true)
@@ -53,7 +53,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if (loginType == LoginType.teacher)
+          if (userType == UserType.teacher)
             Container(
               padding: const EdgeInsets.only(left: 5, top: 15),
               child: Text(Section.name(sectionIndex),

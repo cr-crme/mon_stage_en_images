@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '/common/models/enum.dart';
 import '/common/models/user.dart';
 
 class NewUserAlertDialog extends StatefulWidget {
@@ -35,7 +36,7 @@ class _NewUserAlertDialogState extends State<NewUserAlertDialog> {
       lastName: _lastName!,
       email: widget.email,
       addedBy: 'Administrator',
-      isStudent: false,
+      userType: UserType.teacher,
       shouldChangePassword: true,
     );
 

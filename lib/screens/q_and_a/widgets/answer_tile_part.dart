@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/common/models/database.dart';
 import '/common/models/enum.dart';
 import '/common/models/exceptions.dart';
 import '/common/models/message.dart';
 import '/common/models/question.dart';
 import '/common/providers/all_students.dart';
-import '/common/providers/login_information.dart';
 import 'discussion_list_view.dart';
 
 class AnswerPart extends StatefulWidget {
@@ -28,7 +28,8 @@ class AnswerPart extends StatefulWidget {
 class _AnswerPartState extends State<AnswerPart> {
   Future<void> _addAnswerCallback(String answerText,
       {bool isPhoto = false}) async {
-    final loginInfo = Provider.of<LoginInformation>(context, listen: false);
+    final currentUser =
+        Provider.of<Database>(context, listen: false).currentUser!;
     final students = Provider.of<AllStudents>(context, listen: false);
     final student =
         widget.studentId != null ? students[widget.studentId] : null;
@@ -36,17 +37,17 @@ class _AnswerPartState extends State<AnswerPart> {
     final currentAnswer = student!.allAnswers[widget.question]!;
 
     currentAnswer.addToDiscussion(Message(
-      name: loginInfo.user!.firstName,
+      name: currentUser.firstName,
       text: answerText,
       isPhotoUrl: isPhoto,
-      creatorId: loginInfo.user!.id,
+      creatorId: currentUser.id,
     ));
 
     // Inform the changing of status
     late final ActionRequired newStatus;
-    if (loginInfo.loginType == LoginType.student) {
+    if (currentUser.userType == UserType.student) {
       newStatus = ActionRequired.fromTeacher;
-    } else if (loginInfo.loginType == LoginType.teacher) {
+    } else if (currentUser.userType == UserType.teacher) {
       newStatus = ActionRequired.fromStudent;
     } else {
       throw const NotLoggedIn();

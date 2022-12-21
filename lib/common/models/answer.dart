@@ -2,10 +2,10 @@ import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/discussion.dart';
-import '../models/enum.dart';
-import '../models/exceptions.dart';
-import '../providers/login_information.dart';
+import '/common/models/database.dart';
+import '/common/models/discussion.dart';
+import '/common/models/enum.dart';
+import '/common/models/exceptions.dart';
 import 'message.dart';
 
 class Answer extends ItemSerializableWithCreationTime {
@@ -77,16 +77,16 @@ class Answer extends ItemSerializableWithCreationTime {
   ActionRequired action(BuildContext context) {
     if (!isActive) return ActionRequired.none;
 
-    final loginType =
-        Provider.of<LoginInformation>(context, listen: false).loginType;
-    if (loginType == LoginType.none) {
+    final userType =
+        Provider.of<Database>(context, listen: false).currentUser!.userType;
+    if (userType == UserType.none) {
       throw const NotLoggedIn();
     }
 
-    if (loginType == LoginType.student &&
+    if (userType == UserType.student &&
         actionRequired == ActionRequired.fromStudent) {
       return ActionRequired.fromStudent;
-    } else if (loginType == LoginType.teacher &&
+    } else if (userType == UserType.teacher &&
         actionRequired == ActionRequired.fromTeacher) {
       return ActionRequired.fromTeacher;
     } else {

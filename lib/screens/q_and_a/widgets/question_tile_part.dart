@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/answer.dart';
+import '/common/models/database.dart';
 import '/common/models/enum.dart';
 import '/common/models/exceptions.dart';
 import '/common/models/question.dart';
 import '/common/models/student.dart';
-import '/common/providers/all_students.dart';
 import '/common/providers/all_questions.dart';
-import '/common/providers/login_information.dart';
+import '/common/providers/all_students.dart';
 import '/common/widgets/are_you_sure_dialog.dart';
 import '/common/widgets/taking_action_notifier.dart';
 
@@ -44,11 +44,11 @@ class QuestionPart extends StatelessWidget {
     if (answer == null) {
       return const TextStyle();
     }
-    final loginType =
-        Provider.of<LoginInformation>(context, listen: false).loginType;
+    final userType =
+        Provider.of<Database>(context, listen: false).currentUser!.userType;
 
     return TextStyle(
-      color: loginType == LoginType.student ||
+      color: userType == UserType.student ||
               answer.isAnswered ||
               answer.isValidated
           ? Colors.black
@@ -56,11 +56,11 @@ class QuestionPart extends StatelessWidget {
               ? Colors.red
               : Colors.grey,
       fontWeight: answer.action(context) != ActionRequired.none
-          ? loginType == LoginType.teacher
+          ? userType == UserType.teacher
               ? FontWeight.w900
               : FontWeight.bold
           : FontWeight.normal,
-      fontSize: loginType == LoginType.student ? 20 : null,
+      fontSize: userType == UserType.student ? 20 : null,
     );
   }
 
@@ -137,10 +137,10 @@ class _QuestionPartTrailing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loginType =
-        Provider.of<LoginInformation>(context, listen: false).loginType;
+    final userType =
+        Provider.of<Database>(context, listen: false).currentUser!.userType;
 
-    if (loginType == LoginType.student) {
+    if (userType == UserType.student) {
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -159,7 +159,7 @@ class _QuestionPartTrailing extends StatelessWidget {
                   icon: const Icon(Icons.volume_up)),
         ],
       );
-    } else if (loginType == LoginType.teacher) {
+    } else if (userType == UserType.teacher) {
       return question == null
           ? _QuestionAddButton(newQuestionCallback: onChangeQuestionRequest)
           : questionView != QuestionView.normal

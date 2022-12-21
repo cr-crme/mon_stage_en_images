@@ -38,6 +38,7 @@ dependencies:
     firebase_storage: ^11.0.3
     firebase_database: ^10.0.3
     enhanced_containers: ^0.1.0
+    ezlogin: ^1.0.0
 
     # The following adds the Cupertino Icons font to your application.
     # Use with the CupertinoIcons class for iOS style icons.
@@ -49,6 +50,8 @@ dependencies:
 dependency_overrides:
     enhanced_containers:
         path: ./external/enhanced_containers 
+    ezlogin:
+        path: ./external/ezlogin 
 
 dev_dependencies:
     # The "flutter_lints" package below contains a set of recommended lints to

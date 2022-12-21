@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/common/models/database.dart';
 import '/common/models/enum.dart';
 import '/common/models/message.dart';
 import '/common/models/themes.dart';
-import '/common/providers/login_information.dart';
 
 class DiscussionTile extends StatelessWidget {
   const DiscussionTile({
@@ -16,24 +16,25 @@ class DiscussionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final login = Provider.of<LoginInformation>(context, listen: false);
+    final currentUser =
+        Provider.of<Database>(context, listen: false).currentUser!;
 
-    final Color myColor = login.loginType == LoginType.student
+    final Color myColor = currentUser.userType == UserType.student
         ? studentTheme().colorScheme.primary
         : teacherTheme().colorScheme.primary;
-    final Color otherColor = login.loginType == LoginType.student
+    final Color otherColor = currentUser.userType == UserType.student
         ? teacherTheme().colorScheme.primary
         : studentTheme().colorScheme.primary;
 
     return Padding(
-      padding: discussion.creatorId == login.user!.id
+      padding: discussion.creatorId == currentUser.id
           ? const EdgeInsets.only(left: 30.0)
           : const EdgeInsets.only(right: 30.0),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: discussion.creatorId == login.user!.id
+          color: discussion.creatorId == currentUser.id
               ? myColor.withAlpha(80)
               : otherColor.withAlpha(80),
         ),

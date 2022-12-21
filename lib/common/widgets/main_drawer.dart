@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/common/models/database.dart';
 import '/screens/all_students/students_screen.dart';
 import '/screens/login/login_screen.dart';
 import '/screens/q_and_a/q_and_a_screen.dart';
 import '../models/enum.dart';
 import '../models/student.dart';
-import '../providers/login_information.dart';
 import 'database_clearer.dart';
 
 class MainDrawer extends StatelessWidget {
@@ -17,8 +17,8 @@ class MainDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loginType =
-        Provider.of<LoginInformation>(context, listen: false).loginType;
+    final userType =
+        Provider.of<Database>(context, listen: false).currentUser!.userType;
 
     return Drawer(
       child: Scaffold(
@@ -27,19 +27,19 @@ class MainDrawer extends StatelessWidget {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (loginType == LoginType.teacher)
+            if (userType == UserType.teacher)
               MenuItem(
                   title: 'Élèves',
                   icon: Icons.person,
                   onTap: () => Navigator.of(context)
                       .pushNamed(StudentsScreen.routeName)),
-            if (loginType == LoginType.teacher)
+            if (userType == UserType.teacher)
               MenuItem(
                   title: 'Gestion des questions',
                   icon: Icons.question_answer,
                   onTap: () =>
                       Navigator.of(context).pushNamed(QAndAScreen.routeName)),
-            if (loginType == LoginType.teacher &&
+            if (userType == UserType.teacher &&
                 databaseClearerOptions != null &&
                 databaseClearerOptions!.allowClearing)
               DatabaseClearer(

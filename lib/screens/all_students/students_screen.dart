@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/answer.dart';
+import '/common/models/database.dart';
 import '/common/models/enum.dart';
 import '/common/models/student.dart';
 import '/common/models/user.dart';
 import '/common/providers/all_questions.dart';
 import '/common/providers/all_students.dart';
-import '/common/providers/login_information.dart';
 import '/common/widgets/are_you_sure_dialog.dart';
 import '/common/widgets/database_clearer.dart';
 import '/common/widgets/main_drawer.dart';
@@ -39,8 +39,7 @@ void _showSnackbar(String message, ScaffoldMessengerState scaffold) {
 class _StudentsScreenState extends State<StudentsScreen> {
   Future<void> _showNewStudent() async {
     final scaffold = ScaffoldMessenger.of(context);
-    final loginInformation =
-        Provider.of<LoginInformation>(context, listen: false);
+    final database = Provider.of<Database>(context, listen: false);
     final students = Provider.of<AllStudents>(context, listen: false);
     final questions = Provider.of<AllQuestions>(context, listen: false);
 
@@ -56,20 +55,20 @@ class _StudentsScreenState extends State<StudentsScreen> {
       return;
     }
 
-    final status = await loginInformation.addUserToDatabase(
+    final status = await database.addUser(
       newUser: User(
         firstName: student.firstName,
         lastName: student.lastName,
         email: student.email,
-        addedBy: loginInformation.user!.id,
-        isStudent: true,
+        addedBy: database.currentUser!.id,
+        userType: UserType.student,
         shouldChangePassword: true,
         studentId: student.id,
       ),
       password: 'defiPhoto',
     );
-    if (status != LoginStatus.success) {
-      final message = status == LoginStatus.couldNotCreateUser
+    if (status != EzloginStatus.success) {
+      final message = status == EzloginStatus.couldNotCreateUser
           ? 'Échec de l\'ajout de l\'étudiant(e). Il n\'est pas possible '
               'd\'ajouter deux étudiant(e) avec la même adresse.'
           : 'Erreur inconnue lors de l\'ajout de l\'étudiant(e)';
@@ -88,8 +87,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
 
   Future<void> _modifyStudent(Student student) async {
     final scaffold = ScaffoldMessenger.of(context);
-    final loginInformation =
-        Provider.of<LoginInformation>(context, listen: false);
+    final database = Provider.of<Database>(context, listen: false);
     final students = Provider.of<AllStudents>(context, listen: false);
 
     final newInfo = await showDialog<Student>(
@@ -104,15 +102,19 @@ class _StudentsScreenState extends State<StudentsScreen> {
     );
     if (newInfo == null) return;
 
-    final user = await loginInformation.getUserFromDatabase(student.email);
+    final user = await database.user(student.email);
     if (user == null) {
       _showSnackbar('Étudiant(e) n\'a pas été trouvé(e) dans la base de donnée',
           scaffold);
       return;
     }
-    final status = await loginInformation.modifyUserFromDatabase(user.copyWith(
-        firstName: newInfo.firstName, lastName: newInfo.lastName, id: user.id));
-    if (status != LoginStatus.success) {
+    final status = await database.modifyUser(
+        user: user,
+        newInfo: user.copyWith(
+            firstName: newInfo.firstName,
+            lastName: newInfo.lastName,
+            id: user.id));
+    if (status != EzloginStatus.success) {
       _showSnackbar('Échec de la modification de l\'étudiant', scaffold);
       return;
     }
@@ -128,8 +130,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
 
   Future<void> _removeStudent(Student student) async {
     final scaffold = ScaffoldMessenger.of(context);
-    final loginInformation =
-        Provider.of<LoginInformation>(context, listen: false);
+    final database = Provider.of<Database>(context, listen: false);
     final students = Provider.of<AllStudents>(context, listen: false);
 
     final sure = await showDialog<bool>(
@@ -149,8 +150,10 @@ class _StudentsScreenState extends State<StudentsScreen> {
       return;
     }
 
-    var status = await loginInformation.deleteUserFromDatabase(student.email);
-    if (status != LoginStatus.success) {
+    final studentUser = await database.user(student.email);
+    if (studentUser == null) return;
+    var status = await database.deleteUser(user: studentUser);
+    if (status != EzloginStatus.success) {
       _showSnackbar(
           'La supression d\'étudiant n\'est pas encore disponible.', scaffold);
       return;

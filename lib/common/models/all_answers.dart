@@ -2,8 +2,8 @@ import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/question.dart';
-import '../providers/login_information.dart';
+import '/common/models/database.dart';
+import '/common/models/question.dart';
 import 'answer.dart';
 import 'enum.dart';
 import 'exceptions.dart';
@@ -53,11 +53,11 @@ class AllAnswers extends MapSerializable<Answer> {
   }
 
   int numberOfActionsRequired(BuildContext context) {
-    final loginType =
-        Provider.of<LoginInformation>(context, listen: false).loginType;
-    if (loginType == LoginType.student) {
+    final userType =
+        Provider.of<Database>(context, listen: false).currentUser!.userType;
+    if (userType == UserType.student) {
       return numberNeedStudentAction(context);
-    } else if (loginType == LoginType.teacher) {
+    } else if (userType == UserType.teacher) {
       return numberNeedTeacherAction(context);
     } else {
       throw const NotLoggedIn();

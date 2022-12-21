@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/all_answers.dart';
+import '/common/models/database.dart';
 import '/common/models/enum.dart';
 import '/common/models/exceptions.dart';
 import '/common/models/section.dart';
-import '/common/widgets/taking_action_notifier.dart';
 import '/common/providers/all_questions.dart';
 import '/common/providers/all_students.dart';
-import '/common/providers/login_information.dart';
+import '/common/widgets/taking_action_notifier.dart';
 
 class MetierTile extends StatelessWidget {
   const MetierTile(this.sectionIndex,
@@ -23,18 +23,18 @@ class MetierTile extends StatelessWidget {
     if (activeQuestions == null || answeredQuestions == null) {
       return const TextStyle();
     }
-    final loginType =
-        Provider.of<LoginInformation>(context, listen: false).loginType;
+    final userType =
+        Provider.of<Database>(context, listen: false).currentUser!.userType;
 
     return TextStyle(
       color: activeQuestions > 0
           ? (answeredQuestions >= activeQuestions ||
-                  loginType == LoginType.student
+                  userType == UserType.student
               ? Colors.black
               : Colors.red)
           : Colors.grey,
       fontWeight: needAction > 0 ? FontWeight.bold : FontWeight.normal,
-      fontSize: loginType == LoginType.student ? 20 : null,
+      fontSize: userType == UserType.student ? 20 : null,
     );
   }
 
@@ -45,8 +45,8 @@ class MetierTile extends StatelessWidget {
 
     final questions = Provider.of<AllQuestions>(context, listen: false)
         .fromSection(sectionIndex);
-    final loginType =
-        Provider.of<LoginInformation>(context, listen: false).loginType;
+    final userType =
+        Provider.of<Database>(context, listen: false).currentUser!.userType;
 
     late final AllAnswers? answers;
     late final int? answered;
@@ -70,7 +70,7 @@ class MetierTile extends StatelessWidget {
         child: TakingActionNotifier(
           left: 6,
           top: -5,
-          number: loginType == LoginType.student || numberOfActions == 0
+          number: userType == UserType.student || numberOfActions == 0
               ? null
               : numberOfActions,
           child: ListTile(
@@ -89,7 +89,7 @@ class MetierTile extends StatelessWidget {
               style: _pickTextStyle(context, active, answered, numberOfActions),
             ),
             trailing: _trailingBuilder(
-                context, loginType, numberOfActions, answers, answered, active),
+                context, userType, numberOfActions, answers, answered, active),
             onTap: () => onTap(sectionIndex),
           ),
         ),
@@ -97,16 +97,16 @@ class MetierTile extends StatelessWidget {
     );
   }
 
-  Widget? _trailingBuilder(BuildContext context, LoginType loginType,
+  Widget? _trailingBuilder(BuildContext context, UserType userType,
       int numberOfActions, AllAnswers? answers, int? answered, int? active) {
-    if (loginType == LoginType.student) {
+    if (userType == UserType.student) {
       return numberOfActions > 0
           ? TakingActionNotifier(
               number: numberOfActions,
               borderColor: Colors.black,
             )
           : null;
-    } else if (loginType == LoginType.teacher) {
+    } else if (userType == UserType.teacher) {
       return answers != null
           ? Text('$answered / $active',
               style: _pickTextStyle(context, active, answered, numberOfActions))

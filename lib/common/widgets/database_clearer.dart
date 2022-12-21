@@ -1,19 +1,19 @@
-import 'package:defi_photo/common/models/discussion.dart';
-import 'package:defi_photo/common/widgets/are_you_sure_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/common/models/all_answers.dart';
+import '/common/models/answer.dart';
+import '/common/models/company.dart';
+import '/common/models/discussion.dart';
+import '/common/models/enum.dart';
+import '/common/models/message.dart';
+import '/common/models/question.dart';
+import '/common/models/student.dart';
+import '/common/providers/all_questions.dart';
+import '/common/providers/all_students.dart';
+import '/common/widgets/are_you_sure_dialog.dart';
 import '/screens/login/login_screen.dart';
-import '../models/all_answers.dart';
-import '../models/answer.dart';
-import '../models/company.dart';
-import '../models/enum.dart';
-import '../models/message.dart';
-import '../models/question.dart';
-import '../models/student.dart';
-import '../providers/all_questions.dart';
-import '../providers/all_students.dart';
-import '../providers/login_information.dart';
+import '../models/database.dart';
 
 class DatabaseClearerOptions {
   const DatabaseClearerOptions({
@@ -46,7 +46,7 @@ class DatabaseClearer extends StatefulWidget {
 }
 
 class _DatabaseClearerState extends State<DatabaseClearer> {
-  late LoginInformation _login;
+  late Database _login;
   late AllStudents _students;
   late AllQuestions _questions;
 
@@ -72,7 +72,7 @@ class _DatabaseClearerState extends State<DatabaseClearer> {
   }
 
   void _clearAll() {
-    _login.userDatabase.deleteUsersInfo();
+    _login.clearUsers();
     _questions.clear(confirm: true);
     _students.clear(confirm: true);
 
@@ -198,13 +198,17 @@ class _DatabaseClearerState extends State<DatabaseClearer> {
               actionRequired: ActionRequired.fromTeacher,
               discussion: Discussion.fromList([
                 Message(
-                    name: 'Prof', text: 'Coucou', creatorId: _login.user!.id),
+                    name: 'Prof',
+                    text: 'Coucou',
+                    creatorId: _login.currentUser!.id),
                 Message(
                     name: 'Aurélie',
                     text: 'Non pas coucou',
                     creatorId: aurelie.id),
                 Message(
-                    name: 'Prof', text: 'Coucou', creatorId: _login.user!.id),
+                    name: 'Prof',
+                    text: 'Coucou',
+                    creatorId: _login.currentUser!.id),
                 Message(
                     name: 'Aurélie',
                     text:
@@ -213,25 +217,33 @@ class _DatabaseClearerState extends State<DatabaseClearer> {
                     isPhotoUrl: true,
                     creatorId: aurelie.id),
                 Message(
-                    name: 'Prof', text: 'Coucou', creatorId: _login.user!.id),
+                    name: 'Prof',
+                    text: 'Coucou',
+                    creatorId: _login.currentUser!.id),
                 Message(
                     name: 'Aurélie',
                     text: 'Non pas coucou',
                     creatorId: aurelie.id),
                 Message(
-                    name: 'Prof', text: 'Coucou', creatorId: _login.user!.id),
+                    name: 'Prof',
+                    text: 'Coucou',
+                    creatorId: _login.currentUser!.id),
                 Message(
                     name: 'Aurélie',
                     text: 'Non pas coucou',
                     creatorId: aurelie.id),
                 Message(
-                    name: 'Prof', text: 'Coucou', creatorId: _login.user!.id),
+                    name: 'Prof',
+                    text: 'Coucou',
+                    creatorId: _login.currentUser!.id),
                 Message(
                     name: 'Aurélie',
                     text: 'Non pas coucou',
                     creatorId: aurelie.id),
                 Message(
-                    name: 'Prof', text: 'Coucou', creatorId: _login.user!.id),
+                    name: 'Prof',
+                    text: 'Coucou',
+                    creatorId: _login.currentUser!.id),
                 Message(
                     name: 'Aurélie',
                     text:
@@ -240,19 +252,25 @@ class _DatabaseClearerState extends State<DatabaseClearer> {
                     isPhotoUrl: true,
                     creatorId: aurelie.id),
                 Message(
-                    name: 'Prof', text: 'Coucou', creatorId: _login.user!.id),
+                    name: 'Prof',
+                    text: 'Coucou',
+                    creatorId: _login.currentUser!.id),
                 Message(
                     name: 'Aurélie',
                     text: 'Non pas coucou',
                     creatorId: aurelie.id),
                 Message(
-                    name: 'Prof', text: 'Coucou', creatorId: _login.user!.id),
+                    name: 'Prof',
+                    text: 'Coucou',
+                    creatorId: _login.currentUser!.id),
                 Message(
                     name: 'Aurélie',
                     text: 'Non pas coucou',
                     creatorId: aurelie.id),
                 Message(
-                    name: 'Prof', text: 'Coucou', creatorId: _login.user!.id),
+                    name: 'Prof',
+                    text: 'Coucou',
+                    creatorId: _login.currentUser!.id),
                 Message(
                     name: 'Aurélie',
                     text: 'Non pas coucou',
@@ -281,7 +299,7 @@ class _DatabaseClearerState extends State<DatabaseClearer> {
 
   @override
   Widget build(BuildContext context) {
-    _login = Provider.of<LoginInformation>(context, listen: false);
+    _login = Provider.of<Database>(context, listen: false);
     _students = Provider.of<AllStudents>(context, listen: false);
     _questions = Provider.of<AllQuestions>(context, listen: false);
 

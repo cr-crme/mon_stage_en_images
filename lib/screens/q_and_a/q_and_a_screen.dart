@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/common/models/database.dart';
 import '/common/models/enum.dart';
 import '/common/models/section.dart';
 import '/common/models/student.dart';
 import '/common/providers/all_students.dart';
-import '/common/providers/login_information.dart';
 import '/common/widgets/main_drawer.dart';
 import '/screens/all_students/students_screen.dart';
 import 'main_metier_page.dart';
@@ -22,7 +22,7 @@ class QAndAScreen extends StatefulWidget {
 }
 
 class _QAndAScreenState extends State<QAndAScreen> {
-  LoginType _loginType = LoginType.none;
+  UserType _userType = UserType.none;
   Student? _student;
   QuestionView _questionView = QuestionView.normal;
 
@@ -34,24 +34,24 @@ class _QAndAScreenState extends State<QAndAScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final loginInformation =
-        Provider.of<LoginInformation>(context, listen: false);
-    _loginType = loginInformation.loginType;
-    if (_loginType == LoginType.student) {
+    final currentUser =
+        Provider.of<Database>(context, listen: false).currentUser!;
+    _userType = currentUser.userType;
+    if (_userType == UserType.student) {
       final allStudents = Provider.of<AllStudents>(context, listen: true);
-      _student = allStudents.fromId(loginInformation.user!.studentId!);
+      _student = allStudents.fromId(currentUser.studentId!);
     } else {
       _student = ModalRoute.of(context)!.settings.arguments as Student?;
     }
 
-    _questionView = _loginType == LoginType.teacher && _student == null
+    _questionView = _userType == UserType.teacher && _student == null
         ? QuestionView.modifyForAllStudents
         : QuestionView.normal;
   }
 
   void onPageChanged(BuildContext context, int page) {
     _currentPage = page;
-    _switchQuestionModeCallback = _loginType == LoginType.student ||
+    _switchQuestionModeCallback = _userType == UserType.student ||
             _questionView == QuestionView.modifyForAllStudents ||
             page < 1
         ? null
@@ -81,7 +81,7 @@ class _QAndAScreenState extends State<QAndAScreen> {
   }
 
   void _switchToQuestionManagerMode(BuildContext context) {
-    if (_loginType == LoginType.student ||
+    if (_userType == UserType.student ||
         _questionView == QuestionView.modifyForAllStudents) return;
 
     _questionView = _questionView == QuestionView.normal
@@ -90,7 +90,7 @@ class _QAndAScreenState extends State<QAndAScreen> {
     setState(() {});
   }
 
-  AppBar _setAppBar(LoginType loginType, Student? student) {
+  AppBar _setAppBar(UserType loginType, Student? student) {
     final currentTheme = Theme.of(context).textTheme.titleLarge!;
     final onPrimaryColor = Theme.of(context).colorScheme.onPrimary;
 
@@ -99,18 +99,18 @@ class _QAndAScreenState extends State<QAndAScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(student != null ? student.toString() : 'Gestion des questions'),
-          if (loginType == LoginType.student)
+          if (loginType == UserType.student)
             Text(Section.name(_currentPage > 0 ? _currentPage - 1 : 0),
                 style:
                     currentTheme.copyWith(fontSize: 15, color: onPrimaryColor)),
-          if (loginType == LoginType.teacher && student != null)
+          if (loginType == UserType.teacher && student != null)
             Text(
               student.company.name,
               style: currentTheme.copyWith(fontSize: 15, color: onPrimaryColor),
             ),
         ],
       ),
-      leading: loginType == LoginType.student && _currentPage == 0
+      leading: loginType == UserType.student && _currentPage == 0
           ? null
           : BackButton(onPressed: _onBackPressed),
       actions: _switchQuestionModeCallback != null
@@ -128,7 +128,7 @@ class _QAndAScreenState extends State<QAndAScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _setAppBar(_loginType, _student),
+      appBar: _setAppBar(_userType, _student),
       body: Column(
         children: [
           MetierAppBar(
@@ -160,9 +160,8 @@ class _QAndAScreenState extends State<QAndAScreen> {
           ),
         ],
       ),
-      drawer: _loginType == LoginType.student
-          ? MainDrawer(student: _student)
-          : null,
+      drawer:
+          _userType == UserType.student ? MainDrawer(student: _student) : null,
     );
   }
 }

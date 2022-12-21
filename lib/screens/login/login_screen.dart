@@ -2,11 +2,11 @@ import 'package:defi_photo/common/widgets/colored_corners.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/common/models/database.dart';
 import '/common/models/enum.dart';
 import '/common/models/themes.dart';
 import '/common/models/user.dart';
 import '/common/providers/all_students.dart';
-import '/common/providers/login_information.dart';
 import '../all_students/students_screen.dart';
 import '../q_and_a/q_and_a_screen.dart';
 import 'widgets/change_password_alert_dialog.dart';
@@ -26,8 +26,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   String? _email;
   String? _password;
-  LoginInformation? _logger;
-  Future<LoginStatus>? _futureStatus;
+  Database? _database;
+  Future<EzloginStatus>? _futureStatus;
 
   Future<User?> _createUser(String email) async {
     final user = await showDialog<User>(
@@ -51,17 +51,17 @@ class _LoginScreenState extends State<LoginScreen> {
     return password!;
   }
 
-  void _showSnackbar(LoginStatus status, ScaffoldMessengerState scaffold) {
+  void _showSnackbar(EzloginStatus status, ScaffoldMessengerState scaffold) {
     late final String message;
-    if (status == LoginStatus.waitingForLogin) {
+    if (status == EzloginStatus.waitingForLogin) {
       message = '';
-    } else if (status == LoginStatus.cancelled) {
+    } else if (status == EzloginStatus.cancelled) {
       message = 'La connexion a été annulée';
-    } else if (status == LoginStatus.success) {
+    } else if (status == EzloginStatus.success) {
       message = '';
-    } else if (status == LoginStatus.wrongUsername) {
+    } else if (status == EzloginStatus.wrongUsername) {
       message = 'Utilisateur non enregistré';
-    } else if (status == LoginStatus.wrongPassword) {
+    } else if (status == EzloginStatus.wrongPassword) {
       message = 'Mot de passe non reconnu';
     } else {
       message = 'Erreur de connexion inconnue';
@@ -75,29 +75,28 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<LoginStatus> _processConnexion() async {
+  Future<EzloginStatus> _processConnexion() async {
     if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
-      return LoginStatus.cancelled;
+      return EzloginStatus.cancelled;
     }
     _formKey.currentState!.save();
 
     final scaffold = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
-    _logger = Provider.of<LoginInformation>(context, listen: false);
-    final status = await _logger!.login(
-      context,
-      email: _email!,
+    _database = Provider.of<Database>(context, listen: false);
+    final status = await _database!.login(
+      username: _email!,
       password: _password!,
-      newUserUiCallback: _createUser,
-      changePasswordCallback: _changePassword,
+      getNewUserInfo: () => _createUser(_email!),
+      getNewPassword: _changePassword,
     );
     setState(() {});
-    if (status != LoginStatus.success) {
+    if (status != EzloginStatus.success) {
       _showSnackbar(status, scaffold);
       return status;
     }
 
-    if (_logger!.user!.isStudent) {
+    if (_database!.currentUser!.userType == UserType.student) {
       _waitingRoomForStudent();
     } else {
       navigator.pushReplacementNamed(StudentsScreen.routeName);
@@ -106,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _waitingRoomForStudent() {
-    if (_logger == null) return;
+    if (_database == null) return;
 
     // Wait until the data are fetched
     if (_allStudents!.isEmpty) {
@@ -147,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 const MainTitle(),
                 const SizedBox(height: 50),
-                FutureBuilder<LoginStatus>(
+                FutureBuilder<EzloginStatus>(
                     future: _futureStatus,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
