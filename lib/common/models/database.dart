@@ -17,11 +17,12 @@ class Database extends EzloginFirebase with ChangeNotifier {
   User? get currentUser => _currentUser;
 
   @override
-  Future<EzloginStatus> login(
-      {required String username,
-      required String password,
-      required Future<EzloginUser?> Function() getNewUserInfo,
-      required Future<String?> Function() getNewPassword}) async {
+  Future<EzloginStatus> login({
+    required String username,
+    required String password,
+    Future<EzloginUser?> Function()? getNewUserInfo,
+    Future<String?> Function()? getNewPassword,
+  }) async {
     final status = await super.login(
         username: username,
         password: password,
