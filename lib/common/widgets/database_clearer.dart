@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../default_questions.dart';
 import '/common/models/all_answers.dart';
 import '/common/models/answer.dart';
 import '/common/models/company.dart';
@@ -84,34 +85,9 @@ class _DatabaseClearerState extends State<DatabaseClearer> {
   }
 
   void _addDummyData() {
-    _students.add(
-      Student(
-        firstName: 'Benjamin',
-        lastName: 'Michaud',
-        email: 'bb@bb.bb',
-        company: Company(name: 'Ici'),
-        allAnswers: AllAnswers(questions: []),
-      ),
-    );
-    _students.add(
-      Student(
-        firstName: 'Aurélie',
-        lastName: 'Tondoux',
-        email: 'cc@cc.cc',
-        company: Company(name: 'Coucou'),
-        allAnswers: AllAnswers(questions: []),
-      ),
-    );
-
-    _questions.add(Question('Photo 1', section: 0, defaultTarget: Target.all));
-    _questions.add(Question('Texte 1', section: 0, defaultTarget: Target.none));
-    _questions.add(Question('Texte 2', section: 1, defaultTarget: Target.none));
-    _questions.add(Question('Photo 2', section: 2, defaultTarget: Target.none));
-    _questions.add(Question('Photo 3', section: 3, defaultTarget: Target.none));
-    _questions.add(Question('Photo 4', section: 4, defaultTarget: Target.none));
-    _questions.add(Question('Photo 5', section: 5, defaultTarget: Target.none));
-    _questions.add(Question('Texte 3', section: 5, defaultTarget: Target.all));
-    _questions.add(Question('Photo 6', section: 5, defaultTarget: Target.all));
+    for (final question in DefaultQuestion.questions) {
+      _questions.add(question);
+    }
 
     // We must wait that the questions are actually added to the database
     // before addind answers
