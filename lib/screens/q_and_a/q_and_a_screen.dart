@@ -100,7 +100,10 @@ class _QAndAScreenState extends State<QAndAScreen> {
         children: [
           Text(student != null ? student.toString() : 'Gestion des questions'),
           if (loginType == UserType.student)
-            Text(Section.name(_currentPage > 0 ? _currentPage - 1 : 0),
+            Text(
+                _currentPage == 0
+                    ? "Mon défi photo"
+                    : Section.name(_currentPage - 1),
                 style:
                     currentTheme.copyWith(fontSize: 15, color: onPrimaryColor)),
           if (loginType == UserType.teacher && student != null)
