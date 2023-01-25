@@ -7,13 +7,11 @@ import '/screens/login/login_screen.dart';
 import '/screens/q_and_a/q_and_a_screen.dart';
 import '../models/enum.dart';
 import '../models/student.dart';
-import 'database_clearer.dart';
 
 class MainDrawer extends StatelessWidget {
-  const MainDrawer({super.key, this.student, this.databaseClearerOptions});
+  const MainDrawer({super.key, this.student});
 
   final Student? student;
-  final DatabaseClearerOptions? databaseClearerOptions;
 
   @override
   Widget build(BuildContext context) {
@@ -39,17 +37,6 @@ class MainDrawer extends StatelessWidget {
                   icon: Icons.question_answer,
                   onTap: () =>
                       Navigator.of(context).pushNamed(QAndAScreen.routeName)),
-            if (userType == UserType.teacher &&
-                databaseClearerOptions != null &&
-                databaseClearerOptions!.allowClearing)
-              DatabaseClearer(
-                options: databaseClearerOptions!,
-                child: const MenuItem(
-                    title: "Réinitialiser la\nbase de donnée",
-                    icon: Icons.delete,
-                    iconColor: Colors.red),
-              ),
-            // const DatabaseDebugger(),
             MenuItem(
                 title: 'Déconnexion',
                 icon: Icons.exit_to_app,

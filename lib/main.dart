@@ -7,7 +7,6 @@ import '/common/models/themes.dart';
 import '/common/providers/all_questions.dart';
 import '/common/providers/all_students.dart';
 import '/common/providers/speecher.dart';
-import '/common/widgets/database_clearer.dart';
 import '/firebase_options.dart';
 import '/screens/all_students/students_screen.dart';
 import '/screens/login/login_screen.dart';
@@ -24,24 +23,17 @@ void main() async {
       useEmulator: useEmulator,
       currentPlatform: DefaultFirebaseOptions.currentPlatform);
 
-  const databaseClearerOptions = DatabaseClearerOptions(
-      allowClearing: useEmulator, populateWithDummyData: false);
-
   // Run the app
-  runApp(MyApp(
-      userDatabase: userDatabase,
-      databaseClearerOptions: databaseClearerOptions));
+  runApp(MyApp(userDatabase: userDatabase));
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({
     super.key,
     required this.userDatabase,
-    required this.databaseClearerOptions,
   });
 
   final Database userDatabase;
-  final DatabaseClearerOptions databaseClearerOptions;
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +57,7 @@ class MyApp extends StatelessWidget {
               : studentTheme(),
           routes: {
             LoginScreen.routeName: (context) => const LoginScreen(),
-            StudentsScreen.routeName: (context) => StudentsScreen(
-                  databaseClearerOptions: databaseClearerOptions,
-                ),
+            StudentsScreen.routeName: (context) => const StudentsScreen(),
             QAndAScreen.routeName: (context) => const QAndAScreen(),
           },
         );

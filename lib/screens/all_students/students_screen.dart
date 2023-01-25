@@ -9,7 +9,6 @@ import '/common/models/user.dart';
 import '/common/providers/all_questions.dart';
 import '/common/providers/all_students.dart';
 import '/common/widgets/are_you_sure_dialog.dart';
-import '/common/widgets/database_clearer.dart';
 import '/common/widgets/main_drawer.dart';
 import 'widgets/new_student_alert_dialog.dart';
 import 'widgets/student_list_tile.dart';
@@ -17,11 +16,9 @@ import 'widgets/student_list_tile.dart';
 class StudentsScreen extends StatefulWidget {
   const StudentsScreen({
     super.key,
-    required this.databaseClearerOptions,
   });
 
   static const routeName = '/students-screen';
-  final DatabaseClearerOptions databaseClearerOptions;
 
   @override
   State<StudentsScreen> createState() => _StudentsScreenState();
@@ -189,7 +186,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
           ),
         ],
       ),
-      drawer: MainDrawer(databaseClearerOptions: widget.databaseClearerOptions),
+      drawer: const MainDrawer(),
     );
   }
 }

@@ -1,5 +1,3 @@
-import 'package:defi_photo/common/providers/all_questions.dart';
-import 'package:defi_photo/common/widgets/colored_corners.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,7 +5,10 @@ import '/common/models/database.dart';
 import '/common/models/enum.dart';
 import '/common/models/themes.dart';
 import '/common/models/user.dart';
+import '/common/providers/all_questions.dart';
 import '/common/providers/all_students.dart';
+import '/common/widgets/colored_corners.dart';
+import '/default_questions.dart';
 import '../all_students/students_screen.dart';
 import '../q_and_a/q_and_a_screen.dart';
 import 'widgets/change_password_alert_dialog.dart';
@@ -29,6 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _password;
   Database? _database;
   Future<EzloginStatus>? _futureStatus;
+  bool _isNewUser = false;
 
   Future<User?> _createUser(String email) async {
     final user = await showDialog<User>(
@@ -38,6 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
         return NewUserAlertDialog(email: email);
       },
     );
+    _isNewUser = true;
     return user;
   }
 
@@ -102,6 +105,12 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_database!.currentUser!.userType == UserType.student) {
       _waitingRoomForStudent();
     } else {
+      if (mounted && _isNewUser) {
+        final questions = Provider.of<AllQuestions>(context, listen: false);
+        for (final question in DefaultQuestion.questions) {
+          questions.add(question);
+        }
+      }
       navigator.pushReplacementNamed(StudentsScreen.routeName);
     }
     return status;
@@ -113,6 +122,14 @@ class _LoginScreenState extends State<LoginScreen> {
     _allStudents!.initializeFetchingData();
     final questions = Provider.of<AllQuestions>(context, listen: false);
     questions.initializeFetchingData();
+
+    // Set the available-ids data
+    final availableIdsPath =
+        _database!.currentUser!.userType == UserType.student
+            ? _database!.currentUser!.addedBy
+            : _database!.currentUser!.id;
+    _allStudents!.pathToAvailableDataIds = availableIdsPath;
+    questions.pathToAvailableDataIds = availableIdsPath;
   }
 
   void _waitingRoomForStudent() {
