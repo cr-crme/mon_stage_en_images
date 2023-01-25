@@ -1,3 +1,4 @@
+import 'package:defi_photo/common/providers/all_questions.dart';
 import 'package:defi_photo/common/widgets/colored_corners.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -96,12 +97,22 @@ class _LoginScreenState extends State<LoginScreen> {
       return status;
     }
 
+    _startFetchingData();
+
     if (_database!.currentUser!.userType == UserType.student) {
       _waitingRoomForStudent();
     } else {
       navigator.pushReplacementNamed(StudentsScreen.routeName);
     }
     return status;
+  }
+
+  void _startFetchingData() {
+    /// this should be call only after user has successfully logged in
+    _allStudents = Provider.of<AllStudents>(context, listen: false);
+    _allStudents!.initializeFetchingData();
+    final questions = Provider.of<AllQuestions>(context, listen: false);
+    questions.initializeFetchingData();
   }
 
   void _waitingRoomForStudent() {
@@ -119,8 +130,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _allStudents = Provider.of<AllStudents>(context, listen: true);
-
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
