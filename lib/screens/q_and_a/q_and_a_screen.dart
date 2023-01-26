@@ -113,7 +113,8 @@ class _QAndAScreenState extends State<QAndAScreen> {
             ),
         ],
       ),
-      leading: loginType == UserType.student && _currentPage == 0
+      leading: (_student == null || loginType == UserType.student) &&
+              _currentPage == 0
           ? null
           : BackButton(onPressed: _onBackPressed),
       actions: _switchQuestionModeCallback != null
@@ -163,8 +164,9 @@ class _QAndAScreenState extends State<QAndAScreen> {
           ),
         ],
       ),
-      drawer:
-          _userType == UserType.student ? MainDrawer(student: _student) : null,
+      drawer: _student == null || _userType == UserType.student
+          ? MainDrawer(student: _student)
+          : null,
     );
   }
 }
