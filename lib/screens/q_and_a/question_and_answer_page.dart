@@ -74,8 +74,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text(
-                    'Activer pour ${studentId == null ? 'tous' : 'cet élève'}'),
+                Text('Activé pour ${studentId == null ? 'tous' : 'cet élève'}'),
                 const SizedBox(width: 25)
               ],
             ),
