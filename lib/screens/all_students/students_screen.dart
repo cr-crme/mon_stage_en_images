@@ -163,6 +163,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
   Widget build(BuildContext context) {
     final students =
         Provider.of<AllStudents>(context).toListByTime(reversed: true);
+    students.sort((a, b) => a.lastName.compareTo(b.lastName));
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mes élèves'),
