@@ -324,7 +324,8 @@ class _QuestionValidateCheckmarkState
         onPressed: () => _validateAnswer(student, answer),
         icon: Icon(
           Icons.check,
-          color: answer.isValidated ? Colors.green[600] : Colors.grey[300],
+          size: 35,
+          color: answer.isValidated ? Colors.green[600] : Colors.grey[350],
         ));
   }
 }
