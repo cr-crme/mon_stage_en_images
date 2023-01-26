@@ -165,7 +165,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
         Provider.of<AllStudents>(context).toListByTime(reversed: true);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Élèves'),
+        title: const Text('Mes élèves'),
         actions: [
           IconButton(onPressed: _showNewStudent, icon: const Icon(Icons.add)),
         ],

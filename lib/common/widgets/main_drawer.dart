@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/database.dart';
+import '/common/widgets/are_you_sure_dialog.dart';
 import '/screens/all_students/students_screen.dart';
 import '/screens/login/login_screen.dart';
 import '/screens/q_and_a/q_and_a_screen.dart';
@@ -12,6 +13,26 @@ class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key, this.student});
 
   final Student? student;
+
+  void _onClickQuit(BuildContext context) async {
+    final navigator = Navigator.of(context);
+    final sure = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const AreYouSureDialog(
+          title: 'Déconnexion',
+          content: 'Êtes-vous certain(e) de vouloir vous déconnecter?',
+        );
+      },
+    );
+
+    if (!sure!) {
+      return;
+    }
+
+    navigator.pushReplacementNamed(LoginScreen.routeName);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +48,7 @@ class MainDrawer extends StatelessWidget {
           children: [
             if (userType == UserType.teacher)
               MenuItem(
-                  title: 'Élèves',
+                  title: 'Mes élèves',
                   icon: Icons.person,
                   onTap: () => Navigator.of(context)
                       .pushNamed(StudentsScreen.routeName)),
@@ -37,11 +58,11 @@ class MainDrawer extends StatelessWidget {
                   icon: Icons.question_answer,
                   onTap: () =>
                       Navigator.of(context).pushNamed(QAndAScreen.routeName)),
+            if (userType == UserType.teacher) const Divider(),
             MenuItem(
                 title: 'Déconnexion',
                 icon: Icons.exit_to_app,
-                onTap: () => Navigator.of(context)
-                    .pushReplacementNamed(LoginScreen.routeName)),
+                onTap: () => _onClickQuit(context)),
           ],
         ),
       ),
