@@ -12,6 +12,8 @@ import '/screens/all_students/students_screen.dart';
 import '/screens/login/login_screen.dart';
 import '/screens/q_and_a/q_and_a_screen.dart';
 
+// TODO: See all the answers in another page
+
 void main() async {
   // Initialization of the user database. If [useEmulator] is set to [true],
   // then a local database is created. To facilitate the filling of the database
@@ -50,6 +52,7 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<Database>(builder: (context, database, static) {
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           initialRoute: LoginScreen.routeName,
           theme: database.currentUser != null &&
                   database.currentUser!.userType == UserType.teacher

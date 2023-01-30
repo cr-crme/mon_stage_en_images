@@ -102,20 +102,6 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
         ),
       ),
       actions: <Widget>[
-        TextButton(
-          child: Text('Annuler',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.secondary)),
-          onPressed: () => _finalize(hasCancelled: true),
-        ),
-        TextButton(
-          child: Text(widget.student == null ? 'Ajouter' : 'Modifier',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.secondary)),
-          onPressed: () => _finalize(),
-        ),
         if (widget.student != null && widget.deleteCallback != null)
           IconButton(
             onPressed: () {
@@ -124,6 +110,19 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
             },
             icon: const Icon(Icons.delete),
           ),
+        OutlinedButton(
+          child: Text('Annuler',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.secondary)),
+          onPressed: () => _finalize(hasCancelled: true),
+        ),
+        ElevatedButton(
+          child: Text(widget.student == null ? 'Ajouter' : 'Enregistrer',
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold, color: Colors.white)),
+          onPressed: () => _finalize(),
+        ),
       ],
     );
   }
