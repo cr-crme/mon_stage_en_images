@@ -1,4 +1,6 @@
+import 'package:defi_photo/common/providers/all_students.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '/common/models/enum.dart';
 import '/common/models/question.dart';
@@ -10,13 +12,13 @@ class NewQuestionAlertDialog extends StatefulWidget {
     super.key,
     required this.section,
     required this.student,
-    required this.title,
+    required this.question,
     required this.deleteCallback,
   });
 
   final int section;
   final Student? student;
-  final String? title;
+  final Question? question;
   final Function? deleteCallback;
 
   @override
@@ -26,6 +28,17 @@ class NewQuestionAlertDialog extends StatefulWidget {
 class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
   final _formKey = GlobalKey<FormState>();
   String? _text;
+  Map<Student, bool> _questionStatus = {};
+
+  @override
+  void initState() {
+    super.initState();
+    final students = Provider.of<AllStudents>(context, listen: false);
+    for (final student in students) {
+      _questionStatus[student] =
+          student.allAnswers[widget.question]?.isActive ?? false;
+    }
+  }
 
   void _finalize(BuildContext context, {bool hasCancelled = false}) {
     if (hasCancelled) {
@@ -42,17 +55,47 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
         section: widget.section,
         defaultTarget: widget.student != null ? Target.individual : Target.all);
 
-    Navigator.pop(context, question);
+    Navigator.pop(context, [question, _questionStatus]);
+  }
+
+  Widget _buildStudentTile(Student student, Question? question) {
+    return GestureDetector(
+      onTap: () {
+        _questionStatus[student] = !_questionStatus[student]!;
+        setState(() {});
+      },
+      child: Row(children: [
+        Checkbox(
+            value: _questionStatus[student],
+            onChanged: (value) {
+              _questionStatus[student] = value!;
+              setState(() {});
+            }),
+        Text('${student.firstName} ${student.lastName}'),
+      ]),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final students = Provider.of<AllStudents>(context, listen: false).toList();
+    students.sort((a, b) => a.lastName.compareTo(b.lastName));
+
     return AlertDialog(
       content: SingleChildScrollView(
-        child: Form(key: _formKey, child: _showQuestionTextInput()),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Form(key: _formKey, child: _showQuestionTextInput()),
+            const Divider(),
+            const Text('Question activée pour :'),
+            ...students.map<Widget>(
+                (student) => _buildStudentTile(student, widget.question)),
+          ],
+        ),
       ),
       actions: <Widget>[
-        if (widget.title != null && widget.deleteCallback != null)
+        if (widget.question?.text != null && widget.deleteCallback != null)
           IconButton(
               onPressed: _confirmDeleting, icon: const Icon(Icons.delete)),
         OutlinedButton(
@@ -65,7 +108,7 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
           onPressed: () => _finalize(context, hasCancelled: true),
         ),
         ElevatedButton(
-          child: Text(widget.title == null ? 'Ajouter' : 'Enregistrer',
+          child: Text(widget.question?.text == null ? 'Ajouter' : 'Enregistrer',
               style: const TextStyle(
                   fontWeight: FontWeight.bold, color: Colors.white)),
           onPressed: () => _finalize(context),
@@ -100,7 +143,7 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
       decoration: const InputDecoration(labelText: 'Libellé de la question'),
       validator: (value) =>
           value == null || value.isEmpty ? 'Ajouter une question' : null,
-      initialValue: widget.title,
+      initialValue: widget.question?.text,
       onSaved: (value) => _text = value,
     );
   }

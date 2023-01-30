@@ -93,24 +93,29 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     final currentStudent =
         ModalRoute.of(context)!.settings.arguments as Student?;
 
-    final question = await showDialog<Question>(
+    final output = await showDialog(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) => NewQuestionAlertDialog(
         section: widget.sectionIndex,
         student: currentStudent,
-        title: widget.question?.text,
+        question: widget.question,
         deleteCallback: widget.questionView == QuestionView.modifyForAllStudents
             ? _deleteQuestionCallback
             : null,
       ),
     );
-    if (question == null) return;
+    if (output == null) return;
+    final question = output[0] as Question;
+    final activeStatus = output[1] as Map<Student, bool>;
 
     if (widget.question != null) {
       var newQuestion = widget.question!.copyWith(text: question.text);
+      // TODO SetState for Activé pour cet élève
       questions.modifyToAll(newQuestion,
-          students: _students, currentStudent: currentStudent);
+          students: _students,
+          currentStudent: currentStudent,
+          isActive: activeStatus);
     } else {
       questions.addToAll(question,
           students: _students, currentStudent: currentStudent);
