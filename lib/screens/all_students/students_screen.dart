@@ -168,7 +168,14 @@ class _StudentsScreenState extends State<StudentsScreen> {
       appBar: AppBar(
         title: const Text('Mes élèves'),
         actions: [
-          IconButton(onPressed: _showNewStudent, icon: const Icon(Icons.add)),
+          IconButton(
+            onPressed: _showNewStudent,
+            icon: const Icon(
+              Icons.add,
+            ),
+            iconSize: 35,
+            color: Colors.black,
+          ),
         ],
       ),
       body: Column(
