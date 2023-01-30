@@ -52,12 +52,9 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
         child: Form(key: _formKey, child: _showQuestionTextInput()),
       ),
       actions: <Widget>[
-        ElevatedButton(
-          child: Text(widget.title == null ? 'Ajouter' : 'Modifier',
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold, color: Colors.white)),
-          onPressed: () => _finalize(context),
-        ),
+        if (widget.title != null && widget.deleteCallback != null)
+          IconButton(
+              onPressed: _confirmDeleting, icon: const Icon(Icons.delete)),
         OutlinedButton(
           child: Text(
             'Annuler',
@@ -67,9 +64,12 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
           ),
           onPressed: () => _finalize(context, hasCancelled: true),
         ),
-        if (widget.title != null && widget.deleteCallback != null)
-          IconButton(
-              onPressed: _confirmDeleting, icon: const Icon(Icons.delete)),
+        ElevatedButton(
+          child: Text(widget.title == null ? 'Ajouter' : 'Enregistrer',
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold, color: Colors.white)),
+          onPressed: () => _finalize(context),
+        ),
       ],
     );
   }
