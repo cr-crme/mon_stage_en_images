@@ -74,6 +74,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                // TODO: Remove the toggle when for all, and add a student list by question (with an "add/remove all")
                 Text('Activé pour ${studentId == null ? 'tous' : 'cet élève'}'),
                 const SizedBox(width: 25)
               ],

@@ -120,10 +120,12 @@ class _QAndAScreenState extends State<QAndAScreen> {
       actions: _switchQuestionModeCallback != null
           ? [
               IconButton(
-                  onPressed: _switchQuestionModeCallback,
-                  icon: Icon(_questionView != QuestionView.normal
-                      ? Icons.save
-                      : Icons.edit_rounded))
+                onPressed: _switchQuestionModeCallback,
+                icon: Icon(_questionView != QuestionView.normal
+                    ? Icons.save
+                    : Icons.edit_rounded),
+                iconSize: 30,
+              )
             ]
           : null,
     );
