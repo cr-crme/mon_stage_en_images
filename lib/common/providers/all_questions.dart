@@ -59,6 +59,7 @@ class AllQuestions extends FirebaseListProvided<Question> with Section {
     bool notify = true,
     required AllStudents students,
     Student? currentStudent,
+    Map<Student, bool>? isActive,
   }) {
     replace(question, notify: notify);
 
@@ -67,7 +68,9 @@ class AllQuestions extends FirebaseListProvided<Question> with Section {
       students.setAnswer(
           student: student,
           question: question,
-          answer: answer.copyWith(isActive: answer.isActive));
+          answer: answer.copyWith(
+              isActive:
+                  isActive != null ? isActive[student] : answer.isActive));
     }
   }
 
