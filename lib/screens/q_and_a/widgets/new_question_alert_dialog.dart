@@ -80,7 +80,8 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
   @override
   Widget build(BuildContext context) {
     final students = Provider.of<AllStudents>(context, listen: false).toList();
-    students.sort((a, b) => a.lastName.compareTo(b.lastName));
+    students.sort(
+        (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
 
     return AlertDialog(
       content: SingleChildScrollView(
