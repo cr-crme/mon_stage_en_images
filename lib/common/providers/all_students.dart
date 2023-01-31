@@ -35,6 +35,16 @@ class AllStudents extends FirebaseListProvided<Student>
         0;
   }
 
+  bool isQuestionInactiveForAll(Question question) {
+    return indexWhere(
+          (s) {
+            final answer = s.allAnswers[question];
+            return answer == null ? true : answer.isActive;
+          },
+        ) <
+        0;
+  }
+
   void setAnswer({
     required Student student,
     required Question question,
