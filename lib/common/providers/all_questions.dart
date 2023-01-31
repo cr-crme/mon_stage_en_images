@@ -38,19 +38,23 @@ class AllQuestions extends FirebaseListProvided<Question> with Section {
     bool notify = true,
     required AllStudents students,
     Student? currentStudent,
+    Map<Student, bool>? isActive,
   }) {
     super.add(question, notify: notify);
 
     for (var student in students) {
-      final isActive = question.defaultTarget != Target.none &&
-          (question.defaultTarget == Target.all ||
-              currentStudent == null ||
-              student.id == currentStudent.id);
+      final isActiveForStudent = isActive != null
+          ? isActive[student]!
+          : question.defaultTarget != Target.none &&
+              (question.defaultTarget == Target.all ||
+                  currentStudent == null ||
+                  student.id == currentStudent.id);
       students.setAnswer(
           student: student,
           question: question,
           answer: Answer(
-              isActive: isActive, actionRequired: ActionRequired.fromStudent));
+              isActive: isActiveForStudent,
+              actionRequired: ActionRequired.fromStudent));
     }
   }
 

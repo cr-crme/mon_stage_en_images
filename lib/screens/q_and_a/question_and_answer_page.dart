@@ -70,13 +70,14 @@ class QuestionAndAnswerPage extends StatelessWidget {
               studentId: studentId,
               questionView: questionView,
             ),
-          if (questionView != QuestionView.normal && questions.isNotEmpty)
+          if (questionView != QuestionView.normal &&
+              questions.isNotEmpty &&
+              studentId != null)
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                // TODO: Remove the toggle when for all, and add a student list by question (with an "add/remove all")
-                Text('Activé pour ${studentId == null ? 'tous' : 'cet élève'}'),
-                const SizedBox(width: 25)
+              children: const [
+                Text('Activé pour cet élève'),
+                SizedBox(width: 25)
               ],
             ),
           questionView == QuestionView.normal
