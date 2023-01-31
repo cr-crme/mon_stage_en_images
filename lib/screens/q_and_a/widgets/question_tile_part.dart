@@ -40,7 +40,13 @@ class QuestionPart extends StatelessWidget {
 
   TextStyle _pickTextStyle(BuildContext context, Answer? answer) {
     if (answer == null) {
-      return const TextStyle();
+      final students = Provider.of<AllStudents>(context, listen: false);
+
+      return TextStyle(
+          color:
+              question != null && students.isQuestionInactiveForAll(question!)
+                  ? Colors.grey
+                  : Colors.black);
     }
     final userType =
         Provider.of<Database>(context, listen: false).currentUser!.userType;
