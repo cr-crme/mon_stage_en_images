@@ -188,7 +188,7 @@ class _QuestionAddButton extends StatelessWidget {
   }
 }
 
-class _QuestionActivatedState extends StatefulWidget {
+class _QuestionActivatedState extends StatelessWidget {
   const _QuestionActivatedState({
     required this.studentId,
     required this.onStateChange,
@@ -203,26 +203,12 @@ class _QuestionActivatedState extends StatefulWidget {
   final VoidCallback onStateChange;
   final QuestionView questionView;
 
-  @override
-  State<_QuestionActivatedState> createState() => _QuestionActivator();
-}
-
-class _QuestionActivator extends State<_QuestionActivatedState> {
-  var _isActive = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _isActive = widget.initialStatus;
-  }
-
-  Future<void> _toggleQuestionActiveState(value) async {
+  Future<void> _toggleQuestionActiveState(BuildContext context, value) async {
     final questions = Provider.of<AllQuestions>(context, listen: false);
     final students = Provider.of<AllStudents>(context, listen: false);
-    final student =
-        widget.studentId == null ? null : students[widget.studentId];
+    final student = studentId == null ? null : students[studentId];
 
-    final sure = widget.questionView == QuestionView.modifyForAllStudents
+    final sure = questionView == QuestionView.modifyForAllStudents
         ? await showDialog<bool>(
             context: context,
             barrierDismissible: false,
@@ -239,43 +225,40 @@ class _QuestionActivator extends State<_QuestionActivatedState> {
 
     if (!sure!) return;
 
-    _isActive = value;
-
     // Modify the question on the server.
     // If the default target ever was 'all' keep it like that, unless it is
     // deactivate for all. If it was 'individual' keep it like that unless it
     // should be promoted to 'all'
     late final Target newTarget;
     if (student == null) {
-      newTarget = _isActive ? Target.all : Target.none;
+      newTarget = value ? Target.all : Target.none;
     } else {
-      newTarget = widget.question.defaultTarget;
+      newTarget = question.defaultTarget;
     }
-    questions.replace(widget.question.copyWith(defaultTarget: newTarget));
+    questions.replace(question.copyWith(defaultTarget: newTarget));
 
     // Modify the answers on the server
     if (student != null) {
       students.setAnswer(
           student: student,
-          question: widget.question,
-          answer: student.allAnswers[widget.question]!
-              .copyWith(isActive: _isActive));
+          question: question,
+          answer: student.allAnswers[question]!.copyWith(isActive: value));
     } else {
       for (var student in students) {
         students.setAnswer(
             student: student,
-            question: widget.question,
-            answer: student.allAnswers[widget.question]!
-                .copyWith(isActive: _isActive));
+            question: question,
+            answer: student.allAnswers[question]!.copyWith(isActive: value));
       }
     }
-    widget.onStateChange();
-    setState(() {});
+    onStateChange();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Switch(onChanged: _toggleQuestionActiveState, value: _isActive);
+    return Switch(
+        onChanged: (value) => _toggleQuestionActiveState(context, value),
+        value: initialStatus);
   }
 }
 
