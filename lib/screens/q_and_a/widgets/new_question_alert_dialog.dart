@@ -59,20 +59,40 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
     Navigator.pop(context, [question, _questionStatus]);
   }
 
-  Widget _buildAllStudentsTile(AllStudents students, Question? question,
-      {required bool activateForAll}) {
-    return ElevatedButton(
-      onPressed: () {
-        for (final student in students) {
-          _questionStatus[student] = activateForAll;
+  Widget _buildAllStudentsTile() {
+    var isAllActive = true;
+    for (final key in _questionStatus.keys) {
+      if (!_questionStatus[key]!) {
+        isAllActive = false;
+        break;
+      }
+    }
+
+    return GestureDetector(
+      onTap: () {
+        for (final key in _questionStatus.keys) {
+          _questionStatus[key] = !isAllActive;
         }
         setState(() {});
       },
-      child: Text(activateForAll ? 'Tout sélectionner' : 'Tout désélectionner'),
+      child: Row(children: [
+        Checkbox(
+            value: isAllActive,
+            onChanged: (value) {
+              for (final key in _questionStatus.keys) {
+                _questionStatus[key] = !isAllActive;
+              }
+              setState(() {});
+            }),
+        const Text(
+          'Tous les élèves',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ]),
     );
   }
 
-  Widget _buildStudentTile(Student student, Question? question) {
+  Widget _buildStudentTile(Student student) {
     return GestureDetector(
       onTap: () {
         _questionStatus[student] = !_questionStatus[student]!;
@@ -105,12 +125,9 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
             Form(key: _formKey, child: _showQuestionTextInput()),
             const Divider(),
             const Text('Question activée pour :'),
-            ...studentsAsList.map<Widget>(
-                (student) => _buildStudentTile(student, widget.question)),
-            _buildAllStudentsTile(students, widget.question,
-                activateForAll: true),
-            _buildAllStudentsTile(students, widget.question,
-                activateForAll: false),
+            _buildAllStudentsTile(),
+            ...studentsAsList
+                .map<Widget>((student) => _buildStudentTile(student)),
           ],
         ),
       ),
