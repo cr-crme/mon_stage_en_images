@@ -125,7 +125,8 @@ class _QAndAScreenState extends State<QAndAScreen> {
                     ? Icons.save
                     : Icons.edit_rounded),
                 iconSize: 30,
-              )
+              ),
+              const SizedBox(width: 15),
             ]
           : null,
     );
