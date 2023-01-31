@@ -59,6 +59,19 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
     Navigator.pop(context, [question, _questionStatus]);
   }
 
+  Widget _buildAllStudentsTile(AllStudents students, Question? question,
+      {required bool activateForAll}) {
+    return ElevatedButton(
+      onPressed: () {
+        for (final student in students) {
+          _questionStatus[student] = activateForAll;
+        }
+        setState(() {});
+      },
+      child: Text(activateForAll ? 'Tout sélectionner' : 'Tout désélectionner'),
+    );
+  }
+
   Widget _buildStudentTile(Student student, Question? question) {
     return GestureDetector(
       onTap: () {
@@ -79,9 +92,10 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final students = Provider.of<AllStudents>(context, listen: false).toList();
-    students.sort(
-        (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
+    final students = Provider.of<AllStudents>(context, listen: false);
+    final studentsAsList = students.toList()
+      ..sort((a, b) =>
+          a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
 
     return AlertDialog(
       content: SingleChildScrollView(
@@ -91,8 +105,12 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
             Form(key: _formKey, child: _showQuestionTextInput()),
             const Divider(),
             const Text('Question activée pour :'),
-            ...students.map<Widget>(
+            ...studentsAsList.map<Widget>(
                 (student) => _buildStudentTile(student, widget.question)),
+            _buildAllStudentsTile(students, widget.question,
+                activateForAll: true),
+            _buildAllStudentsTile(students, widget.question,
+                activateForAll: false),
           ],
         ),
       ),
