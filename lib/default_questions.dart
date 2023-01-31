@@ -70,40 +70,43 @@ class DefaultQuestion {
         ),
         Question(
           'Quelle est la tâche que tu fais le plus souvent?'
-          '\nFais toi prendre en photo pendant que tu fais cette tâche.'
+          '\nDemande à tes collègues de te prendre en photo pendant que '
+          'tu fais cette tâche.'
           '\nQu’est-ce que tu trouves le plus difficile dans cette tâche?',
           section: 2,
           defaultTarget: Target.all,
         ),
         Question(
-          'Fais toi prendre en photo pendant que tu places des marchandises '
-          'dans le magasin. '
+          'Demande à tes collègues de te prendre en photo pendant que tu '
+          'places des marchandises dans le magasin.'
           '\nComment as-tu appris à faire cette tâche?',
           section: 2,
           defaultTarget: Target.none,
         ),
         Question(
-          'Fais toi prendre en photo pendant que tu donnes le bain à un chien.'
+          'Demande à tes collègues de te prendre en photo pendant que tu '
+          'donnes le bain à un chien.'
           '\nQuelles sont les choses auxquelles tu dois faire attention quand '
           'tu réalises cette tâche?',
           section: 2,
           defaultTarget: Target.none,
         ),
         Question(
-          'Fais toi prendre en photo pendant que tu remets une roue sur une voiture.'
-          '\nRaconte ce que tu dois faire quand tu réalises cette tâche.',
+          'Demande à tes collègues de te prendre en photo pendant que tu '
+          'remets un pneu sur une voiture.'
+          '\nDécris ce que tu fais.',
           section: 2,
           defaultTarget: Target.none,
         ),
         Question(
-          'Demande à un collègue de te prendre en photo pendant que tu travailles.'
+          'Demande à tes collègues de te prendre en photo pendant que tu travailles.'
           '\nDécris tes caractéristiques.',
           section: 3,
           defaultTarget: Target.all,
         ),
         Question(
-          'Demande à un collègue de te prendre en photo pendant que tu fais la '
-          'tâche que tu préfères en stage. '
+          'Demande à tes collègues de te prendre en photo pendant que tu '
+          'fais la tâche que tu préfères en stage. '
           '\nExplique pourquoi tu aimes faire cette tâche?',
           section: 3,
           defaultTarget: Target.none,
@@ -138,7 +141,7 @@ class DefaultQuestion {
           defaultTarget: Target.all,
         ),
         Question(
-          'Fais toi prendre en photo avec un ou une collègue pendant que vous '
+          'Fais-toi prendre en photo avec un ou une collègue pendant que vous '
           'faites une tâche en équipe. '
           '\nExplique à quoi sert cette tâche.',
           section: 5,
