@@ -8,180 +8,156 @@ class DefaultQuestion {
   // active for all or no one, respectively
   static get questions => [
         Question(
-          'Prends en photo et décris les produits avec lesquels tu travailles.',
+          'Prends en photo les produits avec lesquels tu travailles.',
           section: 0,
-          defaultTarget: Target.none,
+          defaultTarget: Target.all,
         ),
         Question(
-          'Quelle est la marchandise la plus difficile à porter?',
-          section: 0,
-          defaultTarget: Target.none,
-        ),
-        Question(
-          'Quels sont les produits que tu déplaces le plus fréquemment avec '
-          'le chariot?',
-          section: 0,
-          defaultTarget: Target.none,
-        ),
-        Question(
-          'Quelle est la marchandise la plus difficile à déplacer avec le '
-          'transpalette?',
-          section: 0,
-          defaultTarget: Target.none,
-        ),
-        Question(
-          'Quel aliment est le plus difficile à découper?',
-          section: 0,
-          defaultTarget: Target.none,
-        ),
-        Question(
-          'Avec quelles essences de bois tu travailles? '
-          '\nQu’est-ce qui change quand tu coupes une planche en érable et '
-          'une planche en épinette?',
-          section: 0,
-          defaultTarget: Target.none,
-        ),
-        Question(
-          'Prends une photo d’un produit avec un symbole SIMDUT. '
+          'Prends en photo un produit avec un symbole SIMDUT que tu as déjà '
+          'utilisé.'
           '\nQuelle est la signification du symbole?',
           section: 0,
-          defaultTarget: Target.none,
+          defaultTarget: Target.all,
         ),
         Question(
-          'Quel produit avec un symbole SIMDUT as-tu déjà utilisé? '
-          '\nDans quelles circonstances ?',
+          'Prends en photo la marchandise que tu trouves la plus difficile '
+          'à transporter.',
           section: 0,
           defaultTarget: Target.none,
         ),
         Question(
-          'Quels sont les équipements que tu utilises pour faire ton travail? '
+          'Prends en photo l’aliment que tu trouves le plus difficile à découper.',
+          section: 0,
+          defaultTarget: Target.none,
+        ),
+        Question(
+          'Prends en photo les essences de bois avec lesquelles tu travailles.'
+          '\nQu’est-ce qui change quand tu coupes une planche en érable '
+          'par rapport à une planche en épinette?',
+          section: 0,
+          defaultTarget: Target.none,
+        ),
+        Question(
+          'Prends en photo les équipements que tu utilises pour faire ton travail.'
           '\nÀ quoi servent-ils?',
+          section: 1,
+          defaultTarget: Target.all,
+        ),
+        Question(
+          'Prends en photo l’outil le plus dangereux que tu utilises.'
+          '\nPourquoi est-il dangereux?',
           section: 1,
           defaultTarget: Target.none,
         ),
         Question(
-          'Est-ce que tes collègues utilisent les mêmes équipements que toi? '
+          'Prends en photo l’équipement que tu utilises le plus souvent.'
+          '\nQuel est l’entretien à faire pour que cet équipement soit en bon '
+          'état?',
+          section: 1,
+          defaultTarget: Target.none,
+        ),
+        Question(
+          'Prends en photo l’équipement que tu aimes le plus utiliser.'
+          '\nComment as-tu appris à utiliser cet équipement?',
+          section: 1,
+          defaultTarget: Target.none,
+        ),
+        Question(
+          'Est-ce que tes collègues se servent des mêmes équipements que toi?'
           '\nPrends en photo leurs équipements.',
           section: 1,
           defaultTarget: Target.none,
         ),
         Question(
-          'Quel est l’outil le plus dangereux que tu utilises? '
-          '\nExplique pourquoi est-il dangereux?',
-          section: 1,
-          defaultTarget: Target.none,
+          'Quelle est la tâche que tu fais le plus souvent?'
+          '\nFais toi prendre en photo pendant que tu fais cette tâche.',
+          section: 2,
+          defaultTarget: Target.all,
         ),
         Question(
-          'Quel est l’équipement que tu utilises le plus souvent? '
-          '\nEst-ce qu’il est en bon état?',
-          section: 1,
-          defaultTarget: Target.none,
-        ),
-        Question(
-          'Comment as-tu appris à utiliser cet équipement? '
-          '\nPrends en photo la personne qui t’a montré comment s’en servir.',
-          section: 1,
-          defaultTarget: Target.none,
-        ),
-        Question(
-          'Quel est l’entretien à faire pour que cet équipement soit en bon état?',
-          section: 1,
-          defaultTarget: Target.none,
-        ),
-        Question(
-          'Quel équipement aimes-tu le moins utiliser? Pourquoi?',
-          section: 1,
-          defaultTarget: Target.none,
-        ),
-        Question(
-          'Quel équipement aimes-tu le plus utiliser? Pourquoi?',
-          section: 1,
-          defaultTarget: Target.none,
-        ),
-        Question(
-          'Quelle est la tâche que tu fais le plus souvent? '
+          'Quelle est la tâche que tu trouves la plus difficile?'
           '\nFais toi prendre en photo pendant que tu fais cette tâche.',
           section: 2,
           defaultTarget: Target.none,
         ),
         Question(
-          'Est-ce que tu fais cette tâche tout seul ou avec un collègue? '
-          '\nPrends en photo la personne qui fait la tâche avec toi.',
+          'Fais toi prendre en photo pendant que tu places des marchandises '
+          'dans le magasin. '
+          '\nComment as-tu appris à faire cette tâche?',
           section: 2,
           defaultTarget: Target.none,
         ),
         Question(
-          'Comment as-tu appris à faire cette tâche? '
-          '\nPrends en photo la personne qui a fait ta formation.',
+          'Fais toi prendre en photo pendant que tu donnes le bain à un chien.'
+          '\nQuelles sont les choses auxquelles tu dois faire attention quand '
+          'tu réalises cette tâche?',
           section: 2,
           defaultTarget: Target.none,
         ),
         Question(
-          'Quelles sont les choses auxquelles tu dois faire attention quand '
-          'tu fais cette tâche?',
+          'Fais toi prendre en photo pendant que tu remets une roue sur une voiture.'
+          '\nRaconte ce que tu dois faire quand tu réalises cette tâche.',
           section: 2,
           defaultTarget: Target.none,
         ),
         Question(
-          'Quelle est la tâche que tu trouves la plus facile? '
-          '\nFais toi prendre en photo pendant que tu fais cette tâche.',
-          section: 2,
-          defaultTarget: Target.none,
-        ),
-        Question(
-          'Quelle est la tâche que tu trouves la plus difficile? '
-          '\nFais toi prendre en photo pendant que tu fais cette tâche.',
-          section: 2,
-          defaultTarget: Target.none,
-        ),
-        Question(
-          'Demande à un collègue de te prendre en photo pendant que tu travailles. '
+          'Demande à un collègue de te prendre en photo pendant que tu travailles.'
           '\nDécris tes caractéristiques.',
           section: 3,
-          defaultTarget: Target.none,
+          defaultTarget: Target.all,
         ),
         Question(
-          'Prends une photo de ce que tu aimes le plus dans ton stage?',
+          'Demande à un collègue de te prendre en photo pendant que tu fais la '
+          'tâche que tu préfères en stage. '
+          '\nExplique pourquoi tu aimes faire cette tâche?',
           section: 3,
           defaultTarget: Target.none,
         ),
         Question(
-          'Prends une photo de ce que tu aimes le moins dans ton stage?',
-          section: 3,
-          defaultTarget: Target.none,
-        ),
-        Question(
-          'Prends une photo de ton poste de travail. '
-          '\nEst-ce qu’il y a du bruit?',
+          'Prends une photo de l’extérieur de ton entreprise.',
           section: 4,
           defaultTarget: Target.none,
         ),
         Question(
-          'Prends une photo de ton poste de travail. '
+          'Prends une photo de ton poste de travail.'
+          '\nEst-ce qu’il y a du bruit?',
+          section: 4,
+          defaultTarget: Target.all,
+        ),
+        Question(
+          'Prends une photo de ton département.'
           '\nEst-ce qu’il y fait chaud ou froid?',
           section: 4,
           defaultTarget: Target.none,
         ),
         Question(
-          'Prends une photo de ton poste de travail. '
+          'Prends une photo de ton poste de travail.'
           '\nEst-ce qu’il y fait sombre ou lumineux?',
           section: 4,
           defaultTarget: Target.none,
         ),
         Question(
-          'Qui est la personne qui te donne les tâches à faire? '
+          'Prends en photo la personne qui te donne les tâches à faire.'
           '\nExplique son rôle dans l’entreprise.',
+          section: 5,
+          defaultTarget: Target.all,
+        ),
+        Question(
+          'Fais toi prendre en photo avec un ou une collègue pendant que vous '
+          'faites une tâche en équipe. '
+          '\nExplique à quoi sert cette tâche.',
           section: 5,
           defaultTarget: Target.none,
         ),
         Question(
-          'Qui est la personne avec laquelle tu travailles le plus? '
+          'Prends en photo la personne avec qui tu travailles le plus.'
           '\nQui dois-tu aller voir si elle est absente?',
           section: 5,
           defaultTarget: Target.none,
         ),
         Question(
-          'Si tu as un problème ou que tu ne sais pas quoi faire, à qui est ce que '
+          'Prends une photo des collègues de ton département.'
+          '\nSi tu as un problème ou que tu ne sais pas quoi faire, à qui est ce que '
           'tu peux demander de l’aide?',
           section: 5,
           defaultTarget: Target.none,
