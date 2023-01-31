@@ -21,7 +21,6 @@ class QuestionPart extends StatelessWidget {
     required this.answer,
     required this.isAnswerShown,
     required this.onTap,
-    required this.onChangeQuestionRequest,
     required this.onStateChange,
     required this.isReading,
     required this.startReadingCallback,
@@ -34,8 +33,7 @@ class QuestionPart extends StatelessWidget {
   final Answer? answer;
   final bool isAnswerShown;
   final VoidCallback onTap;
-  final VoidCallback onChangeQuestionRequest;
-  final Function(VoidCallback) onStateChange;
+  final VoidCallback onStateChange;
   final bool isReading;
   final VoidCallback startReadingCallback;
   final VoidCallback stopReadingCallback;
@@ -71,7 +69,7 @@ class QuestionPart extends StatelessWidget {
           style: _pickTextStyle(context, answer)),
       trailing: _QuestionPartTrailing(
         question: question,
-        onChangeQuestionRequest: onChangeQuestionRequest,
+        onNewQuestion: onTap,
         questionView: questionView,
         studentId: studentId,
         onStateChange: onStateChange,
@@ -90,7 +88,7 @@ class QuestionPart extends StatelessWidget {
 class _QuestionPartTrailing extends StatelessWidget {
   const _QuestionPartTrailing({
     required this.question,
-    required this.onChangeQuestionRequest,
+    required this.onNewQuestion,
     required this.questionView,
     required this.studentId,
     required this.onStateChange,
@@ -102,25 +100,20 @@ class _QuestionPartTrailing extends StatelessWidget {
   });
 
   final Question? question;
-  final VoidCallback onChangeQuestionRequest;
+  final VoidCallback onNewQuestion;
   final QuestionView questionView;
   final String? studentId;
-  final Function(VoidCallback p1) onStateChange;
+  final VoidCallback onStateChange;
   final bool hasAction;
   final bool isAnswerShown;
   final bool isReading;
   final VoidCallback startReadingCallback;
   final VoidCallback stopReadingCallback;
 
-  Answer? _answer(BuildContext context) {
-    final students = Provider.of<AllStudents>(context, listen: false);
-    final student = studentId == null ? null : students[studentId];
-    return student == null ? null : student.allAnswers[question];
-  }
-
   bool _isQuestionActive(BuildContext context) {
     final students = Provider.of<AllStudents>(context, listen: false);
-    final answer = _answer(context);
+    final answer =
+        studentId != null ? students[studentId].allAnswers[question] : null;
 
     if (students.count == 0) {
       return question != null && question?.defaultTarget == Target.all;
@@ -161,17 +154,19 @@ class _QuestionPartTrailing extends StatelessWidget {
       );
     } else if (userType == UserType.teacher) {
       return question == null
-          ? _QuestionAddButton(newQuestionCallback: onChangeQuestionRequest)
-          : questionView != QuestionView.normal
-              ? _QuestionActivatedState(
-                  question: question!,
-                  studentId: studentId,
-                  initialStatus: _isQuestionActive(context),
-                  onStateChange: onStateChange,
-                  questionView: questionView,
-                )
-              : _QuestionValidateCheckmark(
-                  question: question!, studentId: studentId!);
+          ? _QuestionAddButton(newQuestionCallback: onNewQuestion)
+          : questionView == QuestionView.normal
+              ? _QuestionValidateCheckmark(
+                  question: question!, studentId: studentId!)
+              : questionView == QuestionView.modifyForAllStudents
+                  ? Container(width: 0)
+                  : _QuestionActivatedState(
+                      question: question!,
+                      studentId: studentId,
+                      initialStatus: _isQuestionActive(context),
+                      onStateChange: onStateChange,
+                      questionView: questionView,
+                    );
     } else {
       throw const NotLoggedIn();
     }
@@ -205,7 +200,7 @@ class _QuestionActivatedState extends StatefulWidget {
   final String? studentId;
   final Question question;
   final bool initialStatus;
-  final Function(VoidCallback) onStateChange;
+  final VoidCallback onStateChange;
   final QuestionView questionView;
 
   @override
@@ -274,7 +269,7 @@ class _QuestionActivator extends State<_QuestionActivatedState> {
                 .copyWith(isActive: _isActive));
       }
     }
-    widget.onStateChange(() {});
+    widget.onStateChange();
     setState(() {});
   }
 

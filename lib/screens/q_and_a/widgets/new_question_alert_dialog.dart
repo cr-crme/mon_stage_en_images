@@ -28,15 +28,16 @@ class NewQuestionAlertDialog extends StatefulWidget {
 class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
   final _formKey = GlobalKey<FormState>();
   String? _text;
-  Map<Student, bool> _questionStatus = {};
+  final Map<Student, bool> _questionStatus = {};
 
   @override
   void initState() {
     super.initState();
     final students = Provider.of<AllStudents>(context, listen: false);
     for (final student in students) {
-      _questionStatus[student] =
-          student.allAnswers[widget.question]?.isActive ?? false;
+      _questionStatus[student] = widget.question == null
+          ? false
+          : student.allAnswers[widget.question]?.isActive ?? false;
     }
   }
 

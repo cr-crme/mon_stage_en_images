@@ -111,15 +111,17 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
 
     if (widget.question != null) {
       var newQuestion = widget.question!.copyWith(text: question.text);
-      // TODO SetState for Activé pour cet élève
       questions.modifyToAll(newQuestion,
           students: _students,
           currentStudent: currentStudent,
           isActive: activeStatus);
     } else {
       questions.addToAll(question,
-          students: _students, currentStudent: currentStudent);
+          students: _students,
+          currentStudent: currentStudent,
+          isActive: activeStatus);
     }
+    
     setState(() {});
   }
 
@@ -129,11 +131,10 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     setState(() {});
   }
 
-  void _onStateChange(VoidCallback fn) {
+  void _onStateChange() {
     if (_student != null) {
       _answer = _student!.allAnswers[widget.question];
     }
-    fn();
     setState(() {});
   }
 
@@ -172,7 +173,6 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
             onTap: widget.questionView == QuestionView.normal
                 ? _expand
                 : _addOrModifyQuestion,
-            onChangeQuestionRequest: _addOrModifyQuestion,
             isAnswerShown: _isExpanded,
             isReading: _isReading,
             startReadingCallback: _startReading,

@@ -18,7 +18,7 @@ class AnswerPart extends StatefulWidget {
   });
 
   final String? studentId;
-  final Function(VoidCallback) onStateChange;
+  final VoidCallback onStateChange;
   final Question question;
 
   @override
@@ -57,7 +57,7 @@ class _AnswerPartState extends State<AnswerPart> {
         question: widget.question,
         answer: currentAnswer.copyWith(actionRequired: newStatus));
 
-    widget.onStateChange(() {});
+    widget.onStateChange();
   }
 
   @override
