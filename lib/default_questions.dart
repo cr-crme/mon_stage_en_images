@@ -70,15 +70,10 @@ class DefaultQuestion {
         ),
         Question(
           'Quelle est la tâche que tu fais le plus souvent?'
-          '\nFais toi prendre en photo pendant que tu fais cette tâche.',
+          '\nFais toi prendre en photo pendant que tu fais cette tâche.'
+          '\nQu’est-ce que tu trouves le plus difficile dans cette tâche?',
           section: 2,
           defaultTarget: Target.all,
-        ),
-        Question(
-          'Quelle est la tâche que tu trouves la plus difficile?'
-          '\nFais toi prendre en photo pendant que tu fais cette tâche.',
-          section: 2,
-          defaultTarget: Target.none,
         ),
         Question(
           'Fais toi prendre en photo pendant que tu places des marchandises '
