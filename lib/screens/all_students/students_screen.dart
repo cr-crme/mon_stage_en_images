@@ -177,6 +177,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
             iconSize: 35,
             color: Colors.black,
           ),
+          const SizedBox(width: 15),
         ],
       ),
       body: Column(
