@@ -169,16 +169,27 @@ class _MessageListView extends StatelessWidget {
 
   final List<Message> discussion;
 
+  void _scrollDown(ScrollController scroller) {
+    scroller.animateTo(
+      scroller.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 100),
+      curve: Curves.fastOutSlowIn,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final scroller = ScrollController();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollDown(scroller));
+
     return Column(
       children: [
         Container(
-          //constraints: BoxConstraints(maxHeight: 300),
+          constraints: const BoxConstraints(maxHeight: 300),
           padding: const EdgeInsets.only(left: 15),
           child: ListView.builder(
             shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
+            controller: scroller,
             itemBuilder: (context, index) => Column(
               children: [
                 DiscussionTile(discussion: discussion[index]),
