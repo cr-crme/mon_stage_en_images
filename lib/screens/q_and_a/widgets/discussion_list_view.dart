@@ -170,9 +170,10 @@ class _MessageListView extends StatelessWidget {
   final List<Message> discussion;
 
   void _scrollDown(ScrollController scroller) {
+    // Scolling "min" brings us to the end. See comment below.
     scroller.animateTo(
-      scroller.position.maxScrollExtent,
-      duration: const Duration(milliseconds: 100),
+      scroller.position.minScrollExtent,
+      duration: const Duration(milliseconds: 250),
       curve: Curves.fastOutSlowIn,
     );
   }
@@ -182,6 +183,9 @@ class _MessageListView extends StatelessWidget {
     final scroller = ScrollController();
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollDown(scroller));
 
+    // We have to reverse the answers so last appears first allowing to "scroll"
+    // to the end without having to load the photo to know their size. Since we
+    // want the discussion to be chronologically, we reverse this one too.
     return Column(
       children: [
         Container(
@@ -189,10 +193,11 @@ class _MessageListView extends StatelessWidget {
           padding: const EdgeInsets.only(left: 15),
           child: ListView.builder(
             shrinkWrap: true,
+            reverse: true,
             controller: scroller,
             itemBuilder: (context, index) => Column(
               children: [
-                DiscussionTile(discussion: discussion[index]),
+                DiscussionTile(discussion: discussion.reversed.toList()[index]),
                 const SizedBox(height: 10),
               ],
             ),
