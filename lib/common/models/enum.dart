@@ -22,8 +22,9 @@ enum UserType {
   student,
 }
 
-enum SectionNavigation {
-  showStudent,
-  modifyOneStudent,
-  modifyAllStudents,
+enum QuestionNavigation {
+  showOneStudent,
+  editOneStudent,
+  showAllStudents,
+  editAllStudents,
 }

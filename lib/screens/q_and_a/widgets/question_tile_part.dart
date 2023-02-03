@@ -16,7 +16,7 @@ class QuestionPart extends StatelessWidget {
   const QuestionPart({
     super.key,
     required this.question,
-    required this.sectionNavigation,
+    required this.questionNavigation,
     required this.studentId,
     required this.answer,
     required this.isAnswerShown,
@@ -28,7 +28,7 @@ class QuestionPart extends StatelessWidget {
   });
 
   final Question? question;
-  final SectionNavigation sectionNavigation;
+  final QuestionNavigation questionNavigation;
   final String? studentId;
   final Answer? answer;
   final bool isAnswerShown;
@@ -76,7 +76,7 @@ class QuestionPart extends StatelessWidget {
       trailing: _QuestionPartTrailing(
         question: question,
         onNewQuestion: onTap,
-        sectionNavigation: sectionNavigation,
+        questionNavigation: questionNavigation,
         studentId: studentId,
         onStateChange: onStateChange,
         hasAction: (answer?.action(context) ?? ActionRequired.none) !=
@@ -95,7 +95,7 @@ class _QuestionPartTrailing extends StatelessWidget {
   const _QuestionPartTrailing({
     required this.question,
     required this.onNewQuestion,
-    required this.sectionNavigation,
+    required this.questionNavigation,
     required this.studentId,
     required this.onStateChange,
     required this.hasAction,
@@ -107,7 +107,7 @@ class _QuestionPartTrailing extends StatelessWidget {
 
   final Question? question;
   final VoidCallback onNewQuestion;
-  final SectionNavigation sectionNavigation;
+  final QuestionNavigation questionNavigation;
   final String? studentId;
   final VoidCallback onStateChange;
   final bool hasAction;
@@ -125,7 +125,7 @@ class _QuestionPartTrailing extends StatelessWidget {
       return question != null && question?.defaultTarget == Target.all;
     }
 
-    return sectionNavigation == SectionNavigation.modifyAllStudents
+    return questionNavigation == QuestionNavigation.editAllStudents
         ? question != null
             ? students.isQuestionActiveForAll(question!)
             : false
@@ -161,17 +161,17 @@ class _QuestionPartTrailing extends StatelessWidget {
     } else if (userType == UserType.teacher) {
       return question == null
           ? _QuestionAddButton(newQuestionCallback: onNewQuestion)
-          : sectionNavigation == SectionNavigation.showStudent
+          : questionNavigation == QuestionNavigation.showOneStudent
               ? _QuestionValidateCheckmark(
                   question: question!, studentId: studentId!)
-              : sectionNavigation == SectionNavigation.modifyAllStudents
+              : questionNavigation == QuestionNavigation.editAllStudents
                   ? Container(width: 0)
                   : _QuestionActivatedState(
                       question: question!,
                       studentId: studentId,
                       initialStatus: _isQuestionActive(context),
                       onStateChange: onStateChange,
-                      sectionNavigation: sectionNavigation,
+                      questionNavigation: questionNavigation,
                     );
     } else {
       throw const NotLoggedIn();
@@ -200,21 +200,21 @@ class _QuestionActivatedState extends StatelessWidget {
     required this.onStateChange,
     required this.initialStatus,
     required this.question,
-    required this.sectionNavigation,
+    required this.questionNavigation,
   });
 
   final String? studentId;
   final Question question;
   final bool initialStatus;
   final VoidCallback onStateChange;
-  final SectionNavigation sectionNavigation;
+  final QuestionNavigation questionNavigation;
 
   Future<void> _toggleQuestionActiveState(BuildContext context, value) async {
     final questions = Provider.of<AllQuestions>(context, listen: false);
     final students = Provider.of<AllStudents>(context, listen: false);
     final student = studentId == null ? null : students[studentId];
 
-    final sure = sectionNavigation == SectionNavigation.modifyAllStudents
+    final sure = questionNavigation == QuestionNavigation.editAllStudents
         ? await showDialog<bool>(
             context: context,
             barrierDismissible: false,

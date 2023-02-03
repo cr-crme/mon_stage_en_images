@@ -18,13 +18,13 @@ class QuestionAndAnswerTile extends StatefulWidget {
     super.key,
     required this.studentId,
     required this.sectionIndex,
-    required this.sectionNavigation,
+    required this.questionNavigation,
   });
 
   final int sectionIndex;
   final String? studentId;
   final Question? question;
-  final SectionNavigation sectionNavigation;
+  final QuestionNavigation questionNavigation;
 
   @override
   State<QuestionAndAnswerTile> createState() => _QuestionAndAnswerTileState();
@@ -101,7 +101,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
         student: currentStudent,
         question: widget.question,
         deleteCallback:
-            widget.sectionNavigation == SectionNavigation.modifyAllStudents
+            widget.questionNavigation == QuestionNavigation.editAllStudents
                 ? _deleteQuestionCallback
                 : null,
       ),
@@ -167,20 +167,21 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
         children: [
           QuestionPart(
             question: widget.question,
-            sectionNavigation: widget.sectionNavigation,
+            questionNavigation: widget.questionNavigation,
             studentId: widget.studentId,
             answer: _answer,
             onStateChange: _onStateChange,
-            onTap: widget.sectionNavigation == SectionNavigation.showStudent
-                ? _expand
-                : _addOrModifyQuestion,
+            onTap:
+                widget.questionNavigation == QuestionNavigation.showOneStudent
+                    ? _expand
+                    : _addOrModifyQuestion,
             isAnswerShown: _isExpanded,
             isReading: _isReading,
             startReadingCallback: _startReading,
             stopReadingCallback: _stopReading,
           ),
           if (_isExpanded &&
-              widget.sectionNavigation == SectionNavigation.showStudent)
+              widget.questionNavigation == QuestionNavigation.showOneStudent)
             AnswerPart(
               widget.question!,
               onStateChange: _onStateChange,
