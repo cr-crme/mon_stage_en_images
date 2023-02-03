@@ -143,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     Navigator.of(context).pushReplacementNamed(QAndAScreen.routeName,
-        arguments: [Target.individual, null]);
+        arguments: [Target.individual, PageMode.editableView, null]);
   }
 
   @override

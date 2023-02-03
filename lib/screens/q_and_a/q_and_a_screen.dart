@@ -25,7 +25,7 @@ class _QAndAScreenState extends State<QAndAScreen> {
   UserType _userType = UserType.none;
   Student? _student;
   Target _viewSpan = Target.individual;
-  bool _isInEditMode = false;
+  late PageMode _pageMode;
 
   final _pageController = PageController();
   var _currentPage = 0;
@@ -34,18 +34,17 @@ class _QAndAScreenState extends State<QAndAScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    final currentUser =
+        Provider.of<Database>(context, listen: false).currentUser!;
+    _userType = currentUser.userType;
 
     final arguments = ModalRoute.of(context)!.settings.arguments as List;
     _viewSpan = arguments[0] as Target;
-
-    final currentUser =
-        Provider.of<Database>(context, listen: false).currentUser!;
-
-    _userType = currentUser.userType;
+    _pageMode = arguments[1] as PageMode;
     _student = _userType == UserType.student
         ? Provider.of<AllStudents>(context, listen: false)
             .fromId(currentUser.studentId!)
-        : arguments[1] as Student?;
+        : arguments[2] as Student?;
   }
 
   void onPageChanged(BuildContext context, int page) {
@@ -84,8 +83,10 @@ class _QAndAScreenState extends State<QAndAScreen> {
 
   void _switchToQuestionManagerMode(BuildContext context) {
     if (_userType == UserType.student) return;
+    if (_pageMode == PageMode.fixView) return;
 
-    _isInEditMode = !_isInEditMode;
+    _pageMode =
+        _pageMode == PageMode.edit ? PageMode.editableView : PageMode.edit;
     setState(() {});
   }
 
@@ -122,7 +123,9 @@ class _QAndAScreenState extends State<QAndAScreen> {
           ? [
               IconButton(
                 onPressed: _switchQuestionModeCallback,
-                icon: Icon(_isInEditMode ? Icons.save : Icons.edit_rounded),
+                icon: Icon(_pageMode == PageMode.edit
+                    ? Icons.save
+                    : Icons.edit_rounded),
                 iconSize: 30,
               ),
               const SizedBox(width: 15),
@@ -153,28 +156,28 @@ class _QAndAScreenState extends State<QAndAScreen> {
                   0,
                   studentId: _student?.id,
                   viewSpan: _viewSpan,
-                  isInEditMode: _isInEditMode,
+                  pageMode: _pageMode,
                 ),
                 QuestionAndAnswerPage(1,
                     studentId: _student?.id,
                     viewSpan: _viewSpan,
-                    isInEditMode: _isInEditMode),
+                    pageMode: _pageMode),
                 QuestionAndAnswerPage(2,
                     studentId: _student?.id,
                     viewSpan: _viewSpan,
-                    isInEditMode: _isInEditMode),
+                    pageMode: _pageMode),
                 QuestionAndAnswerPage(3,
                     studentId: _student?.id,
                     viewSpan: _viewSpan,
-                    isInEditMode: _isInEditMode),
+                    pageMode: _pageMode),
                 QuestionAndAnswerPage(4,
                     studentId: _student?.id,
                     viewSpan: _viewSpan,
-                    isInEditMode: _isInEditMode),
+                    pageMode: _pageMode),
                 QuestionAndAnswerPage(5,
                     studentId: _student?.id,
                     viewSpan: _viewSpan,
-                    isInEditMode: _isInEditMode),
+                    pageMode: _pageMode),
               ],
             ),
           ),

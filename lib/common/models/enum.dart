@@ -21,3 +21,9 @@ enum UserType {
   teacher,
   student,
 }
+
+enum PageMode {
+  fixView,
+  editableView,
+  edit,
+}

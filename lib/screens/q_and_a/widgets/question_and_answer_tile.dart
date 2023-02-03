@@ -19,14 +19,14 @@ class QuestionAndAnswerTile extends StatefulWidget {
     required this.studentId,
     required this.sectionIndex,
     required this.viewSpan,
-    required this.isInEditMode,
+    required this.pageMode,
   });
 
   final int sectionIndex;
   final String? studentId;
   final Question? question;
   final Target viewSpan;
-  final bool isInEditMode;
+  final PageMode pageMode;
 
   @override
   State<QuestionAndAnswerTile> createState() => _QuestionAndAnswerTileState();
@@ -80,7 +80,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
       }
     }
 
-    final currentStudent = arguments[1] as Student?;
+    final currentStudent = arguments[2] as Student?;
 
     final output = await showDialog(
       context: context,
@@ -90,7 +90,8 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
         student: currentStudent,
         question: widget.question,
         isQuestionModifiable: !hasAnswers,
-        deleteCallback: widget.isInEditMode ? _deleteQuestionCallback : null,
+        deleteCallback:
+            widget.pageMode == PageMode.edit ? _deleteQuestionCallback : null,
       ),
     );
     if (output == null) return;
@@ -155,21 +156,22 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
           QuestionPart(
             question: widget.question,
             viewSpan: widget.viewSpan,
-            isInEditMode: widget.isInEditMode,
+            pageMode: widget.pageMode,
             studentId: widget.studentId,
             answer: _answer,
             onStateChange: _onStateChange,
-            onTap: widget.viewSpan == Target.individual && !widget.isInEditMode
+            onTap: widget.viewSpan == Target.individual &&
+                    widget.pageMode != PageMode.edit
                 ? _expand
                 : _addOrModifyQuestion,
-            isAnswerShown: _isExpanded && !widget.isInEditMode,
+            isAnswerShown: _isExpanded && widget.pageMode != PageMode.edit,
             isReading: _isReading,
             startReadingCallback: _startReading,
             stopReadingCallback: _stopReading,
           ),
           if (_isExpanded &&
               widget.viewSpan == Target.individual &&
-              !widget.isInEditMode)
+              widget.pageMode != PageMode.edit)
             AnswerPart(
               widget.question!,
               onStateChange: _onStateChange,

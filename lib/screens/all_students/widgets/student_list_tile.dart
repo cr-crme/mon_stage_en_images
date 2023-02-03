@@ -42,7 +42,7 @@ class StudentListTile extends StatelessWidget {
           child: const Text(""),
         ),
         onTap: () => Navigator.of(context).pushNamed(QAndAScreen.routeName,
-            arguments: [Target.individual, student]),
+            arguments: [Target.individual, PageMode.editableView, student]),
         onLongPress: () => modifyStudentCallback(student),
       ),
     );

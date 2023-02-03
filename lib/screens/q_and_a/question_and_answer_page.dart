@@ -17,14 +17,14 @@ class QuestionAndAnswerPage extends StatelessWidget {
     super.key,
     required this.studentId,
     required this.viewSpan,
-    required this.isInEditMode,
+    required this.pageMode,
   });
 
   static const routeName = '/question-and-answer-page';
   final int sectionIndex;
   final String? studentId;
   final Target viewSpan;
-  final bool isInEditMode;
+  final PageMode pageMode;
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +75,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
               sectionIndex: sectionIndex,
               studentId: studentId,
               viewSpan: viewSpan,
-              isInEditMode: isInEditMode,
+              pageMode: pageMode,
             ),
           if (viewSpan != Target.individual &&
               questions.isNotEmpty &&
@@ -87,7 +87,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
                 SizedBox(width: 25)
               ],
             ),
-          viewSpan == Target.individual && !isInEditMode
+          viewSpan == Target.individual && pageMode != PageMode.edit
               ? activeQuestionsSection
               : allAnswersSection,
         ],
@@ -103,7 +103,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
             sectionIndex: sectionIndex,
             studentId: studentId,
             viewSpan: viewSpan,
-            isInEditMode: isInEditMode,
+            pageMode: pageMode,
           )
         : Container(
             padding: const EdgeInsets.only(top: 10, bottom: 30),
@@ -119,14 +119,14 @@ class QAndAListView extends StatelessWidget {
     required this.sectionIndex,
     required this.studentId,
     required this.viewSpan,
-    required this.isInEditMode,
+    required this.pageMode,
   });
 
   final List<Question> questions;
   final int sectionIndex;
   final String? studentId;
   final Target viewSpan;
-  final bool isInEditMode;
+  final PageMode pageMode;
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +138,7 @@ class QAndAListView extends StatelessWidget {
         sectionIndex: sectionIndex,
         studentId: studentId,
         viewSpan: viewSpan,
-        isInEditMode: isInEditMode,
+        pageMode: pageMode,
       ),
       itemCount: questions.length,
     );

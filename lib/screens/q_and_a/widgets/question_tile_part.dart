@@ -17,7 +17,7 @@ class QuestionPart extends StatelessWidget {
     super.key,
     required this.question,
     required this.viewSpan,
-    required this.isInEditMode,
+    required this.pageMode,
     required this.studentId,
     required this.answer,
     required this.isAnswerShown,
@@ -30,7 +30,7 @@ class QuestionPart extends StatelessWidget {
 
   final Question? question;
   final Target viewSpan;
-  final bool isInEditMode;
+  final PageMode pageMode;
   final String? studentId;
   final Answer? answer;
   final bool isAnswerShown;
@@ -79,7 +79,7 @@ class QuestionPart extends StatelessWidget {
         question: question,
         onNewQuestion: onTap,
         viewSpan: viewSpan,
-        isInEditMode: isInEditMode,
+        pageMode: pageMode,
         studentId: studentId,
         onStateChange: onStateChange,
         hasAction: (answer?.action(context) ?? ActionRequired.none) !=
@@ -99,7 +99,7 @@ class _QuestionPartTrailing extends StatelessWidget {
     required this.question,
     required this.onNewQuestion,
     required this.viewSpan,
-    required this.isInEditMode,
+    required this.pageMode,
     required this.studentId,
     required this.onStateChange,
     required this.hasAction,
@@ -112,7 +112,7 @@ class _QuestionPartTrailing extends StatelessWidget {
   final Question? question;
   final VoidCallback onNewQuestion;
   final Target viewSpan;
-  final bool isInEditMode;
+  final PageMode pageMode;
   final String? studentId;
   final VoidCallback onStateChange;
   final bool hasAction;
@@ -161,14 +161,14 @@ class _QuestionPartTrailing extends StatelessWidget {
       if (question == null) {
         return _QuestionAddButton(newQuestionCallback: onNewQuestion);
       } else if (viewSpan == Target.individual) {
-        return isInEditMode
+        return pageMode == PageMode.edit
             ? _QuestionActivatedState(
                 question: question!,
                 studentId: studentId,
                 initialStatus: _isQuestionActive(context),
                 onStateChange: onStateChange,
                 viewSpan: viewSpan,
-                isInEditMode: isInEditMode,
+                pageMode: pageMode,
               )
             : _QuestionValidateCheckmark(
                 question: question!, studentId: studentId!);
@@ -203,7 +203,7 @@ class _QuestionActivatedState extends StatelessWidget {
     required this.initialStatus,
     required this.question,
     required this.viewSpan,
-    required this.isInEditMode,
+    required this.pageMode,
   });
 
   final String? studentId;
@@ -211,14 +211,14 @@ class _QuestionActivatedState extends StatelessWidget {
   final bool initialStatus;
   final VoidCallback onStateChange;
   final Target viewSpan;
-  final bool isInEditMode;
+  final PageMode pageMode;
 
   Future<void> _toggleQuestionActiveState(BuildContext context, value) async {
     final questions = Provider.of<AllQuestions>(context, listen: false);
     final students = Provider.of<AllStudents>(context, listen: false);
     final student = studentId == null ? null : students[studentId];
 
-    final sure = isInEditMode && viewSpan == Target.all
+    final sure = pageMode == PageMode.edit && viewSpan == Target.all
         ? await showDialog<bool>(
             context: context,
             barrierDismissible: false,
