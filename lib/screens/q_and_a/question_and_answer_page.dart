@@ -16,6 +16,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
     required this.studentId,
     required this.viewSpan,
     required this.pageMode,
+    required this.answerFilterMode,
   });
 
   static const routeName = '/question-and-answer-page';
@@ -23,6 +24,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
   final String? studentId;
   final Target viewSpan;
   final PageMode pageMode;
+  final List answerFilterMode;
 
   @override
   Widget build(BuildContext context) {
@@ -44,12 +46,18 @@ class QuestionAndAnswerPage extends StatelessWidget {
       activeQuestions = [];
     }
 
-    final allAnswersSection = _buildQuestionSection(context,
-        questions: questions.toList(growable: false),
-        titleIfNothing: 'Aucune question dans cette section');
-    final activeQuestionsSection = _buildQuestionSection(context,
-        questions: activeQuestions,
-        titleIfNothing: 'Aucune question dans cette section');
+    final allAnswersSection = _buildQuestionSection(
+      context,
+      questions: questions.toList(growable: false),
+      titleIfNothing: 'Aucune question dans cette section',
+      answerFilterMode: answerFilterMode,
+    );
+    final activeQuestionsSection = _buildQuestionSection(
+      context,
+      questions: activeQuestions,
+      titleIfNothing: 'Aucune question dans cette section',
+      answerFilterMode: null,
+    );
 
     return SingleChildScrollView(
       child: Column(
@@ -72,6 +80,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
               studentId: studentId,
               viewSpan: viewSpan,
               pageMode: pageMode,
+              answerFilterMode: null,
             ),
           if (viewSpan != Target.individual &&
               questions.isNotEmpty &&
@@ -91,8 +100,12 @@ class QuestionAndAnswerPage extends StatelessWidget {
     );
   }
 
-  Widget _buildQuestionSection(BuildContext context,
-      {required List<Question> questions, required String titleIfNothing}) {
+  Widget _buildQuestionSection(
+    BuildContext context, {
+    required List<Question> questions,
+    required String titleIfNothing,
+    required List? answerFilterMode,
+  }) {
     return questions.isNotEmpty
         ? QAndAListView(
             questions.toList(growable: false),
@@ -100,6 +113,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
             studentId: studentId,
             viewSpan: viewSpan,
             pageMode: pageMode,
+            answerFilterMode: answerFilterMode,
           )
         : Container(
             padding: const EdgeInsets.only(top: 10, bottom: 30),
@@ -116,6 +130,7 @@ class QAndAListView extends StatelessWidget {
     required this.studentId,
     required this.viewSpan,
     required this.pageMode,
+    required this.answerFilterMode,
   });
 
   final List<Question> questions;
@@ -123,6 +138,7 @@ class QAndAListView extends StatelessWidget {
   final String? studentId;
   final Target viewSpan;
   final PageMode pageMode;
+  final List? answerFilterMode;
 
   @override
   Widget build(BuildContext context) {
@@ -135,6 +151,7 @@ class QAndAListView extends StatelessWidget {
         studentId: studentId,
         viewSpan: viewSpan,
         pageMode: pageMode,
+        answerFilterMode: answerFilterMode,
       ),
       itemCount: questions.length,
     );

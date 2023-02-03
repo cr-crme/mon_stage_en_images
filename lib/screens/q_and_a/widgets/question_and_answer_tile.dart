@@ -20,6 +20,7 @@ class QuestionAndAnswerTile extends StatefulWidget {
     required this.sectionIndex,
     required this.viewSpan,
     required this.pageMode,
+    required this.answerFilterMode,
   });
 
   final int sectionIndex;
@@ -27,6 +28,7 @@ class QuestionAndAnswerTile extends StatefulWidget {
   final Question? question;
   final Target viewSpan;
   final PageMode pageMode;
+  final List? answerFilterMode;
 
   @override
   State<QuestionAndAnswerTile> createState() => _QuestionAndAnswerTileState();
@@ -172,6 +174,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
               onStateChange: _onStateChange,
               studentId: widget.studentId,
               pageMode: widget.pageMode,
+              filterMode: widget.answerFilterMode,
             ),
         ],
       ),

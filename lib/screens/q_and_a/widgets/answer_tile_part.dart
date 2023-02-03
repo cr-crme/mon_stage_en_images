@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/answer.dart';
 import '/common/models/database.dart';
 import '/common/models/discussion.dart';
 import '/common/models/enum.dart';
@@ -18,32 +17,42 @@ class AnswerPart extends StatefulWidget {
     required this.studentId,
     required this.onStateChange,
     required this.pageMode,
+    required this.filterMode,
   });
 
   final String? studentId;
   final VoidCallback onStateChange;
   final Question question;
   final PageMode pageMode;
+  final List? filterMode;
 
   @override
   State<AnswerPart> createState() => _AnswerPartState();
 }
 
 class _AnswerPartState extends State<AnswerPart> {
-  Answer _combineAnswersFromAllStudents(AllStudents students) {
-    var discussionsNonSorted = Discussion();
-    for (final student in students) {
+  List<Message> _combineMessagesFromAllStudents(AllStudents students) {
+    final sortedStudents = students.toList()
+      ..sort(
+        (student1, student2) => student1.lastName
+            .toLowerCase()
+            .compareTo(student2.lastName.toLowerCase()),
+      );
+
+    // Fetch all the answers
+    var discussions = Discussion();
+    for (final student in sortedStudents) {
       if (student.allAnswers[widget.question] == null) continue;
-      for (final message in student.allAnswers[widget.question]!.discussion) {
-        discussionsNonSorted.add(message);
+      for (final message in student.allAnswers[widget.question]!.discussion
+          .toListByTime(reversed: true)) {
+        discussions.add(message);
       }
     }
-    final discussionTimeSorted = Discussion.fromList(
-        discussionsNonSorted.toList()
-          ..sort((message1, message2) =>
-              message2.creationTimeStamp - message1.creationTimeStamp));
 
-    return Answer(discussion: discussionTimeSorted);
+    // Filter by date if required
+    return widget.filterMode![0] == AnswerFilterMode.byDate
+        ? discussions.toListByTime(reversed: true)
+        : discussions.toList();
   }
 
   Future<void> _addAnswerCallback(String answerText,
@@ -86,8 +95,10 @@ class _AnswerPartState extends State<AnswerPart> {
     final student =
         widget.studentId != null ? students[widget.studentId] : null;
 
-    final answer = student?.allAnswers[widget.question]! ??
-        _combineAnswersFromAllStudents(students);
+    final answers = student?.allAnswers[widget.question]!;
+    final messages = answers?.discussion.toListByTime(reversed: true) ??
+        _combineMessagesFromAllStudents(students);
+    final isValidated = answers?.isValidated ?? false;
 
     return Container(
       padding: const EdgeInsets.only(left: 40, right: 20),
@@ -96,7 +107,8 @@ class _AnswerPartState extends State<AnswerPart> {
         children: [
           if (widget.pageMode != PageMode.edit)
             DiscussionListView(
-              answer: answer,
+              messages: messages,
+              isAnswerValidated: isValidated,
               student: student,
               addMessageCallback: _addAnswerCallback,
             ),

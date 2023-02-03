@@ -26,6 +26,11 @@ class _QAndAScreenState extends State<QAndAScreen> {
   Student? _student;
   Target _viewSpan = Target.individual;
   late PageMode _pageMode;
+  final _answerFilterMode = [
+    AnswerFilterMode.byDate,
+    AnswerFromWhoMode.teacherAndStudent,
+    AnswerTypeMode.textAndPhotos,
+  ];
 
   final _pageController = PageController();
   var _currentPage = 0;
@@ -57,6 +62,13 @@ class _QAndAScreenState extends State<QAndAScreen> {
             _viewSpan == Target.individual
         ? () => _switchToQuestionManagerMode(context)
         : null;
+    setState(() {});
+  }
+
+  void _filterAnswers() {
+    _answerFilterMode[0] = AnswerFilterMode.byStudent;
+    // AnswerFromWhoMode.teacherAndStudent,
+    // AnswerTypeMode.textAndPhotos,
     setState(() {});
   }
 
@@ -120,17 +132,22 @@ class _QAndAScreenState extends State<QAndAScreen> {
               _currentPage == 0
           ? null
           : BackButton(onPressed: _onBackPressed),
-      actions: _currentPage != 0 &&
-              loginType == UserType.teacher &&
-              _viewSpan == Target.individual
+      actions: _currentPage != 0 && loginType == UserType.teacher
           ? [
-              IconButton(
-                onPressed: _switchQuestionModeCallback,
-                icon: Icon(_pageMode == PageMode.edit
-                    ? Icons.save
-                    : Icons.edit_rounded),
-                iconSize: 30,
-              ),
+              if (_viewSpan == Target.individual)
+                IconButton(
+                  onPressed: _switchQuestionModeCallback,
+                  icon: Icon(_pageMode == PageMode.edit
+                      ? Icons.save
+                      : Icons.edit_rounded),
+                  iconSize: 30,
+                ),
+              if (_viewSpan == Target.all && _pageMode == PageMode.fixView)
+                IconButton(
+                  onPressed: _filterAnswers,
+                  icon: const Icon(Icons.filter_alt),
+                  iconSize: 30,
+                ),
               const SizedBox(width: 15),
             ]
           : null,
@@ -160,27 +177,43 @@ class _QAndAScreenState extends State<QAndAScreen> {
                   studentId: _student?.id,
                   viewSpan: _viewSpan,
                   pageMode: _pageMode,
+                  answerFilterMode: _answerFilterMode,
                 ),
-                QuestionAndAnswerPage(1,
-                    studentId: _student?.id,
-                    viewSpan: _viewSpan,
-                    pageMode: _pageMode),
-                QuestionAndAnswerPage(2,
-                    studentId: _student?.id,
-                    viewSpan: _viewSpan,
-                    pageMode: _pageMode),
-                QuestionAndAnswerPage(3,
-                    studentId: _student?.id,
-                    viewSpan: _viewSpan,
-                    pageMode: _pageMode),
-                QuestionAndAnswerPage(4,
-                    studentId: _student?.id,
-                    viewSpan: _viewSpan,
-                    pageMode: _pageMode),
-                QuestionAndAnswerPage(5,
-                    studentId: _student?.id,
-                    viewSpan: _viewSpan,
-                    pageMode: _pageMode),
+                QuestionAndAnswerPage(
+                  1,
+                  studentId: _student?.id,
+                  viewSpan: _viewSpan,
+                  pageMode: _pageMode,
+                  answerFilterMode: _answerFilterMode,
+                ),
+                QuestionAndAnswerPage(
+                  2,
+                  studentId: _student?.id,
+                  viewSpan: _viewSpan,
+                  pageMode: _pageMode,
+                  answerFilterMode: _answerFilterMode,
+                ),
+                QuestionAndAnswerPage(
+                  3,
+                  studentId: _student?.id,
+                  viewSpan: _viewSpan,
+                  pageMode: _pageMode,
+                  answerFilterMode: _answerFilterMode,
+                ),
+                QuestionAndAnswerPage(
+                  4,
+                  studentId: _student?.id,
+                  viewSpan: _viewSpan,
+                  pageMode: _pageMode,
+                  answerFilterMode: _answerFilterMode,
+                ),
+                QuestionAndAnswerPage(
+                  5,
+                  studentId: _student?.id,
+                  viewSpan: _viewSpan,
+                  pageMode: _pageMode,
+                  answerFilterMode: _answerFilterMode,
+                ),
               ],
             ),
           ),

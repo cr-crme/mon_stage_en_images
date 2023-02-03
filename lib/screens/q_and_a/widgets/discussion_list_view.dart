@@ -3,7 +3,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '/common/misc/storage_service.dart';
-import '/common/models/answer.dart';
 import '/common/models/database.dart';
 import '/common/models/enum.dart';
 import '/common/models/message.dart';
@@ -14,12 +13,14 @@ import 'discussion_tile.dart';
 class DiscussionListView extends StatefulWidget {
   const DiscussionListView({
     super.key,
-    required this.answer,
+    required this.messages,
+    required this.isAnswerValidated,
     required this.student,
     required this.addMessageCallback,
   });
 
-  final Answer? answer;
+  final List<Message> messages;
+  final bool isAnswerValidated;
   final Student? student;
   final Function(String, {bool isPhoto}) addMessageCallback;
 
@@ -109,9 +110,9 @@ class _DiscussionListViewState extends State<DiscussionListView> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _MessageListView(
-          discussion: widget.answer!.discussion.toListByTime(reversed: true),
+          discussion: widget.messages,
         ),
-        if (userType == UserType.student && !widget.answer!.isValidated)
+        if (userType == UserType.student && !widget.isAnswerValidated)
           TextButton(
             onPressed: _addPhoto,
             style: TextButton.styleFrom(backgroundColor: Colors.grey[700]),
@@ -126,7 +127,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
               ],
             ),
           ),
-        if (!widget.answer!.isValidated && widget.student != null)
+        if (!widget.isAnswerValidated && widget.student != null)
           Container(
             padding: const EdgeInsets.only(left: 15),
             child: Form(
