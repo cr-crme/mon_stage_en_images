@@ -55,6 +55,12 @@ class MainDrawer extends StatelessWidget {
             if (userType == UserType.teacher)
               MenuItem(
                   title: 'Gestion des questions',
+                  icon: Icons.speaker_notes,
+                  onTap: () => Navigator.of(context)
+                      .pushReplacementNamed(QAndAScreen.routeName)),
+            if (userType == UserType.teacher)
+              MenuItem(
+                  title: 'Résumé des réponses',
                   icon: Icons.question_answer,
                   onTap: () => Navigator.of(context)
                       .pushReplacementNamed(QAndAScreen.routeName)),
