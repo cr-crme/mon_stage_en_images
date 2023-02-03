@@ -67,7 +67,7 @@ class _QAndAScreenState extends State<QAndAScreen> {
 
   void _filterAnswers() {
     _answerFilterMode[0] = AnswerFilterMode.byStudent;
-    // AnswerFromWhoMode.teacherAndStudent,
+    _answerFilterMode[1] = AnswerFromWhoMode.teacherOnly;
     // AnswerTypeMode.textAndPhotos,
     setState(() {});
   }

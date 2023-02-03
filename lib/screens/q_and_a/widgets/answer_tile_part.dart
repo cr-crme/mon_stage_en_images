@@ -32,6 +32,9 @@ class AnswerPart extends StatefulWidget {
 
 class _AnswerPartState extends State<AnswerPart> {
   List<Message> _combineMessagesFromAllStudents(AllStudents students) {
+    final teacherId =
+        Provider.of<Database>(context, listen: false).currentUser!.id;
+
     final sortedStudents = students.toList()
       ..sort(
         (student1, student2) => student1.lastName
@@ -39,13 +42,19 @@ class _AnswerPartState extends State<AnswerPart> {
             .compareTo(student2.lastName.toLowerCase()),
       );
 
-    // Fetch all the answers
+    // Fetch all the required answers
     var discussions = Discussion();
     for (final student in sortedStudents) {
       if (student.allAnswers[widget.question] == null) continue;
       for (final message in student.allAnswers[widget.question]!.discussion
           .toListByTime(reversed: true)) {
-        discussions.add(message);
+        if (widget.filterMode![1] == AnswerFromWhoMode.teacherAndStudent ||
+            (widget.filterMode![1] == AnswerFromWhoMode.studentOnly &&
+                message.creatorId != teacherId) ||
+            (widget.filterMode![1] == AnswerFromWhoMode.teacherOnly &&
+                message.creatorId == teacherId)) {
+          discussions.add(message);
+        }
       }
     }
 
