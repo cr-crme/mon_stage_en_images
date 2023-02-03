@@ -98,7 +98,10 @@ class _QAndAScreenState extends State<QAndAScreen> {
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(student?.toString() ?? 'Gestion des questions'),
+          Text(student?.toString() ??
+              (_pageMode == PageMode.fixView
+                  ? 'Résumé des réponses'
+                  : 'Gestion des questions')),
           if (loginType == UserType.student)
             Text(
                 _currentPage == 0

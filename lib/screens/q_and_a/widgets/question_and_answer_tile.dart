@@ -1,4 +1,3 @@
-import 'package:defi_photo/common/models/text_reader.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -6,6 +5,7 @@ import '/common/models/answer.dart';
 import '/common/models/enum.dart';
 import '/common/models/question.dart';
 import '/common/models/student.dart';
+import '/common/models/text_reader.dart';
 import '/common/providers/all_questions.dart';
 import '/common/providers/all_students.dart';
 import '/screens/q_and_a/widgets/new_question_alert_dialog.dart';
@@ -50,16 +50,14 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   void _expand() {
     _isExpanded = !_isExpanded;
 
-    final answer = _answer;
-    if (answer != null &&
-        answer.action(context) == ActionRequired.fromTeacher) {
+    if (_student != null &&
+        _answer!.action(context) == ActionRequired.fromTeacher) {
       // Flag the answer as being actionned
       _students.setAnswer(
           student: _student!,
           question: widget.question!,
-          answer: answer.copyWith(actionRequired: ActionRequired.none));
+          answer: _answer!.copyWith(actionRequired: ActionRequired.none));
     }
-    _answer = _student!.allAnswers[widget.question];
 
     setState(() {});
   }
@@ -160,22 +158,20 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
             studentId: widget.studentId,
             answer: _answer,
             onStateChange: _onStateChange,
-            onTap: widget.viewSpan == Target.individual &&
-                    widget.pageMode != PageMode.edit
-                ? _expand
-                : _addOrModifyQuestion,
+            onTap: widget.pageMode == PageMode.edit
+                ? _addOrModifyQuestion
+                : _expand,
             isAnswerShown: _isExpanded && widget.pageMode != PageMode.edit,
             isReading: _isReading,
             startReadingCallback: _startReading,
             stopReadingCallback: _stopReading,
           ),
-          if (_isExpanded &&
-              widget.viewSpan == Target.individual &&
-              widget.pageMode != PageMode.edit)
+          if (_isExpanded && widget.pageMode != PageMode.edit)
             AnswerPart(
               widget.question!,
               onStateChange: _onStateChange,
               studentId: widget.studentId,
+              pageMode: widget.pageMode,
             ),
         ],
       ),

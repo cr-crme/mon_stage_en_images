@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/all_answers.dart';
 import '/common/models/database.dart';
 import '/common/models/enum.dart';
 import '/common/models/question.dart';
 import '/common/models/section.dart';
-import '/common/models/student.dart';
 import '/common/providers/all_questions.dart';
 import '/common/providers/all_students.dart';
 import 'widgets/question_and_answer_tile.dart';
@@ -31,20 +29,18 @@ class QuestionAndAnswerPage extends StatelessWidget {
     final allStudents = Provider.of<AllStudents>(context, listen: false);
     final userType =
         Provider.of<Database>(context, listen: false).currentUser!.userType;
-    late Student? student;
 
     final questions = Provider.of<AllQuestions>(context, listen: true)
         .fromSection(sectionIndex);
     questions.sort(
         (first, second) => first.creationTimeStamp - second.creationTimeStamp);
-    late final AllAnswers? answers;
+
     late final List<Question>? activeQuestions;
     if (studentId != null) {
-      student = allStudents[studentId];
-      answers = student.allAnswers.fromQuestions(questions);
+      final student = allStudents[studentId];
+      final answers = student.allAnswers.fromQuestions(questions);
       activeQuestions = answers.activeQuestions(questions);
     } else {
-      student = null;
       activeQuestions = [];
     }
 
@@ -69,7 +65,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
                       .copyWith(color: Colors.black)),
             ),
           if (viewSpan != Target.individual) const SizedBox(height: 10),
-          if (viewSpan != Target.individual)
+          if (viewSpan != Target.individual && pageMode == PageMode.edit)
             QuestionAndAnswerTile(
               null,
               sectionIndex: sectionIndex,

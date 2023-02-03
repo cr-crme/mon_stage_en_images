@@ -20,7 +20,7 @@ class DiscussionListView extends StatefulWidget {
   });
 
   final Answer? answer;
-  final Student student;
+  final Student? student;
   final Function(String, {bool isPhoto}) addMessageCallback;
 
   @override
@@ -73,7 +73,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
     //     await imageFile.copy('${appDir.path}/$filename');
 
     final imagePath =
-        await StorageService.uploadImage(widget.student, imageXFile);
+        await StorageService.uploadImage(widget.student!, imageXFile);
 
     widget.addMessageCallback(imagePath, isPhoto: true);
     setState(() {});
@@ -126,7 +126,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
               ],
             ),
           ),
-        if (!widget.answer!.isValidated)
+        if (!widget.answer!.isValidated && widget.student != null)
           Container(
             padding: const EdgeInsets.only(left: 15),
             child: Form(

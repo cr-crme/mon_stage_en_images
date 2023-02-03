@@ -67,7 +67,7 @@ class MainDrawer extends StatelessWidget {
                   icon: Icons.speaker_notes,
                   onTap: () => Navigator.of(context).pushReplacementNamed(
                       QAndAScreen.routeName,
-                      arguments: [Target.all, PageMode.editableView, null])),
+                      arguments: [Target.all, PageMode.edit, null])),
             if (userType == UserType.teacher) const Divider(),
             MenuItem(
                 title: 'Déconnexion',
