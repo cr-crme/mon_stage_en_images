@@ -66,6 +66,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
 
   Future<void> _addOrModifyQuestion() async {
     final questions = Provider.of<AllQuestions>(context, listen: false);
+    final arguments = ModalRoute.of(context)!.settings.arguments as List;
 
     // Make sure no student already responded to the question
     // If so, prevent from modifying it
@@ -79,20 +80,6 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
       }
     }
 
-    if (hasAnswers) {
-      await showDialog(
-        context: context,
-        builder: (BuildContext context) => const AlertDialog(
-          content: Text(
-            'Il n\'est pas possible de modifier le libellé d\'une question '
-            'si au moins un élève a déjà répondu',
-          ),
-        ),
-      );
-      return;
-    }
-
-    final arguments = ModalRoute.of(context)!.settings.arguments as List;
     final currentStudent = arguments[1] as Student?;
 
     final output = await showDialog(
@@ -102,6 +89,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
         section: widget.sectionIndex,
         student: currentStudent,
         question: widget.question,
+        isQuestionModifiable: !hasAnswers,
         deleteCallback: widget.isInEditMode ? _deleteQuestionCallback : null,
       ),
     );

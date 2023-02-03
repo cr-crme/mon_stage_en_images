@@ -13,12 +13,14 @@ class NewQuestionAlertDialog extends StatefulWidget {
     required this.section,
     required this.student,
     required this.question,
+    this.isQuestionModifiable = true,
     required this.deleteCallback,
   });
 
   final int section;
   final Student? student;
   final Question? question;
+  final bool isQuestionModifiable;
   final Function? deleteCallback;
 
   @override
@@ -123,6 +125,14 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Form(key: _formKey, child: _showQuestionTextInput()),
+            if (!widget.isQuestionModifiable)
+              const Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Text(
+                    'Il n\'est pas possible de modifier le libellé d\'une question '
+                    'si au moins un élève a déjà répondu',
+                    style: TextStyle(color: Colors.grey)),
+              ),
             const Divider(),
             const Text('Question activée pour :'),
             _buildAllStudentsTile(),
@@ -182,6 +192,9 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
           value == null || value.isEmpty ? 'Ajouter une question' : null,
       initialValue: widget.question?.text,
       onSaved: (value) => _text = value,
+      enabled: widget.isQuestionModifiable,
+      style: TextStyle(
+          color: widget.isQuestionModifiable ? Colors.black : Colors.grey),
     );
   }
 }

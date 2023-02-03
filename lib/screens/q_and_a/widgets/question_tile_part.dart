@@ -130,13 +130,7 @@ class _QuestionPartTrailing extends StatelessWidget {
       return question != null && question?.defaultTarget == Target.all;
     }
 
-    return isInEditMode
-        ? question != null
-            ? students.isQuestionActiveForAll(question!)
-            : false
-        : answer == null
-            ? false
-            : answer.isActive;
+    return answer?.isActive ?? false;
   }
 
   @override
