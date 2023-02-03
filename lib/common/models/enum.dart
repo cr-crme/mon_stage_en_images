@@ -22,8 +22,8 @@ enum UserType {
   student,
 }
 
-enum QuestionView {
-  normal,
-  modifyForOneStudent,
-  modifyForAllStudents,
+enum SectionNavigation {
+  showStudent,
+  modifyOneStudent,
+  modifyAllStudents,
 }

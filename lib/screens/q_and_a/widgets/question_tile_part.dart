@@ -16,7 +16,7 @@ class QuestionPart extends StatelessWidget {
   const QuestionPart({
     super.key,
     required this.question,
-    required this.questionView,
+    required this.sectionNavigation,
     required this.studentId,
     required this.answer,
     required this.isAnswerShown,
@@ -28,7 +28,7 @@ class QuestionPart extends StatelessWidget {
   });
 
   final Question? question;
-  final QuestionView questionView;
+  final SectionNavigation sectionNavigation;
   final String? studentId;
   final Answer? answer;
   final bool isAnswerShown;
@@ -76,7 +76,7 @@ class QuestionPart extends StatelessWidget {
       trailing: _QuestionPartTrailing(
         question: question,
         onNewQuestion: onTap,
-        questionView: questionView,
+        sectionNavigation: sectionNavigation,
         studentId: studentId,
         onStateChange: onStateChange,
         hasAction: (answer?.action(context) ?? ActionRequired.none) !=
@@ -95,7 +95,7 @@ class _QuestionPartTrailing extends StatelessWidget {
   const _QuestionPartTrailing({
     required this.question,
     required this.onNewQuestion,
-    required this.questionView,
+    required this.sectionNavigation,
     required this.studentId,
     required this.onStateChange,
     required this.hasAction,
@@ -107,7 +107,7 @@ class _QuestionPartTrailing extends StatelessWidget {
 
   final Question? question;
   final VoidCallback onNewQuestion;
-  final QuestionView questionView;
+  final SectionNavigation sectionNavigation;
   final String? studentId;
   final VoidCallback onStateChange;
   final bool hasAction;
@@ -125,7 +125,7 @@ class _QuestionPartTrailing extends StatelessWidget {
       return question != null && question?.defaultTarget == Target.all;
     }
 
-    return questionView == QuestionView.modifyForAllStudents
+    return sectionNavigation == SectionNavigation.modifyAllStudents
         ? question != null
             ? students.isQuestionActiveForAll(question!)
             : false
@@ -161,17 +161,17 @@ class _QuestionPartTrailing extends StatelessWidget {
     } else if (userType == UserType.teacher) {
       return question == null
           ? _QuestionAddButton(newQuestionCallback: onNewQuestion)
-          : questionView == QuestionView.normal
+          : sectionNavigation == SectionNavigation.showStudent
               ? _QuestionValidateCheckmark(
                   question: question!, studentId: studentId!)
-              : questionView == QuestionView.modifyForAllStudents
+              : sectionNavigation == SectionNavigation.modifyAllStudents
                   ? Container(width: 0)
                   : _QuestionActivatedState(
                       question: question!,
                       studentId: studentId,
                       initialStatus: _isQuestionActive(context),
                       onStateChange: onStateChange,
-                      questionView: questionView,
+                      sectionNavigation: sectionNavigation,
                     );
     } else {
       throw const NotLoggedIn();
@@ -200,21 +200,21 @@ class _QuestionActivatedState extends StatelessWidget {
     required this.onStateChange,
     required this.initialStatus,
     required this.question,
-    required this.questionView,
+    required this.sectionNavigation,
   });
 
   final String? studentId;
   final Question question;
   final bool initialStatus;
   final VoidCallback onStateChange;
-  final QuestionView questionView;
+  final SectionNavigation sectionNavigation;
 
   Future<void> _toggleQuestionActiveState(BuildContext context, value) async {
     final questions = Provider.of<AllQuestions>(context, listen: false);
     final students = Provider.of<AllStudents>(context, listen: false);
     final student = studentId == null ? null : students[studentId];
 
-    final sure = questionView == QuestionView.modifyForAllStudents
+    final sure = sectionNavigation == SectionNavigation.modifyAllStudents
         ? await showDialog<bool>(
             context: context,
             barrierDismissible: false,

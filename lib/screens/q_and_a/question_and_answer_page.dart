@@ -13,12 +13,12 @@ import 'widgets/question_and_answer_tile.dart';
 
 class QuestionAndAnswerPage extends StatelessWidget {
   const QuestionAndAnswerPage(this.sectionIndex,
-      {super.key, required this.studentId, required this.questionView});
+      {super.key, required this.studentId, required this.sectionNavigation});
 
   static const routeName = '/question-and-answer-page';
   final int sectionIndex;
   final String? studentId;
-  final QuestionView questionView;
+  final SectionNavigation sectionNavigation;
 
   @override
   Widget build(BuildContext context) {
@@ -62,15 +62,16 @@ class QuestionAndAnswerPage extends StatelessWidget {
                       .titleLarge!
                       .copyWith(color: Colors.black)),
             ),
-          if (questionView != QuestionView.normal) const SizedBox(height: 10),
-          if (questionView != QuestionView.normal)
+          if (sectionNavigation != SectionNavigation.showStudent)
+            const SizedBox(height: 10),
+          if (sectionNavigation != SectionNavigation.showStudent)
             QuestionAndAnswerTile(
               null,
               sectionIndex: sectionIndex,
               studentId: studentId,
-              questionView: questionView,
+              sectionNavigation: sectionNavigation,
             ),
-          if (questionView != QuestionView.normal &&
+          if (sectionNavigation != SectionNavigation.showStudent &&
               questions.isNotEmpty &&
               studentId != null)
             Row(
@@ -80,7 +81,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
                 SizedBox(width: 25)
               ],
             ),
-          questionView == QuestionView.normal
+          sectionNavigation == SectionNavigation.showStudent
               ? activeQuestionsSection
               : allAnswersSection,
         ],
@@ -94,7 +95,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
         ? QAndAListView(questions.toList(growable: false),
             sectionIndex: sectionIndex,
             studentId: studentId,
-            questionView: questionView)
+            sectionNavigation: sectionNavigation)
         : Container(
             padding: const EdgeInsets.only(top: 10, bottom: 30),
             child: Text(titleIfNothing),
@@ -108,13 +109,13 @@ class QAndAListView extends StatelessWidget {
     super.key,
     required this.sectionIndex,
     required this.studentId,
-    required this.questionView,
+    required this.sectionNavigation,
   });
 
   final List<Question> questions;
   final int sectionIndex;
   final String? studentId;
-  final QuestionView questionView;
+  final SectionNavigation sectionNavigation;
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +126,7 @@ class QAndAListView extends StatelessWidget {
         questions[index],
         sectionIndex: sectionIndex,
         studentId: studentId,
-        questionView: questionView,
+        sectionNavigation: sectionNavigation,
       ),
       itemCount: questions.length,
     );

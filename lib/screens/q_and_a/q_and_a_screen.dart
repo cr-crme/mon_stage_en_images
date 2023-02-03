@@ -24,7 +24,7 @@ class QAndAScreen extends StatefulWidget {
 class _QAndAScreenState extends State<QAndAScreen> {
   UserType _userType = UserType.none;
   Student? _student;
-  QuestionView _questionView = QuestionView.normal;
+  SectionNavigation _sectionNavigation = SectionNavigation.showStudent;
 
   final _pageController = PageController();
   var _currentPage = 0;
@@ -44,15 +44,15 @@ class _QAndAScreenState extends State<QAndAScreen> {
       _student = ModalRoute.of(context)!.settings.arguments as Student?;
     }
 
-    _questionView = _userType == UserType.teacher && _student == null
-        ? QuestionView.modifyForAllStudents
-        : QuestionView.normal;
+    _sectionNavigation = _userType == UserType.teacher && _student == null
+        ? SectionNavigation.modifyAllStudents
+        : SectionNavigation.showStudent;
   }
 
   void onPageChanged(BuildContext context, int page) {
     _currentPage = page;
     _switchQuestionModeCallback = _userType == UserType.student ||
-            _questionView == QuestionView.modifyForAllStudents ||
+            _sectionNavigation == SectionNavigation.modifyAllStudents ||
             page < 1
         ? null
         : () => _switchToQuestionManagerMode(context);
@@ -82,11 +82,11 @@ class _QAndAScreenState extends State<QAndAScreen> {
 
   void _switchToQuestionManagerMode(BuildContext context) {
     if (_userType == UserType.student ||
-        _questionView == QuestionView.modifyForAllStudents) return;
+        _sectionNavigation == SectionNavigation.modifyAllStudents) return;
 
-    _questionView = _questionView == QuestionView.normal
-        ? QuestionView.modifyForOneStudent
-        : QuestionView.normal;
+    _sectionNavigation = _sectionNavigation == SectionNavigation.showStudent
+        ? SectionNavigation.modifyOneStudent
+        : SectionNavigation.showStudent;
     setState(() {});
   }
 
@@ -121,7 +121,7 @@ class _QAndAScreenState extends State<QAndAScreen> {
           ? [
               IconButton(
                 onPressed: _switchQuestionModeCallback,
-                icon: Icon(_questionView != QuestionView.normal
+                icon: Icon(_sectionNavigation != SectionNavigation.showStudent
                     ? Icons.save
                     : Icons.edit_rounded),
                 iconSize: 30,
@@ -151,17 +151,23 @@ class _QAndAScreenState extends State<QAndAScreen> {
                 MainMetierPage(
                     student: _student, onPageChanged: onPageChangedRequest),
                 QuestionAndAnswerPage(0,
-                    studentId: _student?.id, questionView: _questionView),
+                    studentId: _student?.id,
+                    sectionNavigation: _sectionNavigation),
                 QuestionAndAnswerPage(1,
-                    studentId: _student?.id, questionView: _questionView),
+                    studentId: _student?.id,
+                    sectionNavigation: _sectionNavigation),
                 QuestionAndAnswerPage(2,
-                    studentId: _student?.id, questionView: _questionView),
+                    studentId: _student?.id,
+                    sectionNavigation: _sectionNavigation),
                 QuestionAndAnswerPage(3,
-                    studentId: _student?.id, questionView: _questionView),
+                    studentId: _student?.id,
+                    sectionNavigation: _sectionNavigation),
                 QuestionAndAnswerPage(4,
-                    studentId: _student?.id, questionView: _questionView),
+                    studentId: _student?.id,
+                    sectionNavigation: _sectionNavigation),
                 QuestionAndAnswerPage(5,
-                    studentId: _student?.id, questionView: _questionView),
+                    studentId: _student?.id,
+                    sectionNavigation: _sectionNavigation),
               ],
             ),
           ),

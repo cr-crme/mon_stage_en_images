@@ -18,13 +18,13 @@ class QuestionAndAnswerTile extends StatefulWidget {
     super.key,
     required this.studentId,
     required this.sectionIndex,
-    required this.questionView,
+    required this.sectionNavigation,
   });
 
   final int sectionIndex;
   final String? studentId;
   final Question? question;
-  final QuestionView questionView;
+  final SectionNavigation sectionNavigation;
 
   @override
   State<QuestionAndAnswerTile> createState() => _QuestionAndAnswerTileState();
@@ -100,9 +100,10 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
         section: widget.sectionIndex,
         student: currentStudent,
         question: widget.question,
-        deleteCallback: widget.questionView == QuestionView.modifyForAllStudents
-            ? _deleteQuestionCallback
-            : null,
+        deleteCallback:
+            widget.sectionNavigation == SectionNavigation.modifyAllStudents
+                ? _deleteQuestionCallback
+                : null,
       ),
     );
     if (output == null) return;
@@ -121,7 +122,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
           currentStudent: currentStudent,
           isActive: activeStatus);
     }
-    
+
     setState(() {});
   }
 
@@ -166,11 +167,11 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
         children: [
           QuestionPart(
             question: widget.question,
-            questionView: widget.questionView,
+            sectionNavigation: widget.sectionNavigation,
             studentId: widget.studentId,
             answer: _answer,
             onStateChange: _onStateChange,
-            onTap: widget.questionView == QuestionView.normal
+            onTap: widget.sectionNavigation == SectionNavigation.showStudent
                 ? _expand
                 : _addOrModifyQuestion,
             isAnswerShown: _isExpanded,
@@ -178,7 +179,8 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
             startReadingCallback: _startReading,
             stopReadingCallback: _stopReading,
           ),
-          if (_isExpanded && widget.questionView == QuestionView.normal)
+          if (_isExpanded &&
+              widget.sectionNavigation == SectionNavigation.showStudent)
             AnswerPart(
               widget.question!,
               onStateChange: _onStateChange,
