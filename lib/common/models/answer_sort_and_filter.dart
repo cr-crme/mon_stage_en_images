@@ -16,11 +16,11 @@ enum AnswerContentFilter {
 }
 
 class AnswerSortAndFilter {
-  AnswerSortAndFilter([
+  AnswerSortAndFilter({
     this.sorting = AnswerSorting.byDate,
     this.fromWhomFilter = AnswerFromWhomFilter.teacherAndStudent,
     this.contentFilter = AnswerContentFilter.textAndPhotos,
-  ]);
+  });
 
   AnswerSorting sorting;
   AnswerFromWhomFilter fromWhomFilter;

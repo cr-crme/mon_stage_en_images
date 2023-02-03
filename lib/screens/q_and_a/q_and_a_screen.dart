@@ -11,6 +11,7 @@ import '/common/widgets/main_drawer.dart';
 import '/screens/all_students/students_screen.dart';
 import 'main_metier_page.dart';
 import 'question_and_answer_page.dart';
+import 'widgets/filter_answers_dialog.dart';
 import 'widgets/metier_app_bar.dart';
 
 class QAndAScreen extends StatefulWidget {
@@ -27,7 +28,7 @@ class _QAndAScreenState extends State<QAndAScreen> {
   Student? _student;
   Target _viewSpan = Target.individual;
   late PageMode _pageMode;
-  final _answerFilter = AnswerSortAndFilter();
+  var _answerFilter = AnswerSortAndFilter();
 
   final _pageController = PageController();
   var _currentPage = 0;
@@ -62,10 +63,17 @@ class _QAndAScreenState extends State<QAndAScreen> {
     setState(() {});
   }
 
-  void _filterAnswers() {
-    _answerFilter.sorting = AnswerSorting.byDate;
-    _answerFilter.fromWhomFilter = AnswerFromWhomFilter.teacherAndStudent;
-    _answerFilter.contentFilter = AnswerContentFilter.textAndPhotos;
+  void _filterAnswers() async {
+    final answerFilter = await showDialog<AnswerSortAndFilter>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return FilterAnswerDialog(currentFilter: _answerFilter);
+      },
+    );
+    if (answerFilter == null) return;
+
+    _answerFilter = answerFilter;
     setState(() {});
   }
 
