@@ -16,7 +16,8 @@ class QuestionPart extends StatelessWidget {
   const QuestionPart({
     super.key,
     required this.question,
-    required this.questionNavigation,
+    required this.viewSpan,
+    required this.isInEditMode,
     required this.studentId,
     required this.answer,
     required this.isAnswerShown,
@@ -28,7 +29,8 @@ class QuestionPart extends StatelessWidget {
   });
 
   final Question? question;
-  final QuestionNavigation questionNavigation;
+  final Target viewSpan;
+  final bool isInEditMode;
   final String? studentId;
   final Answer? answer;
   final bool isAnswerShown;
@@ -76,7 +78,8 @@ class QuestionPart extends StatelessWidget {
       trailing: _QuestionPartTrailing(
         question: question,
         onNewQuestion: onTap,
-        questionNavigation: questionNavigation,
+        viewSpan: viewSpan,
+        isInEditMode: isInEditMode,
         studentId: studentId,
         onStateChange: onStateChange,
         hasAction: (answer?.action(context) ?? ActionRequired.none) !=
@@ -95,7 +98,8 @@ class _QuestionPartTrailing extends StatelessWidget {
   const _QuestionPartTrailing({
     required this.question,
     required this.onNewQuestion,
-    required this.questionNavigation,
+    required this.viewSpan,
+    required this.isInEditMode,
     required this.studentId,
     required this.onStateChange,
     required this.hasAction,
@@ -107,7 +111,8 @@ class _QuestionPartTrailing extends StatelessWidget {
 
   final Question? question;
   final VoidCallback onNewQuestion;
-  final QuestionNavigation questionNavigation;
+  final Target viewSpan;
+  final bool isInEditMode;
   final String? studentId;
   final VoidCallback onStateChange;
   final bool hasAction;
@@ -125,7 +130,7 @@ class _QuestionPartTrailing extends StatelessWidget {
       return question != null && question?.defaultTarget == Target.all;
     }
 
-    return questionNavigation == QuestionNavigation.editAllStudents
+    return isInEditMode
         ? question != null
             ? students.isQuestionActiveForAll(question!)
             : false
@@ -159,20 +164,23 @@ class _QuestionPartTrailing extends StatelessWidget {
         ],
       );
     } else if (userType == UserType.teacher) {
-      return question == null
-          ? _QuestionAddButton(newQuestionCallback: onNewQuestion)
-          : questionNavigation == QuestionNavigation.showOneStudent
-              ? _QuestionValidateCheckmark(
-                  question: question!, studentId: studentId!)
-              : questionNavigation == QuestionNavigation.editAllStudents
-                  ? Container(width: 0)
-                  : _QuestionActivatedState(
-                      question: question!,
-                      studentId: studentId,
-                      initialStatus: _isQuestionActive(context),
-                      onStateChange: onStateChange,
-                      questionNavigation: questionNavigation,
-                    );
+      if (question == null) {
+        return _QuestionAddButton(newQuestionCallback: onNewQuestion);
+      } else if (viewSpan == Target.individual) {
+        return isInEditMode
+            ? _QuestionActivatedState(
+                question: question!,
+                studentId: studentId,
+                initialStatus: _isQuestionActive(context),
+                onStateChange: onStateChange,
+                viewSpan: viewSpan,
+                isInEditMode: isInEditMode,
+              )
+            : _QuestionValidateCheckmark(
+                question: question!, studentId: studentId!);
+      } else {
+        return Container(width: 0);
+      }
     } else {
       throw const NotLoggedIn();
     }
@@ -200,21 +208,23 @@ class _QuestionActivatedState extends StatelessWidget {
     required this.onStateChange,
     required this.initialStatus,
     required this.question,
-    required this.questionNavigation,
+    required this.viewSpan,
+    required this.isInEditMode,
   });
 
   final String? studentId;
   final Question question;
   final bool initialStatus;
   final VoidCallback onStateChange;
-  final QuestionNavigation questionNavigation;
+  final Target viewSpan;
+  final bool isInEditMode;
 
   Future<void> _toggleQuestionActiveState(BuildContext context, value) async {
     final questions = Provider.of<AllQuestions>(context, listen: false);
     final students = Provider.of<AllStudents>(context, listen: false);
     final student = studentId == null ? null : students[studentId];
 
-    final sure = questionNavigation == QuestionNavigation.editAllStudents
+    final sure = isInEditMode && viewSpan == Target.all
         ? await showDialog<bool>(
             context: context,
             barrierDismissible: false,

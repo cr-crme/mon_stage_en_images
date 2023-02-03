@@ -56,14 +56,17 @@ class MainDrawer extends StatelessWidget {
               MenuItem(
                   title: 'Gestion des questions',
                   icon: Icons.speaker_notes,
-                  onTap: () => Navigator.of(context)
-                      .pushReplacementNamed(QAndAScreen.routeName)),
+                  onTap: () => Navigator.of(context).pushReplacementNamed(
+                        QAndAScreen.routeName, arguments: [Target.all, null]
+                      )),
             if (userType == UserType.teacher)
               MenuItem(
-                  title: 'Résumé des réponses',
-                  icon: Icons.question_answer,
-                  onTap: () => Navigator.of(context)
-                      .pushReplacementNamed(QAndAScreen.routeName)),
+                title: 'Résumé des réponses',
+                icon: Icons.question_answer,
+                onTap: () => Navigator.of(context).pushReplacementNamed(
+                    QAndAScreen.routeName,
+                    arguments: [Target.all, null]),
+              ),
             if (userType == UserType.teacher) const Divider(),
             MenuItem(
                 title: 'Déconnexion',

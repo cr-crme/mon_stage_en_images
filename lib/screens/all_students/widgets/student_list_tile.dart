@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/common/models/enum.dart';
 import '/common/models/student.dart';
 import '/common/providers/all_students.dart';
 import '/common/widgets/taking_action_notifier.dart';
@@ -40,8 +41,8 @@ class StudentListTile extends StatelessWidget {
           borderColor: Colors.black,
           child: const Text(""),
         ),
-        onTap: () => Navigator.of(context)
-            .pushNamed(QAndAScreen.routeName, arguments: student),
+        onTap: () => Navigator.of(context).pushNamed(QAndAScreen.routeName,
+            arguments: [Target.individual, student]),
         onLongPress: () => modifyStudentCallback(student),
       ),
     );

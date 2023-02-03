@@ -12,13 +12,19 @@ import '/common/providers/all_students.dart';
 import 'widgets/question_and_answer_tile.dart';
 
 class QuestionAndAnswerPage extends StatelessWidget {
-  const QuestionAndAnswerPage(this.sectionIndex,
-      {super.key, required this.studentId, required this.questionNavigation});
+  const QuestionAndAnswerPage(
+    this.sectionIndex, {
+    super.key,
+    required this.studentId,
+    required this.viewSpan,
+    required this.isInEditMode,
+  });
 
   static const routeName = '/question-and-answer-page';
   final int sectionIndex;
   final String? studentId;
-  final QuestionNavigation questionNavigation;
+  final Target viewSpan;
+  final bool isInEditMode;
 
   @override
   Widget build(BuildContext context) {
@@ -62,16 +68,16 @@ class QuestionAndAnswerPage extends StatelessWidget {
                       .titleLarge!
                       .copyWith(color: Colors.black)),
             ),
-          if (questionNavigation != QuestionNavigation.showOneStudent)
-            const SizedBox(height: 10),
-          if (questionNavigation != QuestionNavigation.showOneStudent)
+          if (viewSpan != Target.individual) const SizedBox(height: 10),
+          if (viewSpan != Target.individual)
             QuestionAndAnswerTile(
               null,
               sectionIndex: sectionIndex,
               studentId: studentId,
-              questionNavigation: questionNavigation,
+              viewSpan: viewSpan,
+              isInEditMode: isInEditMode,
             ),
-          if (questionNavigation != QuestionNavigation.showOneStudent &&
+          if (viewSpan != Target.individual &&
               questions.isNotEmpty &&
               studentId != null)
             Row(
@@ -81,7 +87,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
                 SizedBox(width: 25)
               ],
             ),
-          questionNavigation == QuestionNavigation.showOneStudent
+          viewSpan == Target.individual && !isInEditMode
               ? activeQuestionsSection
               : allAnswersSection,
         ],
@@ -92,10 +98,13 @@ class QuestionAndAnswerPage extends StatelessWidget {
   Widget _buildQuestionSection(BuildContext context,
       {required List<Question> questions, required String titleIfNothing}) {
     return questions.isNotEmpty
-        ? QAndAListView(questions.toList(growable: false),
+        ? QAndAListView(
+            questions.toList(growable: false),
             sectionIndex: sectionIndex,
             studentId: studentId,
-            questionNavigation: questionNavigation)
+            viewSpan: viewSpan,
+            isInEditMode: isInEditMode,
+          )
         : Container(
             padding: const EdgeInsets.only(top: 10, bottom: 30),
             child: Text(titleIfNothing),
@@ -109,13 +118,15 @@ class QAndAListView extends StatelessWidget {
     super.key,
     required this.sectionIndex,
     required this.studentId,
-    required this.questionNavigation,
+    required this.viewSpan,
+    required this.isInEditMode,
   });
 
   final List<Question> questions;
   final int sectionIndex;
   final String? studentId;
-  final QuestionNavigation questionNavigation;
+  final Target viewSpan;
+  final bool isInEditMode;
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +137,8 @@ class QAndAListView extends StatelessWidget {
         questions[index],
         sectionIndex: sectionIndex,
         studentId: studentId,
-        questionNavigation: questionNavigation,
+        viewSpan: viewSpan,
+        isInEditMode: isInEditMode,
       ),
       itemCount: questions.length,
     );

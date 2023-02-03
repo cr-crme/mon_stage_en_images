@@ -24,7 +24,8 @@ class QAndAScreen extends StatefulWidget {
 class _QAndAScreenState extends State<QAndAScreen> {
   UserType _userType = UserType.none;
   Student? _student;
-  QuestionNavigation _questionNavigation = QuestionNavigation.showOneStudent;
+  Target _viewSpan = Target.individual;
+  bool _isInEditMode = false;
 
   final _pageController = PageController();
   var _currentPage = 0;
@@ -34,28 +35,29 @@ class _QAndAScreenState extends State<QAndAScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
+    final arguments = ModalRoute.of(context)!.settings.arguments as List;
+    _viewSpan = arguments[0] as Target;
+
     final currentUser =
         Provider.of<Database>(context, listen: false).currentUser!;
-    _userType = currentUser.userType;
-    if (_userType == UserType.student) {
-      final allStudents = Provider.of<AllStudents>(context, listen: true);
-      _student = allStudents.fromId(currentUser.studentId!);
-    } else {
-      _student = ModalRoute.of(context)!.settings.arguments as Student?;
-    }
 
-    _questionNavigation = _userType == UserType.teacher && _student == null
-        ? QuestionNavigation.editAllStudents
-        : QuestionNavigation.showOneStudent;
+    _userType = currentUser.userType;
+    _student = _userType == UserType.student
+        ? Provider.of<AllStudents>(context, listen: false)
+            .fromId(currentUser.studentId!)
+        : arguments[1] as Student?;
   }
 
   void onPageChanged(BuildContext context, int page) {
     _currentPage = page;
-    _switchQuestionModeCallback = _userType == UserType.student ||
-            _questionNavigation == QuestionNavigation.editAllStudents ||
-            page < 1
-        ? null
-        : () => _switchToQuestionManagerMode(context);
+
+    // On the main question page, if it is the teacher on a single student, then
+    // back brings back to the student page. Otherwise, it opens the drawer.
+    _switchQuestionModeCallback = page > 0 &&
+            _userType == UserType.teacher &&
+            _viewSpan == Target.individual
+        ? () => _switchToQuestionManagerMode(context)
+        : null;
     setState(() {});
   }
 
@@ -81,13 +83,9 @@ class _QAndAScreenState extends State<QAndAScreen> {
   }
 
   void _switchToQuestionManagerMode(BuildContext context) {
-    if (_userType == UserType.student ||
-        _questionNavigation == QuestionNavigation.editAllStudents) return;
+    if (_userType == UserType.student) return;
 
-    _questionNavigation =
-        _questionNavigation == QuestionNavigation.showOneStudent
-            ? QuestionNavigation.editOneStudent
-            : QuestionNavigation.showOneStudent;
+    _isInEditMode = !_isInEditMode;
     setState(() {});
   }
 
@@ -99,7 +97,7 @@ class _QAndAScreenState extends State<QAndAScreen> {
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(student != null ? student.toString() : 'Gestion des questions'),
+          Text(student?.toString() ?? 'Gestion des questions'),
           if (loginType == UserType.student)
             Text(
                 _currentPage == 0
@@ -118,14 +116,13 @@ class _QAndAScreenState extends State<QAndAScreen> {
               _currentPage == 0
           ? null
           : BackButton(onPressed: _onBackPressed),
-      actions: _switchQuestionModeCallback != null
+      actions: _currentPage != 0 &&
+              loginType == UserType.teacher &&
+              _viewSpan == Target.individual
           ? [
               IconButton(
                 onPressed: _switchQuestionModeCallback,
-                icon: Icon(
-                    _questionNavigation != QuestionNavigation.showOneStudent
-                        ? Icons.save
-                        : Icons.edit_rounded),
+                icon: Icon(_isInEditMode ? Icons.save : Icons.edit_rounded),
                 iconSize: 30,
               ),
               const SizedBox(width: 15),
@@ -152,24 +149,32 @@ class _QAndAScreenState extends State<QAndAScreen> {
               children: [
                 MainMetierPage(
                     student: _student, onPageChanged: onPageChangedRequest),
-                QuestionAndAnswerPage(0,
-                    studentId: _student?.id,
-                    questionNavigation: _questionNavigation),
+                QuestionAndAnswerPage(
+                  0,
+                  studentId: _student?.id,
+                  viewSpan: _viewSpan,
+                  isInEditMode: _isInEditMode,
+                ),
                 QuestionAndAnswerPage(1,
                     studentId: _student?.id,
-                    questionNavigation: _questionNavigation),
+                    viewSpan: _viewSpan,
+                    isInEditMode: _isInEditMode),
                 QuestionAndAnswerPage(2,
                     studentId: _student?.id,
-                    questionNavigation: _questionNavigation),
+                    viewSpan: _viewSpan,
+                    isInEditMode: _isInEditMode),
                 QuestionAndAnswerPage(3,
                     studentId: _student?.id,
-                    questionNavigation: _questionNavigation),
+                    viewSpan: _viewSpan,
+                    isInEditMode: _isInEditMode),
                 QuestionAndAnswerPage(4,
                     studentId: _student?.id,
-                    questionNavigation: _questionNavigation),
+                    viewSpan: _viewSpan,
+                    isInEditMode: _isInEditMode),
                 QuestionAndAnswerPage(5,
                     studentId: _student?.id,
-                    questionNavigation: _questionNavigation),
+                    viewSpan: _viewSpan,
+                    isInEditMode: _isInEditMode),
               ],
             ),
           ),

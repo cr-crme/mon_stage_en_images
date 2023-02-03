@@ -142,7 +142,8 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    Navigator.of(context).pushReplacementNamed(QAndAScreen.routeName);
+    Navigator.of(context).pushReplacementNamed(QAndAScreen.routeName,
+        arguments: [Target.individual, null]);
   }
 
   @override

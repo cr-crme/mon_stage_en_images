@@ -21,10 +21,3 @@ enum UserType {
   teacher,
   student,
 }
-
-enum QuestionNavigation {
-  showOneStudent,
-  editOneStudent,
-  showAllStudents,
-  editAllStudents,
-}

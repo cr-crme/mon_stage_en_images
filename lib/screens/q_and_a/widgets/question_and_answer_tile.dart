@@ -18,13 +18,15 @@ class QuestionAndAnswerTile extends StatefulWidget {
     super.key,
     required this.studentId,
     required this.sectionIndex,
-    required this.questionNavigation,
+    required this.viewSpan,
+    required this.isInEditMode,
   });
 
   final int sectionIndex;
   final String? studentId;
   final Question? question;
-  final QuestionNavigation questionNavigation;
+  final Target viewSpan;
+  final bool isInEditMode;
 
   @override
   State<QuestionAndAnswerTile> createState() => _QuestionAndAnswerTileState();
@@ -90,8 +92,8 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
       return;
     }
 
-    final currentStudent =
-        ModalRoute.of(context)!.settings.arguments as Student?;
+    final arguments = ModalRoute.of(context)!.settings.arguments as List;
+    final currentStudent = arguments[1] as Student?;
 
     final output = await showDialog(
       context: context,
@@ -100,10 +102,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
         section: widget.sectionIndex,
         student: currentStudent,
         question: widget.question,
-        deleteCallback:
-            widget.questionNavigation == QuestionNavigation.editAllStudents
-                ? _deleteQuestionCallback
-                : null,
+        deleteCallback: widget.isInEditMode ? _deleteQuestionCallback : null,
       ),
     );
     if (output == null) return;
@@ -167,21 +166,22 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
         children: [
           QuestionPart(
             question: widget.question,
-            questionNavigation: widget.questionNavigation,
+            viewSpan: widget.viewSpan,
+            isInEditMode: widget.isInEditMode,
             studentId: widget.studentId,
             answer: _answer,
             onStateChange: _onStateChange,
-            onTap:
-                widget.questionNavigation == QuestionNavigation.showOneStudent
-                    ? _expand
-                    : _addOrModifyQuestion,
-            isAnswerShown: _isExpanded,
+            onTap: widget.viewSpan == Target.individual && !widget.isInEditMode
+                ? _expand
+                : _addOrModifyQuestion,
+            isAnswerShown: _isExpanded && !widget.isInEditMode,
             isReading: _isReading,
             startReadingCallback: _startReading,
             stopReadingCallback: _stopReading,
           ),
           if (_isExpanded &&
-              widget.questionNavigation == QuestionNavigation.showOneStudent)
+              widget.viewSpan == Target.individual &&
+              !widget.isInEditMode)
             AnswerPart(
               widget.question!,
               onStateChange: _onStateChange,
