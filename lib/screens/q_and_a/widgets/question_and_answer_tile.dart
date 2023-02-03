@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/answer.dart';
+import '/common/models/answer_sort_and_filter.dart';
 import '/common/models/enum.dart';
 import '/common/models/question.dart';
 import '/common/models/student.dart';
@@ -28,7 +29,7 @@ class QuestionAndAnswerTile extends StatefulWidget {
   final Question? question;
   final Target viewSpan;
   final PageMode pageMode;
-  final List? answerFilterMode;
+  final AnswerSortAndFilter? answerFilterMode;
 
   @override
   State<QuestionAndAnswerTile> createState() => _QuestionAndAnswerTileState();

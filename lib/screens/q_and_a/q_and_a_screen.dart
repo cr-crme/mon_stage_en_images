@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/common/models/answer_sort_and_filter.dart';
 import '/common/models/database.dart';
 import '/common/models/enum.dart';
 import '/common/models/section.dart';
@@ -26,11 +27,7 @@ class _QAndAScreenState extends State<QAndAScreen> {
   Student? _student;
   Target _viewSpan = Target.individual;
   late PageMode _pageMode;
-  final _answerFilterMode = [
-    AnswerFilterMode.byDate,
-    AnswerFromWhoMode.teacherAndStudent,
-    AnswerTypeMode.textAndPhotos,
-  ];
+  final _answerFilter = AnswerSortAndFilter();
 
   final _pageController = PageController();
   var _currentPage = 0;
@@ -66,9 +63,9 @@ class _QAndAScreenState extends State<QAndAScreen> {
   }
 
   void _filterAnswers() {
-    _answerFilterMode[0] = AnswerFilterMode.byDate;
-    _answerFilterMode[1] = AnswerFromWhoMode.teacherAndStudent;
-    _answerFilterMode[2] = AnswerTypeMode.photoOnly;
+    _answerFilter.sorting = AnswerSorting.byDate;
+    _answerFilter.fromWhomFilter = AnswerFromWhomFilter.teacherAndStudent;
+    _answerFilter.contentFilter = AnswerContentFilter.textAndPhotos;
     setState(() {});
   }
 
@@ -177,42 +174,42 @@ class _QAndAScreenState extends State<QAndAScreen> {
                   studentId: _student?.id,
                   viewSpan: _viewSpan,
                   pageMode: _pageMode,
-                  answerFilterMode: _answerFilterMode,
+                  answerFilterMode: _answerFilter,
                 ),
                 QuestionAndAnswerPage(
                   1,
                   studentId: _student?.id,
                   viewSpan: _viewSpan,
                   pageMode: _pageMode,
-                  answerFilterMode: _answerFilterMode,
+                  answerFilterMode: _answerFilter,
                 ),
                 QuestionAndAnswerPage(
                   2,
                   studentId: _student?.id,
                   viewSpan: _viewSpan,
                   pageMode: _pageMode,
-                  answerFilterMode: _answerFilterMode,
+                  answerFilterMode: _answerFilter,
                 ),
                 QuestionAndAnswerPage(
                   3,
                   studentId: _student?.id,
                   viewSpan: _viewSpan,
                   pageMode: _pageMode,
-                  answerFilterMode: _answerFilterMode,
+                  answerFilterMode: _answerFilter,
                 ),
                 QuestionAndAnswerPage(
                   4,
                   studentId: _student?.id,
                   viewSpan: _viewSpan,
                   pageMode: _pageMode,
-                  answerFilterMode: _answerFilterMode,
+                  answerFilterMode: _answerFilter,
                 ),
                 QuestionAndAnswerPage(
                   5,
                   studentId: _student?.id,
                   viewSpan: _viewSpan,
                   pageMode: _pageMode,
-                  answerFilterMode: _answerFilterMode,
+                  answerFilterMode: _answerFilter,
                 ),
               ],
             ),

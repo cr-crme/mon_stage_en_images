@@ -27,20 +27,3 @@ enum PageMode {
   editableView,
   edit,
 }
-
-enum AnswerFilterMode {
-  byDate,
-  byStudent,
-}
-
-enum AnswerFromWhoMode {
-  studentOnly,
-  teacherOnly,
-  teacherAndStudent,
-}
-
-enum AnswerTypeMode {
-  textOnly,
-  photoOnly,
-  textAndPhotos,
-}

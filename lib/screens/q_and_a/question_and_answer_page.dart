@@ -1,6 +1,8 @@
+import 'package:defi_photo/common/models/answer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/common/models/answer_sort_and_filter.dart';
 import '/common/models/database.dart';
 import '/common/models/enum.dart';
 import '/common/models/question.dart';
@@ -24,7 +26,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
   final String? studentId;
   final Target viewSpan;
   final PageMode pageMode;
-  final List answerFilterMode;
+  final AnswerSortAndFilter answerFilterMode;
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +106,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
     BuildContext context, {
     required List<Question> questions,
     required String titleIfNothing,
-    required List? answerFilterMode,
+    required AnswerSortAndFilter? answerFilterMode,
   }) {
     return questions.isNotEmpty
         ? QAndAListView(
@@ -138,7 +140,7 @@ class QAndAListView extends StatelessWidget {
   final String? studentId;
   final Target viewSpan;
   final PageMode pageMode;
-  final List? answerFilterMode;
+  final AnswerSortAndFilter? answerFilterMode;
 
   @override
   Widget build(BuildContext context) {

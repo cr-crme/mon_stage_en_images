@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/common/models/answer_sort_and_filter.dart';
 import '/common/models/database.dart';
 import '/common/models/discussion.dart';
 import '/common/models/enum.dart';
@@ -24,7 +25,7 @@ class AnswerPart extends StatefulWidget {
   final VoidCallback onStateChange;
   final Question question;
   final PageMode pageMode;
-  final List? filterMode;
+  final AnswerSortAndFilter? filterMode;
 
   @override
   State<AnswerPart> createState() => _AnswerPartState();
@@ -48,18 +49,21 @@ class _AnswerPartState extends State<AnswerPart> {
       if (student.allAnswers[widget.question] == null) continue;
       for (final message in student.allAnswers[widget.question]!.discussion
           .toListByTime(reversed: true)) {
-        final isTheRightCreatorId =
-            (widget.filterMode![1] == AnswerFromWhoMode.teacherAndStudent) ||
-                (widget.filterMode![1] == AnswerFromWhoMode.studentOnly &&
-                    message.creatorId != teacherId) ||
-                (widget.filterMode![1] == AnswerFromWhoMode.teacherOnly &&
-                    message.creatorId == teacherId);
-        final isTheRightContent =
-            (widget.filterMode![2] == AnswerTypeMode.textAndPhotos) ||
-                (widget.filterMode![2] == AnswerTypeMode.textOnly &&
-                    !message.isPhotoUrl) ||
-                (widget.filterMode![2] == AnswerTypeMode.photoOnly &&
-                    message.isPhotoUrl);
+        final isTheRightCreatorId = (widget.filterMode!.fromWhomFilter ==
+                AnswerFromWhomFilter.teacherAndStudent) ||
+            (widget.filterMode!.fromWhomFilter ==
+                    AnswerFromWhomFilter.studentOnly &&
+                message.creatorId != teacherId) ||
+            (widget.filterMode!.fromWhomFilter ==
+                    AnswerFromWhomFilter.teacherOnly &&
+                message.creatorId == teacherId);
+        final isTheRightContent = (widget.filterMode!.contentFilter ==
+                AnswerContentFilter.textAndPhotos) ||
+            (widget.filterMode!.contentFilter == AnswerContentFilter.textOnly &&
+                !message.isPhotoUrl) ||
+            (widget.filterMode!.contentFilter ==
+                    AnswerContentFilter.photoOnly &&
+                message.isPhotoUrl);
         if (isTheRightCreatorId && isTheRightContent) {
           discussions.add(message);
         }
@@ -67,7 +71,7 @@ class _AnswerPartState extends State<AnswerPart> {
     }
 
     // Filter by date if required
-    return widget.filterMode![0] == AnswerFilterMode.byDate
+    return widget.filterMode!.sorting == AnswerSorting.byDate
         ? discussions.toListByTime(reversed: true)
         : discussions.toList();
   }
