@@ -48,11 +48,19 @@ class _AnswerPartState extends State<AnswerPart> {
       if (student.allAnswers[widget.question] == null) continue;
       for (final message in student.allAnswers[widget.question]!.discussion
           .toListByTime(reversed: true)) {
-        if (widget.filterMode![1] == AnswerFromWhoMode.teacherAndStudent ||
-            (widget.filterMode![1] == AnswerFromWhoMode.studentOnly &&
-                message.creatorId != teacherId) ||
-            (widget.filterMode![1] == AnswerFromWhoMode.teacherOnly &&
-                message.creatorId == teacherId)) {
+        final isTheRightCreatorId =
+            (widget.filterMode![1] == AnswerFromWhoMode.teacherAndStudent) ||
+                (widget.filterMode![1] == AnswerFromWhoMode.studentOnly &&
+                    message.creatorId != teacherId) ||
+                (widget.filterMode![1] == AnswerFromWhoMode.teacherOnly &&
+                    message.creatorId == teacherId);
+        final isTheRightContent =
+            (widget.filterMode![2] == AnswerTypeMode.textAndPhotos) ||
+                (widget.filterMode![2] == AnswerTypeMode.textOnly &&
+                    !message.isPhotoUrl) ||
+                (widget.filterMode![2] == AnswerTypeMode.photoOnly &&
+                    message.isPhotoUrl);
+        if (isTheRightCreatorId && isTheRightContent) {
           discussions.add(message);
         }
       }
