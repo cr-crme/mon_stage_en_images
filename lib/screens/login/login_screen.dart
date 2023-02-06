@@ -136,7 +136,10 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_database == null) return;
 
     // Wait until the data are fetched
-    if (_allStudents!.isEmpty) {
+    if (_allStudents!.isEmpty ||
+        _allStudents!.indexWhere(
+                (element) => element.id == _database!.currentUser!.studentId) <
+            0) {
       WidgetsBinding.instance
           .addPostFrameCallback((_) => _waitingRoomForStudent());
       return;
