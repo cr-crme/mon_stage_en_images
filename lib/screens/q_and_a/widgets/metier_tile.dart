@@ -27,12 +27,7 @@ class MetierTile extends StatelessWidget {
         Provider.of<Database>(context, listen: false).currentUser!.userType;
 
     return TextStyle(
-      color: activeQuestions > 0
-          ? (answeredQuestions >= activeQuestions ||
-                  userType == UserType.student
-              ? Colors.black
-              : Colors.red)
-          : Colors.grey,
+      color: activeQuestions > 0 ? Colors.black : Colors.grey,
       fontWeight: needAction > 0 ? FontWeight.bold : FontWeight.normal,
       fontSize: userType == UserType.student ? 20 : null,
     );
