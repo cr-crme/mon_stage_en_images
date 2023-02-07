@@ -131,6 +131,7 @@ class _AnswerPartState extends State<AnswerPart> {
               messages: messages,
               isAnswerValidated: isValidated,
               student: student,
+              question: widget.question,
               addMessageCallback: _addAnswerCallback,
             ),
           const SizedBox(height: 15)

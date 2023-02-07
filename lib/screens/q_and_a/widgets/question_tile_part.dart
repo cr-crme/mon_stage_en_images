@@ -6,7 +6,6 @@ import '/common/models/database.dart';
 import '/common/models/enum.dart';
 import '/common/models/exceptions.dart';
 import '/common/models/question.dart';
-import '/common/models/student.dart';
 import '/common/providers/all_questions.dart';
 import '/common/providers/all_students.dart';
 import '/common/widgets/are_you_sure_dialog.dart';
@@ -160,18 +159,15 @@ class _QuestionPartTrailing extends StatelessWidget {
     } else if (userType == UserType.teacher) {
       if (question == null) {
         return _QuestionAddButton(newQuestionCallback: onNewQuestion);
-      } else if (viewSpan == Target.individual) {
-        return pageMode == PageMode.edit
-            ? _QuestionActivatedState(
-                question: question!,
-                studentId: studentId,
-                initialStatus: _isQuestionActive(context),
-                onStateChange: onStateChange,
-                viewSpan: viewSpan,
-                pageMode: pageMode,
-              )
-            : _QuestionValidateCheckmark(
-                question: question!, studentId: studentId!);
+      } else if (viewSpan == Target.individual && pageMode == PageMode.edit) {
+        return _QuestionActivatedState(
+          question: question!,
+          studentId: studentId,
+          initialStatus: _isQuestionActive(context),
+          onStateChange: onStateChange,
+          viewSpan: viewSpan,
+          pageMode: pageMode,
+        );
       } else {
         return Container(width: 0);
       }
@@ -269,51 +265,5 @@ class _QuestionActivatedState extends StatelessWidget {
     return Switch(
         onChanged: (value) => _toggleQuestionActiveState(context, value),
         value: initialStatus);
-  }
-}
-
-class _QuestionValidateCheckmark extends StatefulWidget {
-  const _QuestionValidateCheckmark({
-    required this.question,
-    required this.studentId,
-  });
-
-  final Question question;
-  final String studentId;
-
-  @override
-  State<_QuestionValidateCheckmark> createState() =>
-      _QuestionValidateCheckmarkState();
-}
-
-class _QuestionValidateCheckmarkState
-    extends State<_QuestionValidateCheckmark> {
-  void _validateAnswer(Student student, Answer answer) {
-    // Reverse the status of the answer
-    final allStudents = Provider.of<AllStudents>(context, listen: false);
-
-    final isValided = !answer.isValidated;
-    final actionRequired =
-        isValided ? ActionRequired.none : answer.previousActionRequired;
-    allStudents.setAnswer(
-        student: student,
-        question: widget.question,
-        answer: answer.copyWith(
-            isValidated: isValided, actionRequired: actionRequired));
-    setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final students = Provider.of<AllStudents>(context, listen: false);
-    final student = students[widget.studentId];
-    final answer = student.allAnswers[widget.question]!;
-    return IconButton(
-        onPressed: () => _validateAnswer(student, answer),
-        icon: Icon(
-          Icons.check,
-          size: 35,
-          color: answer.isValidated ? Colors.green[600] : Colors.grey[350],
-        ));
   }
 }

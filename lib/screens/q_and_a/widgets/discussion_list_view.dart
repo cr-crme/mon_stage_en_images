@@ -3,10 +3,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '/common/misc/storage_service.dart';
+import '/common/models/answer.dart';
 import '/common/models/database.dart';
 import '/common/models/enum.dart';
 import '/common/models/message.dart';
+import '/common/models/question.dart';
 import '/common/models/student.dart';
+import '/common/providers/all_students.dart';
 import '/common/providers/speecher.dart';
 import 'discussion_tile.dart';
 
@@ -16,12 +19,14 @@ class DiscussionListView extends StatefulWidget {
     required this.messages,
     required this.isAnswerValidated,
     required this.student,
+    required this.question,
     required this.addMessageCallback,
   });
 
   final List<Message> messages;
   final bool isAnswerValidated;
   final Student? student;
+  final Question question;
   final Function(String, {bool isPhoto}) addMessageCallback;
 
   @override
@@ -105,6 +110,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
   Widget build(BuildContext context) {
     final userType =
         Provider.of<Database>(context, listen: false).currentUser!.userType;
+    final answer = widget.student?.allAnswers[widget.question]!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,8 +166,41 @@ class _DiscussionListViewState extends State<DiscussionListView> {
               ),
             ),
           ),
+        if (userType == UserType.teacher &&
+            widget.student != null &&
+            answer!.hasAnswer)
+          if (widget.student != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Center(
+                  child: ElevatedButton(
+                onPressed: () =>
+                    _validateAnswer(widget.student!, widget.question, answer),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        answer.isValidated ? Colors.white10 : null),
+                child: Text(answer.isValidated
+                    ? 'Ouvrir les commentaires'
+                    : 'Fermer les commentaires'),
+              )),
+            ),
       ],
     );
+  }
+
+  void _validateAnswer(Student student, Question question, Answer answer) {
+    // Reverse the status of the answer
+    final allStudents = Provider.of<AllStudents>(context, listen: false);
+
+    final isValided = !answer.isValidated;
+    final actionRequired =
+        isValided ? ActionRequired.none : answer.previousActionRequired;
+    allStudents.setAnswer(
+        student: student,
+        question: question,
+        answer: answer.copyWith(
+            isValidated: isValided, actionRequired: actionRequired));
+    setState(() {});
   }
 }
 
