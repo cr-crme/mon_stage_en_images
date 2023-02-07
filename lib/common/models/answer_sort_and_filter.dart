@@ -3,6 +3,11 @@ enum AnswerSorting {
   byStudent,
 }
 
+enum AnswerFilledFilter {
+  all,
+  withAtLeastOneAnswer,
+}
+
 enum AnswerFromWhomFilter {
   studentOnly,
   teacherOnly,
@@ -18,11 +23,13 @@ enum AnswerContentFilter {
 class AnswerSortAndFilter {
   AnswerSortAndFilter({
     this.sorting = AnswerSorting.byDate,
+    this.filled = AnswerFilledFilter.withAtLeastOneAnswer,
     this.fromWhomFilter = AnswerFromWhomFilter.teacherAndStudent,
     this.contentFilter = AnswerContentFilter.textAndPhotos,
   });
 
   AnswerSorting sorting;
+  AnswerFilledFilter filled;
   AnswerFromWhomFilter fromWhomFilter;
   AnswerContentFilter contentFilter;
 }

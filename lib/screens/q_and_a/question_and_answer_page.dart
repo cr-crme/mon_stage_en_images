@@ -33,32 +33,50 @@ class QuestionAndAnswerPage extends StatelessWidget {
     final userType =
         Provider.of<Database>(context, listen: false).currentUser!.userType;
 
-    final questions = Provider.of<AllQuestions>(context, listen: true)
+    var questions = Provider.of<AllQuestions>(context, listen: true)
         .fromSection(sectionIndex);
     questions.sort(
         (first, second) => first.creationTimeStamp - second.creationTimeStamp);
 
-    late final List<Question>? activeQuestions;
-    if (studentId != null) {
-      final student = allStudents[studentId];
-      final answers = student.allAnswers.fromQuestions(questions);
-      activeQuestions = answers.activeQuestions(questions);
+    late Widget questionSection;
+    if (viewSpan == Target.individual) {
+      if (pageMode != PageMode.edit) {
+        final student = allStudents[studentId];
+        final answers = student.allAnswers.fromQuestions(questions);
+        questions = answers.activeQuestions(questions);
+      }
+      questionSection = _buildQuestionSection(
+        context,
+        questions: questions.toList(growable: false),
+        titleIfNothing: 'Aucune question dans cette section',
+        answerFilterMode: null,
+      );
     } else {
-      activeQuestions = [];
-    }
+      if (studentId != null) {
+        final student = allStudents[studentId];
+        final answers = student.allAnswers.fromQuestions(questions);
+        questions = answers.activeQuestions(questions);
+      }
 
-    final allAnswersSection = _buildQuestionSection(
-      context,
-      questions: questions.toList(growable: false),
-      titleIfNothing: 'Aucune question dans cette section',
-      answerFilterMode: answerFilterMode,
-    );
-    final activeQuestionsSection = _buildQuestionSection(
-      context,
-      questions: activeQuestions,
-      titleIfNothing: 'Aucune question dans cette section',
-      answerFilterMode: null,
-    );
+      if (pageMode != PageMode.edit &&
+          answerFilterMode.filled == AnswerFilledFilter.withAtLeastOneAnswer) {
+        // Do not filter for edit mode
+        List<Question> questionTp = [];
+        for (final question in questions) {
+          if (question.hasQuestionAtLeastOneAnswer(students: allStudents)) {
+            questionTp.add(question);
+          }
+        }
+        questions = questionTp;
+      }
+
+      questionSection = _buildQuestionSection(
+        context,
+        questions: questions,
+        titleIfNothing: 'Aucune question dans cette section',
+        answerFilterMode: answerFilterMode,
+      );
+    }
 
     return SingleChildScrollView(
       child: Column(
@@ -93,9 +111,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
                 SizedBox(width: 25)
               ],
             ),
-          viewSpan == Target.individual && pageMode != PageMode.edit
-              ? activeQuestionsSection
-              : allAnswersSection,
+          questionSection,
         ],
       ),
     );
@@ -149,8 +165,8 @@ class _QAndAListViewState extends State<QAndAListView> {
   final List<bool> _isExpanded = [];
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _isExpanded.clear();
 
     for (var i = 0; i < widget.questions.length; i++) {
@@ -174,6 +190,13 @@ class _QAndAListViewState extends State<QAndAListView> {
 
   @override
   Widget build(BuildContext context) {
+    // Do some sanity checks just in case
+    if (_isExpanded.length != widget.questions.length) {
+      for (var i = 0; i < widget.questions.length; i++) {
+        _isExpanded.add(false);
+      }
+    }
+
     return ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,

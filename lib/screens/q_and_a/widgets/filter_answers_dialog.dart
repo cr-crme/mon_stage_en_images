@@ -16,11 +16,17 @@ class FilterAnswerDialog extends StatefulWidget {
 
 class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
   late AnswerSorting _sorting = widget.currentFilter.sorting;
+  late AnswerFilledFilter _filled = widget.currentFilter.filled;
   late AnswerFromWhomFilter _fromWhom = widget.currentFilter.fromWhomFilter;
   late AnswerContentFilter _content = widget.currentFilter.contentFilter;
 
   void _selectSorting(value) {
     _sorting = value;
+    setState(() {});
+  }
+
+  void _selectFilled(value) {
+    _filled = value;
     setState(() {});
   }
 
@@ -44,6 +50,7 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
         context,
         AnswerSortAndFilter(
           sorting: _sorting,
+          filled: _filled,
           fromWhomFilter: _fromWhom,
           contentFilter: _content,
         ));
@@ -68,6 +75,20 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
               value: AnswerSorting.byStudent,
               groupValue: _sorting,
               onTap: _selectSorting,
+            ),
+            const Divider(),
+            const Text('Afficher'),
+            _buildRadioTile<AnswerFilledFilter>(
+              text: 'Toutes les questions',
+              value: AnswerFilledFilter.all,
+              groupValue: _filled,
+              onTap: _selectFilled,
+            ),
+            _buildRadioTile<AnswerFilledFilter>(
+              text: 'Les questions avec au moins une réponses',
+              value: AnswerFilledFilter.withAtLeastOneAnswer,
+              groupValue: _filled,
+              onTap: _selectFilled,
             ),
             const Divider(),
             const Text('Afficher les réponses de'),
@@ -147,7 +168,7 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
             groupValue: groupValue,
             onChanged: (_) => onTap(value),
           ),
-          Text(text),
+          Flexible(child: Text(text)),
         ],
       ),
     );

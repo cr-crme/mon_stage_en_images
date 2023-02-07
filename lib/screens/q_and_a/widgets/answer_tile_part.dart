@@ -57,6 +57,7 @@ class _AnswerPartState extends State<AnswerPart> {
             (widget.filterMode!.fromWhomFilter ==
                     AnswerFromWhomFilter.teacherOnly &&
                 message.creatorId == teacherId);
+      
         final isTheRightContent = (widget.filterMode!.contentFilter ==
                 AnswerContentFilter.textAndPhotos) ||
             (widget.filterMode!.contentFilter == AnswerContentFilter.textOnly &&

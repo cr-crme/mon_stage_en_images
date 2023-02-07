@@ -77,15 +77,10 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
 
     // Make sure no student already responded to the question
     // If so, prevent from modifying it
-    var hasAnswers = false;
-    if (widget.question != null) {
-      for (final student in _students) {
-        if (student.allAnswers[widget.question!]!.hasAnswer) {
-          hasAnswers = true;
-          break;
-        }
-      }
-    }
+    final hasAnswers = widget.question != null
+        ? questions[widget.question]
+            .hasQuestionAtLeastOneAnswer(students: _students)
+        : false;
 
     final currentStudent = arguments[2] as Student?;
 
