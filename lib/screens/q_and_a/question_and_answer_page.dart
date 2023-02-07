@@ -123,7 +123,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
   }
 }
 
-class QAndAListView extends StatelessWidget {
+class QAndAListView extends StatefulWidget {
   const QAndAListView(
     this.questions, {
     super.key,
@@ -142,19 +142,52 @@ class QAndAListView extends StatelessWidget {
   final AnswerSortAndFilter? answerFilterMode;
 
   @override
+  State<QAndAListView> createState() => _QAndAListViewState();
+}
+
+class _QAndAListViewState extends State<QAndAListView> {
+  final List<bool> _isExpanded = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _isExpanded.clear();
+
+    for (var i = 0; i < widget.questions.length; i++) {
+      _isExpanded.add(false);
+    }
+  }
+
+  void _onExpand(index) {
+    // If we closed the card, just do it
+    if (_isExpanded[index]) {
+      _isExpanded[index] = false;
+    } else {
+      // Close all the cards except the expanded one
+      for (var i = 0; i < widget.questions.length; i++) {
+        _isExpanded[i] = i == index;
+      }
+    }
+
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemBuilder: (context, index) => QuestionAndAnswerTile(
-        questions[index],
-        sectionIndex: sectionIndex,
-        studentId: studentId,
-        viewSpan: viewSpan,
-        pageMode: pageMode,
-        answerFilterMode: answerFilterMode,
+        widget.questions[index],
+        sectionIndex: widget.sectionIndex,
+        studentId: widget.studentId,
+        viewSpan: widget.viewSpan,
+        pageMode: widget.pageMode,
+        answerFilterMode: widget.answerFilterMode,
+        overrideExpandState: _isExpanded[index],
+        onExpand: () => _onExpand(index),
       ),
-      itemCount: questions.length,
+      itemCount: widget.questions.length,
     );
   }
 }

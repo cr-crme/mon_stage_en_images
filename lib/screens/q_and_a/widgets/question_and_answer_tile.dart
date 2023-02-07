@@ -22,6 +22,8 @@ class QuestionAndAnswerTile extends StatefulWidget {
     required this.viewSpan,
     required this.pageMode,
     required this.answerFilterMode,
+    this.overrideExpandState,
+    this.onExpand,
   });
 
   final int sectionIndex;
@@ -30,6 +32,8 @@ class QuestionAndAnswerTile extends StatefulWidget {
   final Target viewSpan;
   final PageMode pageMode;
   final AnswerSortAndFilter? answerFilterMode;
+  final bool? overrideExpandState;
+  final VoidCallback? onExpand;
 
   @override
   State<QuestionAndAnswerTile> createState() => _QuestionAndAnswerTileState();
@@ -61,6 +65,8 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
           question: widget.question!,
           answer: _answer!.copyWith(actionRequired: ActionRequired.none));
     }
+
+    if (widget.onExpand != null) widget.onExpand!();
 
     setState(() {});
   }
@@ -150,6 +156,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     _answer =
         widget.question != null ? _student?.allAnswers[widget.question] : null;
 
+    _isExpanded = widget.overrideExpandState ?? _isExpanded;
     return Card(
       elevation: 5,
       child: Column(
