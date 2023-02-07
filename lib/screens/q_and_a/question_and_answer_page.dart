@@ -85,7 +85,8 @@ class QuestionAndAnswerPage extends StatelessWidget {
           if (userType == UserType.teacher)
             Container(
               padding: const EdgeInsets.only(left: 5, top: 15),
-              child: Text(Section.name(sectionIndex),
+              child: Text(
+                  '${Section.name(sectionIndex)}${pageMode == PageMode.edit ? ' (Mode édition)' : ''}',
                   style: Theme.of(context)
                       .textTheme
                       .titleLarge!

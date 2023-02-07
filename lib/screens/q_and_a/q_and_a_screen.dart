@@ -143,7 +143,7 @@ class _QAndAScreenState extends State<QAndAScreen> {
                 IconButton(
                   onPressed: _switchQuestionModeCallback,
                   icon: Icon(_pageMode == PageMode.edit
-                      ? Icons.save
+                      ? Icons.edit_off
                       : Icons.edit_rounded),
                   iconSize: 30,
                 ),
