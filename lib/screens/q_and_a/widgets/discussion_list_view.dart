@@ -169,11 +169,11 @@ class _DiscussionListViewState extends State<DiscussionListView> {
         if (userType == UserType.teacher &&
             widget.student != null &&
             answer!.hasAnswer)
-          if (widget.student != null)
-            Padding(
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
               padding: const EdgeInsets.only(top: 8.0),
-              child: Center(
-                  child: ElevatedButton(
+              child: ElevatedButton(
                 onPressed: () =>
                     _validateAnswer(widget.student!, widget.question, answer),
                 style: ElevatedButton.styleFrom(
@@ -182,8 +182,9 @@ class _DiscussionListViewState extends State<DiscussionListView> {
                 child: Text(answer.isValidated
                     ? 'Ouvrir les commentaires'
                     : 'Fermer les commentaires'),
-              )),
+              ),
             ),
+          ),
       ],
     );
   }
