@@ -191,18 +191,21 @@ class _DiscussionListViewState extends State<DiscussionListView> {
             alignment: Alignment.centerLeft,
             child: Padding(
               padding: const EdgeInsets.only(top: 8.0),
-              child: ElevatedButton(
-                onPressed: () =>
-                    _validateAnswer(widget.student!, widget.question, answer),
-                style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        answer.isValidated ? Colors.white10 : null),
-                child: Text(
-                    answer.isValidated
-                        ? 'Ouvrir les commentaires'
-                        : 'Fermer les commentaires',
-                    style: const TextStyle(color: Colors.white)),
-              ),
+              child: answer.isValidated
+                  ? OutlinedButton(
+                      child: Text('Ouvrir les commentaires',
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary)),
+                      onPressed: () => _validateAnswer(
+                          widget.student!, widget.question, answer),
+                    )
+                  : ElevatedButton(
+                      onPressed: () => _validateAnswer(
+                          widget.student!, widget.question, answer),
+                      style: ElevatedButton.styleFrom(backgroundColor: null),
+                      child: const Text('Fermer les commentaires',
+                          style: TextStyle(color: Colors.white)),
+                    ),
             ),
           ),
       ],
