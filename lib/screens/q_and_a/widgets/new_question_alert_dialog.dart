@@ -159,10 +159,10 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
           onPressed: () => _finalize(context, hasCancelled: true),
         ),
         ElevatedButton(
+          onPressed: _isVoiceRecording ? null : () => _finalize(context),
           child: Text(widget.question?.text == null ? 'Ajouter' : 'Enregistrer',
               style: const TextStyle(
                   fontWeight: FontWeight.bold, color: Colors.white)),
-          onPressed: () => _finalize(context),
         ),
       ],
     );
