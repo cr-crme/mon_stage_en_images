@@ -160,9 +160,10 @@ class _QuestionPartTrailing extends StatelessWidget {
           viewSpan: viewSpan,
           pageMode: pageMode,
         );
-      } else if (Provider.of<AllStudents>(context, listen: false)[studentId]
-          .allAnswers[question]!
-          .isValidated) {
+      } else if (studentId != null &&
+          Provider.of<AllStudents>(context, listen: false)[studentId]
+              .allAnswers[question]!
+              .isValidated) {
         return Icon(Icons.check, size: 35, color: Colors.green[600]);
       } else {
         return const SizedBox();
