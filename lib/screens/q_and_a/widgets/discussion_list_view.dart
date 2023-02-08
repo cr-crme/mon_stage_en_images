@@ -63,10 +63,10 @@ class _DiscussionListViewState extends State<DiscussionListView> {
     setState(() {});
   }
 
-  Future<void> _addPhoto() async {
+  Future<void> _addPhoto(ImageSource source) async {
     final imagePicker = ImagePicker();
     final imageXFile =
-        await imagePicker.pickImage(source: ImageSource.camera, maxWidth: 500);
+        await imagePicker.pickImage(source: source, maxWidth: 500);
     if (imageXFile == null) return;
 
     // // Image is in cache (imageXFile.path) is temporary
@@ -119,19 +119,37 @@ class _DiscussionListViewState extends State<DiscussionListView> {
           discussion: widget.messages,
         ),
         if (userType == UserType.student && !widget.isAnswerValidated)
-          TextButton(
-            onPressed: _addPhoto,
-            style: TextButton.styleFrom(backgroundColor: Colors.grey[700]),
-            child: Row(
-              children: const [
-                Icon(Icons.camera_alt),
-                SizedBox(width: 10),
-                Text(
-                  'Ajouter une photo',
-                  style: TextStyle(fontSize: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () => _addPhoto(ImageSource.camera),
+                style: TextButton.styleFrom(backgroundColor: Colors.grey[700]),
+                child: Row(
+                  children: const [
+                    Icon(Icons.camera_alt),
+                    Padding(
+                      padding: EdgeInsets.only(left: 15.0, right: 15.0),
+                      child: Text('Caméra', style: TextStyle(fontSize: 16)),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(width: 10),
+              TextButton(
+                onPressed: () => _addPhoto(ImageSource.gallery),
+                style: TextButton.styleFrom(backgroundColor: Colors.grey[700]),
+                child: Row(
+                  children: const [
+                    Icon(Icons.image),
+                    Padding(
+                      padding: EdgeInsets.only(left: 15.0, right: 15.0),
+                      child: Text('Gallerie', style: TextStyle(fontSize: 16)),
+                    ),
+                  ],
+                ),
+              )
+            ],
           ),
         if (!widget.isAnswerValidated && widget.student != null)
           Container(
