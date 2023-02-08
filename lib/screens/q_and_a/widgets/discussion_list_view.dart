@@ -144,7 +144,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
                     Icon(Icons.image),
                     Padding(
                       padding: EdgeInsets.only(left: 15.0, right: 15.0),
-                      child: Text('Gallerie', style: TextStyle(fontSize: 16)),
+                      child: Text('Galerie', style: TextStyle(fontSize: 16)),
                     ),
                   ],
                 ),
@@ -197,9 +197,11 @@ class _DiscussionListViewState extends State<DiscussionListView> {
                 style: ElevatedButton.styleFrom(
                     backgroundColor:
                         answer.isValidated ? Colors.white10 : null),
-                child: Text(answer.isValidated
-                    ? 'Ouvrir les commentaires'
-                    : 'Fermer les commentaires'),
+                child: Text(
+                    answer.isValidated
+                        ? 'Ouvrir les commentaires'
+                        : 'Fermer les commentaires',
+                    style: const TextStyle(color: Colors.white)),
               ),
             ),
           ),

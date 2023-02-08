@@ -55,9 +55,7 @@ class QuestionPart extends StatelessWidget {
     return TextStyle(
       color: answer.isActive ? Colors.black : Colors.grey,
       fontWeight: answer.action(context) != ActionRequired.none
-          ? userType == UserType.teacher
-              ? FontWeight.w900
-              : FontWeight.bold
+          ? FontWeight.bold
           : FontWeight.normal,
       fontSize: userType == UserType.student ? 20 : null,
     );
@@ -163,7 +161,7 @@ class _QuestionPartTrailing extends StatelessWidget {
           pageMode: pageMode,
         );
       } else {
-        return Container(width: 0);
+        return const SizedBox(width: 50); // Simulate the toggle size
       }
     } else {
       throw const NotLoggedIn();
