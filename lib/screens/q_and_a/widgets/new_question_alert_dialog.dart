@@ -5,6 +5,7 @@ import '/common/models/enum.dart';
 import '/common/models/question.dart';
 import '/common/models/student.dart';
 import '/common/providers/all_students.dart';
+import '/common/providers/speecher.dart';
 import '/common/widgets/are_you_sure_dialog.dart';
 
 class NewQuestionAlertDialog extends StatefulWidget {
@@ -29,6 +30,8 @@ class NewQuestionAlertDialog extends StatefulWidget {
 
 class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
   final _formKey = GlobalKey<FormState>();
+  bool _isVoiceRecording = false;
+  final _fieldText = TextEditingController();
   String? _text;
   final Map<Student, bool> _questionStatus = {};
 
@@ -41,6 +44,7 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
           ? false
           : student.allAnswers[widget.question]?.isActive ?? false;
     }
+    _fieldText.text = widget.question?.text ?? "";
   }
 
   void _finalize(BuildContext context, {bool hasCancelled = false}) {
@@ -182,19 +186,62 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
     return;
   }
 
-  TextFormField _showQuestionTextInput() {
-    return TextFormField(
-      keyboardType: TextInputType.multiline,
-      minLines: 1,
-      maxLines: 3,
-      decoration: const InputDecoration(labelText: 'Libellé de la question'),
-      validator: (value) =>
-          value == null || value.isEmpty ? 'Ajouter une question' : null,
-      initialValue: widget.question?.text,
-      onSaved: (value) => _text = value,
-      enabled: widget.isQuestionModifiable,
-      style: TextStyle(
-          color: widget.isQuestionModifiable ? Colors.black : Colors.grey),
+  @override
+  void dispose() {
+    super.dispose();
+    _fieldText.dispose();
+  }
+
+  void _dictateMessage() {
+    final speecher = Provider.of<Speecher>(context, listen: false);
+    speecher.startListening(
+        onResultCallback: _onDictatedMessage,
+        onErrorCallback: _terminateDictate);
+    _isVoiceRecording = true;
+    setState(() {});
+  }
+
+  void _terminateDictate() {
+    final speecher = Provider.of<Speecher>(context, listen: false);
+    speecher.stopListening();
+    _isVoiceRecording = false;
+    setState(() {});
+  }
+
+  void _onDictatedMessage(String message) {
+    _fieldText.text += ' $message';
+    _terminateDictate();
+  }
+
+  Widget _showQuestionTextInput() {
+    return Row(
+      children: [
+        Expanded(
+          child: TextFormField(
+            keyboardType: TextInputType.multiline,
+            minLines: 1,
+            maxLines: 3,
+            decoration: InputDecoration(
+              labelText: 'Libellé de la question',
+              suffixIcon: GestureDetector(
+                onTapDown: (_) => _dictateMessage(),
+                child: Icon(
+                  Icons.mic,
+                  color: _isVoiceRecording ? Colors.red : Colors.grey,
+                ),
+              ),
+            ),
+            validator: (value) =>
+                value == null || value.isEmpty ? 'Ajouter une question' : null,
+            onSaved: (value) => _text = value,
+            enabled: widget.isQuestionModifiable,
+            style: TextStyle(
+                color:
+                    widget.isQuestionModifiable ? Colors.black : Colors.grey),
+            controller: _fieldText,
+          ),
+        ),
+      ],
     );
   }
 }
