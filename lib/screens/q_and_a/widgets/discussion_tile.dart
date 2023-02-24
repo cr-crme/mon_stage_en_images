@@ -78,7 +78,11 @@ class DiscussionTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Flexible(child: _showNameOfSender()),
-                  Flexible(child: Text(discussion.text)),
+                  Flexible(
+                      child: Text(
+                    discussion.text,
+                    style: const TextStyle(fontSize: 18),
+                  )),
                 ],
               ),
           ],
@@ -89,6 +93,9 @@ class DiscussionTile extends StatelessWidget {
 
   Widget _showNameOfSender() {
     return Text('${discussion.name} : ',
-        style: TextStyle(color: Colors.grey[800], fontWeight: FontWeight.bold));
+        style: TextStyle(
+            color: Colors.grey[800],
+            fontWeight: FontWeight.bold,
+            fontSize: 18));
   }
 }

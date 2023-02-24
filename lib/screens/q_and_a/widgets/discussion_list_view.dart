@@ -204,7 +204,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
                           widget.student!, widget.question, answer),
                       style: ElevatedButton.styleFrom(backgroundColor: null),
                       child: const Text('Terminer et valider la question',
-                          style: TextStyle(color: Colors.white)),
+                          style: TextStyle(color: Colors.black)),
                     ),
             ),
           ),

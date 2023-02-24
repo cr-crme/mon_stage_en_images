@@ -64,23 +64,23 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Afficher les réponses de',
+              'Afficher',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             _buildRadioTile<AnswerFromWhomFilter>(
-              text: 'Tous',
+              text: 'Ensemble des réponses et commentaires',
               value: AnswerFromWhomFilter.teacherAndStudent,
               groupValue: _fromWhom,
               onTap: _selectFromWhom,
             ),
             _buildRadioTile<AnswerFromWhomFilter>(
-              text: 'Élèves uniquement',
+              text: 'Réponses des élèves uniquement',
               value: AnswerFromWhomFilter.studentOnly,
               groupValue: _fromWhom,
               onTap: _selectFromWhom,
             ),
             _buildRadioTile<AnswerFromWhomFilter>(
-              text: 'Enseignant.e uniquement',
+              text: 'Commentaires de l\'enseignant.e uniquement',
               value: AnswerFromWhomFilter.teacherOnly,
               groupValue: _fromWhom,
               onTap: _selectFromWhom,

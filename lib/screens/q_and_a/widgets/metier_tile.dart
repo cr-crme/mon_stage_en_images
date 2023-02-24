@@ -21,7 +21,7 @@ class MetierTile extends StatelessWidget {
   TextStyle _pickTextStyle(BuildContext context, int? activeQuestions,
       int? answeredQuestions, int needAction) {
     if (activeQuestions == null || answeredQuestions == null) {
-      return const TextStyle();
+      return const TextStyle(fontSize: 20);
     }
 
     return TextStyle(

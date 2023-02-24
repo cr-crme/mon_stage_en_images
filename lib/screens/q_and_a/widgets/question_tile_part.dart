@@ -44,10 +44,11 @@ class QuestionPart extends StatelessWidget {
       final students = Provider.of<AllStudents>(context, listen: false);
 
       return TextStyle(
-          color:
-              question != null && students.isQuestionInactiveForAll(question!)
-                  ? Colors.grey
-                  : Colors.black);
+        color: question != null && students.isQuestionInactiveForAll(question!)
+            ? Colors.grey
+            : Colors.black,
+        fontSize: 20,
+      );
     }
 
     return TextStyle(
@@ -56,6 +57,7 @@ class QuestionPart extends StatelessWidget {
           ? FontWeight.bold
           : FontWeight.normal,
       fontSize: 20,
+      height: 1.40,
     );
   }
 
