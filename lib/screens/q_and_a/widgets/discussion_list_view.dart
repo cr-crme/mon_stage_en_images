@@ -193,7 +193,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
               padding: const EdgeInsets.only(top: 8.0),
               child: answer.isValidated
                   ? OutlinedButton(
-                      child: Text('Ouvrir les commentaires',
+                      child: Text('Rouvrir la question',
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.secondary)),
                       onPressed: () => _validateAnswer(
@@ -203,7 +203,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
                       onPressed: () => _validateAnswer(
                           widget.student!, widget.question, answer),
                       style: ElevatedButton.styleFrom(backgroundColor: null),
-                      child: const Text('Fermer les commentaires',
+                      child: const Text('Terminer et valider la question',
                           style: TextStyle(color: Colors.white)),
                     ),
             ),

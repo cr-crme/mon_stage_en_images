@@ -49,15 +49,13 @@ class QuestionPart extends StatelessWidget {
                   ? Colors.grey
                   : Colors.black);
     }
-    final userType =
-        Provider.of<Database>(context, listen: false).currentUser!.userType;
 
     return TextStyle(
       color: answer.isActive ? Colors.black : Colors.grey,
       fontWeight: answer.action(context) != ActionRequired.none
           ? FontWeight.bold
           : FontWeight.normal,
-      fontSize: userType == UserType.student ? 20 : null,
+      fontSize: 20,
     );
   }
 
