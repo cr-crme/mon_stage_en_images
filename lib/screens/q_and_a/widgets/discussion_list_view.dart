@@ -217,8 +217,9 @@ class _DiscussionListViewState extends State<DiscussionListView> {
     final allStudents = Provider.of<AllStudents>(context, listen: false);
 
     final isValided = !answer.isValidated;
-    final actionRequired =
-        isValided ? ActionRequired.none : answer.previousActionRequired;
+    final actionRequired = answer.actionRequired == ActionRequired.fromStudent
+        ? answer.actionRequired
+        : ActionRequired.none;
     allStudents.setAnswer(
         student: student,
         question: question,

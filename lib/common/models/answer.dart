@@ -15,7 +15,6 @@ class Answer extends ItemSerializableWithCreationTime {
     this.isActive = true,
     this.isValidated = false,
     this.actionRequired = ActionRequired.none,
-    this.previousActionRequired = ActionRequired.none,
     super.id,
     super.creationTimeStamp,
   }) : discussion = discussion ??= Discussion();
@@ -24,8 +23,6 @@ class Answer extends ItemSerializableWithCreationTime {
         isActive = map['isActive'],
         isValidated = map['isValidated'],
         actionRequired = ActionRequired.values[map['actionRequired']],
-        previousActionRequired =
-            ActionRequired.values[map['previousActionRequired']],
         super.fromSerialized(map);
   Answer copyWith({
     Discussion? discussion,
@@ -38,7 +35,6 @@ class Answer extends ItemSerializableWithCreationTime {
     discussion ??= this.discussion;
     isActive ??= this.isActive;
     isValidated ??= this.isValidated;
-    final previousActionRequired = this.actionRequired;
     actionRequired ??= this.actionRequired;
     id ??= this.id;
     creationTimeStamp ??= this.creationTimeStamp;
@@ -47,7 +43,6 @@ class Answer extends ItemSerializableWithCreationTime {
       isActive: isActive,
       isValidated: isValidated,
       actionRequired: actionRequired,
-      previousActionRequired: previousActionRequired,
       id: id,
       creationTimeStamp: creationTimeStamp,
     );
@@ -64,7 +59,6 @@ class Answer extends ItemSerializableWithCreationTime {
       'isActive': isActive,
       'isValidated': isValidated,
       'actionRequired': actionRequired.index,
-      'previousActionRequired': previousActionRequired.index,
     };
   }
 
@@ -73,7 +67,6 @@ class Answer extends ItemSerializableWithCreationTime {
   final Discussion discussion;
   final bool isValidated;
   final ActionRequired actionRequired;
-  final ActionRequired previousActionRequired;
   ActionRequired action(BuildContext context) {
     if (!isActive) return ActionRequired.none;
 

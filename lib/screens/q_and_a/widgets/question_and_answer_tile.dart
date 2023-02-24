@@ -57,8 +57,19 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   void _expand() {
     _isExpanded = !_isExpanded;
 
-    if (_student != null &&
-        _answer!.action(context) == ActionRequired.fromTeacher) {
+    // If teacher has something to do, looking at the question is sufficient
+    final teacherMadeAction =
+        _answer!.action(context) == ActionRequired.fromTeacher;
+
+    // If student has something to do, if the question is validaded,
+    // looking a the question is sufficient
+    final studentMadeAction =
+        _answer!.action(context) == ActionRequired.fromStudent &&
+            _answer!.isValidated;
+
+    if (_isExpanded &&
+        _student != null &&
+        (teacherMadeAction || studentMadeAction)) {
       // Flag the answer as being actionned
       _students.setAnswer(
           student: _student!,

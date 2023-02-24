@@ -25,8 +25,7 @@ class AreYouSureDialog extends StatelessWidget {
         ),
         ElevatedButton(
           child: const Text('Continuer',
-              style:
-                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+              style: TextStyle(fontWeight: FontWeight.bold)),
           onPressed: () => Navigator.pop(context, true),
         ),
       ],
