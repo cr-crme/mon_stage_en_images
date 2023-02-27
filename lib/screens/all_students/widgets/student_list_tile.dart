@@ -26,13 +26,15 @@ class StudentListTile extends StatelessWidget {
     return Card(
       elevation: 5,
       child: ListTile(
-        title: Text(student.toString()),
+        title: Text(student.toString(), style: const TextStyle(fontSize: 20)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(student.company.name),
-            Text('Questions répondues : ${student.allAnswers.numberAnswered} '
-                '/ ${student.allAnswers.numberActive}'),
+            Text(student.company.name, style: const TextStyle(fontSize: 16)),
+            Text(
+                'Questions répondues : ${student.allAnswers.numberAnswered} '
+                '/ ${student.allAnswers.numberActive}',
+                style: const TextStyle(fontSize: 16)),
           ],
         ),
         trailing: TakingActionNotifier(

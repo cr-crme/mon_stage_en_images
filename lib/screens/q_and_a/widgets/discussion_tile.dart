@@ -81,7 +81,7 @@ class DiscussionTile extends StatelessWidget {
                   Flexible(
                       child: Text(
                     discussion.text,
-                    style: const TextStyle(fontSize: 18),
+                    style: const TextStyle(fontSize: 16),
                   )),
                 ],
               ),

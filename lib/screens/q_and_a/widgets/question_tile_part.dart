@@ -47,7 +47,8 @@ class QuestionPart extends StatelessWidget {
         color: question != null && students.isQuestionInactiveForAll(question!)
             ? Colors.grey
             : Colors.black,
-        fontSize: 20,
+        fontSize: 18,
+        height: 1.40,
       );
     }
 
@@ -56,7 +57,7 @@ class QuestionPart extends StatelessWidget {
       fontWeight: answer.action(context) != ActionRequired.none
           ? FontWeight.bold
           : FontWeight.normal,
-      fontSize: 20,
+      fontSize: 18,
       height: 1.40,
     );
   }
