@@ -3,13 +3,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '/common/misc/storage_service.dart';
-import '/common/models/answer.dart';
 import '/common/models/database.dart';
 import '/common/models/enum.dart';
 import '/common/models/message.dart';
 import '/common/models/question.dart';
 import '/common/models/student.dart';
-import '/common/providers/all_students.dart';
 import '/common/providers/speecher.dart';
 import 'discussion_tile.dart';
 
@@ -20,14 +18,18 @@ class DiscussionListView extends StatefulWidget {
     required this.isAnswerValidated,
     required this.student,
     required this.question,
-    required this.addMessageCallback,
+    required this.manageAnswerCallback,
   });
 
   final List<Message> messages;
   final bool isAnswerValidated;
   final Student? student;
   final Question question;
-  final Function(String, {bool isPhoto}) addMessageCallback;
+  final void Function({
+    String? newTextEntry,
+    bool? isPhoto,
+    bool? markAsValidated,
+  }) manageAnswerCallback;
 
   @override
   State<DiscussionListView> createState() => _DiscussionListViewState();
@@ -50,17 +52,18 @@ class _DiscussionListViewState extends State<DiscussionListView> {
     setState(() {});
   }
 
-  void _sendMessage() {
+  void _sendMessage({bool markAsValidated = false}) {
     if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
       return;
     }
     _formKey.currentState!.save();
-    if (_newMessage == null || _newMessage!.isEmpty) return;
-
-    widget.addMessageCallback(_newMessage!);
+    if ((_newMessage == null || _newMessage!.isEmpty)) return;
+    _manageAnswer(
+        newTextEntry: _newMessage,
+        isPhoto: false,
+        markAsValidated: markAsValidated);
 
     _clearFieldText();
-    setState(() {});
   }
 
   Future<void> _addPhoto(ImageSource source) async {
@@ -81,7 +84,19 @@ class _DiscussionListViewState extends State<DiscussionListView> {
     final imagePath =
         await StorageService.uploadImage(widget.student!, imageXFile);
 
-    widget.addMessageCallback(imagePath, isPhoto: true);
+    _manageAnswer(newTextEntry: imagePath, isPhoto: true);
+  }
+
+  void _manageAnswer({
+    String? newTextEntry,
+    bool? isPhoto,
+    bool markAsValidated = false,
+  }) {
+    widget.manageAnswerCallback(
+      newTextEntry: newTextEntry,
+      isPhoto: isPhoto,
+      markAsValidated: markAsValidated,
+    );
     setState(() {});
   }
 
@@ -198,14 +213,14 @@ class _DiscussionListViewState extends State<DiscussionListView> {
                       child: Text('Rouvrir la question',
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.secondary)),
-                      onPressed: () => _validateAnswer(
-                          widget.student!, widget.question, answer),
+                      onPressed: () => _manageAnswer(markAsValidated: false),
                     )
                   : ElevatedButton(
-                      onPressed: _fieldText.text == ''
-                          ? () => _validateAnswer(
-                              widget.student!, widget.question, answer)
-                          : null,
+                      onPressed: () {
+                        _fieldText.text.isEmpty
+                            ? _manageAnswer(markAsValidated: true)
+                            : _sendMessage(markAsValidated: true);
+                      },
                       style: ElevatedButton.styleFrom(backgroundColor: null),
                       child: const Text('Terminer et valider la question',
                           style: TextStyle(color: Colors.black)),
@@ -214,22 +229,6 @@ class _DiscussionListViewState extends State<DiscussionListView> {
           ),
       ],
     );
-  }
-
-  void _validateAnswer(Student student, Question question, Answer answer) {
-    // Reverse the status of the answer
-    final allStudents = Provider.of<AllStudents>(context, listen: false);
-
-    final isValided = !answer.isValidated;
-    final actionRequired = answer.actionRequired == ActionRequired.fromStudent
-        ? answer.actionRequired
-        : ActionRequired.none;
-    allStudents.setAnswer(
-        student: student,
-        question: question,
-        answer: answer.copyWith(
-            isValidated: isValided, actionRequired: actionRequired));
-    setState(() {});
   }
 }
 

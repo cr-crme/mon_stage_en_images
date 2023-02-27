@@ -57,7 +57,7 @@ class _AnswerPartState extends State<AnswerPart> {
             (widget.filterMode!.fromWhomFilter ==
                     AnswerFromWhomFilter.teacherOnly &&
                 message.creatorId == teacherId);
-      
+
         final isTheRightContent = (widget.filterMode!.contentFilter ==
                 AnswerContentFilter.textAndPhotos) ||
             (widget.filterMode!.contentFilter == AnswerContentFilter.textOnly &&
@@ -77,8 +77,11 @@ class _AnswerPartState extends State<AnswerPart> {
         : discussions.toList();
   }
 
-  Future<void> _addAnswerCallback(String answerText,
-      {bool isPhoto = false}) async {
+  void _manageAnswerCallback({
+    String? newTextEntry,
+    bool? isPhoto,
+    bool? markAsValidated,
+  }) {
     final currentUser =
         Provider.of<Database>(context, listen: false).currentUser!;
     final students = Provider.of<AllStudents>(context, listen: false);
@@ -87,26 +90,39 @@ class _AnswerPartState extends State<AnswerPart> {
 
     final currentAnswer = student!.allAnswers[widget.question]!;
 
-    currentAnswer.addToDiscussion(Message(
-      name: currentUser.firstName,
-      text: answerText,
-      isPhotoUrl: isPhoto,
-      creatorId: currentUser.id,
-    ));
+    if (newTextEntry != null) {
+      currentAnswer.addToDiscussion(Message(
+        name: currentUser.firstName,
+        text: newTextEntry,
+        isPhotoUrl: isPhoto ?? false,
+        creatorId: currentUser.id,
+      ));
+    }
 
     // Inform the changing of status
     late final ActionRequired newStatus;
     if (currentUser.userType == UserType.student) {
       newStatus = ActionRequired.fromTeacher;
     } else if (currentUser.userType == UserType.teacher) {
-      newStatus = ActionRequired.fromStudent;
+      if (markAsValidated ?? false) {
+        // If the teacher marked as valided but left a comment, the student
+        // should be notified
+        newStatus = newTextEntry == null
+            ? ActionRequired.none
+            : ActionRequired.fromStudent;
+      } else {
+        newStatus = ActionRequired.fromStudent;
+      }
     } else {
       throw const NotLoggedIn();
     }
     students.setAnswer(
         student: student,
         question: widget.question,
-        answer: currentAnswer.copyWith(actionRequired: newStatus));
+        answer: currentAnswer.copyWith(
+          actionRequired: newStatus,
+          isValidated: markAsValidated,
+        ));
 
     widget.onStateChange();
   }
@@ -133,7 +149,7 @@ class _AnswerPartState extends State<AnswerPart> {
               isAnswerValidated: isValidated,
               student: student,
               question: widget.question,
-              addMessageCallback: _addAnswerCallback,
+              manageAnswerCallback: _manageAnswerCallback,
             ),
           const SizedBox(height: 15)
         ],
