@@ -159,7 +159,9 @@ class _DiscussionListViewState extends State<DiscussionListView> {
               child: TextFormField(
                 autocorrect: userType == UserType.student ? false : true,
                 decoration: InputDecoration(
-                  labelText: 'Ajouter un commentaire',
+                  labelText: userType == UserType.student
+                      ? 'Ajouter une réponse'
+                      : 'Ajouter un commentaire',
                   suffixIcon: Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -200,8 +202,10 @@ class _DiscussionListViewState extends State<DiscussionListView> {
                           widget.student!, widget.question, answer),
                     )
                   : ElevatedButton(
-                      onPressed: () => _validateAnswer(
-                          widget.student!, widget.question, answer),
+                      onPressed: _fieldText.text == ''
+                          ? () => _validateAnswer(
+                              widget.student!, widget.question, answer)
+                          : null,
                       style: ElevatedButton.styleFrom(backgroundColor: null),
                       child: const Text('Terminer et valider la question',
                           style: TextStyle(color: Colors.black)),
