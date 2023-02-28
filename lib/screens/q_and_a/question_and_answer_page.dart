@@ -48,7 +48,8 @@ class QuestionAndAnswerPage extends StatelessWidget {
       questionSection = _buildQuestionSection(
         context,
         questions: questions.toList(growable: false),
-        titleIfNothing: 'Aucune question dans cette section',
+        titleIfNothing:
+            'Aucune question${pageMode == PageMode.fixView ? ' répondue' : ''} dans cette section',
         answerFilterMode: null,
       );
     } else {
@@ -73,7 +74,8 @@ class QuestionAndAnswerPage extends StatelessWidget {
       questionSection = _buildQuestionSection(
         context,
         questions: questions,
-        titleIfNothing: 'Aucune question dans cette section',
+        titleIfNothing:
+            'Aucune question${pageMode == PageMode.fixView ? ' répondue' : ''} dans cette section',
         answerFilterMode: answerFilterMode,
       );
     }
