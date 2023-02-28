@@ -56,12 +56,11 @@ class _AnswerPartState extends State<AnswerPart> {
                     .contains(AnswerFromWhomFilter.teacherOnly) &&
                 message.creatorId == teacherId);
 
-        final isTheRightContent = (widget.filterMode!.contentFilter ==
-                AnswerContentFilter.textAndPhotos) ||
-            (widget.filterMode!.contentFilter == AnswerContentFilter.textOnly &&
+        final isTheRightContent = (widget.filterMode!.contentFilter
+                    .contains(AnswerContentFilter.textOnly) &&
                 !message.isPhotoUrl) ||
-            (widget.filterMode!.contentFilter ==
-                    AnswerContentFilter.photoOnly &&
+            (widget.filterMode!.contentFilter
+                    .contains(AnswerContentFilter.photoOnly) &&
                 message.isPhotoUrl);
         if (isTheRightCreatorId && isTheRightContent) {
           discussions.add(message);

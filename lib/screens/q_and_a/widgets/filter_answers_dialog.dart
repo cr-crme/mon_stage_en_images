@@ -19,7 +19,8 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
   late AnswerFilledFilter _filled = widget.currentFilter.filled;
   late final List<AnswerFromWhomFilter> _fromWhom =
       widget.currentFilter.fromWhomFilter;
-  late AnswerContentFilter _content = widget.currentFilter.contentFilter;
+  late final List<AnswerContentFilter> _content =
+      widget.currentFilter.contentFilter;
 
   void _selectSorting(value) {
     _sorting = value;
@@ -40,8 +41,12 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
     setState(() {});
   }
 
-  void _selectContent(value) {
-    _content = value;
+  void _toggleContent(value) {
+    if (_content.contains(value)) {
+      _content.remove(value);
+    } else {
+      _content.add(value);
+    }
     setState(() {});
   }
 
@@ -69,54 +74,60 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Afficher',
+              'Afficher les réponses et commentaires',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            _buildCheckBoxTile(
-              text: 'Réponses des élèves',
-              value: _fromWhom.contains(AnswerFromWhomFilter.studentOnly),
-              onTap: (_) => _toggleFromWhom(AnswerFromWhomFilter.studentOnly),
-            ),
-            _buildCheckBoxTile(
-              text: 'Commentaires de l\'enseignant.e',
-              value: _fromWhom.contains(AnswerFromWhomFilter.teacherOnly),
-              onTap: (_) => _toggleFromWhom(AnswerFromWhomFilter.teacherOnly),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: _buildCheckBoxTile(
+                    text: 'Élèves',
+                    value: _fromWhom.contains(AnswerFromWhomFilter.studentOnly),
+                    onTap: (_) =>
+                        _toggleFromWhom(AnswerFromWhomFilter.studentOnly),
+                  ),
+                ),
+                Flexible(
+                  child: _buildCheckBoxTile(
+                    text: 'Enseignant.e',
+                    value: _fromWhom.contains(AnswerFromWhomFilter.teacherOnly),
+                    onTap: (_) =>
+                        _toggleFromWhom(AnswerFromWhomFilter.teacherOnly),
+                  ),
+                ),
+              ],
             ),
             const Divider(),
-            const SizedBox(height: 15),
+            const SizedBox(height: 8),
             const Text(
               'Afficher les réponses contenant',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            _buildRadioTile<AnswerContentFilter>(
-              text: 'Tout',
-              value: AnswerContentFilter.textAndPhotos,
-              groupValue: _content,
-              onTap: _selectContent,
-            ),
-            _buildRadioTile<AnswerContentFilter>(
-              text: 'Photo uniquement',
-              value: AnswerContentFilter.photoOnly,
-              groupValue: _content,
-              onTap: _selectContent,
-            ),
-            _buildRadioTile<AnswerContentFilter>(
-              text: 'Texte uniquement',
-              value: AnswerContentFilter.textOnly,
-              groupValue: _content,
-              onTap: _selectContent,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: _buildCheckBoxTile(
+                    text: 'Photo',
+                    value: _content.contains(AnswerContentFilter.photoOnly),
+                    onTap: (_) => _toggleContent(AnswerContentFilter.photoOnly),
+                  ),
+                ),
+                Flexible(
+                  child: _buildCheckBoxTile(
+                    text: 'Texte',
+                    value: _content.contains(AnswerContentFilter.textOnly),
+                    onTap: (_) => _toggleContent(AnswerContentFilter.textOnly),
+                  ),
+                ),
+              ],
             ),
             const Divider(),
-            const SizedBox(height: 15),
+            const SizedBox(height: 8),
             const Text(
               'Afficher',
               style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            _buildRadioTile<AnswerFilledFilter>(
-              text: 'Toutes les questions',
-              value: AnswerFilledFilter.all,
-              groupValue: _filled,
-              onTap: _selectFilled,
             ),
             _buildRadioTile<AnswerFilledFilter>(
               text: 'Les questions avec au moins une réponse',
@@ -124,23 +135,38 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
               groupValue: _filled,
               onTap: _selectFilled,
             ),
+            _buildRadioTile<AnswerFilledFilter>(
+              text: 'Toutes les questions',
+              value: AnswerFilledFilter.all,
+              groupValue: _filled,
+              onTap: _selectFilled,
+            ),
             const Divider(),
-            const SizedBox(height: 15),
+            const SizedBox(height: 8),
             const Text(
               'Triage des réponses',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            _buildRadioTile<AnswerSorting>(
-              text: 'Par date',
-              value: AnswerSorting.byDate,
-              groupValue: _sorting,
-              onTap: _selectSorting,
-            ),
-            _buildRadioTile<AnswerSorting>(
-              text: 'Par élève',
-              value: AnswerSorting.byStudent,
-              groupValue: _sorting,
-              onTap: _selectSorting,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: _buildRadioTile<AnswerSorting>(
+                    text: 'Par date',
+                    value: AnswerSorting.byDate,
+                    groupValue: _sorting,
+                    onTap: _selectSorting,
+                  ),
+                ),
+                Flexible(
+                  child: _buildRadioTile<AnswerSorting>(
+                    text: 'Par élève',
+                    value: AnswerSorting.byStudent,
+                    groupValue: _sorting,
+                    onTap: _selectSorting,
+                  ),
+                ),
+              ],
             ),
           ],
         ),

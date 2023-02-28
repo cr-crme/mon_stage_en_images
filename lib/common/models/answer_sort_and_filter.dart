@@ -25,15 +25,17 @@ class AnswerSortAndFilter {
     this.sorting = AnswerSorting.byDate,
     this.filled = AnswerFilledFilter.withAtLeastOneAnswer,
     List<AnswerFromWhomFilter>? fromWhomFilter,
-    this.contentFilter = AnswerContentFilter.textAndPhotos,
-  }) : fromWhomFilter = fromWhomFilter ??
+    List<AnswerContentFilter>? contentFilter,
+  })  : fromWhomFilter = fromWhomFilter ??
             [
               AnswerFromWhomFilter.teacherOnly,
               AnswerFromWhomFilter.studentOnly
-            ];
+            ],
+        contentFilter = contentFilter ??
+            [AnswerContentFilter.textOnly, AnswerContentFilter.photoOnly];
 
   AnswerSorting sorting;
   AnswerFilledFilter filled;
   List<AnswerFromWhomFilter> fromWhomFilter;
-  AnswerContentFilter contentFilter;
+  List<AnswerContentFilter> contentFilter;
 }
