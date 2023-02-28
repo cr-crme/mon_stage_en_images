@@ -17,7 +17,7 @@ class FilterAnswerDialog extends StatefulWidget {
 class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
   late AnswerSorting _sorting = widget.currentFilter.sorting;
   late AnswerFilledFilter _filled = widget.currentFilter.filled;
-  late List<AnswerFromWhomFilter> _fromWhom =
+  late final List<AnswerFromWhomFilter> _fromWhom =
       widget.currentFilter.fromWhomFilter;
   late AnswerContentFilter _content = widget.currentFilter.contentFilter;
 
@@ -73,17 +73,14 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             _buildCheckBoxTile(
-              text: 'Réponses des élèves uniquement',
+              text: 'Réponses des élèves',
               value: _fromWhom.contains(AnswerFromWhomFilter.studentOnly),
-              onTap: (_) {
-                _toggleFromWhoelkjkljm(AnswerFromWhomFilter.studentOnly);
-              },
+              onTap: (_) => _toggleFromWhom(AnswerFromWhomFilter.studentOnly),
             ),
-            _buildRadioTile<AnswerFromWhomFiltere>(
-              text: 'Commentaires de l\'enseignant.e uniquement',
-              value: AnswerFromWhomFilter.teacherOnly,
-              groupValue: _fromWhom,
-              onTap: _toggleFromWhom,
+            _buildCheckBoxTile(
+              text: 'Commentaires de l\'enseignant.e',
+              value: _fromWhom.contains(AnswerFromWhomFilter.teacherOnly),
+              onTap: (_) => _toggleFromWhom(AnswerFromWhomFilter.teacherOnly),
             ),
             const Divider(),
             const SizedBox(height: 15),
