@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 import '/common/models/answer_sort_and_filter.dart';
@@ -225,7 +226,7 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
             value: value,
             onChanged: (value) => onTap(value),
           ),
-          Flexible(child: Text(text)),
+          Flexible(child: AutoSizeText(text, maxLines: 1)),
         ],
       ),
     );
