@@ -22,7 +22,7 @@ enum AnswerContentFilter {
 
 class AnswerSortAndFilter {
   AnswerSortAndFilter({
-    this.sorting = AnswerSorting.byDate,
+    this.sorting = AnswerSorting.byStudent,
     this.filled = AnswerFilledFilter.withAtLeastOneAnswer,
     List<AnswerFromWhomFilter>? fromWhomFilter,
     List<AnswerContentFilter>? contentFilter,
