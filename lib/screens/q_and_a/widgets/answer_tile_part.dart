@@ -49,13 +49,11 @@ class _AnswerPartState extends State<AnswerPart> {
       if (student.allAnswers[widget.question] == null) continue;
       for (final message in student.allAnswers[widget.question]!.discussion
           .toListByTime(reversed: true)) {
-        final isTheRightCreatorId = (widget.filterMode!.fromWhomFilter ==
-                AnswerFromWhomFilter.teacherAndStudent) ||
-            (widget.filterMode!.fromWhomFilter ==
-                    AnswerFromWhomFilter.studentOnly &&
+        final isTheRightCreatorId = (widget.filterMode!.fromWhomFilter
+                    .contains(AnswerFromWhomFilter.studentOnly) &&
                 message.creatorId != teacherId) ||
-            (widget.filterMode!.fromWhomFilter ==
-                    AnswerFromWhomFilter.teacherOnly &&
+            (widget.filterMode!.fromWhomFilter
+                    .contains(AnswerFromWhomFilter.teacherOnly) &&
                 message.creatorId == teacherId);
 
         final isTheRightContent = (widget.filterMode!.contentFilter ==
