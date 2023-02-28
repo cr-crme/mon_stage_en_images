@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 import '/common/models/answer_sort_and_filter.dart';
@@ -79,7 +78,6 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Flexible(
                   child: _buildCheckBoxTile(
@@ -106,7 +104,6 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Flexible(
                   child: _buildCheckBoxTile(
@@ -213,7 +210,7 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
     );
   }
 
-  GestureDetector _buildCheckBoxTile<T>({
+  GestureDetector _buildCheckBoxTile({
     required String text,
     required value,
     required Function onTap,
@@ -226,7 +223,7 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
             value: value,
             onChanged: (value) => onTap(value),
           ),
-          Flexible(child: AutoSizeText(text, maxLines: 1)),
+          Flexible(child: Text(text, maxLines: 1)),
         ],
       ),
     );
