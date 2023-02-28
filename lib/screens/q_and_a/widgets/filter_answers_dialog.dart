@@ -16,7 +16,7 @@ class FilterAnswerDialog extends StatefulWidget {
 
 class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
   late AnswerSorting _sorting = widget.currentFilter.sorting;
-  late AnswerFilledFilter _filled = widget.currentFilter.filled;
+  late final AnswerFilledFilter _filled = widget.currentFilter.filled;
   late final List<AnswerFromWhomFilter> _fromWhom =
       widget.currentFilter.fromWhomFilter;
   late final List<AnswerContentFilter> _content =
@@ -24,11 +24,6 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
 
   void _selectSorting(value) {
     _sorting = value;
-    setState(() {});
-  }
-
-  void _selectFilled(value) {
-    _filled = value;
     setState(() {});
   }
 
@@ -74,28 +69,18 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Afficher les réponses et commentaires',
+              'Afficher',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Row(
-              children: [
-                Flexible(
-                  child: _buildCheckBoxTile(
-                    text: 'Élèves',
-                    value: _fromWhom.contains(AnswerFromWhomFilter.studentOnly),
-                    onTap: (_) =>
-                        _toggleFromWhom(AnswerFromWhomFilter.studentOnly),
-                  ),
-                ),
-                Flexible(
-                  child: _buildCheckBoxTile(
-                    text: 'Enseignant.e',
-                    value: _fromWhom.contains(AnswerFromWhomFilter.teacherOnly),
-                    onTap: (_) =>
-                        _toggleFromWhom(AnswerFromWhomFilter.teacherOnly),
-                  ),
-                ),
-              ],
+            _buildCheckBoxTile(
+              text: 'Réponses élèves',
+              value: _fromWhom.contains(AnswerFromWhomFilter.studentOnly),
+              onTap: (_) => _toggleFromWhom(AnswerFromWhomFilter.studentOnly),
+            ),
+            _buildCheckBoxTile(
+              text: 'Commentaires enseignant.e',
+              value: _fromWhom.contains(AnswerFromWhomFilter.teacherOnly),
+              onTap: (_) => _toggleFromWhom(AnswerFromWhomFilter.teacherOnly),
             ),
             const Divider(),
             const SizedBox(height: 8),
@@ -120,24 +105,6 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
                   ),
                 ),
               ],
-            ),
-            const Divider(),
-            const SizedBox(height: 8),
-            const Text(
-              'Afficher',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            _buildRadioTile<AnswerFilledFilter>(
-              text: 'Les questions avec au moins une réponse',
-              value: AnswerFilledFilter.withAtLeastOneAnswer,
-              groupValue: _filled,
-              onTap: _selectFilled,
-            ),
-            _buildRadioTile<AnswerFilledFilter>(
-              text: 'Toutes les questions',
-              value: AnswerFilledFilter.all,
-              groupValue: _filled,
-              onTap: _selectFilled,
             ),
             const Divider(),
             const SizedBox(height: 8),
@@ -210,7 +177,7 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
     );
   }
 
-  GestureDetector _buildCheckBoxTile({
+  Widget _buildCheckBoxTile({
     required String text,
     required value,
     required Function onTap,
@@ -223,7 +190,7 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
             value: value,
             onChanged: (value) => onTap(value),
           ),
-          Flexible(child: Text(text, maxLines: 1)),
+          Text(text, maxLines: 1),
         ],
       ),
     );
