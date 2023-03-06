@@ -249,6 +249,7 @@ class _MessageListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scroller = ScrollController();
+
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollDown(scroller));
 
     // We have to reverse the answers so last appears first allowing to "scroll"
@@ -259,17 +260,26 @@ class _MessageListView extends StatelessWidget {
         Container(
           constraints: const BoxConstraints(maxHeight: 300),
           padding: const EdgeInsets.only(left: 15),
-          child: ListView.builder(
-            shrinkWrap: true,
-            reverse: true,
+          child: RawScrollbar(
+            thumbVisibility: true,
             controller: scroller,
-            itemBuilder: (context, index) => Column(
-              children: [
-                DiscussionTile(discussion: discussion.reversed.toList()[index]),
-                const SizedBox(height: 10),
-              ],
+            thickness: 7,
+            minThumbLength: 75,
+            thumbColor: Colors.grey[700],
+            radius: const Radius.circular(20),
+            child: ListView.builder(
+              shrinkWrap: true,
+              reverse: true,
+              controller: scroller,
+              itemBuilder: (context, index) => Column(
+                children: [
+                  DiscussionTile(
+                      discussion: discussion.reversed.toList()[index]),
+                  const SizedBox(height: 10),
+                ],
+              ),
+              itemCount: discussion.length,
             ),
-            itemCount: discussion.length,
           ),
         ),
       ],
