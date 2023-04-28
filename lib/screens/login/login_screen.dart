@@ -119,9 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void _startFetchingData() {
     /// this should be call only after user has successfully logged in
     _allStudents = Provider.of<AllStudents>(context, listen: false);
-    _allStudents!.initializeFetchingData();
     final questions = Provider.of<AllQuestions>(context, listen: false);
-    questions.initializeFetchingData();
 
     // Set the available-ids data
     final availableIdsPath =
@@ -130,6 +128,9 @@ class _LoginScreenState extends State<LoginScreen> {
             : _database!.currentUser!.id;
     _allStudents!.pathToAvailableDataIds = availableIdsPath;
     questions.pathToAvailableDataIds = availableIdsPath;
+
+    _allStudents!.initializeFetchingData();
+    questions.initializeFetchingData();
   }
 
   void _waitingRoomForStudent() {
