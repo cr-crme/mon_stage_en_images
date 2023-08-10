@@ -1,6 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'package:defi_photo/common/models/answer_sort_and_filter.dart';
 import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/discussion.dart';
@@ -9,6 +6,9 @@ import 'package:defi_photo/common/models/exceptions.dart';
 import 'package:defi_photo/common/models/message.dart';
 import 'package:defi_photo/common/models/question.dart';
 import 'package:defi_photo/common/providers/all_students.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'discussion_list_view.dart';
 
 class AnswerPart extends StatefulWidget {

@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
 import 'package:defi_photo/common/models/message.dart';
 import 'package:defi_photo/common/models/themes.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DiscussionTile extends StatelessWidget {
   const DiscussionTile({

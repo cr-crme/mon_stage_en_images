@@ -1,16 +1,16 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
 import 'package:defi_photo/common/models/themes.dart';
 import 'package:defi_photo/common/providers/all_questions.dart';
 import 'package:defi_photo/common/providers/all_students.dart';
 import 'package:defi_photo/common/providers/speecher.dart';
+import 'package:defi_photo/screens/all_students/students_screen.dart';
+import 'package:defi_photo/screens/login/login_screen.dart';
+import 'package:defi_photo/screens/q_and_a/q_and_a_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '/firebase_options.dart';
-import '/screens/all_students/students_screen.dart';
-import '/screens/login/login_screen.dart';
-import '/screens/q_and_a/q_and_a_screen.dart';
 
 void main() async {
   // Initialization of the user database. If [useEmulator] is set to [true],

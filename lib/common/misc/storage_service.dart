@@ -1,10 +1,9 @@
 import 'dart:io';
 
+import 'package:defi_photo/common/models/student.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
-
-import '../models/student.dart';
 
 abstract class StorageService {
   static Future<String> uploadImage(Student student, XFile image) async {

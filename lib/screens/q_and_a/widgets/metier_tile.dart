@@ -1,6 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'package:defi_photo/common/models/all_answers.dart';
 import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
@@ -9,6 +6,8 @@ import 'package:defi_photo/common/models/section.dart';
 import 'package:defi_photo/common/providers/all_questions.dart';
 import 'package:defi_photo/common/providers/all_students.dart';
 import 'package:defi_photo/common/widgets/taking_action_notifier.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MetierTile extends StatelessWidget {
   const MetierTile(this.sectionIndex,

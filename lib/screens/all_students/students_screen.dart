@@ -1,6 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'package:defi_photo/common/models/answer.dart';
 import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
@@ -10,6 +7,9 @@ import 'package:defi_photo/common/providers/all_questions.dart';
 import 'package:defi_photo/common/providers/all_students.dart';
 import 'package:defi_photo/common/widgets/are_you_sure_dialog.dart';
 import 'package:defi_photo/common/widgets/main_drawer.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'widgets/new_student_alert_dialog.dart';
 import 'widgets/student_list_tile.dart';
 

@@ -1,6 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'package:defi_photo/common/models/answer_sort_and_filter.dart';
 import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
@@ -8,7 +5,10 @@ import 'package:defi_photo/common/models/section.dart';
 import 'package:defi_photo/common/models/student.dart';
 import 'package:defi_photo/common/providers/all_students.dart';
 import 'package:defi_photo/common/widgets/main_drawer.dart';
-import '/screens/all_students/students_screen.dart';
+import 'package:defi_photo/screens/all_students/students_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'main_metier_page.dart';
 import 'question_and_answer_page.dart';
 import 'widgets/filter_answers_dialog.dart';

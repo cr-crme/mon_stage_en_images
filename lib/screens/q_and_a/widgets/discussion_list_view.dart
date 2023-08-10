@@ -1,17 +1,17 @@
 import 'dart:async';
 
-import 'package:defi_photo/common/models/text_reader.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
-
 import 'package:defi_photo/common/misc/storage_service.dart';
 import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
 import 'package:defi_photo/common/models/message.dart';
 import 'package:defi_photo/common/models/question.dart';
 import 'package:defi_photo/common/models/student.dart';
+import 'package:defi_photo/common/models/text_reader.dart';
 import 'package:defi_photo/common/providers/speecher.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+
 import 'discussion_tile.dart';
 
 class DiscussionListView extends StatefulWidget {

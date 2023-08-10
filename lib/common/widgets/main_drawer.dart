@@ -1,13 +1,12 @@
+import 'package:defi_photo/common/models/database.dart';
+import 'package:defi_photo/common/models/enum.dart';
+import 'package:defi_photo/common/models/student.dart';
+import 'package:defi_photo/common/widgets/are_you_sure_dialog.dart';
+import 'package:defi_photo/screens/all_students/students_screen.dart';
+import 'package:defi_photo/screens/login/login_screen.dart';
+import 'package:defi_photo/screens/q_and_a/q_and_a_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'package:defi_photo/common/models/database.dart';
-import 'package:defi_photo/common/widgets/are_you_sure_dialog.dart';
-import '/screens/all_students/students_screen.dart';
-import '/screens/login/login_screen.dart';
-import '/screens/q_and_a/q_and_a_screen.dart';
-import '../models/enum.dart';
-import '../models/student.dart';
 
 class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key, this.student});

@@ -1,6 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'package:defi_photo/common/models/answer_sort_and_filter.dart';
 import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
@@ -8,6 +5,9 @@ import 'package:defi_photo/common/models/question.dart';
 import 'package:defi_photo/common/models/section.dart';
 import 'package:defi_photo/common/providers/all_questions.dart';
 import 'package:defi_photo/common/providers/all_students.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'widgets/question_and_answer_tile.dart';
 
 class QuestionAndAnswerPage extends StatelessWidget {

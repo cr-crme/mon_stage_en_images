@@ -1,6 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
 import 'package:defi_photo/common/models/themes.dart';
@@ -8,9 +5,12 @@ import 'package:defi_photo/common/models/user.dart';
 import 'package:defi_photo/common/providers/all_questions.dart';
 import 'package:defi_photo/common/providers/all_students.dart';
 import 'package:defi_photo/common/widgets/colored_corners.dart';
+import 'package:defi_photo/screens/all_students/students_screen.dart';
+import 'package:defi_photo/screens/q_and_a/q_and_a_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '/default_questions.dart';
-import '../all_students/students_screen.dart';
-import '../q_and_a/q_and_a_screen.dart';
 import 'widgets/change_password_alert_dialog.dart';
 import 'widgets/new_user_alert_dialog.dart';
 
