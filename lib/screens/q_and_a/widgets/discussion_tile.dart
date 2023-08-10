@@ -14,6 +14,13 @@ class DiscussionTile extends StatelessWidget {
 
   final Message discussion;
 
+  void _showImageFullScreen(context) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+            content: Image.network(discussion.text, fit: BoxFit.contain)));
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentUser =
@@ -69,7 +76,14 @@ class DiscussionTile extends StatelessWidget {
                               ],
                             )),
                           )
-                        : Image.network(discussion.text, fit: BoxFit.contain);
+                        : InkWell(
+                            onTap: () => _showImageFullScreen(context),
+                            child: SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 1 / 4,
+                                child: Image.network(discussion.text,
+                                    fit: BoxFit.cover)),
+                          );
                   },
                 ),
               ),
@@ -85,6 +99,11 @@ class DiscussionTile extends StatelessWidget {
                   )),
                 ],
               ),
+            Icon(
+              Icons.check_circle_outline,
+              color: Colors.blueGrey.withAlpha(150),
+              size: 12,
+            ),
           ],
         ),
       ),
