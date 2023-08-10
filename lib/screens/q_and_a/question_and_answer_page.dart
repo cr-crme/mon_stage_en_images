@@ -107,12 +107,9 @@ class QuestionAndAnswerPage extends StatelessWidget {
           if (viewSpan != Target.individual &&
               questions.isNotEmpty &&
               studentId != null)
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: const [
-                Text('Activé pour cet élève'),
-                SizedBox(width: 25)
-              ],
+              children: [Text('Activé pour cet élève'), SizedBox(width: 25)],
             ),
           questionSection,
         ],

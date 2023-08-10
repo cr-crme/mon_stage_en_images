@@ -53,10 +53,10 @@ class DiscussionTile extends StatelessWidget {
                             width: double.infinity,
                             height: 150,
                             color: Colors.black12,
-                            child: Center(
+                            child: const Center(
                                 child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
+                              children: [
                                 Flexible(
                                   child: Text(
                                     'Téléchargement de\nl\'image en cours',

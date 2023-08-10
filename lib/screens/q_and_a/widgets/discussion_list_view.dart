@@ -140,8 +140,8 @@ class _DiscussionListViewState extends State<DiscussionListView> {
               TextButton(
                 onPressed: () => _addPhoto(ImageSource.camera),
                 style: TextButton.styleFrom(backgroundColor: Colors.grey[700]),
-                child: Row(
-                  children: const [
+                child: const Row(
+                  children: [
                     Icon(Icons.camera_alt),
                     Padding(
                       padding: EdgeInsets.only(left: 15.0, right: 15.0),
@@ -154,8 +154,8 @@ class _DiscussionListViewState extends State<DiscussionListView> {
               TextButton(
                 onPressed: () => _addPhoto(ImageSource.gallery),
                 style: TextButton.styleFrom(backgroundColor: Colors.grey[700]),
-                child: Row(
-                  children: const [
+                child: const Row(
+                  children: [
                     Icon(Icons.image),
                     Padding(
                       padding: EdgeInsets.only(left: 15.0, right: 15.0),
