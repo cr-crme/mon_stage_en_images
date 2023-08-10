@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/enum.dart';
-import '/common/models/student.dart';
-import '/common/providers/all_students.dart';
-import '/common/widgets/taking_action_notifier.dart';
+import 'package:defi_photo/common/models/enum.dart';
+import 'package:defi_photo/common/models/student.dart';
+import 'package:defi_photo/common/providers/all_students.dart';
+import 'package:defi_photo/common/widgets/taking_action_notifier.dart';
 import '/screens/q_and_a/q_and_a_screen.dart';
 
 class StudentListTile extends StatelessWidget {

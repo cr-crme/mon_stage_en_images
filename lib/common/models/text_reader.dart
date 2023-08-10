@@ -10,6 +10,7 @@ class TextReader {
   }
 
   late final FlutterTts _textToSpeech;
+  bool _isInitialized = false;
 
   Future _initTts() async {
     _textToSpeech = FlutterTts();
@@ -17,6 +18,7 @@ class TextReader {
     await _textToSpeech.setVolume(1);
     await _textToSpeech.setSpeechRate(0.5);
     await _textToSpeech.setPitch(1);
+    _isInitialized = true;
   }
 
   Future stopReading() async {
@@ -25,6 +27,9 @@ class TextReader {
 
   Future read(Question question, Answer? answer,
       {required VoidCallback hasFinishedCallback}) async {
+    while (!_isInitialized) {
+      await Future.delayed(const Duration(milliseconds: 1));
+    }
     await _textToSpeech.speak('La question est');
     await _textToSpeech.speak(question.text);
 

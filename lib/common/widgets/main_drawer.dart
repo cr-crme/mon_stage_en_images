@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/database.dart';
-import '/common/widgets/are_you_sure_dialog.dart';
+import 'package:defi_photo/common/models/database.dart';
+import 'package:defi_photo/common/widgets/are_you_sure_dialog.dart';
 import '/screens/all_students/students_screen.dart';
 import '/screens/login/login_screen.dart';
 import '/screens/q_and_a/q_and_a_screen.dart';

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/all_answers.dart';
-import '/common/models/database.dart';
-import '/common/models/enum.dart';
-import '/common/models/exceptions.dart';
-import '/common/models/section.dart';
-import '/common/providers/all_questions.dart';
-import '/common/providers/all_students.dart';
-import '/common/widgets/taking_action_notifier.dart';
+import 'package:defi_photo/common/models/all_answers.dart';
+import 'package:defi_photo/common/models/database.dart';
+import 'package:defi_photo/common/models/enum.dart';
+import 'package:defi_photo/common/models/exceptions.dart';
+import 'package:defi_photo/common/models/section.dart';
+import 'package:defi_photo/common/providers/all_questions.dart';
+import 'package:defi_photo/common/providers/all_students.dart';
+import 'package:defi_photo/common/widgets/taking_action_notifier.dart';
 
 class MetierTile extends StatelessWidget {
   const MetierTile(this.sectionIndex,

@@ -1,6 +1,6 @@
 import 'package:enhanced_containers/enhanced_containers.dart';
 
-import '/common/providers/all_students.dart';
+import 'package:defi_photo/common/providers/all_students.dart';
 import '../models/enum.dart';
 
 class Question extends ItemSerializableWithCreationTime {

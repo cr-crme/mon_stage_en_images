@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/database.dart';
-import '/common/models/enum.dart';
-import '/common/models/themes.dart';
-import '/common/providers/all_questions.dart';
-import '/common/providers/all_students.dart';
-import '/common/providers/speecher.dart';
+import 'package:defi_photo/common/models/database.dart';
+import 'package:defi_photo/common/models/enum.dart';
+import 'package:defi_photo/common/models/themes.dart';
+import 'package:defi_photo/common/providers/all_questions.dart';
+import 'package:defi_photo/common/providers/all_students.dart';
+import 'package:defi_photo/common/providers/speecher.dart';
 import '/firebase_options.dart';
 import '/screens/all_students/students_screen.dart';
 import '/screens/login/login_screen.dart';

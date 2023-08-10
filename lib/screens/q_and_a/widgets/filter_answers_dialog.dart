@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '/common/models/answer_sort_and_filter.dart';
+import 'package:defi_photo/common/models/answer_sort_and_filter.dart';
 
 class FilterAnswerDialog extends StatefulWidget {
   const FilterAnswerDialog({

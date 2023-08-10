@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/answer_sort_and_filter.dart';
-import '/common/models/database.dart';
-import '/common/models/enum.dart';
-import '/common/models/question.dart';
-import '/common/models/section.dart';
-import '/common/providers/all_questions.dart';
-import '/common/providers/all_students.dart';
+import 'package:defi_photo/common/models/answer_sort_and_filter.dart';
+import 'package:defi_photo/common/models/database.dart';
+import 'package:defi_photo/common/models/enum.dart';
+import 'package:defi_photo/common/models/question.dart';
+import 'package:defi_photo/common/models/section.dart';
+import 'package:defi_photo/common/providers/all_questions.dart';
+import 'package:defi_photo/common/providers/all_students.dart';
 import 'widgets/question_and_answer_tile.dart';
 
 class QuestionAndAnswerPage extends StatelessWidget {

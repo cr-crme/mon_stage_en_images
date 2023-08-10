@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/answer.dart';
-import '/common/models/database.dart';
-import '/common/models/enum.dart';
-import '/common/models/student.dart';
-import '/common/models/user.dart';
-import '/common/providers/all_questions.dart';
-import '/common/providers/all_students.dart';
-import '/common/widgets/are_you_sure_dialog.dart';
-import '/common/widgets/main_drawer.dart';
+import 'package:defi_photo/common/models/answer.dart';
+import 'package:defi_photo/common/models/database.dart';
+import 'package:defi_photo/common/models/enum.dart';
+import 'package:defi_photo/common/models/student.dart';
+import 'package:defi_photo/common/models/user.dart';
+import 'package:defi_photo/common/providers/all_questions.dart';
+import 'package:defi_photo/common/providers/all_students.dart';
+import 'package:defi_photo/common/widgets/are_you_sure_dialog.dart';
+import 'package:defi_photo/common/widgets/main_drawer.dart';
 import 'widgets/new_student_alert_dialog.dart';
 import 'widgets/student_list_tile.dart';
 

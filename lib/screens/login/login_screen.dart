@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/database.dart';
-import '/common/models/enum.dart';
-import '/common/models/themes.dart';
-import '/common/models/user.dart';
-import '/common/providers/all_questions.dart';
-import '/common/providers/all_students.dart';
-import '/common/widgets/colored_corners.dart';
+import 'package:defi_photo/common/models/database.dart';
+import 'package:defi_photo/common/models/enum.dart';
+import 'package:defi_photo/common/models/themes.dart';
+import 'package:defi_photo/common/models/user.dart';
+import 'package:defi_photo/common/providers/all_questions.dart';
+import 'package:defi_photo/common/providers/all_students.dart';
+import 'package:defi_photo/common/widgets/colored_corners.dart';
 import '/default_questions.dart';
 import '../all_students/students_screen.dart';
 import '../q_and_a/q_and_a_screen.dart';

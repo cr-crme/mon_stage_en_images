@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '/common/models/enum.dart';
-import '/common/models/user.dart';
+import 'package:defi_photo/common/models/enum.dart';
+import 'package:defi_photo/common/models/user.dart';
 
 class NewUserAlertDialog extends StatefulWidget {
   const NewUserAlertDialog({

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/answer_sort_and_filter.dart';
-import '/common/models/database.dart';
-import '/common/models/enum.dart';
-import '/common/models/section.dart';
-import '/common/models/student.dart';
-import '/common/providers/all_students.dart';
-import '/common/widgets/main_drawer.dart';
+import 'package:defi_photo/common/models/answer_sort_and_filter.dart';
+import 'package:defi_photo/common/models/database.dart';
+import 'package:defi_photo/common/models/enum.dart';
+import 'package:defi_photo/common/models/section.dart';
+import 'package:defi_photo/common/models/student.dart';
+import 'package:defi_photo/common/providers/all_students.dart';
+import 'package:defi_photo/common/widgets/main_drawer.dart';
 import '/screens/all_students/students_screen.dart';
 import 'main_metier_page.dart';
 import 'question_and_answer_page.dart';

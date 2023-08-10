@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/enum.dart';
-import '/common/models/question.dart';
-import '/common/models/student.dart';
-import '/common/providers/all_students.dart';
-import '/common/providers/speecher.dart';
-import '/common/widgets/are_you_sure_dialog.dart';
+import 'package:defi_photo/common/models/enum.dart';
+import 'package:defi_photo/common/models/question.dart';
+import 'package:defi_photo/common/models/student.dart';
+import 'package:defi_photo/common/providers/all_students.dart';
+import 'package:defi_photo/common/providers/speecher.dart';
+import 'package:defi_photo/common/widgets/are_you_sure_dialog.dart';
 
 class NewQuestionAlertDialog extends StatefulWidget {
   const NewQuestionAlertDialog({

@@ -1,16 +1,17 @@
 import 'dart:async';
 
+import 'package:defi_photo/common/models/text_reader.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import '/common/misc/storage_service.dart';
-import '/common/models/database.dart';
-import '/common/models/enum.dart';
-import '/common/models/message.dart';
-import '/common/models/question.dart';
-import '/common/models/student.dart';
-import '/common/providers/speecher.dart';
+import 'package:defi_photo/common/misc/storage_service.dart';
+import 'package:defi_photo/common/models/database.dart';
+import 'package:defi_photo/common/models/enum.dart';
+import 'package:defi_photo/common/models/message.dart';
+import 'package:defi_photo/common/models/question.dart';
+import 'package:defi_photo/common/models/student.dart';
+import 'package:defi_photo/common/providers/speecher.dart';
 import 'discussion_tile.dart';
 
 class DiscussionListView extends StatefulWidget {
@@ -102,6 +103,58 @@ class _DiscussionListViewState extends State<DiscussionListView> {
     setState(() {});
   }
 
+  void _showHelpWithMicrophoneDialog() {
+    TextReader? reader;
+    const String instructionsTitle = 'Fonctionnement';
+    const String instructions =
+        'Faire un seul petit clic sur le micro pour commencer à dicter.\n'
+        'Quand vous avez fini, cessez simplement de parler ou cliquer '
+        'une 2ème fois sur le micro.';
+
+    Future<void> stopReading() async {
+      if (reader != null) {
+        reader!.stopReading();
+        reader = null;
+      }
+    }
+
+    Future<void> read() async {
+      reader = TextReader();
+      reader!.read(
+          Question('$instructionsTitle\n$instructions',
+              section: -1, defaultTarget: Target.none),
+          null,
+          hasFinishedCallback: stopReading);
+    }
+
+    showDialog(
+        context: context,
+        builder: (context) => WillPopScope(
+              onWillPop: () async {
+                await stopReading();
+                return true;
+              },
+              child: AlertDialog(
+                title: const Text(instructionsTitle),
+                content: Row(
+                  children: [
+                    const Flexible(child: Text(instructions)),
+                    InkWell(
+                        borderRadius: BorderRadius.circular(25),
+                        onTap: read,
+                        child: const SizedBox(
+                            width: 40,
+                            height: 40,
+                            child: Icon(
+                              Icons.volume_up,
+                              color: Colors.grey,
+                            ))),
+                  ],
+                ),
+              ),
+            ));
+  }
+
   void _dictateMessage() {
     final speecher = Provider.of<Speecher>(context, listen: false);
     speecher.startListening(
@@ -183,19 +236,25 @@ class _DiscussionListViewState extends State<DiscussionListView> {
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      GestureDetector(
-                        onTapDown: (_) => _dictateMessage(),
-                        child: _isVoiceRecording
-                            ? const _AnimatedIcon(
-                                maxSize: 25,
-                                minSize: 20,
-                                color: Colors.red,
-                              )
-                            : const _StaticIcon(
-                                boxSize: 25,
-                                iconSize: 20,
-                                color: Colors.grey,
-                              ),
+                      SizedBox(
+                        width: 35,
+                        height: 35,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(25),
+                          onLongPress: _showHelpWithMicrophoneDialog,
+                          onTap: () => _dictateMessage(),
+                          child: _isVoiceRecording
+                              ? const _AnimatedIcon(
+                                  maxSize: 25,
+                                  minSize: 20,
+                                  color: Colors.red,
+                                )
+                              : const _StaticIcon(
+                                  boxSize: 25,
+                                  iconSize: 20,
+                                  color: Colors.grey,
+                                ),
+                        ),
                       ),
                       IconButton(
                         icon: const Icon(Icons.send),

@@ -2,10 +2,10 @@ import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/database.dart';
-import '/common/models/discussion.dart';
-import '/common/models/enum.dart';
-import '/common/models/exceptions.dart';
+import 'package:defi_photo/common/models/database.dart';
+import 'package:defi_photo/common/models/discussion.dart';
+import 'package:defi_photo/common/models/enum.dart';
+import 'package:defi_photo/common/models/exceptions.dart';
 import 'message.dart';
 
 class Answer extends ItemSerializableWithCreationTime {

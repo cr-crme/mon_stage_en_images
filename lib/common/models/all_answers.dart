@@ -2,8 +2,8 @@ import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/database.dart';
-import '/common/models/question.dart';
+import 'package:defi_photo/common/models/database.dart';
+import 'package:defi_photo/common/models/question.dart';
 import 'answer.dart';
 import 'enum.dart';
 import 'exceptions.dart';
