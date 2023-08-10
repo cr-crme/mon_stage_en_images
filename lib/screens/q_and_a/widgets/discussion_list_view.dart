@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -183,10 +185,17 @@ class _DiscussionListViewState extends State<DiscussionListView> {
                     children: [
                       GestureDetector(
                         onTapDown: (_) => _dictateMessage(),
-                        child: Icon(
-                          Icons.mic,
-                          color: _isVoiceRecording ? Colors.red : Colors.grey,
-                        ),
+                        child: _isVoiceRecording
+                            ? const _AnimatedIcon(
+                                maxSize: 25,
+                                minSize: 20,
+                                color: Colors.red,
+                              )
+                            : const _StaticIcon(
+                                boxSize: 25,
+                                iconSize: 20,
+                                color: Colors.grey,
+                              ),
                       ),
                       IconButton(
                         icon: const Icon(Icons.send),
@@ -274,7 +283,9 @@ class _MessageListView extends StatelessWidget {
               itemBuilder: (context, index) => Column(
                 children: [
                   DiscussionTile(
-                      discussion: discussion.reversed.toList()[index]),
+                    discussion: discussion.reversed.toList()[index],
+                    isLast: index == 0,
+                  ),
                   const SizedBox(height: 10),
                 ],
               ),
@@ -283,6 +294,85 @@ class _MessageListView extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _AnimatedIcon extends StatefulWidget {
+  const _AnimatedIcon({
+    required this.minSize,
+    required this.maxSize,
+    required this.color,
+  });
+
+  final double minSize;
+  final double maxSize;
+  final Color color;
+
+  @override
+  State<_AnimatedIcon> createState() => _AnimatedIconState();
+}
+
+class _AnimatedIconState extends State<_AnimatedIcon>
+    with SingleTickerProviderStateMixin {
+  late AnimationController controller = AnimationController(
+      duration: const Duration(milliseconds: 400), vsync: this)
+    ..repeat(reverse: true);
+  late Tween<double> animationSize =
+      Tween<double>(begin: widget.minSize, end: widget.maxSize);
+  late Tween<double> animationAlpha = Tween<double>(begin: 215, end: 255);
+
+  late final Animation<double> _iconSize = animationSize.animate(controller)
+    ..addListener(() => setState(() {}));
+  late final Animation<double> _iconAlpha = animationAlpha.animate(controller)
+    ..addListener(() => setState(() {}));
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      child: _StaticIcon(
+        boxSize: widget.maxSize,
+        iconSize: _iconSize.value,
+        color: widget.color.withAlpha(_iconAlpha.value.toInt()),
+      ),
+    );
+  }
+}
+
+class _StaticIcon extends StatelessWidget {
+  const _StaticIcon({
+    required this.boxSize,
+    required this.iconSize,
+    required this.color,
+  });
+
+  final double boxSize;
+  final double iconSize;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: boxSize,
+      height: boxSize,
+      child: Center(
+        child: SizedBox(
+          width: iconSize,
+          height: iconSize,
+          child: FittedBox(
+            child: Icon(
+              Icons.mic,
+              color: color,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
