@@ -10,15 +10,20 @@ class DiscussionTile extends StatelessWidget {
   const DiscussionTile({
     super.key,
     required this.discussion,
+    required this.isLast,
   });
 
   final Message discussion;
+  final bool isLast;
 
   void _showImageFullScreen(context) {
     showDialog(
         context: context,
-        builder: (context) => AlertDialog(
-            content: Image.network(discussion.text, fit: BoxFit.contain)));
+        builder: (context) => GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: AlertDialog(
+                  content: Image.network(discussion.text, fit: BoxFit.contain)),
+            ));
   }
 
   @override
@@ -91,7 +96,7 @@ class DiscussionTile extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Flexible(child: _showNameOfSender()),
+                  _showNameOfSender(),
                   Flexible(
                       child: Text(
                     discussion.text,
@@ -99,11 +104,23 @@ class DiscussionTile extends StatelessWidget {
                   )),
                 ],
               ),
-            Icon(
-              Icons.check_circle_outline,
-              color: Colors.blueGrey.withAlpha(150),
-              size: 12,
-            ),
+            if (discussion.creatorId == currentUser.id && isLast)
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(
+                    Icons.check,
+                    color: Colors.blueGrey.withAlpha(150),
+                    size: 12,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    'envoyé',
+                    style: TextStyle(color: Colors.blueGrey.withAlpha(150)),
+                  ),
+                ],
+              ),
           ],
         ),
       ),
