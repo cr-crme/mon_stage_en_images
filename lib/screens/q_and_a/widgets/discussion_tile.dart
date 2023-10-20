@@ -55,42 +55,15 @@ class DiscussionTile extends StatelessWidget {
             if (discussion.isPhotoUrl) _showNameOfSender(),
             if (discussion.isPhotoUrl)
               Container(
-                width: double.infinity,
-                padding: const EdgeInsets.only(left: 15, bottom: 5),
-                child: FutureBuilder(
-                  builder: (context, snapshot) {
-                    return snapshot.connectionState == ConnectionState.waiting
-                        ? Container(
-                            width: double.infinity,
-                            height: 150,
-                            color: Colors.black12,
-                            child: const Center(
-                                child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    'Téléchargement de\nl\'image en cours',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                CircularProgressIndicator(),
-                              ],
-                            )),
-                          )
-                        : InkWell(
-                            onTap: () => _showImageFullScreen(context),
-                            child: SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 1 / 4,
-                                child: Image.network(discussion.text,
-                                    fit: BoxFit.cover)),
-                          );
-                  },
-                ),
-              ),
+                  width: double.infinity,
+                  padding: const EdgeInsets.only(left: 15, bottom: 5),
+                  child: InkWell(
+                    onTap: () => _showImageFullScreen(context),
+                    child: SizedBox(
+                        height: MediaQuery.of(context).size.height * 1 / 4,
+                        child:
+                            Image.network(discussion.text, fit: BoxFit.cover)),
+                  )),
             if (!discussion.isPhotoUrl)
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,

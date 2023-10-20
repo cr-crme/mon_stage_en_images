@@ -178,10 +178,11 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
         );
       },
     );
-    if (!sure! || !mounted) return;
+    if (!sure!) return;
 
     widget.deleteCallback!();
-    Navigator.pop(context);
+
+    if (mounted) Navigator.pop(context);
     return;
   }
 
