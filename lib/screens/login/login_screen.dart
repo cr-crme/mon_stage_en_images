@@ -246,13 +246,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                             style: ElevatedButton.styleFrom(
                                 backgroundColor:
-                                    teacherTheme().colorScheme.primary),
-                            child: Text(
-                              'Se connecter',
-                              style: TextStyle(
-                                color: teacherTheme().colorScheme.onPrimary,
-                              ),
-                            ),
+                                    studentTheme().colorScheme.primary),
+                            child: const Text('Se connecter'),
                           ),
                         ],
                       );

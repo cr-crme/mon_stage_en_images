@@ -187,37 +187,42 @@ class _DiscussionListViewState extends State<DiscussionListView> {
           discussion: widget.messages,
         ),
         if (userType == UserType.student && !widget.isAnswerValidated)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(
-                onPressed: () => _addPhoto(ImageSource.camera),
-                style: TextButton.styleFrom(backgroundColor: Colors.grey[700]),
-                child: const Row(
-                  children: [
-                    Icon(Icons.camera_alt),
-                    Padding(
-                      padding: EdgeInsets.only(left: 15.0, right: 15.0),
-                      child: Text('Caméra', style: TextStyle(fontSize: 16)),
-                    ),
-                  ],
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: () => _addPhoto(ImageSource.camera),
+                  style:
+                      TextButton.styleFrom(backgroundColor: Colors.grey[700]),
+                  child: const Row(
+                    children: [
+                      Icon(Icons.camera_alt),
+                      Padding(
+                        padding: EdgeInsets.only(left: 15.0, right: 15.0),
+                        child: Text('Caméra', style: TextStyle(fontSize: 16)),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              TextButton(
-                onPressed: () => _addPhoto(ImageSource.gallery),
-                style: TextButton.styleFrom(backgroundColor: Colors.grey[700]),
-                child: const Row(
-                  children: [
-                    Icon(Icons.image),
-                    Padding(
-                      padding: EdgeInsets.only(left: 15.0, right: 15.0),
-                      child: Text('Galerie', style: TextStyle(fontSize: 16)),
-                    ),
-                  ],
-                ),
-              )
-            ],
+                const SizedBox(width: 10),
+                TextButton(
+                  onPressed: () => _addPhoto(ImageSource.gallery),
+                  style:
+                      TextButton.styleFrom(backgroundColor: Colors.grey[700]),
+                  child: const Row(
+                    children: [
+                      Icon(Icons.image),
+                      Padding(
+                        padding: EdgeInsets.only(left: 15.0, right: 15.0),
+                        child: Text('Galerie', style: TextStyle(fontSize: 16)),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         if (!widget.isAnswerValidated && widget.student != null)
           Container(

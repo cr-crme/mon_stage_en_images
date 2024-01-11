@@ -1,6 +1,7 @@
 import 'package:defi_photo/common/models/enum.dart';
 import 'package:defi_photo/common/models/question.dart';
 
+// TODO: Make the default question non-deletable
 class DefaultQuestion {
   // These are the default questions when creating a new teacher
   // [section] are : M=0, E=1, T=2, I=3, E=4, R=5 and [defaultTarget] should

@@ -16,6 +16,7 @@ ThemeData teacherTheme() {
     titleTextStyle: TextStyle(
         fontSize: 20, color: colorSwatch.onPrimary, fontFamily: fontFamily),
     color: primaryColor,
+    iconTheme: const IconThemeData(color: Colors.black),
   );
   final dialogTheme = DialogTheme(
       backgroundColor: Colors.white, surfaceTintColor: Colors.grey[200]);
@@ -27,6 +28,7 @@ ThemeData teacherTheme() {
         OutlineInputBorder(borderSide: BorderSide(color: Colors.black54)),
     disabledBorder:
         OutlineInputBorder(borderSide: BorderSide(color: Colors.black54)),
+    errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
     labelStyle: TextStyle(color: Colors.black),
   );
 
@@ -97,6 +99,7 @@ ThemeData studentTheme() {
     titleTextStyle: TextStyle(
         fontSize: 20, color: colorSwatch.onPrimary, fontFamily: fontFamily),
     color: primaryColor,
+    iconTheme: const IconThemeData(color: Colors.white),
   );
 
   final dialogTheme = DialogTheme(
@@ -109,15 +112,25 @@ ThemeData studentTheme() {
         OutlineInputBorder(borderSide: BorderSide(color: primaryColor)),
     disabledBorder:
         OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+    errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
   );
 
   final cardTheme =
       CardTheme(color: Colors.grey[100], surfaceTintColor: Colors.white);
 
   final elevatedButton = ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-    backgroundColor: primaryColor,
-    textStyle: const TextStyle(color: Colors.black),
+    style: ElevatedButton.styleFrom(
+        backgroundColor: primaryColor,
+        foregroundColor: Colors.white,
+        textStyle: const TextStyle(fontWeight: FontWeight.bold)),
+  );
+
+  final outlinedButton = OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+    backgroundColor: Colors.transparent,
+    surfaceTintColor: Colors.white,
+    side: const BorderSide(color: primaryColor),
+    textStyle: const TextStyle(fontWeight: FontWeight.bold),
   ));
 
   final checkboxTheme = CheckboxThemeData(
@@ -135,6 +148,7 @@ ThemeData studentTheme() {
     inputDecorationTheme: inputDecorationTheme,
     cardTheme: cardTheme,
     elevatedButtonTheme: elevatedButton,
+    outlinedButtonTheme: outlinedButton,
     checkboxTheme: checkboxTheme,
   );
 }
