@@ -186,6 +186,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
                       }
 
+                      final border = OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: studentTheme().colorScheme.primary));
+
                       return Column(
                         children: [
                           Form(
@@ -202,12 +206,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   ],
                                 ),
+                                const SizedBox(height: 20),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 10.0),
                                   child: TextFormField(
-                                    decoration: const InputDecoration(
-                                        labelText: 'Courriel'),
+                                    decoration: InputDecoration(
+                                      labelText: 'Courriel',
+                                      enabledBorder: border,
+                                      focusedBorder: border,
+                                    ),
                                     validator: (value) =>
                                         value == null || value.isEmpty
                                             ? 'Inscrire un courriel'
@@ -216,12 +224,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                     keyboardType: TextInputType.emailAddress,
                                   ),
                                 ),
+                                const SizedBox(height: 20),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 10.0),
                                   child: TextFormField(
-                                    decoration: const InputDecoration(
-                                        labelText: 'Mot de passe'),
+                                    decoration: InputDecoration(
+                                      labelText: 'Mot de passe',
+                                      enabledBorder: border,
+                                      focusedBorder: border,
+                                    ),
                                     validator: (value) =>
                                         value == null || value.isEmpty
                                             ? 'Entrer le mot de passe'
