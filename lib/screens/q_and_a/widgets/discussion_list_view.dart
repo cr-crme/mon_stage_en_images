@@ -8,6 +8,7 @@ import 'package:defi_photo/common/models/question.dart';
 import 'package:defi_photo/common/models/student.dart';
 import 'package:defi_photo/common/models/text_reader.dart';
 import 'package:defi_photo/common/providers/speecher.dart';
+import 'package:defi_photo/common/widgets/animated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -223,46 +224,58 @@ class _DiscussionListViewState extends State<DiscussionListView> {
             padding: const EdgeInsets.only(left: 15),
             child: Form(
               key: _formKey,
-              child: TextFormField(
-                autocorrect: userType == UserType.student ? false : true,
-                decoration: InputDecoration(
-                  labelText: userType == UserType.student
-                      ? 'Ajouter une réponse'
-                      : 'Ajouter un commentaire',
-                  suffixIcon: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      SizedBox(
-                        width: 35,
-                        height: 35,
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(25),
-                          onLongPress: _showHelpWithMicrophoneDialog,
-                          onTap: () => _dictateMessage(),
-                          child: _isVoiceRecording
-                              ? const _AnimatedIcon(
-                                  maxSize: 25,
-                                  minSize: 20,
-                                  color: Colors.red,
-                                )
-                              : const _StaticIcon(
-                                  boxSize: 25,
-                                  iconSize: 20,
-                                  color: Colors.grey,
-                                ),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: TextFormField(
+                  autocorrect: userType == UserType.student ? false : true,
+                  decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color:
+                                Theme.of(context).primaryColor.withAlpha(150))),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color:
+                                Theme.of(context).primaryColor.withAlpha(150))),
+                    labelStyle: const TextStyle(color: Colors.black),
+                    labelText: userType == UserType.student
+                        ? 'Ajouter une réponse'
+                        : 'Ajouter un commentaire',
+                    suffixIcon: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        SizedBox(
+                          width: 35,
+                          height: 35,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(25),
+                            onLongPress: _showHelpWithMicrophoneDialog,
+                            onTap: () => _dictateMessage(),
+                            child: _isVoiceRecording
+                                ? const CustomAnimatedIcon(
+                                    maxSize: 25,
+                                    minSize: 20,
+                                    color: Colors.red,
+                                  )
+                                : const CustomStaticIcon(
+                                    boxSize: 25,
+                                    iconSize: 20,
+                                    color: Colors.black87,
+                                  ),
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.send),
-                        onPressed: _sendMessage,
-                      ),
-                    ],
+                        IconButton(
+                          icon: const Icon(Icons.send, color: Colors.black87),
+                          onPressed: _sendMessage,
+                        ),
+                      ],
+                    ),
                   ),
+                  onSaved: (value) => _newMessage = value,
+                  onFieldSubmitted: (value) => _sendMessage(),
+                  controller: _fieldText,
                 ),
-                onSaved: (value) => _newMessage = value,
-                onFieldSubmitted: (value) => _sendMessage(),
-                controller: _fieldText,
               ),
             ),
           ),
@@ -286,9 +299,9 @@ class _DiscussionListViewState extends State<DiscussionListView> {
                             ? _manageAnswer(markAsValidated: true)
                             : _sendMessage(markAsValidated: true);
                       },
+                      // TODO: Add a pop on the first time the teacher validates an answer to explain that the student can continue to see the question but cannot modify his answer anymore.
                       style: ElevatedButton.styleFrom(backgroundColor: null),
-                      child: const Text('Terminer et valider la question',
-                          style: TextStyle(color: Colors.black)),
+                      child: const Text('Valider la question'),
                     ),
             ),
           ),
@@ -350,85 +363,6 @@ class _MessageListView extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _AnimatedIcon extends StatefulWidget {
-  const _AnimatedIcon({
-    required this.minSize,
-    required this.maxSize,
-    required this.color,
-  });
-
-  final double minSize;
-  final double maxSize;
-  final Color color;
-
-  @override
-  State<_AnimatedIcon> createState() => _AnimatedIconState();
-}
-
-class _AnimatedIconState extends State<_AnimatedIcon>
-    with SingleTickerProviderStateMixin {
-  late AnimationController controller = AnimationController(
-      duration: const Duration(milliseconds: 400), vsync: this)
-    ..repeat(reverse: true);
-  late Tween<double> animationSize =
-      Tween<double>(begin: widget.minSize, end: widget.maxSize);
-  late Tween<double> animationAlpha = Tween<double>(begin: 215, end: 255);
-
-  late final Animation<double> _iconSize = animationSize.animate(controller)
-    ..addListener(() => setState(() {}));
-  late final Animation<double> _iconAlpha = animationAlpha.animate(controller)
-    ..addListener(() => setState(() {}));
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      child: _StaticIcon(
-        boxSize: widget.maxSize,
-        iconSize: _iconSize.value,
-        color: widget.color.withAlpha(_iconAlpha.value.toInt()),
-      ),
-    );
-  }
-}
-
-class _StaticIcon extends StatelessWidget {
-  const _StaticIcon({
-    required this.boxSize,
-    required this.iconSize,
-    required this.color,
-  });
-
-  final double boxSize;
-  final double iconSize;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: boxSize,
-      height: boxSize,
-      child: Center(
-        child: SizedBox(
-          width: iconSize,
-          height: iconSize,
-          child: FittedBox(
-            child: Icon(
-              Icons.mic,
-              color: color,
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

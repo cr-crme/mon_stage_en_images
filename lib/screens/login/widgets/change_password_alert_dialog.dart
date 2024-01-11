@@ -52,6 +52,7 @@ class _ChangePasswordAlertDialogState extends State<ChangePasswordAlertDialog> {
                 keyboardType: TextInputType.visiblePassword,
                 onSaved: (value) => _password = value,
               ),
+              const SizedBox(height: 12),
               TextFormField(
                 decoration:
                     const InputDecoration(labelText: 'Copier le mot de passe'),

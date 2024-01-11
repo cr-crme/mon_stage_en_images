@@ -60,6 +60,7 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              const SizedBox(height: 12),
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Prénom'),
                 initialValue: widget.student?.firstName,
@@ -67,6 +68,7 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
                     value == null || value.isEmpty ? 'Ajouter un prénom' : null,
                 onSaved: (value) => _firstName = value,
               ),
+              const SizedBox(height: 12),
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Nom'),
                 initialValue: widget.student?.lastName,
@@ -74,6 +76,7 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
                     value == null || value.isEmpty ? 'Ajouter un nom' : null,
                 onSaved: (value) => _lastName = value,
               ),
+              const SizedBox(height: 12),
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Courriel'),
                 initialValue: widget.student?.email,
@@ -87,6 +90,7 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
                         : 'Courriel non valide',
                 onSaved: (value) => _email = value,
               ),
+              const SizedBox(height: 12),
               TextFormField(
                 decoration:
                     const InputDecoration(labelText: 'Nom de l\'entreprise'),

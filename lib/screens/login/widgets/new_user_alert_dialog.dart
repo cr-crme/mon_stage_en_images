@@ -58,12 +58,14 @@ class _NewUserAlertDialogState extends State<NewUserAlertDialog> {
                     value == null || value.isEmpty ? 'Ajouter un prénom' : null,
                 onSaved: (value) => _firstName = value,
               ),
+              const SizedBox(height: 12),
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Nom'),
                 validator: (value) =>
                     value == null || value.isEmpty ? 'Ajouter un nom' : null,
                 onSaved: (value) => _lastName = value,
               ),
+              const SizedBox(height: 12),
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Courriel'),
                 initialValue: widget.email,

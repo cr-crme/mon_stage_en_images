@@ -3,6 +3,7 @@ import 'package:defi_photo/common/models/question.dart';
 import 'package:defi_photo/common/models/student.dart';
 import 'package:defi_photo/common/providers/all_students.dart';
 import 'package:defi_photo/common/providers/speecher.dart';
+import 'package:defi_photo/common/widgets/animated_icon.dart';
 import 'package:defi_photo/common/widgets/are_you_sure_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -149,19 +150,13 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
           IconButton(
               onPressed: _confirmDeleting, icon: const Icon(Icons.delete)),
         OutlinedButton(
-          child: Text(
-            'Annuler',
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.secondary),
-          ),
+          child: const Text('Annuler'),
           onPressed: () => _finalize(context, hasCancelled: true),
         ),
         ElevatedButton(
           onPressed: _isVoiceRecording ? null : () => _finalize(context),
-          child: Text(widget.question?.text == null ? 'Ajouter' : 'Enregistrer',
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold, color: Colors.white)),
+          child:
+              Text(widget.question?.text == null ? 'Ajouter' : 'Enregistrer'),
         ),
       ],
     );
@@ -224,12 +219,18 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
             decoration: InputDecoration(
               labelText: 'Libellé de la question',
               suffixIcon: GestureDetector(
-                onTapDown: (_) => _dictateMessage(),
-                child: Icon(
-                  Icons.mic,
-                  color: _isVoiceRecording ? Colors.red : Colors.grey,
-                ),
-              ),
+                  onTapDown: (_) => _dictateMessage(),
+                  child: _isVoiceRecording
+                      ? const CustomAnimatedIcon(
+                          maxSize: 25,
+                          minSize: 20,
+                          color: Colors.red,
+                        )
+                      : const CustomStaticIcon(
+                          boxSize: 25,
+                          iconSize: 20,
+                          color: Colors.black87,
+                        )),
             ),
             validator: (value) =>
                 value == null || value.isEmpty ? 'Ajouter une question' : null,

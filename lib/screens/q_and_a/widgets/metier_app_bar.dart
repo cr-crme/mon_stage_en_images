@@ -106,6 +106,7 @@ class MetierAppBar extends StatelessWidget {
         child: Text(
           Section.letter(sectionIndex),
           style: TextStyle(
+              fontSize: 16,
               color: userType == UserType.student
                   ? isSelected
                       ? Colors.white
