@@ -12,6 +12,7 @@ import 'package:defi_photo/common/widgets/animated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'discussion_tile.dart';
 
@@ -95,7 +96,40 @@ class _DiscussionListViewState extends State<DiscussionListView> {
     String? newTextEntry,
     bool? isPhoto,
     bool markAsValidated = false,
-  }) {
+  }) async {
+    // If it is the very first time the teacher validates an answer, we want to
+    // show a pop explaining that the student can continue to see the question
+    // but cannot modify his answer anymore.
+    final showPopup = (await SharedPreferences.getInstance())
+            .getBool('showValidatingWarning') ??
+        true;
+    if (!mounted) return;
+
+    if (markAsValidated && showPopup) {
+      final accept = await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: const Text('Valider la question'),
+                content: const Text(
+                    'En cliquant sur ce bouton, vous terminez la discussion\n.'
+                    'L\'élève pourra voir vos commentaires mais ne pourra plus y répondre.'),
+                actions: [
+                  OutlinedButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: const Text('Annuler'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: const Text('Valider'),
+                  ),
+                ],
+              ));
+      (await SharedPreferences.getInstance())
+          .setBool('showValidatingWarning', false);
+      // If the user cancels, we don't want to continue.
+      if (accept == null || !accept) return;
+    }
+
     widget.manageAnswerCallback(
       newTextEntry: newTextEntry,
       isPhoto: isPhoto,
