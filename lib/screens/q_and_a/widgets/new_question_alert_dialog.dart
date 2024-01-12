@@ -147,8 +147,16 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
       ),
       actions: <Widget>[
         if (widget.question?.text != null && widget.deleteCallback != null)
-          IconButton(
-              onPressed: _confirmDeleting, icon: const Icon(Icons.delete)),
+          Tooltip(
+            message: widget.question!.canBeDeleted
+                ? ''
+                : 'Il n\'est pas possible de supprimer\n'
+                    'les questions par défaut',
+            child: IconButton(
+                onPressed:
+                    widget.question!.canBeDeleted ? _confirmDeleting : null,
+                icon: const Icon(Icons.delete)),
+          ),
         OutlinedButton(
           child: const Text('Annuler'),
           onPressed: () => _finalize(context, hasCancelled: true),

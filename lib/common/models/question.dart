@@ -10,11 +10,13 @@ class Question extends ItemSerializableWithCreationTime {
     required this.defaultTarget,
     super.id,
     super.creationTimeStamp,
+    this.canBeDeleted = true,
   });
   Question.fromSerialized(map)
       : text = map['text'],
         section = map['section'],
         defaultTarget = Target.values[map['defaultTarget']],
+        canBeDeleted = map['canBeDeleted'] ?? false,
         super.fromSerialized(map);
   Question copyWith({
     String? text,
@@ -32,6 +34,7 @@ class Question extends ItemSerializableWithCreationTime {
       text,
       section: section,
       defaultTarget: defaultTarget,
+      canBeDeleted: canBeDeleted,
       id: id,
       creationTimeStamp: creationTimeStamp,
     );
@@ -47,6 +50,7 @@ class Question extends ItemSerializableWithCreationTime {
       'text': text,
       'section': section,
       'defaultTarget': defaultTarget.index,
+      'canBeDeleted': canBeDeleted,
     };
   }
 
@@ -65,4 +69,5 @@ class Question extends ItemSerializableWithCreationTime {
   final String text;
   final int section;
   final Target defaultTarget;
+  final bool canBeDeleted;
 }
