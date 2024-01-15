@@ -105,7 +105,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
         true;
     if (!mounted) return;
 
-    if (markAsValidated && showPopup || true) {
+    if (markAsValidated && showPopup) {
       final accept = await showDialog(
           context: context,
           builder: (context) => AlertDialog(
