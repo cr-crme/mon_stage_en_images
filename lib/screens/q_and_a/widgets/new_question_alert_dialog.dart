@@ -146,25 +146,38 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
         ),
       ),
       actions: <Widget>[
-        if (widget.question?.text != null && widget.deleteCallback != null)
-          Tooltip(
-            message: widget.question!.canBeDeleted
-                ? ''
-                : 'Il n\'est pas possible de supprimer\n'
-                    'les questions par défaut',
-            child: IconButton(
-                onPressed:
-                    widget.question!.canBeDeleted ? _confirmDeleting : null,
-                icon: const Icon(Icons.delete)),
-          ),
-        OutlinedButton(
-          child: const Text('Annuler'),
-          onPressed: () => _finalize(context, hasCancelled: true),
-        ),
-        ElevatedButton(
-          onPressed: _isVoiceRecording ? null : () => _finalize(context),
-          child:
-              Text(widget.question?.text == null ? 'Ajouter' : 'Enregistrer'),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            if (widget.question?.text != null && widget.deleteCallback != null)
+              Tooltip(
+                message: widget.question!.canBeDeleted
+                    ? ''
+                    : 'Il n\'est pas possible de supprimer\n'
+                        'les questions par défaut',
+                child: IconButton(
+                    onPressed:
+                        widget.question!.canBeDeleted ? _confirmDeleting : null,
+                    icon: const Icon(Icons.delete)),
+              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                OutlinedButton(
+                  child: const Text('Annuler'),
+                  onPressed: () => _finalize(context, hasCancelled: true),
+                ),
+                const SizedBox(width: 4),
+                ElevatedButton(
+                  onPressed:
+                      _isVoiceRecording ? null : () => _finalize(context),
+                  child: Text(widget.question?.text == null
+                      ? 'Ajouter'
+                      : 'Enregistrer'),
+                ),
+              ],
+            ),
+          ],
         ),
       ],
     );

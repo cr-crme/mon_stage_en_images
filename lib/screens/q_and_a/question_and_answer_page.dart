@@ -198,6 +198,7 @@ class _QAndAListViewState extends State<QAndAListView> {
     }
 
     return ListView.builder(
+      reverse: true,
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemBuilder: (context, index) => QuestionAndAnswerTile(
