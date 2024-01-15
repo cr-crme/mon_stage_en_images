@@ -52,16 +52,16 @@ class DefaultQuestion {
           canBeDeleted: false,
         ),
         Question(
+          'Prends une photo de l’extérieur de ton entreprise.',
+          section: 4,
+          defaultTarget: Target.none,
+          canBeDeleted: false,
+        ),
+        Question(
           'Prends une photo de ton poste de travail.'
           '\nEst-ce qu’il y a du bruit?',
           section: 4,
           defaultTarget: Target.all,
-          canBeDeleted: false,
-        ),
-        Question(
-          'Prends une photo de l’extérieur de ton entreprise.',
-          section: 4,
-          defaultTarget: Target.none,
           canBeDeleted: false,
         ),
         Question(
