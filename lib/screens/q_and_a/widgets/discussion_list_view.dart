@@ -105,13 +105,13 @@ class _DiscussionListViewState extends State<DiscussionListView> {
         true;
     if (!mounted) return;
 
-    if (markAsValidated && showPopup) {
+    if (markAsValidated && showPopup || true) {
       final accept = await showDialog(
           context: context,
           builder: (context) => AlertDialog(
                 title: const Text('Valider la question'),
                 content: const Text(
-                    'En cliquant sur ce bouton, vous terminez la discussion\n.'
+                    'En cliquant sur ce bouton, vous terminez la discussion.\n'
                     'L\'élève pourra voir vos commentaires mais ne pourra plus y répondre.'),
                 actions: [
                   OutlinedButton(
