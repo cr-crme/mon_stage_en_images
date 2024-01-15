@@ -338,7 +338,6 @@ class _DiscussionListViewState extends State<DiscussionListView> {
                             ? _manageAnswer(markAsValidated: true)
                             : _sendMessage(markAsValidated: true);
                       },
-                      // TODO: Add a pop on the first time the teacher validates an answer to explain that the student can continue to see the question but cannot modify his answer anymore.
                       style: ElevatedButton.styleFrom(backgroundColor: null),
                       child: const Text('Valider la question'),
                     ),
