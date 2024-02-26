@@ -7,7 +7,9 @@ import 'package:defi_photo/common/providers/all_questions.dart';
 import 'package:defi_photo/common/providers/all_students.dart';
 import 'package:defi_photo/common/widgets/are_you_sure_dialog.dart';
 import 'package:defi_photo/common/widgets/main_drawer.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:provider/provider.dart';
 
 import 'widgets/new_student_alert_dialog.dart';
@@ -24,12 +26,16 @@ class StudentsScreen extends StatefulWidget {
   State<StudentsScreen> createState() => _StudentsScreenState();
 }
 
-void _showSnackbar(String message, ScaffoldMessengerState scaffold) {
+void _showSnackbar(Widget content, ScaffoldMessengerState scaffold) {
   scaffold.showSnackBar(
     SnackBar(
-      content: Text(message),
-      duration: const Duration(seconds: 3),
-    ),
+        content: content,
+        duration: const Duration(seconds: 10),
+        action: SnackBarAction(
+          label: 'Fermer',
+          textColor: Colors.white,
+          onPressed: scaffold.hideCurrentSnackBar,
+        )),
   );
 }
 
@@ -48,7 +54,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
       },
     );
     if (student == null) {
-      _showSnackbar('Ajout de l\'étudiant(e) annulé', scaffold);
+      _showSnackbar(const Text('Ajout de l\'étudiant(e) annulé'), scaffold);
       return;
     }
 
@@ -65,12 +71,29 @@ class _StudentsScreenState extends State<StudentsScreen> {
       password: 'defiPhoto',
     );
     if (status != EzloginStatus.success) {
-      final message = status == EzloginStatus.couldNotCreateUser
-          ? 'Échec de l\'ajout de l\'étudiant(e). Il n\'est pas possible '
-              'd\'ajouter deux étudiant(e) avec la même adresse.'
-          : 'Erreur inconnue lors de l\'ajout de l\'étudiant(e)';
+      final content = status == EzloginStatus.couldNotCreateUser
+          ? Text.rich(TextSpan(
+              children: [
+                const TextSpan(
+                    text:
+                        'Échec de l\'ajout de l\'étudiant(e). Il n\'est pas possible '
+                        'd\'ajouter deux étudiant(e) avec la même adresse.\n\n'
+                        'Si vous souhaitez demander les droits pour cet élève, veuillez '),
+                TextSpan(
+                  text: 'cliquer ici',
+                  style: const TextStyle(
+                      color: Colors.blue, decoration: TextDecoration.underline),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () => _requestStudent(student),
+                ),
+                const TextSpan(
+                  text: '.',
+                ),
+              ],
+            ))
+          : const Text('Erreur inconnue lors de l\'ajout de l\'étudiant(e)');
 
-      _showSnackbar(message, scaffold);
+      _showSnackbar(content, scaffold);
       return;
     }
 
@@ -80,6 +103,24 @@ class _StudentsScreenState extends State<StudentsScreen> {
           actionRequired: ActionRequired.fromStudent);
     }
     students.add(student);
+  }
+
+  Future<void> _requestStudent(Student studentLocal) async {
+    final database = Provider.of<Database>(context, listen: false);
+    final student = await database.user(studentLocal.email);
+
+    final email = Email(
+        recipients: ['pariterre@hotmail.com'],
+        subject: 'Prise en charge d\'un élève',
+        body:
+            'Bonjour,\n\nJe suis un\u00b7e utilisateur\u00b7trice de l\'application '
+            'Défi Photos et je souhaiterais faire la demande de la '
+            'prise en charge d\'un élève.\n\n'
+            '\tMon courriel : ${database.currentUser!.email}\n'
+            '\tCourriel de l\'élève : ${student!.email}\n'
+            '\tNuméro d\'identification : ${student.studentId}.\n\n'
+            'Merci de votre aide.');
+    await FlutterEmailSender.send(email);
   }
 
   Future<void> _modifyStudent(Student student) async {
@@ -101,7 +142,9 @@ class _StudentsScreenState extends State<StudentsScreen> {
 
     final user = await database.user(student.email);
     if (user == null) {
-      _showSnackbar('Étudiant(e) n\'a pas été trouvé(e) dans la base de donnée',
+      _showSnackbar(
+          const Text(
+              'Étudiant(e) n\'a pas été trouvé(e) dans la base de donnée'),
           scaffold);
       return;
     }
@@ -112,7 +155,8 @@ class _StudentsScreenState extends State<StudentsScreen> {
             lastName: newInfo.lastName,
             id: user.id));
     if (status != EzloginStatus.success) {
-      _showSnackbar('Échec de la modification de l\'étudiant', scaffold);
+      _showSnackbar(
+          const Text('Échec de la modification de l\'étudiant'), scaffold);
       return;
     }
 
@@ -143,7 +187,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
     );
 
     if (!sure!) {
-      _showSnackbar('Suppression de l\'étudiant annulée', scaffold);
+      _showSnackbar(const Text('Suppression de l\'étudiant annulée'), scaffold);
       return;
     }
 
@@ -152,7 +196,8 @@ class _StudentsScreenState extends State<StudentsScreen> {
     var status = await database.deleteUser(user: studentUser);
     if (status != EzloginStatus.success) {
       _showSnackbar(
-          'La supression d\'étudiant n\'est pas encore disponible.', scaffold);
+          const Text('La supression d\'étudiant n\'est pas encore disponible.'),
+          scaffold);
       return;
     }
 
