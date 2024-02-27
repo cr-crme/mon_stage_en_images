@@ -5,7 +5,7 @@ import 'package:defi_photo/common/models/enum.dart';
 import 'package:defi_photo/common/models/exceptions.dart';
 import 'package:defi_photo/common/models/message.dart';
 import 'package:defi_photo/common/models/question.dart';
-import 'package:defi_photo/common/providers/all_students.dart';
+import 'package:defi_photo/common/providers/all_answers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -32,39 +32,32 @@ class AnswerPart extends StatefulWidget {
 }
 
 class _AnswerPartState extends State<AnswerPart> {
-  List<Message> _combineMessagesFromAllStudents(AllStudents students) {
+  List<Message> _combineMessagesFromAllStudents() {
     final teacherId =
         Provider.of<Database>(context, listen: false).currentUser!.id;
-
-    final sortedStudents = students.toList()
-      ..sort(
-        (student1, student2) => student1.lastName
-            .toLowerCase()
-            .compareTo(student2.lastName.toLowerCase()),
-      );
+    final allAnswers = Provider.of<AllAnswers>(context, listen: false);
 
     // Fetch all the required answers
     var discussions = Discussion();
-    for (final student in sortedStudents) {
-      if (student.allAnswers[widget.question] == null) continue;
-      for (final message in student.allAnswers[widget.question]!.discussion
-          .toListByTime(reversed: true)) {
-        final isTheRightCreatorId = (widget.filterMode!.fromWhomFilter
-                    .contains(AnswerFromWhomFilter.studentOnly) &&
-                message.creatorId != teacherId) ||
-            (widget.filterMode!.fromWhomFilter
-                    .contains(AnswerFromWhomFilter.teacherOnly) &&
-                message.creatorId == teacherId);
+    for (final message in allAnswers
+        .fromQuestionAndStudent(widget.question, widget.studentId)!
+        .discussion
+        .toListByTime(reversed: true)) {
+      final isTheRightCreatorId = (widget.filterMode!.fromWhomFilter
+                  .contains(AnswerFromWhomFilter.studentOnly) &&
+              message.creatorId != teacherId) ||
+          (widget.filterMode!.fromWhomFilter
+                  .contains(AnswerFromWhomFilter.teacherOnly) &&
+              message.creatorId == teacherId);
 
-        final isTheRightContent = (widget.filterMode!.contentFilter
-                    .contains(AnswerContentFilter.textOnly) &&
-                !message.isPhotoUrl) ||
-            (widget.filterMode!.contentFilter
-                    .contains(AnswerContentFilter.photoOnly) &&
-                message.isPhotoUrl);
-        if (isTheRightCreatorId && isTheRightContent) {
-          discussions.add(message);
-        }
+      final isTheRightContent = (widget.filterMode!.contentFilter
+                  .contains(AnswerContentFilter.textOnly) &&
+              !message.isPhotoUrl) ||
+          (widget.filterMode!.contentFilter
+                  .contains(AnswerContentFilter.photoOnly) &&
+              message.isPhotoUrl);
+      if (isTheRightCreatorId && isTheRightContent) {
+        discussions.add(message);
       }
     }
 
@@ -81,11 +74,9 @@ class _AnswerPartState extends State<AnswerPart> {
   }) {
     final currentUser =
         Provider.of<Database>(context, listen: false).currentUser!;
-    final students = Provider.of<AllStudents>(context, listen: false);
-    final student =
-        widget.studentId != null ? students[widget.studentId] : null;
-
-    final currentAnswer = student!.allAnswers[widget.question]!;
+    final allAnswers = Provider.of<AllAnswers>(context, listen: false);
+    final currentAnswer =
+        allAnswers.fromQuestionAndStudent(widget.question, widget.studentId)!;
 
     if (newTextEntry != null) {
       currentAnswer.addToDiscussion(Message(
@@ -113,27 +104,27 @@ class _AnswerPartState extends State<AnswerPart> {
     } else {
       throw const NotLoggedIn();
     }
-    students.setAnswer(
-        student: student,
-        question: widget.question,
-        answer: currentAnswer.copyWith(
-          actionRequired: newStatus,
-          isValidated: markAsValidated,
-        ));
+    allAnswers.replace(currentAnswer.copyWith(
+      actionRequired: newStatus,
+      isValidated: markAsValidated,
+    ));
 
     widget.onStateChange();
   }
 
   @override
   Widget build(BuildContext context) {
-    final students = Provider.of<AllStudents>(context, listen: false);
-    final student =
-        widget.studentId != null ? students[widget.studentId] : null;
+    final student = widget.studentId == null
+        ? null
+        : Provider.of<Database>(context, listen: false)
+            .myStudents
+            .firstWhere((e) => e.id == widget.studentId);
 
-    final answers = student?.allAnswers[widget.question]!;
-    final messages = answers?.discussion.toListByTime(reversed: true) ??
-        _combineMessagesFromAllStudents(students);
-    final isValidated = answers?.isValidated ?? false;
+    final answer = Provider.of<AllAnswers>(context, listen: false)
+        .fromQuestionAndStudent(widget.question, widget.studentId);
+    final messages = answer?.discussion.toListByTime(reversed: true) ??
+        _combineMessagesFromAllStudents();
+    final isValidated = answer?.isValidated ?? false;
 
     return Container(
       padding: const EdgeInsets.only(left: 40, right: 20),

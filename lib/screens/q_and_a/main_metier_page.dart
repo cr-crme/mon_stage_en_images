@@ -1,4 +1,4 @@
-import 'package:defi_photo/common/models/student.dart';
+import 'package:defi_photo/common/models/user.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/metier_tile.dart';
@@ -11,7 +11,7 @@ class MainMetierPage extends StatelessWidget {
   });
 
   static const routeName = '/main-metier-page';
-  final Student? student;
+  final User? student;
   final Function(int) onPageChanged;
 
   @override

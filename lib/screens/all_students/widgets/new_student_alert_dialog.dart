@@ -1,7 +1,6 @@
-import 'package:defi_photo/common/models/all_answers.dart';
-import 'package:defi_photo/common/models/company.dart';
-import 'package:defi_photo/common/models/student.dart';
-import 'package:defi_photo/common/providers/all_questions.dart';
+import 'package:defi_photo/common/models/database.dart';
+import 'package:defi_photo/common/models/enum.dart';
+import 'package:defi_photo/common/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,8 +11,8 @@ class NewStudentAlertDialog extends StatefulWidget {
     this.deleteCallback,
   });
 
-  final Student? student;
-  final Function(Student)? deleteCallback;
+  final User? student;
+  final Function(User)? deleteCallback;
 
   @override
   State<NewStudentAlertDialog> createState() => _NewStudentAlertDialogState();
@@ -27,7 +26,7 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
   String? _companyName;
 
   void _finalize({bool hasCancelled = false}) {
-    final questions = Provider.of<AllQuestions>(context, listen: false);
+    final database = Provider.of<Database>(context, listen: false);
 
     if (hasCancelled) {
       Navigator.pop(context);
@@ -39,12 +38,16 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
     }
     _formKey.currentState!.save();
 
-    var student = Student(
+    var student = User(
       firstName: _firstName!,
       lastName: _lastName!,
       email: _email!,
-      allAnswers: AllAnswers(questions: questions.toList(growable: false)),
-      company: Company(name: _companyName ?? ''),
+      addedBy: database.currentUser!.id,
+      supervisedBy: [database.currentUser!.id],
+      supervising: [],
+      userType: UserType.student,
+      mustChangePassword: true,
+      companyNames: [_companyName ?? ''],
     );
 
     Navigator.pop(context, student);
@@ -94,7 +97,7 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
               TextFormField(
                 decoration:
                     const InputDecoration(labelText: 'Nom de l\'entreprise'),
-                initialValue: widget.student?.company.name,
+                initialValue: widget.student?.companyNames.last,
                 validator: (value) => value == null || value.isEmpty
                     ? 'Ajouter un nom d\'entreprise'
                     : null,

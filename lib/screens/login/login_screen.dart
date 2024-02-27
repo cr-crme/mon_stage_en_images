@@ -2,8 +2,8 @@ import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
 import 'package:defi_photo/common/models/themes.dart';
 import 'package:defi_photo/common/models/user.dart';
+import 'package:defi_photo/common/providers/all_answers.dart';
 import 'package:defi_photo/common/providers/all_questions.dart';
-import 'package:defi_photo/common/providers/all_students.dart';
 import 'package:defi_photo/common/widgets/colored_corners.dart';
 import 'package:defi_photo/screens/all_students/students_screen.dart';
 import 'package:defi_photo/screens/q_and_a/q_and_a_screen.dart';
@@ -24,11 +24,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  AllStudents? _allStudents;
   final _formKey = GlobalKey<FormState>();
   String? _email;
   String? _password;
-  Database? _database;
   Future<EzloginStatus>? _futureStatus;
   bool _isNewUser = false;
 
@@ -87,8 +85,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final scaffold = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
-    _database = Provider.of<Database>(context, listen: false);
-    final status = await _database!.login(
+    final database = Provider.of<Database>(context, listen: false);
+
+    final status = await database.login(
       username: _email!,
       password: _password!,
       getNewUserInfo: () => _createUser(_email!),
@@ -102,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     _startFetchingData();
 
-    if (_database!.currentUser!.userType == UserType.student) {
+    if (database.currentUser!.userType == UserType.student) {
       _waitingRoomForStudent();
     } else {
       if (mounted && _isNewUser) {
@@ -118,29 +117,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _startFetchingData() {
     /// this should be call only after user has successfully logged in
-    _allStudents = Provider.of<AllStudents>(context, listen: false);
+    final allAnswers = Provider.of<AllAnswers>(context, listen: false);
     final questions = Provider.of<AllQuestions>(context, listen: false);
 
-    // Set the available-ids data
-    final availableIdsPath =
-        _database!.currentUser!.userType == UserType.student
-            ? _database!.currentUser!.addedBy
-            : _database!.currentUser!.id;
-    _allStudents!.pathToAvailableDataIds = availableIdsPath;
-    questions.pathToAvailableDataIds = availableIdsPath;
-
-    _allStudents!.initializeFetchingData();
+    allAnswers.initializeFetchingData();
     questions.initializeFetchingData();
   }
 
   void _waitingRoomForStudent() {
-    if (_database == null) return;
+    final db = Provider.of<Database>(context, listen: false);
+    final students = db.myStudents.toList();
 
     // Wait until the data are fetched
-    if (_allStudents!.isEmpty ||
-        _allStudents!.indexWhere(
-                (element) => element.id == _database!.currentUser!.studentId) <
-            0) {
+    if (students.indexWhere((e) => e.id == db.currentUser!.studentId) < 0) {
       WidgetsBinding.instance
           .addPostFrameCallback((_) => _waitingRoomForStudent());
       return;

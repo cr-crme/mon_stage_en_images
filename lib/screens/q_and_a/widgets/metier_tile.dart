@@ -1,10 +1,10 @@
-import 'package:defi_photo/common/models/all_answers.dart';
+import 'package:defi_photo/common/models/answer.dart';
 import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
 import 'package:defi_photo/common/models/exceptions.dart';
 import 'package:defi_photo/common/models/section.dart';
 import 'package:defi_photo/common/providers/all_questions.dart';
-import 'package:defi_photo/common/providers/all_students.dart';
+import 'package:defi_photo/common/providers/all_answers.dart';
 import 'package:defi_photo/common/widgets/taking_action_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -32,28 +32,27 @@ class MetierTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final allStudents = Provider.of<AllStudents>(context);
-    final student = studentId != null ? allStudents.fromId(studentId!) : null;
-
+    final allAnswers = Provider.of<AllAnswers>(context, listen: false);
     final questions = Provider.of<AllQuestions>(context, listen: false)
         .fromSection(sectionIndex);
     final userType =
         Provider.of<Database>(context, listen: false).currentUser!.userType;
 
-    late final AllAnswers? answers;
+    late final List<Answer>? answers;
     late final int? answered;
     late final int? active;
-    if (student != null) {
-      answers = student.allAnswers.fromQuestions(questions);
-      answered = answers.numberAnswered;
-      active = answers.numberActive;
+    if (studentId != null) {
+      answers = allAnswers.fromQuestions(questions, studentId).toList();
+      answered = AllAnswers.numberAnsweredFrom(answers);
+      active = AllAnswers.numberActiveFrom(answers);
     } else {
       answers = null;
       answered = null;
       active = null;
     }
-    final int numberOfActions =
-        answers != null ? answers.numberOfActionsRequired(context) : 0;
+    final int numberOfActions = answers != null
+        ? AllAnswers.numberOfActionsRequiredFrom(answers, context)
+        : 0;
 
     return Card(
       elevation: 5,
@@ -90,7 +89,7 @@ class MetierTile extends StatelessWidget {
   }
 
   Widget? _trailingBuilder(BuildContext context, UserType userType,
-      int numberOfActions, AllAnswers? answers, int? answered, int? active) {
+      int numberOfActions, List<Answer>? answers, int? answered, int? active) {
     if (userType == UserType.student) {
       return numberOfActions > 0
           ? TakingActionNotifier(

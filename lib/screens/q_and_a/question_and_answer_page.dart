@@ -4,7 +4,7 @@ import 'package:defi_photo/common/models/enum.dart';
 import 'package:defi_photo/common/models/question.dart';
 import 'package:defi_photo/common/models/section.dart';
 import 'package:defi_photo/common/providers/all_questions.dart';
-import 'package:defi_photo/common/providers/all_students.dart';
+import 'package:defi_photo/common/providers/all_answers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,7 +29,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final allStudents = Provider.of<AllStudents>(context, listen: false);
+    final allAnswers = Provider.of<AllAnswers>(context, listen: false);
     final userType =
         Provider.of<Database>(context, listen: false).currentUser!.userType;
 
@@ -41,9 +41,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
     late Widget questionSection;
     if (viewSpan == Target.individual) {
       if (pageMode != PageMode.edit) {
-        final student = allStudents[studentId];
-        final answers = student.allAnswers.fromQuestions(questions);
-        questions = answers.activeQuestions(questions);
+        questions = allAnswers.selectActiveQuestionsFrom(questions).toList();
       }
       questionSection = _buildQuestionSection(
         context,
@@ -54,9 +52,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
       );
     } else {
       if (studentId != null) {
-        final student = allStudents[studentId];
-        final answers = student.allAnswers.fromQuestions(questions);
-        questions = answers.activeQuestions(questions);
+        questions = allAnswers.selectActiveQuestionsFrom(questions).toList();
       }
 
       if (pageMode != PageMode.edit &&
@@ -64,7 +60,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
         // Do not filter for edit mode
         List<Question> questionTp = [];
         for (final question in questions) {
-          if (question.hasQuestionAtLeastOneAnswer(students: allStudents)) {
+          if (question.hasAtLeastOneAnswer(answers: allAnswers)) {
             questionTp.add(question);
           }
         }

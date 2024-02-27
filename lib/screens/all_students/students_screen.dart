@@ -1,15 +1,10 @@
-import 'package:defi_photo/common/models/answer.dart';
 import 'package:defi_photo/common/models/database.dart';
-import 'package:defi_photo/common/models/enum.dart';
-import 'package:defi_photo/common/models/student.dart';
 import 'package:defi_photo/common/models/user.dart';
 import 'package:defi_photo/common/providers/all_questions.dart';
-import 'package:defi_photo/common/providers/all_students.dart';
+import 'package:defi_photo/common/providers/all_answers.dart';
 import 'package:defi_photo/common/widgets/are_you_sure_dialog.dart';
 import 'package:defi_photo/common/widgets/main_drawer.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:provider/provider.dart';
 
 import 'widgets/new_student_alert_dialog.dart';
@@ -40,13 +35,13 @@ void _showSnackbar(Widget content, ScaffoldMessengerState scaffold) {
 }
 
 class _StudentsScreenState extends State<StudentsScreen> {
-  Future<void> _showNewStudent() async {
+  Future<void> _addStudent() async {
     final scaffold = ScaffoldMessenger.of(context);
     final database = Provider.of<Database>(context, listen: false);
-    final students = Provider.of<AllStudents>(context, listen: false);
     final questions = Provider.of<AllQuestions>(context, listen: false);
+    final answers = Provider.of<AllAnswers>(context, listen: false);
 
-    final student = await showDialog<Student>(
+    final student = await showDialog<User>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
@@ -58,77 +53,34 @@ class _StudentsScreenState extends State<StudentsScreen> {
       return;
     }
 
-    final status = await database.addUser(
-      newUser: User(
-        firstName: student.firstName,
-        lastName: student.lastName,
-        email: student.email,
-        addedBy: database.currentUser!.id,
-        userType: UserType.student,
-        shouldChangePassword: true,
-        studentId: student.id,
-      ),
-      password: 'defiPhoto',
-    );
-    if (status != EzloginStatus.success) {
-      final content = status == EzloginStatus.couldNotCreateUser
-          ? Text.rich(TextSpan(
-              children: [
-                const TextSpan(
-                    text:
-                        'Échec de l\'ajout de l\'étudiant(e). Il n\'est pas possible '
-                        'd\'ajouter deux étudiant(e) avec la même adresse.\n\n'
-                        'Si vous souhaitez demander les droits pour cet élève, veuillez '),
-                TextSpan(
-                  text: 'cliquer ici',
-                  style: const TextStyle(
-                      color: Colors.blue, decoration: TextDecoration.underline),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () => _requestStudent(student),
-                ),
-                const TextSpan(
-                  text: '.',
-                ),
-              ],
-            ))
-          : const Text('Erreur inconnue lors de l\'ajout de l\'étudiant(e)');
+    final status = await database.addStudent(
+        newStudent: student, questions: questions, answers: answers);
+    if (!mounted) return;
 
-      _showSnackbar(content, scaffold);
-      return;
+    switch (status) {
+      case EzloginStatus.success:
+        return;
+      case EzloginStatus.alreadyCreated:
+        _showSnackbar(
+            const Text('Cet élève est déjà dans vos élève'), scaffold);
+        return;
+      case EzloginStatus.wrongInfoWhileCreating:
+        _showSnackbar(
+            const Text('Cet élève est déjà dans vos élève'), scaffold);
+        return;
+      default:
+        _showSnackbar(
+            const Text('Erreur inconnue lors de l\'ajout de l\'élève'),
+            scaffold);
+        return;
     }
-
-    for (final question in questions) {
-      student.allAnswers[question] = Answer(
-          isActive: question.defaultTarget == Target.all,
-          actionRequired: ActionRequired.fromStudent);
-    }
-    students.add(student);
   }
 
-  Future<void> _requestStudent(Student studentLocal) async {
+  Future<void> _modifyStudent(User student) async {
     final database = Provider.of<Database>(context, listen: false);
-    final student = await database.user(studentLocal.email);
-
-    final email = Email(
-        recipients: ['pariterre@hotmail.com'],
-        subject: 'Prise en charge d\'un élève',
-        body:
-            'Bonjour,\n\nJe suis un\u00b7e utilisateur\u00b7trice de l\'application '
-            'Défi Photos et je souhaiterais faire la demande de la '
-            'prise en charge d\'un élève.\n\n'
-            '\tMon courriel : ${database.currentUser!.email}\n'
-            '\tCourriel de l\'élève : ${student!.email}\n'
-            '\tNuméro d\'identification : ${student.studentId}.\n\n'
-            'Merci de votre aide.');
-    await FlutterEmailSender.send(email);
-  }
-
-  Future<void> _modifyStudent(Student student) async {
     final scaffold = ScaffoldMessenger.of(context);
-    final database = Provider.of<Database>(context, listen: false);
-    final students = Provider.of<AllStudents>(context, listen: false);
 
-    final newInfo = await showDialog<Student>(
+    final newInfo = await showDialog<User>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
@@ -140,39 +92,28 @@ class _StudentsScreenState extends State<StudentsScreen> {
     );
     if (newInfo == null) return;
 
-    final user = await database.user(student.email);
-    if (user == null) {
-      _showSnackbar(
-          const Text(
-              'Étudiant(e) n\'a pas été trouvé(e) dans la base de donnée'),
-          scaffold);
-      return;
+    final status = await database.modifyStudent(newInfo: newInfo);
+    switch (status) {
+      case EzloginStatus.success:
+        return;
+      case EzloginStatus.userNotFound:
+        _showSnackbar(
+            const Text(
+                'Étudiant(e) n\'a pas été trouvé(e) dans la base de donnée'),
+            scaffold);
+        return;
+      default:
+        _showSnackbar(
+            const Text(
+                'Erreur inconnue lors de la modification de l\'étudiant'),
+            scaffold);
+        return;
     }
-    final status = await database.modifyUser(
-        user: user,
-        newInfo: user.copyWith(
-            firstName: newInfo.firstName,
-            lastName: newInfo.lastName,
-            id: user.id));
-    if (status != EzloginStatus.success) {
-      _showSnackbar(
-          const Text('Échec de la modification de l\'étudiant'), scaffold);
-      return;
-    }
-
-    students.replace(
-      student.copyWith(
-        firstName: newInfo.firstName,
-        lastName: newInfo.lastName,
-        company: student.company.copyWith(name: newInfo.company.name),
-      ),
-    );
   }
 
-  Future<void> _removeStudent(Student student) async {
+  Future<void> _removeStudent(User student) async {
     final scaffold = ScaffoldMessenger.of(context);
     final database = Provider.of<Database>(context, listen: false);
-    final students = Provider.of<AllStudents>(context, listen: false);
 
     final sure = await showDialog<bool>(
       context: context,
@@ -200,22 +141,20 @@ class _StudentsScreenState extends State<StudentsScreen> {
           scaffold);
       return;
     }
-
-    students.remove(student.id);
   }
 
   @override
   Widget build(BuildContext context) {
-    final students =
-        Provider.of<AllStudents>(context).toListByTime(reversed: true);
+    final students = Provider.of<Database>(context).myStudents.toList();
     students.sort(
         (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mes élèves'),
         actions: [
           IconButton(
-            onPressed: _showNewStudent,
+            onPressed: _addStudent,
             icon: const Icon(
               Icons.add,
             ),

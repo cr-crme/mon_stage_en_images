@@ -1,11 +1,12 @@
 import 'package:defi_photo/common/models/answer.dart';
 import 'package:defi_photo/common/models/answer_sort_and_filter.dart';
+import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
 import 'package:defi_photo/common/models/question.dart';
-import 'package:defi_photo/common/models/student.dart';
 import 'package:defi_photo/common/models/text_reader.dart';
+import 'package:defi_photo/common/models/user.dart';
+import 'package:defi_photo/common/providers/all_answers.dart';
 import 'package:defi_photo/common/providers/all_questions.dart';
-import 'package:defi_photo/common/providers/all_students.dart';
 import 'package:defi_photo/screens/q_and_a/widgets/new_question_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -42,9 +43,12 @@ class QuestionAndAnswerTile extends StatefulWidget {
 class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   var _isExpanded = false;
 
-  late AllStudents _students;
-  Student? _student;
-  Answer? _answer;
+  Answer? get _answer => widget.question == null || widget.studentId == null
+      ? null
+      : Provider.of<AllAnswers>(context, listen: false).firstWhereOrNull((e) =>
+          e.questionId == widget.question?.id &&
+          e.studentId == widget.studentId);
+
   final _reader = TextReader();
   bool _isReading = false;
 
@@ -70,13 +74,11 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
               _answer!.isValidated;
 
       if (_isExpanded &&
-          _student != null &&
+          widget.studentId != null &&
           (teacherMadeAction || studentMadeAction)) {
         // Flag the answer as being actionned
-        _students.setAnswer(
-            student: _student!,
-            question: widget.question!,
-            answer: _answer!.copyWith(actionRequired: ActionRequired.none));
+        Provider.of<AllAnswers>(context)
+            .replace(_answer!.copyWith(actionRequired: ActionRequired.none));
       }
     }
     if (widget.onExpand != null) widget.onExpand!();
@@ -85,17 +87,18 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   }
 
   Future<void> _addOrModifyQuestion() async {
+    final answers = Provider.of<AllAnswers>(context, listen: false);
     final questions = Provider.of<AllQuestions>(context, listen: false);
+    final db = Provider.of<Database>(context, listen: false);
     final arguments = ModalRoute.of(context)!.settings.arguments as List;
 
     // Make sure no student already responded to the question
     // If so, prevent from modifying it
     final hasAnswers = widget.question != null
-        ? questions[widget.question]
-            .hasQuestionAtLeastOneAnswer(students: _students)
+        ? questions[widget.question].hasAtLeastOneAnswer(answers: answers)
         : false;
 
-    final currentStudent = arguments[2] as Student?;
+    final currentStudent = arguments[2] as User?;
 
     final output = await showDialog(
       context: context,
@@ -111,19 +114,23 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     );
     if (output == null) return;
     final question = output[0] as Question;
-    final activeStatus = output[1] as Map<Student, bool>;
+    final activeStatus = output[1] as Map<String, bool>;
 
-    if (widget.question != null) {
-      var newQuestion = widget.question!.copyWith(text: question.text);
-      questions.modifyToAll(newQuestion,
-          students: _students,
+    if (widget.question == null) {
+      questions.addToAll(question,
+          answers: answers,
+          currentUser: db.currentUser!,
           currentStudent: currentStudent,
           isActive: activeStatus);
     } else {
-      questions.addToAll(question,
-          students: _students,
-          currentStudent: currentStudent,
-          isActive: activeStatus);
+      var newQuestion = widget.question!.copyWith(text: question.text);
+      questions.modifyToAll(
+        newQuestion,
+        answers: answers,
+        currentUser: db.currentUser!,
+        currentStudent: currentStudent,
+        isActive: activeStatus,
+      );
     }
 
     setState(() {});
@@ -131,14 +138,13 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
 
   void _deleteQuestionCallback() {
     final questions = Provider.of<AllQuestions>(context, listen: false);
-    questions.removeToAll(widget.question!, students: _students);
+    final answers = Provider.of<AllAnswers>(context, listen: false);
+
+    questions.removeToAll(widget.question!, answers: answers);
     setState(() {});
   }
 
   void _onStateChange() {
-    if (_student != null) {
-      _answer = _student!.allAnswers[widget.question];
-    }
     setState(() {});
   }
 
@@ -159,11 +165,6 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
 
   @override
   Widget build(BuildContext context) {
-    _students = Provider.of<AllStudents>(context, listen: true);
-    _student = widget.studentId != null ? _students[widget.studentId] : null;
-    _answer =
-        widget.question != null ? _student?.allAnswers[widget.question] : null;
-
     _isExpanded = widget.overrideExpandState ?? _isExpanded;
     return Card(
       elevation: 5,

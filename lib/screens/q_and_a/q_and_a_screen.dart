@@ -2,8 +2,7 @@ import 'package:defi_photo/common/models/answer_sort_and_filter.dart';
 import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
 import 'package:defi_photo/common/models/section.dart';
-import 'package:defi_photo/common/models/student.dart';
-import 'package:defi_photo/common/providers/all_students.dart';
+import 'package:defi_photo/common/models/user.dart';
 import 'package:defi_photo/common/widgets/main_drawer.dart';
 import 'package:defi_photo/screens/all_students/students_screen.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +24,7 @@ class QAndAScreen extends StatefulWidget {
 
 class _QAndAScreenState extends State<QAndAScreen> {
   UserType _userType = UserType.none;
-  Student? _student;
+  User? _student;
   Target _viewSpan = Target.individual;
   late PageMode _pageMode;
   var _answerFilter = AnswerSortAndFilter();
@@ -37,17 +36,19 @@ class _QAndAScreenState extends State<QAndAScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final currentUser =
-        Provider.of<Database>(context, listen: false).currentUser!;
+
+    final database = Provider.of<Database>(context, listen: false);
+
+    final currentUser = database.currentUser!;
     _userType = currentUser.userType;
 
     final arguments = ModalRoute.of(context)!.settings.arguments as List;
     _viewSpan = arguments[0] as Target;
     _pageMode = arguments[1] as PageMode;
     _student = _userType == UserType.student
-        ? Provider.of<AllStudents>(context, listen: false)
-            .fromId(currentUser.studentId!)
-        : arguments[2] as Student?;
+        ? database.myStudents
+            .firstWhere((e) => e.studentId == currentUser.studentId!)
+        : arguments[2] as User?;
   }
 
   void onPageChanged(BuildContext context, int page) {
@@ -107,7 +108,7 @@ class _QAndAScreenState extends State<QAndAScreen> {
     setState(() {});
   }
 
-  AppBar _setAppBar(UserType loginType, Student? student) {
+  AppBar _setAppBar(UserType loginType, User? student) {
     final currentTheme = Theme.of(context).textTheme.titleLarge!;
     final onPrimaryColor = Theme.of(context).colorScheme.onPrimary;
 
@@ -128,7 +129,8 @@ class _QAndAScreenState extends State<QAndAScreen> {
                     currentTheme.copyWith(fontSize: 15, color: onPrimaryColor)),
           if (loginType == UserType.teacher && student != null)
             Text(
-              student.company.name,
+              student.companyNames
+                  .last, // TODO: see how to make this professor dependent
               style: currentTheme.copyWith(fontSize: 15, color: onPrimaryColor),
             ),
         ],
@@ -224,9 +226,7 @@ class _QAndAScreenState extends State<QAndAScreen> {
           ),
         ],
       ),
-      drawer: _student == null || _userType == UserType.student
-          ? MainDrawer(student: _student)
-          : null,
+      drawer: _userType == UserType.student ? const MainDrawer() : null,
     );
   }
 }

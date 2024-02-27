@@ -1,6 +1,7 @@
+import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
-import 'package:defi_photo/common/models/student.dart';
-import 'package:defi_photo/common/providers/all_students.dart';
+import 'package:defi_photo/common/models/user.dart';
+import 'package:defi_photo/common/providers/all_answers.dart';
 import 'package:defi_photo/common/widgets/taking_action_notifier.dart';
 import 'package:defi_photo/screens/q_and_a/q_and_a_screen.dart';
 import 'package:flutter/material.dart';
@@ -13,15 +14,18 @@ class StudentListTile extends StatelessWidget {
     required this.modifyStudentCallback,
   });
 
-  final Function(Student) modifyStudentCallback;
+  final Function(User) modifyStudentCallback;
   final String studentId;
 
   @override
   Widget build(BuildContext context) {
-    final allStudents = Provider.of<AllStudents>(context);
-    final student = allStudents.fromId(studentId);
+    final allAnswers = Provider.of<AllAnswers>(context);
+    final student = Provider.of<Database>(context, listen: false)
+        .myStudents
+        .firstWhere((e) => e.id == studentId);
 
-    final numberOfActions = student.allAnswers.numberNeedTeacherAction(context);
+    final numberOfActions = allAnswers.numberNeedTeacherAction(context);
+
     return Card(
       elevation: 5,
       child: ListTile(
@@ -29,10 +33,11 @@ class StudentListTile extends StatelessWidget {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(student.company.name, style: const TextStyle(fontSize: 16)),
+            Text(student.companyNames.last,
+                style: const TextStyle(fontSize: 16)),
             Text(
-                'Questions répondues : ${student.allAnswers.numberAnswered} '
-                '/ ${student.allAnswers.numberActive}',
+                'Questions répondues : ${allAnswers.numberAnswered} '
+                '/ ${allAnswers.numberActive}',
                 style: const TextStyle(fontSize: 16)),
           ],
         ),

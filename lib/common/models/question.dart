@@ -1,5 +1,5 @@
 import 'package:defi_photo/common/models/enum.dart';
-import 'package:defi_photo/common/providers/all_students.dart';
+import 'package:defi_photo/common/providers/all_answers.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
 
 class Question extends ItemSerializableWithCreationTime {
@@ -54,16 +54,8 @@ class Question extends ItemSerializableWithCreationTime {
     };
   }
 
-  bool hasQuestionAtLeastOneAnswer({required AllStudents students}) {
-    // Make sure no student already responded to the question
-    // If so, prevent from modifying it
-    for (final student in students) {
-      if (student.allAnswers[this]!.hasAnswer) {
-        return true;
-      }
-    }
-    return false;
-  }
+  bool hasAtLeastOneAnswer({required AllAnswers answers}) =>
+      answers.fromQuestion(this).any((e) => e.isAnswered);
 
   // Attributes and methods
   final String text;

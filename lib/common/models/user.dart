@@ -9,17 +9,30 @@ class User extends EzloginUser {
     required this.lastName,
     required super.email,
     required this.addedBy,
+    required this.supervisedBy,
+    required this.supervising,
     required this.userType,
-    required super.shouldChangePassword,
+    required super.mustChangePassword,
+    required this.companyNames,
     this.studentId,
     super.id,
   });
+
   User.fromSerialized(map)
       : firstName = map['firstName'],
         lastName = map['lastName'],
         addedBy = map['addedBy'],
-        userType = UserType.values[map['userType']],
+        supervisedBy =
+            (map['supervisedBy'] as List?)?.map((e) => e as String).toList() ??
+                [],
+        supervising =
+            (map['supervising'] as List?)?.map((e) => e as String).toList() ??
+                [],
+        userType = UserType.values[map['userType'] as int],
         studentId = map['studentId'],
+        companyNames =
+            (map['companyNames'] as List?)?.map((e) => e as String).toList() ??
+                [],
         super.fromSerialized(map);
 
   @override
@@ -28,25 +41,34 @@ class User extends EzloginUser {
     String? lastName,
     String? email,
     String? addedBy,
+    List<String>? supervisedBy,
+    List<String>? supervising,
     UserType? userType,
-    bool? shouldChangePassword,
+    bool? mustChangePassword,
     String? id,
+    List<String>? companyNames,
   }) {
     firstName ??= this.firstName;
     lastName ??= this.lastName;
     email ??= this.email;
     addedBy ??= this.addedBy;
+    supervisedBy ??= this.supervisedBy;
+    supervising ??= this.supervising;
     userType ??= this.userType;
-    shouldChangePassword ??= this.shouldChangePassword;
+    mustChangePassword ??= this.mustChangePassword;
     id ??= this.id;
+    companyNames ??= this.companyNames;
     return User(
       firstName: firstName,
       lastName: lastName,
       email: email,
       addedBy: addedBy,
+      supervisedBy: supervisedBy,
+      supervising: supervising,
       userType: userType,
-      shouldChangePassword: shouldChangePassword,
+      mustChangePassword: mustChangePassword,
       id: id,
+      companyNames: companyNames,
     );
   }
 
@@ -57,8 +79,11 @@ class User extends EzloginUser {
         'firstName': firstName,
         'lastName': lastName,
         'addedBy': addedBy,
+        'supervisedBy': supervisedBy,
+        'supervising': supervising,
         'userType': userType.index,
         'studentId': studentId,
+        'companyNames': companyNames,
       });
   }
 
@@ -71,8 +96,11 @@ class User extends EzloginUser {
   final String firstName;
   final String lastName;
   final String addedBy;
+  final List<String> supervisedBy;
+  final List<String> supervising;
   final UserType userType;
   final String? studentId;
+  final List<String> companyNames;
 
   @override
   String toString() {

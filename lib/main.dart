@@ -2,7 +2,7 @@ import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
 import 'package:defi_photo/common/models/themes.dart';
 import 'package:defi_photo/common/providers/all_questions.dart';
-import 'package:defi_photo/common/providers/all_students.dart';
+import 'package:defi_photo/common/providers/all_answers.dart';
 import 'package:defi_photo/common/providers/speecher.dart';
 import 'package:defi_photo/screens/all_students/students_screen.dart';
 import 'package:defi_photo/screens/login/login_screen.dart';
@@ -37,14 +37,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final students = AllStudents();
+    final answers = AllAnswers();
     final questions = AllQuestions();
     final speecher = Speecher();
 
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => userDatabase),
-        ChangeNotifierProvider(create: (context) => students),
+        ChangeNotifierProvider(create: (context) => answers),
         ChangeNotifierProvider(create: (context) => questions),
         ChangeNotifierProvider(create: (context) => speecher),
       ],

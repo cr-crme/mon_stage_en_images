@@ -1,7 +1,8 @@
+import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
 import 'package:defi_photo/common/models/question.dart';
-import 'package:defi_photo/common/models/student.dart';
-import 'package:defi_photo/common/providers/all_students.dart';
+import 'package:defi_photo/common/models/user.dart';
+import 'package:defi_photo/common/providers/all_answers.dart';
 import 'package:defi_photo/common/providers/speecher.dart';
 import 'package:defi_photo/common/widgets/animated_icon.dart';
 import 'package:defi_photo/common/widgets/are_you_sure_dialog.dart';
@@ -19,7 +20,7 @@ class NewQuestionAlertDialog extends StatefulWidget {
   });
 
   final int section;
-  final Student? student;
+  final User? student;
   final Question? question;
   final bool isQuestionModifiable;
   final Function? deleteCallback;
@@ -33,16 +34,21 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
   bool _isVoiceRecording = false;
   final _fieldText = TextEditingController();
   String? _text;
-  final Map<Student, bool> _questionStatus = {};
+  final Map<String, bool> _questionStatus = {};
 
   @override
   void initState() {
     super.initState();
-    final students = Provider.of<AllStudents>(context, listen: false);
+    final answers = Provider.of<AllAnswers>(context, listen: false);
+    final students = Provider.of<Database>(context, listen: false).myStudents;
+
     for (final student in students) {
-      _questionStatus[student] = widget.question == null
+      _questionStatus[student.id] = widget.question == null
           ? false
-          : student.allAnswers[widget.question]?.isActive ?? false;
+          : answers
+                  .fromQuestionAndStudent(widget.question!, widget.student?.id)
+                  ?.isActive ??
+              false;
     }
     _fieldText.text = widget.question?.text ?? "";
   }
@@ -98,17 +104,17 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
     );
   }
 
-  Widget _buildStudentTile(Student student) {
+  Widget _buildStudentTile(User student) {
     return GestureDetector(
       onTap: () {
-        _questionStatus[student] = !_questionStatus[student]!;
+        _questionStatus[student.id] = !_questionStatus[student]!;
         setState(() {});
       },
       child: Row(children: [
         Checkbox(
             value: _questionStatus[student],
             onChanged: (value) {
-              _questionStatus[student] = value!;
+              _questionStatus[student.id] = value!;
               setState(() {});
             }),
         Text('${student.firstName} ${student.lastName}'),
@@ -118,10 +124,10 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final students = Provider.of<AllStudents>(context, listen: false);
-    final studentsAsList = students.toList()
-      ..sort((a, b) =>
-          a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
+    final students =
+        Provider.of<Database>(context, listen: false).myStudents.toList();
+    students.sort(
+        (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
 
     return AlertDialog(
       content: SingleChildScrollView(
@@ -140,8 +146,7 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
             const Divider(),
             const Text('Question activée pour :'),
             _buildAllStudentsTile(),
-            ...studentsAsList
-                .map<Widget>((student) => _buildStudentTile(student)),
+            ...students.map<Widget>((student) => _buildStudentTile(student)),
           ],
         ),
       ),

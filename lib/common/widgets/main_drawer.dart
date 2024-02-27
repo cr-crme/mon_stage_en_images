@@ -1,6 +1,5 @@
 import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
-import 'package:defi_photo/common/models/student.dart';
 import 'package:defi_photo/common/widgets/are_you_sure_dialog.dart';
 import 'package:defi_photo/screens/all_students/students_screen.dart';
 import 'package:defi_photo/screens/login/login_screen.dart';
@@ -9,9 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MainDrawer extends StatelessWidget {
-  const MainDrawer({super.key, this.student});
-
-  final Student? student;
+  const MainDrawer({super.key});
 
   void _onClickQuit(BuildContext context) async {
     final navigator = Navigator.of(context);

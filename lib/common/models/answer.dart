@@ -8,45 +8,55 @@ import 'package:provider/provider.dart';
 
 import 'message.dart';
 
-class Answer extends ItemSerializableWithCreationTime {
+class Answer extends ItemSerializable {
   // Constructors and (de)serializer
   Answer({
     Discussion? discussion,
     this.isActive = true,
     this.isValidated = false,
     this.actionRequired = ActionRequired.none,
-    super.id,
-    super.creationTimeStamp,
-  }) : discussion = discussion ??= Discussion();
+    required this.createdById,
+    required this.studentId,
+    required String questionId,
+  })  : discussion = discussion ??= Discussion(),
+        super(id: questionId);
   Answer.fromSerialized(map)
       : discussion = Discussion.fromSerialized(map['discussion'] ?? {}),
         isActive = map['isActive'],
         isValidated = map['isValidated'],
         actionRequired = ActionRequired.values[map['actionRequired']],
+        createdById = map['createdById'],
+        studentId = map['studentId'],
         super.fromSerialized(map);
   Answer copyWith({
     Discussion? discussion,
     bool? isActive,
     bool? isValidated,
     ActionRequired? actionRequired,
-    String? id,
+    String? createdById,
+    String? studentId,
+    String? questionId,
     int? creationTimeStamp,
   }) {
     discussion ??= this.discussion;
     isActive ??= this.isActive;
     isValidated ??= this.isValidated;
     actionRequired ??= this.actionRequired;
-    id ??= this.id;
-    creationTimeStamp ??= this.creationTimeStamp;
+    createdById ??= this.createdById;
+    studentId ??= this.studentId;
+    questionId ??= id;
     return Answer(
       discussion: discussion,
       isActive: isActive,
       isValidated: isValidated,
       actionRequired: actionRequired,
-      id: id,
-      creationTimeStamp: creationTimeStamp,
+      createdById: createdById,
+      studentId: studentId,
+      questionId: questionId,
     );
   }
+
+  String get questionId => id;
 
   Answer deserializeItem(map) {
     return Answer.fromSerialized(map);
@@ -59,6 +69,8 @@ class Answer extends ItemSerializableWithCreationTime {
       'isActive': isActive,
       'isValidated': isValidated,
       'actionRequired': actionRequired.index,
+      'createdById': createdById,
+      'studentId': studentId,
     };
   }
 
@@ -67,6 +79,8 @@ class Answer extends ItemSerializableWithCreationTime {
   final Discussion discussion;
   final bool isValidated;
   final ActionRequired actionRequired;
+  final String createdById;
+  final String studentId;
   ActionRequired action(BuildContext context) {
     if (!isActive) return ActionRequired.none;
 

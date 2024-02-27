@@ -5,8 +5,9 @@ import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
 import 'package:defi_photo/common/models/message.dart';
 import 'package:defi_photo/common/models/question.dart';
-import 'package:defi_photo/common/models/student.dart';
 import 'package:defi_photo/common/models/text_reader.dart';
+import 'package:defi_photo/common/models/user.dart';
+import 'package:defi_photo/common/providers/all_answers.dart';
 import 'package:defi_photo/common/providers/speecher.dart';
 import 'package:defi_photo/common/widgets/animated_icon.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ class DiscussionListView extends StatefulWidget {
 
   final List<Message> messages;
   final bool isAnswerValidated;
-  final Student? student;
+  final User? student;
   final Question question;
   final void Function({
     String? newTextEntry,
@@ -212,7 +213,9 @@ class _DiscussionListViewState extends State<DiscussionListView> {
   Widget build(BuildContext context) {
     final userType =
         Provider.of<Database>(context, listen: false).currentUser!.userType;
-    final answer = widget.student?.allAnswers[widget.question]!;
+
+    final answer = Provider.of<AllAnswers>(context, listen: false)
+        .fromQuestionAndStudent(widget.question, widget.student?.id);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

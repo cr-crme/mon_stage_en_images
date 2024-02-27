@@ -3,8 +3,8 @@ import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
 import 'package:defi_photo/common/models/exceptions.dart';
 import 'package:defi_photo/common/models/question.dart';
+import 'package:defi_photo/common/providers/all_answers.dart';
 import 'package:defi_photo/common/providers/all_questions.dart';
-import 'package:defi_photo/common/providers/all_students.dart';
 import 'package:defi_photo/common/widgets/are_you_sure_dialog.dart';
 import 'package:defi_photo/common/widgets/taking_action_notifier.dart';
 import 'package:flutter/material.dart';
@@ -40,10 +40,10 @@ class QuestionPart extends StatelessWidget {
 
   TextStyle _pickTextStyle(BuildContext context, Answer? answer) {
     if (answer == null) {
-      final students = Provider.of<AllStudents>(context, listen: false);
+      final answers = Provider.of<AllAnswers>(context, listen: false);
 
       return TextStyle(
-        color: question != null && students.isQuestionInactiveForAll(question!)
+        color: question != null && answers.isQuestionInactiveForAll(question!)
             ? Colors.grey
             : Colors.black,
         fontSize: 18,
@@ -113,15 +113,16 @@ class _QuestionPartTrailing extends StatelessWidget {
   final VoidCallback stopReadingCallback;
 
   bool _isQuestionActive(BuildContext context) {
-    final students = Provider.of<AllStudents>(context, listen: false);
-    final answer =
-        studentId != null ? students[studentId].allAnswers[question] : null;
+    final allAnswers = Provider.of<AllAnswers>(context, listen: false);
+    final answer = question == null
+        ? null
+        : allAnswers.fromQuestionAndStudent(question!, studentId);
 
-    if (students.count == 0) {
+    if (answer == null) {
       return question != null && question?.defaultTarget == Target.all;
     }
 
-    return answer?.isActive ?? false;
+    return answer.isActive;
   }
 
   @override
@@ -149,6 +150,8 @@ class _QuestionPartTrailing extends StatelessWidget {
         ],
       );
     } else if (userType == UserType.teacher) {
+      final allAnswers = Provider.of<AllAnswers>(context, listen: false);
+
       if (question == null) {
         return _QuestionAddButton(newQuestionCallback: onNewQuestion);
       } else if (viewSpan == Target.individual && pageMode == PageMode.edit) {
@@ -160,10 +163,7 @@ class _QuestionPartTrailing extends StatelessWidget {
           viewSpan: viewSpan,
           pageMode: pageMode,
         );
-      } else if (studentId != null &&
-          Provider.of<AllStudents>(context, listen: false)[studentId]
-              .allAnswers[question]!
-              .isValidated) {
+      } else if (studentId != null && allAnswers[question].isValidated) {
         return Icon(Icons.check, size: 35, color: Colors.green[600]);
       } else {
         return const SizedBox();
@@ -208,8 +208,7 @@ class _QuestionActivatedState extends StatelessWidget {
 
   Future<void> _toggleQuestionActiveState(BuildContext context, value) async {
     final questions = Provider.of<AllQuestions>(context, listen: false);
-    final students = Provider.of<AllStudents>(context, listen: false);
-    final student = studentId == null ? null : students[studentId];
+    final answers = Provider.of<AllAnswers>(context, listen: false);
 
     final sure = pageMode == PageMode.edit && viewSpan == Target.all
         ? await showDialog<bool>(
@@ -233,7 +232,7 @@ class _QuestionActivatedState extends StatelessWidget {
     // deactivate for all. If it was 'individual' keep it like that unless it
     // should be promoted to 'all'
     late final Target newTarget;
-    if (student == null) {
+    if (studentId == null) {
       newTarget = value ? Target.all : Target.none;
     } else {
       newTarget = question.defaultTarget;
@@ -241,17 +240,12 @@ class _QuestionActivatedState extends StatelessWidget {
     questions.replace(question.copyWith(defaultTarget: newTarget));
 
     // Modify the answers on the server
-    if (student != null) {
-      students.setAnswer(
-          student: student,
-          question: question,
-          answer: student.allAnswers[question]!.copyWith(isActive: value));
+    if (studentId != null) {
+      final answer = answers.fromQuestionAndStudent(question, studentId);
+      answers.replace(answer!.copyWith(isActive: value));
     } else {
-      for (var student in students) {
-        students.setAnswer(
-            student: student,
-            question: question,
-            answer: student.allAnswers[question]!.copyWith(isActive: value));
+      for (var answer in answers.fromQuestion(question)) {
+        answers.replace(answer.copyWith(isActive: value));
       }
     }
     onStateChange();
