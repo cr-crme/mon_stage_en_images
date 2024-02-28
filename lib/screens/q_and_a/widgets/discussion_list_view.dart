@@ -214,8 +214,12 @@ class _DiscussionListViewState extends State<DiscussionListView> {
     final userType =
         Provider.of<Database>(context, listen: false).currentUser!.userType;
 
-    final answer = Provider.of<AllAnswers>(context, listen: false)
-        .fromQuestionAndStudent(widget.question, widget.student?.id);
+    final answer = widget.student == null
+        ? null
+        : Provider.of<AllAnswers>(context, listen: false)
+            .fromQuestion(widget.question,
+                studentId: widget.student?.id, shouldHaveAtMostOneAnswer: true)
+            .first;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

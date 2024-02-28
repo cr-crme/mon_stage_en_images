@@ -22,6 +22,7 @@ class QAndAScreen extends StatefulWidget {
 }
 
 class _QAndAScreenState extends State<QAndAScreen> {
+  bool _isInitialized = false;
   UserType _userType = UserType.none;
   User? _student;
   Target _viewSpan = Target.individual;
@@ -36,6 +37,7 @@ class _QAndAScreenState extends State<QAndAScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
+    if (_isInitialized) return;
     final database = Provider.of<Database>(context, listen: false);
 
     final currentUser = database.currentUser!;
@@ -46,6 +48,8 @@ class _QAndAScreenState extends State<QAndAScreen> {
     _pageMode = arguments[1] as PageMode;
     _student =
         _userType == UserType.student ? currentUser : arguments[2] as User?;
+
+    _isInitialized = true;
   }
 
   void onPageChanged(BuildContext context, int page) {

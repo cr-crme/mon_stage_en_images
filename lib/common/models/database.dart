@@ -122,15 +122,15 @@ class Database extends EzloginFirebase with ChangeNotifier {
         .child('${currentUser!.id}/supervising')
         .set(newSupervising);
 
-    answers.addAll(questions.map(
-      (e) => Answer(
-        isActive: e.defaultTarget == Target.all,
+    for (final question in questions) {
+      answers.addAnswer(Answer(
+        isActive: question.defaultTarget == Target.all,
         actionRequired: ActionRequired.fromStudent,
         createdById: currentUser!.id,
         studentId: newStudent.id,
-        questionId: e.id,
-      ),
-    ));
+        questionId: question.id,
+      ));
+    }
 
     _fetchAllMyStudents();
     return EzloginStatus.success;

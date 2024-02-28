@@ -43,11 +43,15 @@ class QuestionAndAnswerTile extends StatefulWidget {
 class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   var _isExpanded = false;
 
-  Answer? get _answer => widget.question == null || widget.studentId == null
-      ? null
-      : Provider.of<AllAnswers>(context, listen: false).firstWhereOrNull((e) =>
-          e.questionId == widget.question?.id &&
-          e.studentId == widget.studentId);
+  Answer? get _answer {
+    if (widget.question == null || widget.studentId == null) return null;
+
+    final answers = Provider.of<AllAnswers>(context, listen: false)
+        .fromQuestion(widget.question!,
+            studentId: widget.studentId, shouldHaveAtMostOneAnswer: true)
+        .toList();
+    return answers.isEmpty ? null : answers.first;
+  }
 
   final _reader = TextReader();
   bool _isReading = false;
@@ -78,7 +82,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
           (teacherMadeAction || studentMadeAction)) {
         // Flag the answer as being actionned
         Provider.of<AllAnswers>(context)
-            .replace(_answer!.copyWith(actionRequired: ActionRequired.none));
+            .addAnswer(_answer!.copyWith(actionRequired: ActionRequired.none));
       }
     }
     if (widget.onExpand != null) widget.onExpand!();
@@ -120,15 +124,12 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
       questions.addToAll(question,
           answers: answers,
           currentUser: db.currentUser!,
-          currentStudent: currentStudent,
           isActive: activeStatus);
     } else {
-      var newQuestion = widget.question!.copyWith(text: question.text);
       questions.modifyToAll(
-        newQuestion,
-        answers: answers,
+        widget.question!.copyWith(text: question.text),
+        studentAnswers: answers,
         currentUser: db.currentUser!,
-        currentStudent: currentStudent,
         isActive: activeStatus,
       );
     }

@@ -34,47 +34,45 @@ class QuestionAndAnswerPage extends StatelessWidget {
         Provider.of<Database>(context, listen: false).currentUser!.userType;
 
     var questions = Provider.of<AllQuestions>(context, listen: true)
-        .fromSection(sectionIndex);
+        .fromSection(sectionIndex)
+        .toList();
     questions.sort(
         (first, second) => first.creationTimeStamp - second.creationTimeStamp);
 
     late Widget questionSection;
-    if (viewSpan == Target.individual) {
-      if (pageMode != PageMode.edit) {
-        questions = allAnswers.selectActiveQuestionsFrom(questions).toList();
-      }
-      questionSection = _buildQuestionSection(
-        context,
-        questions: questions.toList(growable: false),
-        titleIfNothing:
-            'Aucune question${pageMode == PageMode.fixView ? ' répondue' : ''} dans cette section',
-        answerFilterMode: null,
-      );
-    } else {
-      if (studentId != null) {
-        questions = allAnswers.selectActiveQuestionsFrom(questions).toList();
-      }
-
-      if (pageMode != PageMode.edit &&
-          answerFilterMode.filled == AnswerFilledFilter.withAtLeastOneAnswer) {
-        // Do not filter for edit mode
-        List<Question> questionTp = [];
-        for (final question in questions) {
-          if (question.hasAtLeastOneAnswer(answers: allAnswers)) {
-            questionTp.add(question);
-          }
+    AnswerSortAndFilter? filter;
+    switch (viewSpan) {
+      case Target.individual:
+        if (pageMode != PageMode.edit) {
+          questions = allAnswers.selectActiveQuestionsFrom(questions).toList();
         }
-        questions = questionTp;
-      }
+        filter = null;
+        break;
+      case Target.all:
+      case Target.none:
+        if (studentId != null) {
+          // TODO is this used?
+          questions = allAnswers.selectActiveQuestionsFrom(questions).toList();
+        }
 
-      questionSection = _buildQuestionSection(
-        context,
-        questions: questions,
-        titleIfNothing:
-            'Aucune question${pageMode == PageMode.fixView ? ' répondue' : ''} dans cette section',
-        answerFilterMode: answerFilterMode,
-      );
+        // Do not filter for edit mode
+        if (pageMode != PageMode.edit &&
+            answerFilterMode.filled ==
+                AnswerFilledFilter.withAtLeastOneAnswer) {
+          questions = questions
+              .where((e) => e.hasAtLeastOneAnswer(answers: allAnswers))
+              .toList();
+        }
+        filter = answerFilterMode;
     }
+
+    questionSection = _buildQuestionSection(
+      context,
+      questions: questions,
+      titleIfNothing:
+          'Aucune question${pageMode == PageMode.fixView ? ' répondue' : ''} dans cette section',
+      answerFilterMode: filter,
+    );
 
     return SingleChildScrollView(
       child: Column(

@@ -19,12 +19,13 @@ class StudentListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final allAnswers = Provider.of<AllAnswers>(context);
     final student = Provider.of<Database>(context, listen: false)
         .myStudents
         .firstWhere((e) => e.id == studentId);
+    final allAnswers = Provider.of<AllAnswers>(context).fromStudent(studentId);
 
-    final numberOfActions = allAnswers.numberNeedTeacherAction(context);
+    final numberOfActions =
+        AllAnswers.numberNeedTeacherActionFrom(allAnswers, context);
 
     return Card(
       elevation: 5,
@@ -36,8 +37,8 @@ class StudentListTile extends StatelessWidget {
             Text(student.companyNames.last,
                 style: const TextStyle(fontSize: 16)),
             Text(
-                'Questions répondues : ${allAnswers.numberAnswered} '
-                '/ ${allAnswers.numberActive}',
+                'Questions répondues : ${AllAnswers.numberAnsweredFrom(allAnswers)} '
+                '/ ${AllAnswers.numberActiveFrom(allAnswers)}',
                 style: const TextStyle(fontSize: 16)),
           ],
         ),

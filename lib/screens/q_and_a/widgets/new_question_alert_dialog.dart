@@ -41,18 +41,15 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
     super.initState();
     final answers = Provider.of<AllAnswers>(context, listen: false);
 
-    // If [student] is null, then fetch for all the students
-    final students = widget.student == null
-        ? Provider.of<Database>(context, listen: false).myStudents
-        : [widget.student!];
-
+    final students = Provider.of<Database>(context, listen: false).myStudents;
     for (final student in students) {
-      _questionStatus[student.id] = widget.question == null
-          ? false
-          : answers
-                  .fromQuestionAndStudent(widget.question!, student.id)
-                  ?.isActive ??
-              false;
+      if (widget.question == null) {
+        _questionStatus[student.id] = false;
+      } else {
+        final tp = answers.fromQuestion(widget.question!,
+            studentId: student.id, shouldHaveAtMostOneAnswer: true);
+        _questionStatus[student.id] = tp.isEmpty ? false : tp.first.isActive;
+      }
     }
     _fieldText.text = widget.question?.text ?? "";
   }

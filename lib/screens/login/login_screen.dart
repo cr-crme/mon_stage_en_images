@@ -125,6 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _waitingRoomForStudent() {
+    if (!mounted) return;
     final db = Provider.of<Database>(context, listen: false);
     final students = db.myStudents.toList();
 

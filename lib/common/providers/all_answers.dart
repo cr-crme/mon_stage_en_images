@@ -8,15 +8,15 @@ import 'package:provider/provider.dart';
 import '../models/answer.dart';
 import '../models/question.dart';
 
-class AllAnswers extends FirebaseListProvided<Answer> {
+class AllAnswers extends FirebaseListProvided<StudentAnswers> {
   int get count => length;
   static const String dataName = 'answers';
 
   AllAnswers() : super(pathToData: dataName);
 
   @override
-  Answer deserializeItem(data) {
-    return Answer.fromSerialized(data);
+  StudentAnswers deserializeItem(data) {
+    return StudentAnswers.fromSerialized(data);
   }
 
   @override
@@ -26,15 +26,23 @@ class AllAnswers extends FirebaseListProvided<Answer> {
   ///
   /// Returns if the question is active for all the students who has it
   bool isQuestionActiveForAll(Question question) {
-    final questions = where((e) => e.questionId == question.id);
-    return questions.every((e) => e.isActive);
+    return every((a) {
+      final index = a.answers.indexWhere((q) => q.questionId == question.id);
+      // If the question does not exist for that student, it is technically not inactive
+      if (index == -1) return true;
+      return a.answers[index].isActive;
+    });
   }
 
   ///
   /// Returns if the question is inactive for all the students who has it
   bool isQuestionInactiveForAll(Question question) {
-    final questions = where((e) => e.questionId == question.id);
-    return questions.every((e) => !e.isActive);
+    return every((a) {
+      final index = a.answers.indexWhere((q) => q.questionId == question.id);
+      // If the question does not exist for that student, it is technically not inactive
+      if (index == -1) return true;
+      return !a.answers[index].isActive;
+    });
   }
 
   ///
@@ -48,25 +56,37 @@ class AllAnswers extends FirebaseListProvided<Answer> {
       answers.fold(0, (int prev, e) => prev + (e.isActive ? 1 : 0));
 
   ///
-  /// Returns the number of active answers in the list
-  /// It does it from the current list
-  int get numberActive => numberActiveFrom(this);
-
-  ///
   /// Returns the number of answered answers in the list
   /// [answers] is the list of answers to check
   static int numberAnsweredFrom(Iterable<Answer> answers) =>
       answers.fold(0, (int prev, e) => prev + (e.isAnswered ? 1 : 0));
 
-  ///
-  /// Returns the number of answered answers in the list
-  /// It does it from the current list
-  int get numberAnswered => numberAnsweredFrom(this);
+  @override
+  void add(StudentAnswers item, {bool notify = true, bool cacheItem = false}) {
+    throw 'Use the addAnswer method instead';
+  }
 
   @override
-  void add(Answer item, {bool notify = true}) {
-    // TODO check to add only if the answer does not exist
-    super.add(item, notify: notify);
+  void replace(StudentAnswers item, {bool notify = true}) {
+    throw 'Use the addAnswer method instead';
+  }
+
+  void addAnswer(Answer answer, {bool notify = true}) {
+    final studentAnswers = firstWhereOrNull((e) => e.id == answer.studentId);
+    if (studentAnswers == null) {
+      super.add(StudentAnswers([answer], studentId: answer.studentId),
+          notify: notify, cacheItem: true);
+    } else {
+      final index = studentAnswers.answers
+          .indexWhere((e) => e.questionId == answer.questionId);
+      if (index != -1) {
+        studentAnswers.answers[index] = answer;
+      } else {
+        studentAnswers.answers.add(answer);
+      }
+      super.replace(studentAnswers, notify: notify);
+    }
+
     notifyListeners();
   }
 
@@ -88,12 +108,6 @@ class AllAnswers extends FirebaseListProvided<Answer> {
   }
 
   ///
-  /// Returns the number of actions required from the user
-  /// [context] is required to get the current user
-  int numberOfActionsRequired(BuildContext context) =>
-      numberOfActionsRequiredFrom(this, context);
-
-  ///
   /// Returns the number of actions required from the teacher
   /// [answers] is the list of answers to check
   /// [ctx] is required to get the current user
@@ -103,12 +117,6 @@ class AllAnswers extends FirebaseListProvided<Answer> {
           0,
           (int prev, e) =>
               prev + (e.action(ctx) == ActionRequired.fromTeacher ? 1 : 0));
-
-  ///
-  /// Returns the number of actions required from the teacher
-  /// [context] is required to get the current user
-  int numberNeedTeacherAction(BuildContext context) =>
-      numberNeedTeacherActionFrom(this, context);
 
   ///
   /// Returns the number of actions required from the student
@@ -122,17 +130,13 @@ class AllAnswers extends FirebaseListProvided<Answer> {
               prev + (e.action(context) == ActionRequired.fromStudent ? 1 : 0));
 
   ///
-  /// Returns the number of actions required from the student
-  /// [context] is required to get the current user
-  int numberNeedStudentAction(BuildContext context) =>
-      numberNeedStudentActionFrom(this, context);
-
-  ///
   /// Returns the ansers associated with the [studentId]
   /// [studentId] is the id of the student
   /// If [studentId] is null, all answers are returned
   Iterable<Answer> fromStudent(String? studentId) {
-    return where((e) => (studentId == null || e.studentId == studentId));
+    return studentId == null
+        ? expand((e) => e.answers)
+        : firstWhereOrNull((e) => e.id == studentId)?.answers ?? [];
   }
 
   ///
@@ -141,29 +145,25 @@ class AllAnswers extends FirebaseListProvided<Answer> {
   /// [studentId] is the id of the student
   /// If [studentId] is null, it is not taken into account
   Iterable<Answer> fromQuestions(Iterable<Question> questions,
-      [String? studentId]) {
-    final questionIds = questions.map((e) => e.id);
-    return where((e) =>
-        questionIds.contains(e.questionId) &&
-        (studentId == null || e.studentId == studentId));
-  }
+          [String? studentId]) =>
+      questions.expand((e) {
+        final answers = fromQuestion(e, studentId: studentId);
+        if (studentId == null) return answers;
+        return answers.where((q) => q.studentId == studentId);
+      });
 
   ///
   /// Returns the answers associated with the [question]
   /// [question] is the question
-  Iterable<Answer> fromQuestion(Question question) {
-    return where((e) => e.questionId == question.id);
-  }
-
-  ///
-  /// Returns the answer associated with the [question] and the [studentId]
-  /// [question] is the question
-  /// [studentId] is the id of the student
-  /// If [studentId] is null, it is not taken into account
-  Answer? fromQuestionAndStudent(Question question, String? studentId) {
-    return firstWhereOrNull((e) =>
-        e.questionId == question.id &&
-        (studentId == null || e.studentId == studentId));
+  Iterable<Answer> fromQuestion(Question question,
+      {String? studentId, bool shouldHaveAtMostOneAnswer = false}) {
+    final out = expand((e) => e.answers.where((q) =>
+        q.questionId == question.id &&
+        (studentId == null || q.studentId == studentId)));
+    if (shouldHaveAtMostOneAnswer && out.length > 1) {
+      throw 'Multiple answers for the same question';
+    }
+    return out;
   }
 
   ///
@@ -178,14 +178,22 @@ class AllAnswers extends FirebaseListProvided<Answer> {
   ///
   /// Returns the active answers associated with the [questions]
   /// [questions] is the list of questions
-  Iterable<Answer> selectActiveAnswersFrom(Iterable<Question> questions) =>
-      where((e) => e.isActive);
+  Iterable<Answer> selectActiveAnswersFrom(Iterable<Question> questions) {
+    final questionIds = questions.map((e) => e.id);
+    return expand((e) => e.answers
+        .where((q) => q.isActive && questionIds.contains(q.questionId)));
+  }
 
   ///
   /// Removes the answers associated with the [question]
   /// [question] is the question
   void removeQuestion(Question question) {
-    final toRemove = where((e) => e.questionId == question.id);
-    toRemove.forEach(remove);
+    for (final student in this) {
+      final toRemove =
+          student.answers.where((e) => e.questionId == question.id);
+      toRemove.forEach(student.answers.remove);
+      replace(student, notify: true);
+    }
+    notifyListeners();
   }
 }

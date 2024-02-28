@@ -113,22 +113,25 @@ class _QuestionPartTrailing extends StatelessWidget {
   final VoidCallback stopReadingCallback;
 
   bool _isQuestionActive(BuildContext context) {
-    final allAnswers = Provider.of<AllAnswers>(context, listen: false);
-    final answer = question == null
-        ? null
-        : allAnswers.fromQuestionAndStudent(question!, studentId);
+    final answers = Provider.of<AllAnswers>(context, listen: false)
+        .fromQuestion(question!,
+            studentId: studentId!, shouldHaveAtMostOneAnswer: true);
 
-    if (answer == null) {
-      return question != null && question?.defaultTarget == Target.all;
-    }
+    if (answers.isEmpty) return question!.defaultTarget == Target.all;
 
-    return answer.isActive;
+    return answers.first.isActive;
   }
 
   @override
   Widget build(BuildContext context) {
     final userType =
         Provider.of<Database>(context, listen: false).currentUser!.userType;
+
+    final allAnswers = question == null
+        ? []
+        : Provider.of<AllAnswers>(context, listen: false)
+            .fromQuestion(question!, studentId: studentId)
+            .toList();
 
     if (userType == UserType.student) {
       return Row(
@@ -150,20 +153,18 @@ class _QuestionPartTrailing extends StatelessWidget {
         ],
       );
     } else if (userType == UserType.teacher) {
-      final allAnswers = Provider.of<AllAnswers>(context, listen: false);
-
       if (question == null) {
         return _QuestionAddButton(newQuestionCallback: onNewQuestion);
       } else if (viewSpan == Target.individual && pageMode == PageMode.edit) {
         return _QuestionActivatedState(
           question: question!,
-          studentId: studentId,
+          studentId: studentId!,
           initialStatus: _isQuestionActive(context),
           onStateChange: onStateChange,
           viewSpan: viewSpan,
           pageMode: pageMode,
         );
-      } else if (studentId != null && allAnswers[question].isValidated) {
+      } else if (studentId != null && allAnswers.first.isValidated) {
         return Icon(Icons.check, size: 35, color: Colors.green[600]);
       } else {
         return const SizedBox();
@@ -240,13 +241,16 @@ class _QuestionActivatedState extends StatelessWidget {
     questions.replace(question.copyWith(defaultTarget: newTarget));
 
     // Modify the answers on the server
-    if (studentId != null) {
-      final answer = answers.fromQuestionAndStudent(question, studentId);
-      answers.replace(answer!.copyWith(isActive: value));
-    } else {
+    if (studentId == null) {
       for (var answer in answers.fromQuestion(question)) {
-        answers.replace(answer.copyWith(isActive: value));
+        answers.addAnswer(answer.copyWith(isActive: value));
       }
+    } else {
+      final answer = answers
+          .fromQuestion(question,
+              studentId: studentId, shouldHaveAtMostOneAnswer: true)
+          .first;
+      answers.addAnswer(answer.copyWith(isActive: value));
     }
     onStateChange();
   }

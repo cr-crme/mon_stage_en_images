@@ -1,3 +1,4 @@
+import 'package:defi_photo/common/models/answer.dart';
 import 'package:defi_photo/common/models/answer_sort_and_filter.dart';
 import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/discussion.dart';
@@ -32,17 +33,15 @@ class AnswerPart extends StatefulWidget {
 }
 
 class _AnswerPartState extends State<AnswerPart> {
-  List<Message> _combineMessagesFromAllStudents() {
+  List<Message> _combineMessagesFromAllStudents(List<Answer> answers) {
     final teacherId =
         Provider.of<Database>(context, listen: false).currentUser!.id;
-    final allAnswers = Provider.of<AllAnswers>(context, listen: false);
 
     // Fetch all the required answers
     var discussions = Discussion();
-    for (final message in allAnswers
-        .fromQuestionAndStudent(widget.question, widget.studentId)!
-        .discussion
-        .toListByTime(reversed: true)) {
+
+    final answer = answers.first;
+    for (final message in answer.discussion.toListByTime(reversed: true)) {
       final isTheRightCreatorId = (widget.filterMode!.fromWhomFilter
                   .contains(AnswerFromWhomFilter.studentOnly) &&
               message.creatorId != teacherId) ||
@@ -75,8 +74,10 @@ class _AnswerPartState extends State<AnswerPart> {
     final currentUser =
         Provider.of<Database>(context, listen: false).currentUser!;
     final allAnswers = Provider.of<AllAnswers>(context, listen: false);
-    final currentAnswer =
-        allAnswers.fromQuestionAndStudent(widget.question, widget.studentId)!;
+    final currentAnswer = allAnswers
+        .fromQuestion(widget.question,
+            studentId: widget.studentId, shouldHaveAtMostOneAnswer: true)
+        .first;
 
     if (newTextEntry != null) {
       currentAnswer.addToDiscussion(Message(
@@ -104,7 +105,8 @@ class _AnswerPartState extends State<AnswerPart> {
     } else {
       throw const NotLoggedIn();
     }
-    allAnswers.replace(currentAnswer.copyWith(
+
+    allAnswers.addAnswer(currentAnswer.copyWith(
       actionRequired: newStatus,
       isValidated: markAsValidated,
     ));
@@ -120,11 +122,14 @@ class _AnswerPartState extends State<AnswerPart> {
             .myStudents
             .firstWhere((e) => e.id == widget.studentId);
 
-    final answer = Provider.of<AllAnswers>(context, listen: false)
-        .fromQuestionAndStudent(widget.question, widget.studentId);
-    final messages = answer?.discussion.toListByTime(reversed: true) ??
-        _combineMessagesFromAllStudents();
-    final isValidated = answer?.isValidated ?? false;
+    final answers = Provider.of<AllAnswers>(context, listen: false)
+        .fromQuestion(widget.question, studentId: widget.studentId)
+        .toList();
+
+    final messages = answers.length == 1
+        ? answers[0].discussion.toListByTime(reversed: true)
+        : _combineMessagesFromAllStudents(answers);
+    final isValidated = answers.length == 1 ? answers[0].isValidated : false;
 
     return Container(
       padding: const EdgeInsets.only(left: 40, right: 20),

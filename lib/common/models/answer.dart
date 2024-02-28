@@ -107,3 +107,21 @@ class Answer extends ItemSerializable {
 
   void addToDiscussion(Message message) => discussion.add(message);
 }
+
+class StudentAnswers extends ItemSerializable {
+  final List<Answer> answers;
+
+  StudentAnswers(this.answers, {required String studentId})
+      : super(id: studentId);
+
+  StudentAnswers.fromSerialized(map)
+      : answers = (map as Map?)
+                ?.values
+                .map((answer) => Answer.fromSerialized(answer))
+                .toList() ??
+            [];
+
+  @override
+  Map<String, dynamic> serializedMap() =>
+      {for (var e in answers) e.id: e.serialize()};
+}

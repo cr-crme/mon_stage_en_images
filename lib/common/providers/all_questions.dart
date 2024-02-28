@@ -25,9 +25,8 @@ class AllQuestions extends FirebaseListProvided<Question> with Section {
   ///
   /// Returns the list of questions from a section
   /// [index] is the index of the section
-  List<Question> fromSection(int index) {
-    List<Question> out =
-        where((question) => question.section == index).toList(growable: false);
+  Iterable<Question> fromSection(int index) {
+    Iterable<Question> out = where((question) => question.section == index);
     return out;
   }
 
@@ -47,29 +46,21 @@ class AllQuestions extends FirebaseListProvided<Question> with Section {
     Question question, {
     required AllAnswers answers,
     required User currentUser,
-    User? currentStudent,
     Map<String, bool>? isActive,
     bool notify = true,
   }) {
     super.add(question, notify: notify);
 
-    for (var answer in answers.fromStudent(currentStudent?.id)) {
-      if (currentStudent != null && answer.studentId != currentStudent.id) {
-        continue;
-      }
-
+    for (final student in answers) {
       final isActiveForStudent = isActive == null
-          ? question.defaultTarget != Target.none &&
-              (question.defaultTarget == Target.all ||
-                  currentStudent == null ||
-                  answer.studentId == currentStudent.id)
-          : isActive[answer.studentId]!;
+          ? question.defaultTarget == Target.all
+          : isActive[student.id]!;
 
-      answers.add(Answer(
+      answers.addAnswer(Answer(
           isActive: isActiveForStudent,
           questionId: question.id,
           createdById: currentUser.id,
-          studentId: answer.studentId,
+          studentId: student.id,
           actionRequired: ActionRequired.fromStudent));
     }
   }
@@ -77,29 +68,29 @@ class AllQuestions extends FirebaseListProvided<Question> with Section {
   ///
   /// Modifies a question to all the students
   /// [question] is the question to modify<>
-  /// [answers] is the list of answers
+  /// [studentAnswers] is the list of answers
   /// [currentUser] is the current user
-  /// [currentStudent] is the current student
   /// [isActive] is the map of the students and if the question is active for them
   /// [notify] is if the listeners should be notified
   void modifyToAll(
     Question question, {
-    required AllAnswers answers,
+    required AllAnswers studentAnswers,
     required User currentUser,
-    User? currentStudent,
     Map<String, bool>? isActive,
     bool notify = true,
   }) {
     replace(question, notify: notify);
 
-    for (var answer in answers) {
-      if (currentStudent != null && answer.studentId != currentStudent.id) {
-        continue;
-      }
+    for (var student in studentAnswers) {
+      for (int i = 0; i < student.answers.length; i++) {
+        final answer = student.answers[i];
+        if (answer.questionId != question.id) continue;
 
-      answers.replace(answer.copyWith(
-          isActive:
-              isActive == null ? answer.isActive : isActive[answer.studentId]));
+        studentAnswers.addAnswer(answer.copyWith(
+            isActive: isActive == null
+                ? answer.isActive
+                : isActive[answer.studentId]));
+      }
     }
   }
 
