@@ -2,7 +2,6 @@ import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
 import 'package:defi_photo/common/models/themes.dart';
 import 'package:defi_photo/common/models/user.dart';
-import 'package:defi_photo/common/providers/all_answers.dart';
 import 'package:defi_photo/common/providers/all_questions.dart';
 import 'package:defi_photo/common/widgets/colored_corners.dart';
 import 'package:defi_photo/default_questions.dart';
@@ -98,12 +97,12 @@ class _LoginScreenState extends State<LoginScreen> {
       return status;
     }
 
-    _startFetchingData();
-
+    if (!mounted) return status;
     if (database.currentUser!.userType == UserType.student) {
-      _waitingRoomForStudent();
+      Navigator.of(context).pushReplacementNamed(QAndAScreen.routeName,
+          arguments: [Target.individual, PageMode.editableView, null]);
     } else {
-      if (mounted && _isNewUser) {
+      if (_isNewUser) {
         final questions = Provider.of<AllQuestions>(context, listen: false);
         for (final question in DefaultQuestion.questions) {
           questions.add(question);
@@ -112,31 +111,6 @@ class _LoginScreenState extends State<LoginScreen> {
       navigator.pushReplacementNamed(StudentsScreen.routeName);
     }
     return status;
-  }
-
-  void _startFetchingData() {
-    /// this should be call only after user has successfully logged in
-    final allAnswers = Provider.of<AllAnswers>(context, listen: false);
-    final questions = Provider.of<AllQuestions>(context, listen: false);
-
-    allAnswers.initializeFetchingData();
-    questions.initializeFetchingData();
-  }
-
-  void _waitingRoomForStudent() {
-    if (!mounted) return;
-    final db = Provider.of<Database>(context, listen: false);
-    final students = db.myStudents.toList();
-
-    // Wait until the data are fetched
-    if (students.indexWhere((e) => e.id == db.currentUser!.studentId) < 0) {
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => _waitingRoomForStudent());
-      return;
-    }
-
-    Navigator.of(context).pushReplacementNamed(QAndAScreen.routeName,
-        arguments: [Target.individual, PageMode.editableView, null]);
   }
 
   @override

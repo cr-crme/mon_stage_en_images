@@ -145,7 +145,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final students = Provider.of<Database>(context).myStudents.toList();
+    final students = Provider.of<Database>(context).students.toList();
     students.sort(
         (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
 

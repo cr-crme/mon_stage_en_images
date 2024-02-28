@@ -10,11 +10,7 @@ class AllQuestions extends FirebaseListProvided<Question> with Section {
   // Constructors and (de)serializer
   static const String dataName = 'questions';
 
-  AllQuestions()
-      : super(
-          pathToData: dataName,
-          pathToAvailableDataIds: '$dataName-generic', // TODO: Remove -generic
-        );
+  AllQuestions() : super(pathToData: dataName);
 
   @override
   Question deserializeItem(data) {
@@ -28,10 +24,6 @@ class AllQuestions extends FirebaseListProvided<Question> with Section {
     Iterable<Question> out = where((question) => question.section == index);
     return out;
   }
-
-  @override
-  set pathToAvailableDataIds(String? newPath) =>
-      super.pathToAvailableDataIds = '$dataName-$newPath';
 
   ///
   /// Adds a question to all the students

@@ -1,7 +1,7 @@
 import 'package:defi_photo/common/models/answer.dart';
 import 'package:defi_photo/common/models/enum.dart';
-import 'package:defi_photo/common/providers/all_questions.dart';
 import 'package:defi_photo/common/providers/all_answers.dart';
+import 'package:defi_photo/common/providers/all_questions.dart';
 import 'package:ezlogin/ezlogin.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,7 +14,11 @@ class Database extends EzloginFirebase with ChangeNotifier {
   ///
   /// This is an internal structure to quickly access the current
   /// user information. These may therefore be out of sync with the database
-  ///
+
+  // Rerefence to the database providers
+  final questions = AllQuestions();
+  final answers = AllAnswers();
+
   User? _currentUser;
 
   @override
@@ -35,14 +39,28 @@ class Database extends EzloginFirebase with ChangeNotifier {
     _currentUser = await user(username);
     notifyListeners();
 
-    if (currentUser?.userType == UserType.teacher) _fetchAllMyStudents();
+    _fetchStudents();
+    _startFetchingData();
 
     return status;
   }
 
+  Future<void> _startFetchingData() async {
+    /// this should be call only after user has successfully logged in
+
+    await answers.initializeFetchingData();
+    await questions.initializeFetchingData();
+  }
+
+  Future<void> _stopFetchingData() async {
+    await answers.stopFetchingData();
+    await questions.stopFetchingData();
+  }
+
   @override
-  Future<EzloginStatus> logout() {
+  Future<EzloginStatus> logout() async {
     _currentUser = null;
+    _stopFetchingData();
     notifyListeners();
     return super.logout();
   }
@@ -65,20 +83,30 @@ class Database extends EzloginFirebase with ChangeNotifier {
     return data.value == null ? null : User.fromSerialized(data.value);
   }
 
-  final List<User> _myStudents = [];
-  Iterable<User> get myStudents => [..._myStudents];
+  final List<User> _students = [];
+  Iterable<User> get students => [..._students];
 
-  Future<void> _fetchAllMyStudents() async {
+  Future<void> _fetchStudents() async {
+    if (_currentUser == null) return;
+
+    // We only have access to our own information if we are a student
+    if (_currentUser!.userType == UserType.student) {
+      _students.clear();
+      _students.add(_currentUser!);
+      notifyListeners();
+      return;
+    }
+
     final data = await FirebaseDatabase.instance
         .ref('$usersPath/${_currentUser!.id}')
         .get();
 
-    _myStudents.clear();
+    _students.clear();
 
     if (data.value != null) {
       for (final id in (data.value! as Map)['supervising'] ?? []) {
         final student = await user(id);
-        if (student != null) _myStudents.add(student);
+        if (student != null) _students.add(student);
       }
     }
     notifyListeners();
@@ -115,7 +143,7 @@ class Database extends EzloginFirebase with ChangeNotifier {
       return EzloginStatus.unrecognizedError;
     }
 
-    final newSupervising = myStudents.map((e) => e.id).toList();
+    final newSupervising = students.map((e) => e.id).toList();
     newSupervising.add(newStudent.id);
     await FirebaseDatabase.instance
         .ref(usersPath)
@@ -132,7 +160,7 @@ class Database extends EzloginFirebase with ChangeNotifier {
       ));
     }
 
-    _fetchAllMyStudents();
+    _fetchStudents();
     return EzloginStatus.success;
   }
 
@@ -141,7 +169,7 @@ class Database extends EzloginFirebase with ChangeNotifier {
     if (studentUser == null) return EzloginStatus.userNotFound;
 
     final status = await modifyUser(user: studentUser, newInfo: newInfo);
-    _fetchAllMyStudents();
+    _fetchStudents();
     return status;
   }
 }

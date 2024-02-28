@@ -1,7 +1,6 @@
 import 'package:defi_photo/common/models/answer.dart';
 import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
-import 'package:defi_photo/common/models/exceptions.dart';
 import 'package:defi_photo/common/models/question.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
@@ -17,10 +16,6 @@ class AllAnswers extends FirebaseListProvided<StudentAnswers> {
   StudentAnswers deserializeItem(data) {
     return StudentAnswers.fromSerialized(data);
   }
-
-  @override
-  set pathToAvailableDataIds(String? newPath) =>
-      throw 'Id should not be used for students';
 
   ///
   /// Returns if the question is active for all the students who has it
@@ -90,13 +85,14 @@ class AllAnswers extends FirebaseListProvided<StudentAnswers> {
   static int numberOfActionsRequiredFrom(
       Iterable<Answer> answers, BuildContext context) {
     final userType =
-        Provider.of<Database>(context, listen: false).currentUser!.userType;
+        Provider.of<Database>(context, listen: false).currentUser?.userType ??
+            UserType.none;
     if (userType == UserType.student) {
       return numberNeedStudentActionFrom(answers, context);
     } else if (userType == UserType.teacher) {
       return numberNeedTeacherActionFrom(answers, context);
     } else {
-      throw const NotLoggedIn();
+      return 0;
     }
   }
 

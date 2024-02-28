@@ -121,7 +121,7 @@ class _AnswerPartState extends State<AnswerPart> {
     final student = widget.studentId == null
         ? null
         : Provider.of<Database>(context, listen: false)
-            .myStudents
+            .students
             .firstWhere((e) => e.id == widget.studentId);
 
     final answers = Provider.of<AllAnswers>(context, listen: false).filter(

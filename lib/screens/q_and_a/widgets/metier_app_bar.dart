@@ -80,7 +80,7 @@ class MetierAppBar extends StatelessWidget {
     required bool isSelected,
     required Function() onPressed,
   }) {
-    final answers = Provider.of<AllAnswers>(context, listen: false)
+    final answers = Provider.of<AllAnswers>(context)
         .filter(
             questionIds:
                 questions.fromSection(sectionIndex).toList().map((e) => e.id),
@@ -88,7 +88,8 @@ class MetierAppBar extends StatelessWidget {
         .toList();
 
     final userType =
-        Provider.of<Database>(context, listen: false).currentUser!.userType;
+        Provider.of<Database>(context, listen: false).currentUser?.userType ??
+            UserType.none;
 
     return TakingActionNotifier(
       left: 8,

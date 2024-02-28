@@ -1,10 +1,9 @@
 import 'package:defi_photo/common/models/answer.dart';
 import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
-import 'package:defi_photo/common/models/exceptions.dart';
 import 'package:defi_photo/common/models/section.dart';
-import 'package:defi_photo/common/providers/all_questions.dart';
 import 'package:defi_photo/common/providers/all_answers.dart';
+import 'package:defi_photo/common/providers/all_questions.dart';
 import 'package:defi_photo/common/widgets/taking_action_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -36,7 +35,8 @@ class MetierTile extends StatelessWidget {
     final questions = Provider.of<AllQuestions>(context, listen: false)
         .fromSection(sectionIndex);
     final userType =
-        Provider.of<Database>(context, listen: false).currentUser!.userType;
+        Provider.of<Database>(context, listen: false).currentUser?.userType ??
+            UserType.none;
 
     late final List<Answer>? answers;
     late final int? answered;
@@ -105,7 +105,7 @@ class MetierTile extends StatelessWidget {
               style: _pickTextStyle(context, active, answered, numberOfActions))
           : null;
     } else {
-      throw const NotLoggedIn();
+      return null;
     }
   }
 }

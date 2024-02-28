@@ -1,7 +1,6 @@
 import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/discussion.dart';
 import 'package:defi_photo/common/models/enum.dart';
-import 'package:defi_photo/common/models/exceptions.dart';
 import 'package:defi_photo/common/models/message.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
@@ -84,10 +83,9 @@ class Answer extends ItemSerializable {
     if (!isActive) return ActionRequired.none;
 
     final userType =
-        Provider.of<Database>(context, listen: false).currentUser!.userType;
-    if (userType == UserType.none) {
-      throw const NotLoggedIn();
-    }
+        Provider.of<Database>(context, listen: false).currentUser?.userType ??
+            UserType.none;
+    if (userType == UserType.none) return ActionRequired.none;
 
     if (userType == UserType.student &&
         actionRequired == ActionRequired.fromStudent) {
@@ -116,9 +114,11 @@ class StudentAnswers extends ItemSerializable {
   StudentAnswers.fromSerialized(map)
       : answers = (map as Map?)
                 ?.values
+                .where((e) => map?['id'] != e)
                 .map((answer) => Answer.fromSerialized(answer))
                 .toList() ??
-            [];
+            [],
+        super(id: map?['id']);
 
   @override
   Map<String, dynamic> serializedMap() =>

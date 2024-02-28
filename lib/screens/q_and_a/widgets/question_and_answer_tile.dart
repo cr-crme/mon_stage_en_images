@@ -78,7 +78,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
           widget.studentId != null &&
           (teacherMadeAction || studentMadeAction)) {
         // Flag the answer as being actionned
-        Provider.of<AllAnswers>(context)
+        Provider.of<AllAnswers>(context, listen: false)
             .addAnswer(_answer!.copyWith(actionRequired: ActionRequired.none));
       }
     }

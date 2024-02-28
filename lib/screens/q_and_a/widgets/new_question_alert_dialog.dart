@@ -39,7 +39,7 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
   @override
   void initState() {
     super.initState();
-    final students = Provider.of<Database>(context, listen: false).myStudents;
+    final students = Provider.of<Database>(context, listen: false).students;
     final answers = Provider.of<AllAnswers>(context, listen: false).filter(
         questionIds: [widget.question!.id],
         studentIds: students.map((e) => e.id)).toList();
@@ -127,7 +127,7 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
   @override
   Widget build(BuildContext context) {
     final students =
-        Provider.of<Database>(context, listen: false).myStudents.toList();
+        Provider.of<Database>(context, listen: false).students.toList();
     students.sort(
         (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
 

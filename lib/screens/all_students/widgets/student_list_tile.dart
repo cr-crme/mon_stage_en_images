@@ -20,7 +20,7 @@ class StudentListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final student = Provider.of<Database>(context, listen: false)
-        .myStudents
+        .students
         .firstWhere((e) => e.id == studentId);
 
     final allAnswers =

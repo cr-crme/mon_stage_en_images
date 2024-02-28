@@ -53,16 +53,6 @@ class QuestionAndAnswerPage extends StatelessWidget {
         break;
       case Target.all:
       case Target.none:
-        if (studentId != null) {
-          // TODO is this used?
-          final answers = allAnswers.filter(
-              questionIds: questions.map((e) => e.id),
-              studentIds: [studentId!]);
-          questions = answers
-              .map((e) => questions.firstWhere((q) => q.id == e.questionId))
-              .toList();
-        }
-
         // Do not filter for edit mode
         if (pageMode != PageMode.edit &&
             answerFilterMode.filled ==

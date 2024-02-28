@@ -27,6 +27,9 @@ class MainDrawer extends StatelessWidget {
       return;
     }
 
+    if (!context.mounted) return;
+    final database = Provider.of<Database>(context, listen: false);
+    await database.logout();
     navigator.pushReplacementNamed(LoginScreen.routeName);
   }
 

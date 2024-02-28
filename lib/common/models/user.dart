@@ -14,7 +14,6 @@ class User extends EzloginUser {
     required this.userType,
     required super.mustChangePassword,
     required this.companyNames,
-    this.studentId,
     super.id,
   });
 
@@ -29,7 +28,6 @@ class User extends EzloginUser {
             (map['supervising'] as List?)?.map((e) => e as String).toList() ??
                 [],
         userType = UserType.values[map['userType'] as int],
-        studentId = map['studentId'],
         companyNames =
             (map['companyNames'] as List?)?.map((e) => e as String).toList() ??
                 [],
@@ -82,7 +80,6 @@ class User extends EzloginUser {
         'supervisedBy': supervisedBy,
         'supervising': supervising,
         'userType': userType.index,
-        'studentId': studentId,
         'companyNames': companyNames,
       });
   }
@@ -99,7 +96,6 @@ class User extends EzloginUser {
   final List<String> supervisedBy;
   final List<String> supervising;
   final UserType userType;
-  final String? studentId;
   final List<String> companyNames;
 
   @override
