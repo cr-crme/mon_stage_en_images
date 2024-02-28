@@ -74,10 +74,8 @@ class _AnswerPartState extends State<AnswerPart> {
     final currentUser =
         Provider.of<Database>(context, listen: false).currentUser!;
     final allAnswers = Provider.of<AllAnswers>(context, listen: false);
-    final currentAnswer = allAnswers
-        .fromQuestion(widget.question,
-            studentId: widget.studentId, shouldHaveAtMostOneAnswer: true)
-        .first;
+    final currentAnswer = allAnswers.filter(
+        questions: [widget.question], studentIds: [widget.studentId!]).first;
 
     if (newTextEntry != null) {
       currentAnswer.addToDiscussion(Message(
@@ -122,9 +120,8 @@ class _AnswerPartState extends State<AnswerPart> {
             .myStudents
             .firstWhere((e) => e.id == widget.studentId);
 
-    final answers = Provider.of<AllAnswers>(context, listen: false)
-        .fromQuestion(widget.question, studentId: widget.studentId)
-        .toList();
+    final answers = Provider.of<AllAnswers>(context, listen: false).filter(
+        questions: [widget.question], studentIds: [widget.studentId!]).toList();
 
     final messages = answers.length == 1
         ? answers[0].discussion.toListByTime(reversed: true)

@@ -114,8 +114,7 @@ class _QuestionPartTrailing extends StatelessWidget {
 
   bool _isQuestionActive(BuildContext context) {
     final answers = Provider.of<AllAnswers>(context, listen: false)
-        .fromQuestion(question!,
-            studentId: studentId!, shouldHaveAtMostOneAnswer: true);
+        .filter(questions: [question!], studentIds: [studentId!]);
 
     if (answers.isEmpty) return question!.defaultTarget == Target.all;
 
@@ -129,9 +128,9 @@ class _QuestionPartTrailing extends StatelessWidget {
 
     final allAnswers = question == null
         ? []
-        : Provider.of<AllAnswers>(context, listen: false)
-            .fromQuestion(question!, studentId: studentId)
-            .toList();
+        : Provider.of<AllAnswers>(context, listen: false).filter(
+            questions: [question!],
+            studentIds: studentId == null ? null : [studentId!]).toList();
 
     if (userType == UserType.student) {
       return Row(
@@ -241,15 +240,10 @@ class _QuestionActivatedState extends StatelessWidget {
     questions.replace(question.copyWith(defaultTarget: newTarget));
 
     // Modify the answers on the server
-    if (studentId == null) {
-      for (var answer in answers.fromQuestion(question)) {
-        answers.addAnswer(answer.copyWith(isActive: value));
-      }
-    } else {
-      final answer = answers
-          .fromQuestion(question,
-              studentId: studentId, shouldHaveAtMostOneAnswer: true)
-          .first;
+    final filteredAnswers = answers.filter(
+        questions: [question],
+        studentIds: studentId == null ? null : [studentId!]);
+    for (var answer in filteredAnswers) {
       answers.addAnswer(answer.copyWith(isActive: value));
     }
     onStateChange();

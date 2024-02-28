@@ -216,10 +216,9 @@ class _DiscussionListViewState extends State<DiscussionListView> {
 
     final answer = widget.student == null
         ? null
-        : Provider.of<AllAnswers>(context, listen: false)
-            .fromQuestion(widget.question,
-                studentId: widget.student?.id, shouldHaveAtMostOneAnswer: true)
-            .first;
+        : Provider.of<AllAnswers>(context, listen: false).filter(
+            questions: [widget.question],
+            studentIds: [widget.student!.id]).first;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -81,7 +81,9 @@ class MetierAppBar extends StatelessWidget {
     required onPressed,
   }) {
     final answers = Provider.of<AllAnswers>(context, listen: false)
-        .fromQuestions(questions.fromSection(sectionIndex), studentId)
+        .filter(
+            questions: questions.fromSection(sectionIndex),
+            studentIds: studentId == null ? null : [studentId!])
         .toList();
 
     final userType =

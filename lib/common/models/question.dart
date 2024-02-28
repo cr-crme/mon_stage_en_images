@@ -54,8 +54,9 @@ class Question extends ItemSerializableWithCreationTime {
     };
   }
 
-  bool hasAtLeastOneAnswer({required AllAnswers answers}) =>
-      answers.fromQuestion(this).any((e) => e.isAnswered);
+  bool hasAtLeastOneAnswer({required AllAnswers answers}) {
+    return answers.filter(questions: [this], isAnswered: true).isNotEmpty;
+  }
 
   // Attributes and methods
   final String text;

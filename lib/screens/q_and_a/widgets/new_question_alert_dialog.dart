@@ -39,16 +39,17 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
   @override
   void initState() {
     super.initState();
-    final answers = Provider.of<AllAnswers>(context, listen: false);
-
     final students = Provider.of<Database>(context, listen: false).myStudents;
+    final answers = Provider.of<AllAnswers>(context, listen: false).filter(
+        questions: [widget.question!],
+        studentIds: students.map((e) => e.id)).toList();
+
     for (final student in students) {
       if (widget.question == null) {
         _questionStatus[student.id] = false;
       } else {
-        final tp = answers.fromQuestion(widget.question!,
-            studentId: student.id, shouldHaveAtMostOneAnswer: true);
-        _questionStatus[student.id] = tp.isEmpty ? false : tp.first.isActive;
+        final index = answers.indexWhere((e) => e.studentId == student.id);
+        _questionStatus[student.id] = answers[index].isActive;
       }
     }
     _fieldText.text = widget.question?.text ?? "";

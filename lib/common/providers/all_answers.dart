@@ -130,40 +130,22 @@ class AllAnswers extends FirebaseListProvided<StudentAnswers> {
               prev + (e.action(context) == ActionRequired.fromStudent ? 1 : 0));
 
   ///
-  /// Returns the ansers associated with the [studentId]
-  /// [studentId] is the id of the student
-  /// If [studentId] is null, all answers are returned
-  Iterable<Answer> fromStudent(String? studentId) {
-    return studentId == null
-        ? expand((e) => e.answers)
-        : firstWhereOrNull((e) => e.id == studentId)?.answers ?? [];
-  }
-
-  ///
-  /// Returns the answers associated with the [questions]
+  /// Returns the answers filtered by the [questions], [studentIds], [isActive] and [isAnswered]
   /// [questions] is the list of questions
-  /// [studentId] is the id of the student
-  /// If [studentId] is null, it is not taken into account
-  Iterable<Answer> fromQuestions(Iterable<Question> questions,
-          [String? studentId]) =>
-      questions.expand((e) {
-        final answers = fromQuestion(e, studentId: studentId);
-        if (studentId == null) return answers;
-        return answers.where((q) => q.studentId == studentId);
-      });
-
-  ///
-  /// Returns the answers associated with the [question]
-  /// [question] is the question
-  Iterable<Answer> fromQuestion(Question question,
-      {String? studentId, bool shouldHaveAtMostOneAnswer = false}) {
-    final out = expand((e) => e.answers.where((q) =>
-        q.questionId == question.id &&
-        (studentId == null || q.studentId == studentId)));
-    if (shouldHaveAtMostOneAnswer && out.length > 1) {
-      throw 'Multiple answers for the same question';
-    }
-    return out;
+  /// [studentIds] is the list of student ids
+  /// [isActive] is if the answer is active
+  /// [isAnswered] is if the answer is answered
+  Iterable<Answer> filter({
+    Iterable<Question>? questions,
+    Iterable<String>? studentIds,
+    bool? isActive,
+    bool? isAnswered,
+  }) {
+    return expand((e) => e.answers.where((q) =>
+        (questions == null || questions.contains(q.questionId)) &&
+        (studentIds == null || studentIds.contains(q.studentId)) &&
+        (isActive == null || q.isActive == isActive) &&
+        (isAnswered == null || q.isAnswered == isAnswered)));
   }
 
   ///
@@ -171,17 +153,8 @@ class AllAnswers extends FirebaseListProvided<StudentAnswers> {
   /// [questions] is the list of questions
   Iterable<Question> selectActiveQuestionsFrom(Iterable<Question> questions) {
     final questionIds =
-        selectActiveAnswersFrom(questions).map((e) => e.questionId);
+        filter(questions: questions, isActive: true).map((e) => e.questionId);
     return questions.where((e) => questionIds.contains(e.id));
-  }
-
-  ///
-  /// Returns the active answers associated with the [questions]
-  /// [questions] is the list of questions
-  Iterable<Answer> selectActiveAnswersFrom(Iterable<Question> questions) {
-    final questionIds = questions.map((e) => e.id);
-    return expand((e) => e.answers
-        .where((q) => q.isActive && questionIds.contains(q.questionId)));
   }
 
   ///

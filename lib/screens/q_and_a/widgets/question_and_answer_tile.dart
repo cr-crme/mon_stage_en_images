@@ -47,9 +47,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     if (widget.question == null || widget.studentId == null) return null;
 
     final answers = Provider.of<AllAnswers>(context, listen: false)
-        .fromQuestion(widget.question!,
-            studentId: widget.studentId, shouldHaveAtMostOneAnswer: true)
-        .toList();
+        .filter(questions: [widget.question!], studentIds: [widget.studentId!]);
     return answers.isEmpty ? null : answers.first;
   }
 

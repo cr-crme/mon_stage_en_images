@@ -41,14 +41,15 @@ class MetierTile extends StatelessWidget {
     late final List<Answer>? answers;
     late final int? answered;
     late final int? active;
-    if (studentId != null) {
-      answers = allAnswers.fromQuestions(questions, studentId).toList();
-      answered = AllAnswers.numberAnsweredFrom(answers);
-      active = AllAnswers.numberActiveFrom(answers);
-    } else {
+    if (studentId == null) {
       answers = null;
       answered = null;
       active = null;
+    } else {
+      answers = allAnswers
+          .filter(questions: questions, studentIds: [studentId!]).toList();
+      answered = AllAnswers.numberAnsweredFrom(answers);
+      active = AllAnswers.numberActiveFrom(answers);
     }
     final int numberOfActions = answers != null
         ? AllAnswers.numberOfActionsRequiredFrom(answers, context)
