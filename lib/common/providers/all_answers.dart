@@ -56,7 +56,7 @@ class AllAnswers extends FirebaseListProvided<StudentAnswers> {
       throw 'Use the addAnswer method instead';
 
   @override
-  void replace(StudentAnswers item, {bool notify = true}) =>
+  Future<void> replace(StudentAnswers item, {bool notify = true}) =>
       throw 'Use the addAnswer method instead';
 
   void addAnswer(Answer answer, {bool notify = true}) {

@@ -124,7 +124,7 @@ class _AnswerPartState extends State<AnswerPart> {
             .students
             .firstWhere((e) => e.id == widget.studentId);
 
-    final answers = Provider.of<AllAnswers>(context, listen: false).filter(
+    final answers = Provider.of<AllAnswers>(context).filter(
         questionIds: [widget.question.id],
         studentIds:
             widget.studentId == null ? null : [widget.studentId!]).toList();
