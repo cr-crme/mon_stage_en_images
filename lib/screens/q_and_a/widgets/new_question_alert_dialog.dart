@@ -40,13 +40,17 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
   void initState() {
     super.initState();
     final answers = Provider.of<AllAnswers>(context, listen: false);
-    final students = Provider.of<Database>(context, listen: false).myStudents;
+
+    // If [student] is null, then fetch for all the students
+    final students = widget.student == null
+        ? Provider.of<Database>(context, listen: false).myStudents
+        : [widget.student!];
 
     for (final student in students) {
       _questionStatus[student.id] = widget.question == null
           ? false
           : answers
-                  .fromQuestionAndStudent(widget.question!, widget.student?.id)
+                  .fromQuestionAndStudent(widget.question!, student.id)
                   ?.isActive ??
               false;
     }
@@ -107,12 +111,12 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
   Widget _buildStudentTile(User student) {
     return GestureDetector(
       onTap: () {
-        _questionStatus[student.id] = !_questionStatus[student]!;
+        _questionStatus[student.id] = !_questionStatus[student.id]!;
         setState(() {});
       },
       child: Row(children: [
         Checkbox(
-            value: _questionStatus[student],
+            value: _questionStatus[student.id],
             onChanged: (value) {
               _questionStatus[student.id] = value!;
               setState(() {});

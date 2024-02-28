@@ -10,7 +10,7 @@ import '../models/question.dart';
 
 class AllAnswers extends FirebaseListProvided<Answer> {
   int get count => length;
-  static const String dataName = 'students';
+  static const String dataName = 'answers';
 
   AllAnswers() : super(pathToData: dataName);
 

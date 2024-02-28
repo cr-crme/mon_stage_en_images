@@ -104,6 +104,6 @@ class User extends EzloginUser {
 
   @override
   String toString() {
-    return '$email added by $addedBy';
+    return '$firstName $lastName';
   }
 }

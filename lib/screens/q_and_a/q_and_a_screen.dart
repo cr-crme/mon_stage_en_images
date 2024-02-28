@@ -5,13 +5,12 @@ import 'package:defi_photo/common/models/section.dart';
 import 'package:defi_photo/common/models/user.dart';
 import 'package:defi_photo/common/widgets/main_drawer.dart';
 import 'package:defi_photo/screens/all_students/students_screen.dart';
+import 'package:defi_photo/screens/q_and_a/main_metier_page.dart';
+import 'package:defi_photo/screens/q_and_a/question_and_answer_page.dart';
+import 'package:defi_photo/screens/q_and_a/widgets/filter_answers_dialog.dart';
+import 'package:defi_photo/screens/q_and_a/widgets/metier_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'main_metier_page.dart';
-import 'question_and_answer_page.dart';
-import 'widgets/filter_answers_dialog.dart';
-import 'widgets/metier_app_bar.dart';
 
 class QAndAScreen extends StatefulWidget {
   const QAndAScreen({super.key});
@@ -45,10 +44,8 @@ class _QAndAScreenState extends State<QAndAScreen> {
     final arguments = ModalRoute.of(context)!.settings.arguments as List;
     _viewSpan = arguments[0] as Target;
     _pageMode = arguments[1] as PageMode;
-    _student = _userType == UserType.student
-        ? database.myStudents
-            .firstWhere((e) => e.studentId == currentUser.studentId!)
-        : arguments[2] as User?;
+    _student =
+        _userType == UserType.student ? currentUser : arguments[2] as User?;
   }
 
   void onPageChanged(BuildContext context, int page) {
@@ -108,7 +105,7 @@ class _QAndAScreenState extends State<QAndAScreen> {
     setState(() {});
   }
 
-  AppBar _setAppBar(UserType loginType, User? student) {
+  AppBar _setAppBar() {
     final currentTheme = Theme.of(context).textTheme.titleLarge!;
     final onPrimaryColor = Theme.of(context).colorScheme.onPrimary;
 
@@ -116,30 +113,30 @@ class _QAndAScreenState extends State<QAndAScreen> {
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(student?.toString() ??
+          Text(_student?.toString() ??
               (_pageMode == PageMode.fixView
                   ? 'Résumé des réponses'
                   : 'Gestion des questions')),
-          if (loginType == UserType.student)
+          if (_userType == UserType.student)
             Text(
                 _currentPage == 0
                     ? "Mon défi photo"
                     : Section.name(_currentPage - 1),
                 style:
                     currentTheme.copyWith(fontSize: 15, color: onPrimaryColor)),
-          if (loginType == UserType.teacher && student != null)
+          if (_userType == UserType.teacher && _student != null)
             Text(
-              student.companyNames
+              _student!.companyNames
                   .last, // TODO: see how to make this professor dependent
               style: currentTheme.copyWith(fontSize: 15, color: onPrimaryColor),
             ),
         ],
       ),
-      leading: (_student == null || loginType == UserType.student) &&
-              _currentPage == 0
-          ? null
-          : BackButton(onPressed: _onBackPressed),
-      actions: _currentPage != 0 && loginType == UserType.teacher
+      leading:
+          _currentPage != 0 || _student != null && _userType == UserType.teacher
+              ? BackButton(onPressed: _onBackPressed)
+              : null,
+      actions: _currentPage != 0 && _userType == UserType.teacher
           ? [
               if (_viewSpan == Target.individual)
                 IconButton(
@@ -164,7 +161,7 @@ class _QAndAScreenState extends State<QAndAScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _setAppBar(_userType, _student),
+      appBar: _setAppBar(),
       body: Column(
         children: [
           MetierAppBar(
@@ -226,7 +223,7 @@ class _QAndAScreenState extends State<QAndAScreen> {
           ),
         ],
       ),
-      drawer: _userType == UserType.student ? const MainDrawer() : null,
+      drawer: const MainDrawer(),
     );
   }
 }
