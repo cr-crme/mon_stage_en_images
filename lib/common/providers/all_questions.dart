@@ -1,11 +1,10 @@
+import 'package:defi_photo/common/models/answer.dart';
+import 'package:defi_photo/common/models/enum.dart';
+import 'package:defi_photo/common/models/question.dart';
+import 'package:defi_photo/common/models/section.dart';
 import 'package:defi_photo/common/models/user.dart';
 import 'package:defi_photo/common/providers/all_answers.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
-
-import '../models/answer.dart';
-import '../models/enum.dart';
-import '../models/question.dart';
-import '../models/section.dart';
 
 class AllQuestions extends FirebaseListProvided<Question> with Section {
   // Constructors and (de)serializer

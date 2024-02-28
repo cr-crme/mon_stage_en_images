@@ -5,10 +5,9 @@ import 'package:defi_photo/common/models/question.dart';
 import 'package:defi_photo/common/models/section.dart';
 import 'package:defi_photo/common/providers/all_questions.dart';
 import 'package:defi_photo/common/providers/all_answers.dart';
+import 'package:defi_photo/screens/q_and_a/widgets/question_and_answer_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'widgets/question_and_answer_tile.dart';
 
 class QuestionAndAnswerPage extends StatelessWidget {
   const QuestionAndAnswerPage(
@@ -29,22 +28,26 @@ class QuestionAndAnswerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final allAnswers = Provider.of<AllAnswers>(context, listen: false);
     final userType =
         Provider.of<Database>(context, listen: false).currentUser!.userType;
 
+    final allAnswers = Provider.of<AllAnswers>(context, listen: false);
     var questions = Provider.of<AllQuestions>(context, listen: true)
         .fromSection(sectionIndex)
         .toList();
-    questions.sort(
-        (first, second) => first.creationTimeStamp - second.creationTimeStamp);
 
     late Widget questionSection;
     AnswerSortAndFilter? filter;
     switch (viewSpan) {
       case Target.individual:
         if (pageMode != PageMode.edit) {
-          questions = allAnswers.selectActiveQuestionsFrom(questions).toList();
+          final answers = allAnswers.filter(
+              questionIds: questions.map((e) => e.id),
+              studentIds: [studentId!],
+              isActive: true);
+          questions = answers
+              .map((e) => questions.firstWhere((q) => q.id == e.questionId))
+              .toList();
         }
         filter = null;
         break;
@@ -52,19 +55,35 @@ class QuestionAndAnswerPage extends StatelessWidget {
       case Target.none:
         if (studentId != null) {
           // TODO is this used?
-          questions = allAnswers.selectActiveQuestionsFrom(questions).toList();
+          final answers = allAnswers.filter(
+              questionIds: questions.map((e) => e.id),
+              studentIds: [studentId!]);
+          questions = answers
+              .map((e) => questions.firstWhere((q) => q.id == e.questionId))
+              .toList();
         }
 
         // Do not filter for edit mode
         if (pageMode != PageMode.edit &&
             answerFilterMode.filled ==
                 AnswerFilledFilter.withAtLeastOneAnswer) {
-          questions = questions
-              .where((e) => e.hasAtLeastOneAnswer(answers: allAnswers))
+          final answers = allAnswers.filter(
+              questionIds: questions.map((e) => e.id), hasAnswer: true);
+          final questionsWithDuplicates = answers
+              .map((e) => questions.firstWhere((q) => q.id == e.questionId))
+              .toList();
+          final questionIds = questionsWithDuplicates.map((e) => e.id).toSet();
+          questions = questionIds
+              .map((e) => questionsWithDuplicates.firstWhere((q) => q.id == e))
               .toList();
         }
+
         filter = answerFilterMode;
+        break;
     }
+
+    questions.sort(
+        (first, second) => first.creationTimeStamp - second.creationTimeStamp);
 
     questionSection = _buildQuestionSection(
       context,

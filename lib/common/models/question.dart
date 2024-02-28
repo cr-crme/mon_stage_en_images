@@ -40,23 +40,18 @@ class Question extends ItemSerializableWithCreationTime {
     );
   }
 
-  Question deserializeItem(map) {
-    return Question.fromSerialized(map);
-  }
+  Question deserializeItem(map) => Question.fromSerialized(map);
 
   @override
-  Map<String, dynamic> serializedMap() {
-    return {
-      'text': text,
-      'section': section,
-      'defaultTarget': defaultTarget.index,
-      'canBeDeleted': canBeDeleted,
-    };
-  }
+  Map<String, dynamic> serializedMap() => {
+        'text': text,
+        'section': section,
+        'defaultTarget': defaultTarget.index,
+        'canBeDeleted': canBeDeleted,
+      };
 
-  bool hasAtLeastOneAnswer({required AllAnswers answers}) {
-    return answers.filter(questions: [this], isAnswered: true).isNotEmpty;
-  }
+  bool hasAtLeastOneAnswer({required AllAnswers answers}) =>
+      answers.filter(questionIds: [id], isAnswered: true).isNotEmpty;
 
   // Attributes and methods
   final String text;

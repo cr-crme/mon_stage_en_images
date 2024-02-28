@@ -33,35 +33,38 @@ class AnswerPart extends StatefulWidget {
 }
 
 class _AnswerPartState extends State<AnswerPart> {
+  late final _filterMode =
+      widget.filterMode ?? AnswerSortAndFilter(sorting: AnswerSorting.byDate);
+
   List<Message> _combineMessagesFromAllStudents(List<Answer> answers) {
     final teacherId =
         Provider.of<Database>(context, listen: false).currentUser!.id;
 
     // Fetch all the required answers
     var discussions = Discussion();
+    for (final answer in answers) {
+      for (final message in answer.discussion.toListByTime(reversed: true)) {
+        final isTheRightCreatorId = (_filterMode.fromWhomFilter
+                    .contains(AnswerFromWhomFilter.studentOnly) &&
+                message.creatorId != teacherId) ||
+            (_filterMode.fromWhomFilter
+                    .contains(AnswerFromWhomFilter.teacherOnly) &&
+                message.creatorId == teacherId);
 
-    final answer = answers.first;
-    for (final message in answer.discussion.toListByTime(reversed: true)) {
-      final isTheRightCreatorId = (widget.filterMode!.fromWhomFilter
-                  .contains(AnswerFromWhomFilter.studentOnly) &&
-              message.creatorId != teacherId) ||
-          (widget.filterMode!.fromWhomFilter
-                  .contains(AnswerFromWhomFilter.teacherOnly) &&
-              message.creatorId == teacherId);
-
-      final isTheRightContent = (widget.filterMode!.contentFilter
-                  .contains(AnswerContentFilter.textOnly) &&
-              !message.isPhotoUrl) ||
-          (widget.filterMode!.contentFilter
-                  .contains(AnswerContentFilter.photoOnly) &&
-              message.isPhotoUrl);
-      if (isTheRightCreatorId && isTheRightContent) {
-        discussions.add(message);
+        final isTheRightContent =
+            (_filterMode.contentFilter.contains(AnswerContentFilter.textOnly) &&
+                    !message.isPhotoUrl) ||
+                (_filterMode.contentFilter
+                        .contains(AnswerContentFilter.photoOnly) &&
+                    message.isPhotoUrl);
+        if (isTheRightCreatorId && isTheRightContent) {
+          discussions.add(message);
+        }
       }
     }
 
     // Filter by date if required
-    return widget.filterMode!.sorting == AnswerSorting.byDate
+    return _filterMode.sorting == AnswerSorting.byDate
         ? discussions.toListByTime(reversed: true)
         : discussions.toList();
   }
@@ -75,7 +78,8 @@ class _AnswerPartState extends State<AnswerPart> {
         Provider.of<Database>(context, listen: false).currentUser!;
     final allAnswers = Provider.of<AllAnswers>(context, listen: false);
     final currentAnswer = allAnswers.filter(
-        questions: [widget.question], studentIds: [widget.studentId!]).first;
+        questionIds: [widget.question.id],
+        studentIds: [widget.studentId!]).first;
 
     if (newTextEntry != null) {
       currentAnswer.addToDiscussion(Message(
@@ -121,11 +125,11 @@ class _AnswerPartState extends State<AnswerPart> {
             .firstWhere((e) => e.id == widget.studentId);
 
     final answers = Provider.of<AllAnswers>(context, listen: false).filter(
-        questions: [widget.question], studentIds: [widget.studentId!]).toList();
+        questionIds: [widget.question.id],
+        studentIds:
+            widget.studentId == null ? null : [widget.studentId!]).toList();
 
-    final messages = answers.length == 1
-        ? answers[0].discussion.toListByTime(reversed: true)
-        : _combineMessagesFromAllStudents(answers);
+    final messages = _combineMessagesFromAllStudents(answers);
     final isValidated = answers.length == 1 ? answers[0].isValidated : false;
 
     return Container(

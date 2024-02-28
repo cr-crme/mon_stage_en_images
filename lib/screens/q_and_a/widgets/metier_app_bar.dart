@@ -75,14 +75,15 @@ class MetierAppBar extends StatelessWidget {
 
   Widget _createMetierButton(
     BuildContext context, {
-    required questions,
-    required sectionIndex,
-    required isSelected,
-    required onPressed,
+    required AllQuestions questions,
+    required int sectionIndex,
+    required bool isSelected,
+    required Function() onPressed,
   }) {
     final answers = Provider.of<AllAnswers>(context, listen: false)
         .filter(
-            questions: questions.fromSection(sectionIndex),
+            questionIds:
+                questions.fromSection(sectionIndex).toList().map((e) => e.id),
             studentIds: studentId == null ? null : [studentId!])
         .toList();
 

@@ -41,7 +41,7 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
     super.initState();
     final students = Provider.of<Database>(context, listen: false).myStudents;
     final answers = Provider.of<AllAnswers>(context, listen: false).filter(
-        questions: [widget.question!],
+        questionIds: [widget.question!.id],
         studentIds: students.map((e) => e.id)).toList();
 
     for (final student in students) {

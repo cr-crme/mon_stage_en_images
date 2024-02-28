@@ -1,12 +1,11 @@
+import 'package:defi_photo/common/models/answer.dart';
 import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
 import 'package:defi_photo/common/models/exceptions.dart';
+import 'package:defi_photo/common/models/question.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../models/answer.dart';
-import '../models/question.dart';
 
 class AllAnswers extends FirebaseListProvided<StudentAnswers> {
   int get count => length;
@@ -25,25 +24,21 @@ class AllAnswers extends FirebaseListProvided<StudentAnswers> {
 
   ///
   /// Returns if the question is active for all the students who has it
-  bool isQuestionActiveForAll(Question question) {
-    return every((a) {
-      final index = a.answers.indexWhere((q) => q.questionId == question.id);
-      // If the question does not exist for that student, it is technically not inactive
-      if (index == -1) return true;
-      return a.answers[index].isActive;
-    });
-  }
+  bool isQuestionActiveForAll(Question question) => every((a) {
+        final index = a.answers.indexWhere((q) => q.questionId == question.id);
+        // If the question does not exist for that student, it is technically not inactive
+        if (index == -1) return true;
+        return a.answers[index].isActive;
+      });
 
   ///
   /// Returns if the question is inactive for all the students who has it
-  bool isQuestionInactiveForAll(Question question) {
-    return every((a) {
-      final index = a.answers.indexWhere((q) => q.questionId == question.id);
-      // If the question does not exist for that student, it is technically not inactive
-      if (index == -1) return true;
-      return !a.answers[index].isActive;
-    });
-  }
+  bool isQuestionInactiveForAll(Question question) => every((a) {
+        final index = a.answers.indexWhere((q) => q.questionId == question.id);
+        // If the question does not exist for that student, it is technically not inactive
+        if (index == -1) return true;
+        return !a.answers[index].isActive;
+      });
 
   ///
   /// Returns the number of answers in the list
@@ -62,14 +57,12 @@ class AllAnswers extends FirebaseListProvided<StudentAnswers> {
       answers.fold(0, (int prev, e) => prev + (e.isAnswered ? 1 : 0));
 
   @override
-  void add(StudentAnswers item, {bool notify = true, bool cacheItem = false}) {
-    throw 'Use the addAnswer method instead';
-  }
+  void add(StudentAnswers item, {bool notify = true, bool cacheItem = false}) =>
+      throw 'Use the addAnswer method instead';
 
   @override
-  void replace(StudentAnswers item, {bool notify = true}) {
-    throw 'Use the addAnswer method instead';
-  }
+  void replace(StudentAnswers item, {bool notify = true}) =>
+      throw 'Use the addAnswer method instead';
 
   void addAnswer(Answer answer, {bool notify = true}) {
     final studentAnswers = firstWhereOrNull((e) => e.id == answer.studentId);
@@ -130,32 +123,24 @@ class AllAnswers extends FirebaseListProvided<StudentAnswers> {
               prev + (e.action(context) == ActionRequired.fromStudent ? 1 : 0));
 
   ///
-  /// Returns the answers filtered by the [questions], [studentIds], [isActive] and [isAnswered]
-  /// [questions] is the list of questions
+  /// Returns the answers filtered by the [questionIds], [studentIds], [isActive] and [isAnswered]
+  /// [questionIds] is the list of questions
   /// [studentIds] is the list of student ids
   /// [isActive] is if the answer is active
   /// [isAnswered] is if the answer is answered
   Iterable<Answer> filter({
-    Iterable<Question>? questions,
+    Iterable<String>? questionIds,
     Iterable<String>? studentIds,
     bool? isActive,
     bool? isAnswered,
-  }) {
-    return expand((e) => e.answers.where((q) =>
-        (questions == null || questions.contains(q.questionId)) &&
-        (studentIds == null || studentIds.contains(q.studentId)) &&
-        (isActive == null || q.isActive == isActive) &&
-        (isAnswered == null || q.isAnswered == isAnswered)));
-  }
-
-  ///
-  /// Returns the active answers associated with the [questions]
-  /// [questions] is the list of questions
-  Iterable<Question> selectActiveQuestionsFrom(Iterable<Question> questions) {
-    final questionIds =
-        filter(questions: questions, isActive: true).map((e) => e.questionId);
-    return questions.where((e) => questionIds.contains(e.id));
-  }
+    bool? hasAnswer,
+  }) =>
+      expand((e) => e.answers.where((q) =>
+          (questionIds == null || questionIds.contains(q.questionId)) &&
+          (studentIds == null || studentIds.contains(q.studentId)) &&
+          (isActive == null || q.isActive == isActive) &&
+          (isAnswered == null || q.isAnswered == isAnswered) &&
+          (hasAnswer == null || q.hasAnswer == hasAnswer)));
 
   ///
   /// Removes the answers associated with the [question]

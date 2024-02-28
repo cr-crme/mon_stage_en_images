@@ -7,12 +7,11 @@ import 'package:defi_photo/common/models/text_reader.dart';
 import 'package:defi_photo/common/models/user.dart';
 import 'package:defi_photo/common/providers/all_answers.dart';
 import 'package:defi_photo/common/providers/all_questions.dart';
+import 'package:defi_photo/screens/q_and_a/widgets/answer_tile_part.dart';
 import 'package:defi_photo/screens/q_and_a/widgets/new_question_alert_dialog.dart';
+import 'package:defi_photo/screens/q_and_a/widgets/question_tile_part.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'answer_tile_part.dart';
-import 'question_tile_part.dart';
 
 class QuestionAndAnswerTile extends StatefulWidget {
   const QuestionAndAnswerTile(
@@ -46,8 +45,8 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   Answer? get _answer {
     if (widget.question == null || widget.studentId == null) return null;
 
-    final answers = Provider.of<AllAnswers>(context, listen: false)
-        .filter(questions: [widget.question!], studentIds: [widget.studentId!]);
+    final answers = Provider.of<AllAnswers>(context, listen: false).filter(
+        questionIds: [widget.question!.id], studentIds: [widget.studentId!]);
     return answers.isEmpty ? null : answers.first;
   }
 
@@ -143,9 +142,7 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
     setState(() {});
   }
 
-  void _onStateChange() {
-    setState(() {});
-  }
+  void _onStateChange() => setState(() {});
 
   void _startReading() {
     if (widget.question == null) return;

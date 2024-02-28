@@ -2,11 +2,10 @@ import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/discussion.dart';
 import 'package:defi_photo/common/models/enum.dart';
 import 'package:defi_photo/common/models/exceptions.dart';
+import 'package:defi_photo/common/models/message.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'message.dart';
 
 class Answer extends ItemSerializable {
   // Constructors and (de)serializer

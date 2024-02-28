@@ -114,7 +114,7 @@ class _QuestionPartTrailing extends StatelessWidget {
 
   bool _isQuestionActive(BuildContext context) {
     final answers = Provider.of<AllAnswers>(context, listen: false)
-        .filter(questions: [question!], studentIds: [studentId!]);
+        .filter(questionIds: [question!.id], studentIds: [studentId!]);
 
     if (answers.isEmpty) return question!.defaultTarget == Target.all;
 
@@ -129,7 +129,7 @@ class _QuestionPartTrailing extends StatelessWidget {
     final allAnswers = question == null
         ? []
         : Provider.of<AllAnswers>(context, listen: false).filter(
-            questions: [question!],
+            questionIds: [question!.id],
             studentIds: studentId == null ? null : [studentId!]).toList();
 
     if (userType == UserType.student) {
@@ -241,7 +241,7 @@ class _QuestionActivatedState extends StatelessWidget {
 
     // Modify the answers on the server
     final filteredAnswers = answers.filter(
-        questions: [question],
+        questionIds: [question.id],
         studentIds: studentId == null ? null : [studentId!]);
     for (var answer in filteredAnswers) {
       answers.addAnswer(answer.copyWith(isActive: value));

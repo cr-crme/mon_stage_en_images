@@ -10,12 +10,11 @@ import 'package:defi_photo/common/models/user.dart';
 import 'package:defi_photo/common/providers/all_answers.dart';
 import 'package:defi_photo/common/providers/speecher.dart';
 import 'package:defi_photo/common/widgets/animated_icon.dart';
+import 'package:defi_photo/screens/q_and_a/widgets/discussion_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'discussion_tile.dart';
 
 class DiscussionListView extends StatefulWidget {
   const DiscussionListView({
@@ -217,7 +216,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
     final answer = widget.student == null
         ? null
         : Provider.of<AllAnswers>(context, listen: false).filter(
-            questions: [widget.question],
+            questionIds: [widget.question.id],
             studentIds: [widget.student!.id]).first;
 
     return Column(

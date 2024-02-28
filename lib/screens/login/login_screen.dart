@@ -5,14 +5,13 @@ import 'package:defi_photo/common/models/user.dart';
 import 'package:defi_photo/common/providers/all_answers.dart';
 import 'package:defi_photo/common/providers/all_questions.dart';
 import 'package:defi_photo/common/widgets/colored_corners.dart';
+import 'package:defi_photo/default_questions.dart';
 import 'package:defi_photo/screens/all_students/students_screen.dart';
+import 'package:defi_photo/screens/login/widgets/change_password_alert_dialog.dart';
+import 'package:defi_photo/screens/login/widgets/new_user_alert_dialog.dart';
 import 'package:defi_photo/screens/q_and_a/q_and_a_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '/default_questions.dart';
-import 'widgets/change_password_alert_dialog.dart';
-import 'widgets/new_user_alert_dialog.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

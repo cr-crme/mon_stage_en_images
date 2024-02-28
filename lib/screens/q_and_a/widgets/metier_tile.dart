@@ -46,8 +46,9 @@ class MetierTile extends StatelessWidget {
       answered = null;
       active = null;
     } else {
-      answers = allAnswers
-          .filter(questions: questions, studentIds: [studentId!]).toList();
+      answers = allAnswers.filter(
+          questionIds: questions.map((e) => e.id),
+          studentIds: [studentId!]).toList();
       answered = AllAnswers.numberAnsweredFrom(answers);
       active = AllAnswers.numberActiveFrom(answers);
     }
