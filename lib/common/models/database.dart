@@ -52,6 +52,8 @@ class Database extends EzloginFirebase with ChangeNotifier {
     /// this should be call only after user has successfully logged in
 
     await answers.initializeFetchingData();
+
+    questions.pathToData = 'questions/${_currentUser!.id}';
     await questions.initializeFetchingData();
   }
 
@@ -81,9 +83,14 @@ class Database extends EzloginFirebase with ChangeNotifier {
 
   @override
   Future<User?> user(String username) async {
-    final data =
-        await FirebaseDatabase.instance.ref('$usersPath/$username').get();
-    return data.value == null ? null : User.fromSerialized(data.value);
+    try {
+      final data =
+          await FirebaseDatabase.instance.ref('$usersPath/$username').get();
+      return data.value == null ? null : User.fromSerialized(data.value);
+    } on Exception {
+      debugPrint('Error while fetching user $username');
+      return null;
+    }
   }
 
   final List<User> _students = [];
@@ -100,9 +107,15 @@ class Database extends EzloginFirebase with ChangeNotifier {
       return;
     }
 
-    final data = await FirebaseDatabase.instance
-        .ref('$usersPath/${_currentUser!.id}')
-        .get();
+    late final DataSnapshot data;
+    try {
+      data = await FirebaseDatabase.instance
+          .ref('$usersPath/${_currentUser!.id}')
+          .get();
+    } on Exception {
+      debugPrint('Error while fetching user ${_currentUser!.id}');
+      return;
+    }
 
     _students.clear();
 
