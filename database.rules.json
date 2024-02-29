@@ -1,17 +1,32 @@
 {
-  /* Visit https://firebase.google.com/docs/database/security to learn more about security rules. */
   "rules": {
     "questions": {
-      ".read": true,
-      ".write": false
+      "$uid": {
+        ".read":  "  auth.uid !== null ",
+        ".write": "( auth.uid !== null && $uid === auth.uid ) ||  root.child('/users/'+auth.uid+'/userType').val() === 1"
+      }
     },
     "answers": {
-      ".read": true,
-      ".write": false
+      ".read":  "( auth.uid !== null && $uid === auth.uid )",
+      ".write": "( auth.uid !== null && $uid === auth.uid )"
     },
     "users":{
-      ".read": true,
-      ".write": "auth.uid !== null"
+      "$uid": {
+        ".read":    "( auth.uid !== null && $uid === auth.uid ) ||  root.child('/users/'+auth.uid+'/userType').val() === 1",
+        ".write":   "( auth.uid !== null && $uid === auth.uid ) ||  root.child('/users/'+auth.uid+'/userType').val() === 1",
+        "supervising": {
+          ".read":  "  auth.uid !== null &&                         root.child('/users/'+auth.uid+'/userType').val() === 1",
+          ".write": "  auth.uid !== null && $uid === auth.uid   &&  root.child('/users/'+auth.uid+'/userType').val() === 1 "
+        },
+        "supervisedBy": {
+          ".read":  "( auth.uid !== null && $uid === auth.uid ) ||  root.child('/users/'+auth.uid+'/userType').val() === 1",
+          ".write": "  auth.uid !== null &&                         root.child('/users/'+auth.uid+'/userType').val() === 1"
+        }, 
+        "companyNames": {
+          ".read":  "( auth.uid !== null && $uid === auth.uid ) ||  root.child('/users/'+auth.uid+'/userType').val() === 1",
+          ".write": "  auth.uid !== null &&                         root.child('/users/'+auth.uid+'/userType').val() === 1"
+        }
+      }
     }
   }
 }
