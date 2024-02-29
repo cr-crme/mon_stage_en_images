@@ -2,29 +2,31 @@
   "rules": {
     "questions": {
       "$uid": {
-        ".read":  "  auth.uid !== null ",
-        ".write": "( auth.uid !== null && $uid === auth.uid ) ||  root.child('/users/'+auth.uid+'/userType').val() === 1"
+        "$questionId":{
+          ".read":  "( auth.uid !== null && $uid === auth.uid ) ||  root.child('/users/'+auth.uid+'/supervisedBy').val().contains($uid)",
+          ".write": "( auth.uid !== null && $uid === auth.uid ) &&  root.child('/users/'+auth.uid+'/userType').val() === 1"
+        }
       }
     },
     "answers": {
-      ".read":  "( auth.uid !== null && $uid === auth.uid )",
-      ".write": "( auth.uid !== null && $uid === auth.uid )"
+      ".read":  true,
+      ".write": true
     },
     "users":{
       "$uid": {
         ".read":    "( auth.uid !== null && $uid === auth.uid ) ||  root.child('/users/'+auth.uid+'/userType').val() === 1",
         ".write":   "( auth.uid !== null && $uid === auth.uid ) ||  root.child('/users/'+auth.uid+'/userType').val() === 1",
         "supervising": {
-          ".read":  "  auth.uid !== null &&                         root.child('/users/'+auth.uid+'/userType').val() === 1",
-          ".write": "  auth.uid !== null && $uid === auth.uid   &&  root.child('/users/'+auth.uid+'/userType').val() === 1 "
+          ".read":  "  auth.uid !== null                        &&  root.child('/users/'+auth.uid+'/userType').val() === 1",
+          ".write": "( auth.uid !== null && $uid === auth.uid ) &&  root.child('/users/'+auth.uid+'/userType').val() === 1 "
         },
         "supervisedBy": {
           ".read":  "( auth.uid !== null && $uid === auth.uid ) ||  root.child('/users/'+auth.uid+'/userType').val() === 1",
-          ".write": "  auth.uid !== null &&                         root.child('/users/'+auth.uid+'/userType').val() === 1"
+          ".write": "  auth.uid !== null                        &&  root.child('/users/'+auth.uid+'/userType').val() === 1"
         }, 
         "companyNames": {
           ".read":  "( auth.uid !== null && $uid === auth.uid ) ||  root.child('/users/'+auth.uid+'/userType').val() === 1",
-          ".write": "  auth.uid !== null &&                         root.child('/users/'+auth.uid+'/userType').val() === 1"
+          ".write": "  auth.uid !== null                        &&  root.child('/users/'+auth.uid+'/userType').val() === 1"
         }
       }
     }
