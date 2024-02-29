@@ -25,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   String? _email;
   String? _password;
-  Future<EzloginStatus>? _futureStatus;
+  EzloginStatus _status = EzloginStatus.none;
   bool _isNewUser = false;
 
   Future<User?> _createUser(String email) async {
@@ -51,23 +51,23 @@ class _LoginScreenState extends State<LoginScreen> {
     return password!;
   }
 
-  void _showSnackbar(EzloginStatus status, ScaffoldMessengerState scaffold) {
+  void _showSnackbar() {
     late final String message;
-    if (status == EzloginStatus.waitingForLogin) {
+    if (_status == EzloginStatus.waitingForLogin) {
       message = '';
-    } else if (status == EzloginStatus.cancelled) {
+    } else if (_status == EzloginStatus.cancelled) {
       message = 'La connexion a été annulée';
-    } else if (status == EzloginStatus.success) {
+    } else if (_status == EzloginStatus.success) {
       message = '';
-    } else if (status == EzloginStatus.wrongUsername) {
+    } else if (_status == EzloginStatus.wrongUsername) {
       message = 'Utilisateur non enregistré';
-    } else if (status == EzloginStatus.wrongPassword) {
+    } else if (_status == EzloginStatus.wrongPassword) {
       message = 'Mot de passe non reconnu';
     } else {
       message = 'Erreur de connexion inconnue';
     }
 
-    scaffold.showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
         duration: const Duration(seconds: 3),
@@ -75,29 +75,29 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<EzloginStatus> _processConnexion() async {
+  Future<void> _processConnexion() async {
+    setState(() => _status = EzloginStatus.waitingForLogin);
+    final database = Provider.of<Database>(context, listen: false);
+
     if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
-      return EzloginStatus.cancelled;
+      setState(() => _status = EzloginStatus.cancelled);
+      return;
     }
     _formKey.currentState!.save();
 
-    final scaffold = ScaffoldMessenger.of(context);
-    final navigator = Navigator.of(context);
-    final database = Provider.of<Database>(context, listen: false);
-
-    final status = await database.login(
+    _status = await database.login(
       username: _email!,
       password: _password!,
       getNewUserInfo: () => _createUser(_email!),
       getNewPassword: _changePassword,
     );
-    setState(() {});
-    if (status != EzloginStatus.success) {
-      _showSnackbar(status, scaffold);
-      return status;
+    if (_status != EzloginStatus.success) {
+      _showSnackbar();
+      setState(() {});
+      return;
     }
+    if (!mounted) return;
 
-    if (!mounted) return status;
     if (database.currentUser!.userType == UserType.student) {
       Navigator.of(context).pushReplacementNamed(QAndAScreen.routeName,
           arguments: [Target.individual, PageMode.editableView, null]);
@@ -108,9 +108,84 @@ class _LoginScreenState extends State<LoginScreen> {
           questions.add(question);
         }
       }
-      navigator.pushReplacementNamed(StudentsScreen.routeName);
+      Navigator.of(context).pushReplacementNamed(StudentsScreen.routeName);
     }
-    return status;
+  }
+
+  Widget _buildPage() {
+    switch (_status) {
+      case EzloginStatus.success:
+      case EzloginStatus.newUser:
+      case EzloginStatus.waitingForLogin:
+      case EzloginStatus.alreadyCreated:
+        return CircularProgressIndicator(
+          color: teacherTheme().colorScheme.primary,
+        );
+      case EzloginStatus.none:
+      case EzloginStatus.cancelled:
+      case EzloginStatus.wrongUsername:
+      case EzloginStatus.wrongPassword:
+      case EzloginStatus.wrongInfoWhileCreating:
+      case EzloginStatus.couldNotCreateUser:
+      case EzloginStatus.userNotFound:
+      case EzloginStatus.unrecognizedError:
+        return Column(
+          children: [
+            Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Informations de connexion',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: TextFormField(
+                      decoration: const InputDecoration(labelText: 'Courriel'),
+                      validator: (value) => value == null || value.isEmpty
+                          ? 'Inscrire un courriel'
+                          : null,
+                      onSaved: (value) => _email = value,
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: TextFormField(
+                      decoration:
+                          const InputDecoration(labelText: 'Mot de passe'),
+                      validator: (value) => value == null || value.isEmpty
+                          ? 'Entrer le mot de passe'
+                          : null,
+                      onSaved: (value) => _password = value,
+                      obscureText: true,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      keyboardType: TextInputType.visiblePassword,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: _processConnexion,
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: studentTheme().colorScheme.primary),
+              child: const Text('Se connecter'),
+            ),
+          ],
+        );
+    }
   }
 
   @override
@@ -140,81 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 const MainTitle(),
                 const SizedBox(height: 50),
-                FutureBuilder<EzloginStatus>(
-                    future: _futureStatus,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator(
-                          color: teacherTheme().colorScheme.primary,
-                        );
-                      }
-
-                      return Column(
-                        children: [
-                          Form(
-                            key: _formKey,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Informations de connexion',
-                                      style: TextStyle(fontSize: 15),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 20),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0),
-                                  child: TextFormField(
-                                    decoration: const InputDecoration(
-                                        labelText: 'Courriel'),
-                                    validator: (value) =>
-                                        value == null || value.isEmpty
-                                            ? 'Inscrire un courriel'
-                                            : null,
-                                    onSaved: (value) => _email = value,
-                                    keyboardType: TextInputType.emailAddress,
-                                  ),
-                                ),
-                                const SizedBox(height: 12),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0),
-                                  child: TextFormField(
-                                    decoration: const InputDecoration(
-                                        labelText: 'Mot de passe'),
-                                    validator: (value) =>
-                                        value == null || value.isEmpty
-                                            ? 'Entrer le mot de passe'
-                                            : null,
-                                    onSaved: (value) => _password = value,
-                                    obscureText: true,
-                                    enableSuggestions: false,
-                                    autocorrect: false,
-                                    keyboardType: TextInputType.visiblePassword,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 40),
-                          ElevatedButton(
-                            onPressed: () {
-                              _futureStatus = _processConnexion();
-                              setState(() {});
-                            },
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    studentTheme().colorScheme.primary),
-                            child: const Text('Se connecter'),
-                          ),
-                        ],
-                      );
-                    }),
+                _buildPage(),
               ],
             ),
           ),

@@ -3,6 +3,7 @@ import 'package:defi_photo/common/models/enum.dart';
 import 'package:defi_photo/common/providers/all_answers.dart';
 import 'package:defi_photo/common/providers/all_questions.dart';
 import 'package:ezlogin/ezlogin.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fireauth;
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -36,11 +37,13 @@ class Database extends EzloginFirebase with ChangeNotifier {
         password: password,
         getNewUserInfo: getNewUserInfo,
         getNewPassword: getNewPassword);
-    _currentUser = await user(username);
+    if (status != EzloginStatus.success) return status;
+
+    _currentUser = await user(fireauth.FirebaseAuth.instance.currentUser!.uid);
     notifyListeners();
 
     _fetchStudents();
-    _startFetchingData();
+    await _startFetchingData();
 
     return status;
   }
@@ -70,7 +73,7 @@ class Database extends EzloginFirebase with ChangeNotifier {
       {required EzloginUser user, required EzloginUser newInfo}) async {
     final status = await super.modifyUser(user: user, newInfo: newInfo);
     if (user.email == currentUser?.email) {
-      _currentUser = await this.user(user.email);
+      _currentUser = await this.user(user.id);
       notifyListeners();
     }
     return status;
@@ -78,8 +81,8 @@ class Database extends EzloginFirebase with ChangeNotifier {
 
   @override
   Future<User?> user(String username) async {
-    final id = emailToPath(username);
-    final data = await FirebaseDatabase.instance.ref('$usersPath/$id').get();
+    final data =
+        await FirebaseDatabase.instance.ref('$usersPath/$username').get();
     return data.value == null ? null : User.fromSerialized(data.value);
   }
 
@@ -116,15 +119,13 @@ class Database extends EzloginFirebase with ChangeNotifier {
       {required User newStudent,
       required AllQuestions questions,
       required AllAnswers answers}) async {
-    final status = await addUser(newUser: newStudent, password: 'defiPhoto');
+    var newUser = await addUser(newUser: newStudent, password: 'defiPhoto');
 
-    if (status == EzloginStatus.success) {
-      // pass
-    } else if (status == EzloginStatus.couldNotCreateUser) {
+    if (newUser == null) {
       // If the student was already in the database, we can't add them again,
       // but we can add ourself to the [supervisedBy] list.
 
-      final studentUser = await user(newStudent.email);
+      final studentUser = await user(newStudent.id);
       if (studentUser != null) return EzloginStatus.unrecognizedError;
 
       if (studentUser!.supervisedBy.contains(currentUser!.id)) {
@@ -139,16 +140,20 @@ class Database extends EzloginFirebase with ChangeNotifier {
       studentUser.companyNames.add(newStudent.companyNames.last);
       final status = await modifyUser(user: studentUser, newInfo: studentUser);
       if (status != EzloginStatus.success) return status;
-    } else {
-      return EzloginStatus.unrecognizedError;
     }
+    newStudent = newStudent.copyWith(id: newUser!.id);
 
     final newSupervising = students.map((e) => e.id).toList();
     newSupervising.add(newStudent.id);
-    await FirebaseDatabase.instance
-        .ref(usersPath)
-        .child('${currentUser!.id}/supervising')
-        .set(newSupervising);
+
+    try {
+      await FirebaseDatabase.instance
+          .ref(usersPath)
+          .child('${currentUser!.id}/supervising')
+          .set(newSupervising);
+    } on Exception {
+      return EzloginStatus.unrecognizedError;
+    }
 
     for (final question in questions) {
       answers.addAnswer(Answer(
@@ -165,7 +170,7 @@ class Database extends EzloginFirebase with ChangeNotifier {
   }
 
   Future<EzloginStatus> modifyStudent({required User newInfo}) async {
-    final studentUser = await user(newInfo.email);
+    final studentUser = await user(newInfo.id);
     if (studentUser == null) return EzloginStatus.userNotFound;
 
     final status = await modifyUser(user: studentUser, newInfo: newInfo);
