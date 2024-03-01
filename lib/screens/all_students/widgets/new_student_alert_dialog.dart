@@ -48,6 +48,7 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
       userType: UserType.student,
       mustChangePassword: true,
       companyNames: [_companyName ?? ''],
+      id: widget.student?.id,
     );
 
     Navigator.pop(context, student);
