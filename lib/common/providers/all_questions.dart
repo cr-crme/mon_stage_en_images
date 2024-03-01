@@ -47,12 +47,14 @@ class AllQuestions extends FirebaseListProvided<Question> with Section {
           ? question.defaultTarget == Target.all
           : isActive[student.id]!;
 
-      answers.addAnswer(Answer(
-          isActive: isActiveForStudent,
-          questionId: question.id,
-          createdById: currentUser.id,
-          studentId: student.id,
-          actionRequired: ActionRequired.fromStudent));
+      answers.addAnswers([
+        Answer(
+            isActive: isActiveForStudent,
+            questionId: question.id,
+            createdById: currentUser.id,
+            studentId: student.id,
+            actionRequired: ActionRequired.fromStudent)
+      ]);
     }
   }
 
@@ -77,7 +79,7 @@ class AllQuestions extends FirebaseListProvided<Question> with Section {
         final answer = student.answers[i];
         if (answer.questionId != question.id) continue;
 
-        studentAnswers.addAnswer(answer.copyWith(
+        studentAnswers.modifyAnswer(answer.copyWith(
             isActive: isActive == null
                 ? answer.isActive
                 : isActive[answer.studentId]));

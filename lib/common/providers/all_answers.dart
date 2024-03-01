@@ -52,31 +52,61 @@ class AllAnswers extends FirebaseListProvided<StudentAnswers> {
       answers.fold(0, (int prev, e) => prev + (e.isAnswered ? 1 : 0));
 
   @override
-  void add(StudentAnswers item, {bool notify = true, bool cacheItem = false}) =>
+  void add(StudentAnswers item, {bool notify = true}) =>
       throw 'Use the addAnswer method instead';
 
   @override
   Future<void> replace(StudentAnswers item, {bool notify = true}) =>
       throw 'Use the addAnswer method instead';
 
-  void addAnswer(Answer answer, {bool notify = true}) {
-    final studentAnswers = firstWhereOrNull((e) => e.id == answer.studentId);
-    if (studentAnswers == null) {
-      super.add(StudentAnswers([answer], studentId: answer.studentId),
-          notify: notify, cacheItem: true);
-    } else {
-      final index = studentAnswers.answers
+  Future<StudentAnswers> getOrSetStudentAnswers(String studentId,
+      {int maxRetry = 10}) async {
+    final studentAnswers = firstWhereOrNull((e) => e.id == studentId);
+    if (studentAnswers != null) return studentAnswers;
+
+    super.add(StudentAnswers([], studentId: studentId));
+
+    while (true) {
+      // Wait for the database to be updated
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      final studentAnswers = firstWhereOrNull((e) => e.id == studentId);
+      if (studentAnswers != null) return studentAnswers;
+
+      maxRetry--;
+      if (maxRetry == 0) throw 'Could not add the new student';
+    }
+  }
+
+  Future<void> addAnswers(Iterable<Answer> answers,
+      {bool notify = true}) async {
+    final Map<String, StudentAnswers> studentAnswers = {};
+    for (final answer in answers) {
+      if (!studentAnswers.keys.contains(answer.studentId)) {
+        // Get (or create) all the required StudentAnswers
+        studentAnswers[answer.studentId] =
+            await getOrSetStudentAnswers(answer.studentId);
+      }
+
+      final index = studentAnswers[answer.studentId]!
+          .answers
           .indexWhere((e) => e.questionId == answer.questionId);
       if (index != -1) {
-        studentAnswers.answers[index] = answer;
+        studentAnswers[answer.studentId]!.answers[index] = answer;
       } else {
-        studentAnswers.answers.add(answer);
+        studentAnswers[answer.studentId]!.answers.add(answer);
       }
-      super.replace(studentAnswers, notify: notify);
     }
 
-    notifyListeners();
+    for (final studentAnswer in studentAnswers.values) {
+      await super.replace(studentAnswer, notify: notify);
+    }
+
+    if (notify) notifyListeners();
   }
+
+  void modifyAnswer(Answer answer, {bool notify = true}) =>
+      addAnswers([answer], notify: notify);
 
   ///
   /// Returns the number of actions required from the user

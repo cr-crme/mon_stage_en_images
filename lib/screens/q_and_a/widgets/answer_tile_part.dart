@@ -108,7 +108,7 @@ class _AnswerPartState extends State<AnswerPart> {
       throw const NotLoggedIn();
     }
 
-    allAnswers.addAnswer(currentAnswer.copyWith(
+    allAnswers.modifyAnswer(currentAnswer.copyWith(
       actionRequired: newStatus,
       isValidated: markAsValidated,
     ));

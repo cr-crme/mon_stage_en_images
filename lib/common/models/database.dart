@@ -168,14 +168,16 @@ class Database extends EzloginFirebase with ChangeNotifier {
       return EzloginStatus.unrecognizedError;
     }
 
-    for (final question in questions) {
-      answers.addAnswer(Answer(
-        isActive: question.defaultTarget == Target.all,
-        actionRequired: ActionRequired.fromStudent,
-        createdById: currentUser!.id,
-        studentId: newStudent.id,
-        questionId: question.id,
-      ));
+    try {
+      answers.addAnswers(questions.map((e) => Answer(
+            isActive: e.defaultTarget == Target.all,
+            actionRequired: ActionRequired.fromStudent,
+            createdById: currentUser!.id,
+            studentId: newStudent.id,
+            questionId: e.id,
+          )));
+    } on Exception {
+      return EzloginStatus.unrecognizedError;
     }
 
     _fetchStudents();

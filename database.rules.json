@@ -2,6 +2,8 @@
   "rules": {
     "questions": {
       "$uid": {
+        ".read":  "( auth.uid !== null && $uid === auth.uid ) ||  root.child('/users/'+auth.uid+'/supervisedBy').val().contains($uid)",
+        ".write": "( auth.uid !== null && $uid === auth.uid ) &&  root.child('/users/'+auth.uid+'/userType').val() === 1",
         "$questionId":{
           ".read":  "( auth.uid !== null && $uid === auth.uid ) ||  root.child('/users/'+auth.uid+'/supervisedBy').val().contains($uid)",
           ".write": "( auth.uid !== null && $uid === auth.uid ) &&  root.child('/users/'+auth.uid+'/userType').val() === 1"

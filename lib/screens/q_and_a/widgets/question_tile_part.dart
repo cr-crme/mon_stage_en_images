@@ -243,9 +243,8 @@ class _QuestionActivatedState extends StatelessWidget {
     final filteredAnswers = answers.filter(
         questionIds: [question.id],
         studentIds: studentId == null ? null : [studentId!]);
-    for (var answer in filteredAnswers) {
-      answers.addAnswer(answer.copyWith(isActive: value));
-    }
+    answers.addAnswers(filteredAnswers.map((e) => e.copyWith(isActive: value)));
+
     onStateChange();
   }
 

@@ -1,3 +1,4 @@
+import 'package:defi_photo/common/models/answer.dart';
 import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
 import 'package:defi_photo/common/models/question.dart';
@@ -40,9 +41,11 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
   void initState() {
     super.initState();
     final students = Provider.of<Database>(context, listen: false).students;
-    final answers = Provider.of<AllAnswers>(context, listen: false).filter(
-        questionIds: [widget.question!.id],
-        studentIds: students.map((e) => e.id)).toList();
+    final List<Answer> answers = widget.question == null
+        ? []
+        : Provider.of<AllAnswers>(context, listen: false).filter(
+            questionIds: [widget.question!.id],
+            studentIds: students.map((e) => e.id)).toList();
 
     for (final student in students) {
       if (widget.question == null) {
@@ -52,7 +55,7 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
         _questionStatus[student.id] = answers[index].isActive;
       }
     }
-    _fieldText.text = widget.question?.text ?? "";
+    _fieldText.text = widget.question?.text ?? '';
   }
 
   void _finalize(BuildContext context, {bool hasCancelled = false}) {
