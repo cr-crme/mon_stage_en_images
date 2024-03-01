@@ -28,6 +28,12 @@ class _LoginScreenState extends State<LoginScreen> {
   EzloginStatus _status = EzloginStatus.none;
   bool _isNewUser = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _processConnexion(automaticConnexion: true);
+  }
+
   Future<User?> _createUser(String email) async {
     final user = await showDialog<User>(
       context: context,
@@ -75,32 +81,43 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<void> _processConnexion() async {
+  Future<void> _processConnexion({bool automaticConnexion = false}) async {
     setState(() => _status = EzloginStatus.waitingForLogin);
     final database = Provider.of<Database>(context, listen: false);
 
-    if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
-      setState(() => _status = EzloginStatus.cancelled);
-      return;
-    }
-    _formKey.currentState!.save();
+    if (automaticConnexion) {
+      if (database.currentUser == null) {
+        setState(() => _status = EzloginStatus.none);
+        return;
+      }
+      _status = EzloginStatus.success;
+    } else {
+      if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
+        setState(() => _status = EzloginStatus.cancelled);
+        return;
+      }
+      _formKey.currentState!.save();
 
-    _status = await database.login(
-      username: _email!,
-      password: _password!,
-      getNewUserInfo: () => _createUser(_email!),
-      getNewPassword: _changePassword,
-    );
-    if (_status != EzloginStatus.success) {
-      _showSnackbar();
-      setState(() {});
-      return;
+      _status = await database.login(
+        username: _email!,
+        password: _password!,
+        getNewUserInfo: () => _createUser(_email!),
+        getNewPassword: _changePassword,
+      );
+      if (_status != EzloginStatus.success) {
+        _showSnackbar();
+        setState(() {});
+        return;
+      }
+      if (!mounted) return;
     }
-    if (!mounted) return;
 
     if (database.currentUser!.userType == UserType.student) {
-      Navigator.of(context).pushReplacementNamed(QAndAScreen.routeName,
-          arguments: [Target.individual, PageMode.editableView, null]);
+      Future.delayed(
+          Duration(seconds: automaticConnexion ? 3 : 0),
+          () => Navigator.of(context).pushReplacementNamed(
+              QAndAScreen.routeName,
+              arguments: [Target.individual, PageMode.editableView, null]));
     } else {
       if (_isNewUser) {
         final questions = Provider.of<AllQuestions>(context, listen: false);
@@ -108,13 +125,24 @@ class _LoginScreenState extends State<LoginScreen> {
           questions.add(question);
         }
       }
-      Navigator.of(context).pushReplacementNamed(StudentsScreen.routeName);
+      Future.delayed(
+          Duration(seconds: automaticConnexion ? 3 : 0),
+          () => Navigator.of(context)
+              .pushReplacementNamed(StudentsScreen.routeName));
     }
   }
 
   Widget _buildPage() {
     switch (_status) {
       case EzloginStatus.success:
+        return Column(
+          children: [
+            CircularProgressIndicator(
+              color: teacherTheme().colorScheme.primary,
+            ),
+            const Text('Connexion en cours', style: TextStyle(fontSize: 18)),
+          ],
+        );
       case EzloginStatus.newUser:
       case EzloginStatus.waitingForLogin:
       case EzloginStatus.alreadyCreated:

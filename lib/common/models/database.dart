@@ -26,6 +26,17 @@ class Database extends EzloginFirebase with ChangeNotifier {
   User? get currentUser => _currentUser;
 
   @override
+  Future<void> initialize({bool useEmulator = false, currentPlatform}) async {
+    final status = await super
+        .initialize(useEmulator: useEmulator, currentPlatform: currentPlatform);
+
+    if (super.currentUser != null) {
+      await _postLogin();
+    }
+    return status;
+  }
+
+  @override
   Future<EzloginStatus> login({
     required String username,
     required String password,
@@ -38,14 +49,16 @@ class Database extends EzloginFirebase with ChangeNotifier {
         getNewUserInfo: getNewUserInfo,
         getNewPassword: getNewPassword);
     if (status != EzloginStatus.success) return status;
+    await _postLogin();
+    return status;
+  }
 
+  Future<void> _postLogin() async {
     _currentUser = await user(fireauth.FirebaseAuth.instance.currentUser!.uid);
     notifyListeners();
 
     _fetchStudents();
     await _startFetchingData();
-
-    return status;
   }
 
   Future<void> _startFetchingData() async {
@@ -53,7 +66,11 @@ class Database extends EzloginFirebase with ChangeNotifier {
 
     await answers.initializeFetchingData();
 
-    questions.pathToData = 'questions/${_currentUser!.id}';
+    if (_currentUser!.userType == UserType.student) {
+      questions.pathToData = 'questions/${_currentUser!.supervisedBy.last}';
+    } else {
+      questions.pathToData = 'questions/${_currentUser!.id}';
+    }
     await questions.initializeFetchingData();
   }
 
