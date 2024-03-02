@@ -61,6 +61,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
       case EzloginStatus.success:
         return;
       case EzloginStatus.alreadyCreated:
+        // TODO: Test that and test the case where another teachers add them
         _showSnackbar(
             const Text('Cet élève est déjà dans vos élève'), scaffold);
         return;

@@ -138,7 +138,8 @@ class Database extends EzloginFirebase with ChangeNotifier {
     _students.clear();
 
     if (data.value != null) {
-      for (final id in (data.value! as Map)['supervising'] ?? []) {
+      for (final id
+          in ((data.value! as Map)['supervising'] as Map? ?? {}).keys) {
         final student = await user(id);
         if (student != null) _students.add(student);
       }
@@ -174,14 +175,13 @@ class Database extends EzloginFirebase with ChangeNotifier {
     }
     newStudent = newStudent.copyWith(id: newUser!.id);
 
-    final newSupervising = students.map((e) => e.id).toList();
-    newSupervising.add(newStudent.id);
+    currentUser!.supervising[newStudent.id] = true;
 
     try {
       await FirebaseDatabase.instance
           .ref(usersPath)
           .child('${currentUser!.id}/supervising')
-          .set(newSupervising);
+          .set(currentUser!.supervising);
     } on Exception {
       return EzloginStatus.unrecognizedError;
     }

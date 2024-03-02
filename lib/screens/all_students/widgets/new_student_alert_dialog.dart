@@ -44,7 +44,7 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
       email: _email!,
       addedBy: database.currentUser!.id,
       supervisedBy: {database.currentUser!.id: true},
-      supervising: [],
+      supervising: {},
       userType: UserType.student,
       mustChangePassword: true,
       companyNames: [_companyName ?? ''],

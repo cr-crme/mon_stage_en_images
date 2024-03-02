@@ -24,8 +24,7 @@ class User extends EzloginUser {
         supervisedBy =
             (map['supervisedBy'] as Map?)?.map((k, v) => MapEntry(k, v)) ?? {},
         supervising =
-            (map['supervising'] as List?)?.map((e) => e as String).toList() ??
-                [],
+            (map['supervising'] as Map?)?.map((k, v) => MapEntry(k, v)) ?? {},
         userType = UserType.values[map['userType'] as int],
         companyNames =
             (map['companyNames'] as List?)?.map((e) => e as String).toList() ??
@@ -39,7 +38,7 @@ class User extends EzloginUser {
     String? email,
     String? addedBy,
     Map<String, bool>? supervisedBy,
-    List<String>? supervising,
+    Map<String, bool>? supervising,
     UserType? userType,
     bool? mustChangePassword,
     String? id,
@@ -93,7 +92,7 @@ class User extends EzloginUser {
   final String lastName;
   final String addedBy;
   final Map<String, bool> supervisedBy;
-  final List<String> supervising;
+  final Map<String, bool> supervising;
   final UserType userType;
   final List<String> companyNames;
 
