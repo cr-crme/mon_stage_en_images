@@ -37,7 +37,7 @@ class _NewUserAlertDialogState extends State<NewUserAlertDialog> {
       addedBy: 'Administrator',
       userType: UserType.teacher,
       mustChangePassword: true,
-      supervisedBy: [],
+      supervisedBy: {},
       supervising: [],
       companyNames: [],
     );

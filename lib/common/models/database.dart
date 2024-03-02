@@ -67,7 +67,8 @@ class Database extends EzloginFirebase with ChangeNotifier {
     await answers.initializeFetchingData();
 
     if (_currentUser!.userType == UserType.student) {
-      questions.pathToData = 'questions/${_currentUser!.supervisedBy.last}';
+      questions.pathToData =
+          'questions/${_currentUser!.supervisedBy.keys.last}';
     } else {
       questions.pathToData = 'questions/${_currentUser!.id}';
     }
@@ -158,7 +159,7 @@ class Database extends EzloginFirebase with ChangeNotifier {
       final studentUser = await user(newStudent.id);
       if (studentUser != null) return EzloginStatus.unrecognizedError;
 
-      if (studentUser!.supervisedBy.contains(currentUser!.id)) {
+      if (studentUser!.supervisedBy.keys.contains(currentUser!.id)) {
         return EzloginStatus.alreadyCreated;
       }
       if (studentUser.firstName != newStudent.firstName ||
@@ -166,7 +167,7 @@ class Database extends EzloginFirebase with ChangeNotifier {
         return EzloginStatus.wrongInfoWhileCreating;
       }
 
-      studentUser.supervisedBy.add(currentUser!.id);
+      studentUser.supervisedBy[currentUser!.id] = true;
       studentUser.companyNames.add(newStudent.companyNames.last);
       final status = await modifyUser(user: studentUser, newInfo: studentUser);
       if (status != EzloginStatus.success) return status;
