@@ -201,4 +201,10 @@ class Database extends EzloginFirebase with ChangeNotifier {
     _fetchStudents();
     return status;
   }
+
+  Future<String?> getRequiredSoftwareVersion() async {
+    final data =
+        await FirebaseDatabase.instance.ref('appInfo/requiredVersion').get();
+    return data.value as String?;
+  }
 }

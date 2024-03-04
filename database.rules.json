@@ -1,5 +1,9 @@
 {
   "rules": {
+    "appInfo": {
+      ".read": true,
+      ".write": false
+    },
     "questions": {
       "$uid": {
         ".read":    " auth.uid !== null && ( $uid === auth.uid  ||  root.child('/users/'+auth.uid+'/supervisedBy').val() === $uid)",

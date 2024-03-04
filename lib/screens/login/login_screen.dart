@@ -3,10 +3,10 @@ import 'package:defi_photo/common/models/enum.dart';
 import 'package:defi_photo/common/models/themes.dart';
 import 'package:defi_photo/common/models/user.dart';
 import 'package:defi_photo/common/providers/all_questions.dart';
-import 'package:defi_photo/common/widgets/colored_corners.dart';
 import 'package:defi_photo/default_questions.dart';
 import 'package:defi_photo/screens/all_students/students_screen.dart';
 import 'package:defi_photo/screens/login/widgets/change_password_alert_dialog.dart';
+import 'package:defi_photo/screens/login/widgets/main_title_background.dart';
 import 'package:defi_photo/screens/login/widgets/new_user_alert_dialog.dart';
 import 'package:defi_photo/screens/q_and_a/q_and_a_screen.dart';
 import 'package:flutter/material.dart';
@@ -140,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
             CircularProgressIndicator(
               color: teacherTheme().colorScheme.primary,
             ),
-            const Text('Connexion en cours', style: TextStyle(fontSize: 18)),
+            const Text('Connexion en cours...', style: TextStyle(fontSize: 18)),
           ],
         );
       case EzloginStatus.newUser:
@@ -221,74 +221,8 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
-          child: ColoredCorners(
-            firstColor: LinearGradient(
-              end: const Alignment(0, 0.6),
-              begin: const Alignment(0.5, 1.5),
-              colors: [
-                teacherTheme().colorScheme.primary,
-                Colors.white,
-              ],
-            ),
-            secondColor: LinearGradient(
-              begin: const Alignment(-0.1, -1),
-              end: const Alignment(0, -0.6),
-              colors: [
-                studentTheme().colorScheme.primary,
-                Colors.white10,
-              ],
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const MainTitle(),
-                const SizedBox(height: 50),
-                _buildPage(),
-              ],
-            ),
-          ),
+          child: MainTitleBackground(child: _buildPage()),
         ),
-      ),
-    );
-  }
-}
-
-class MainTitle extends StatelessWidget {
-  const MainTitle({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Transform(
-      alignment: FractionalOffset.center,
-      transform: Matrix4.identity()..rotateZ(-15 * 3.1415927 / 180),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ColoredBox(
-            color: studentTheme().colorScheme.primary,
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text(
-                'DÉFI',
-                style: TextStyle(
-                    fontSize: 40, color: studentTheme().colorScheme.onPrimary),
-              ),
-            ),
-          ),
-          ColoredBox(
-            color: teacherTheme().colorScheme.primary,
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text(
-                'PHOTO',
-                style: TextStyle(
-                    fontSize: 40, color: teacherTheme().colorScheme.onPrimary),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
