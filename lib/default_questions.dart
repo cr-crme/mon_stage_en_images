@@ -1,5 +1,5 @@
-import 'package:defi_photo/common/models/enum.dart';
-import 'package:defi_photo/common/models/question.dart';
+import 'package:mon_stage_en_images/common/models/enum.dart';
+import 'package:mon_stage_en_images/common/models/question.dart';
 
 class DefaultQuestion {
   // These are the default questions when creating a new teacher

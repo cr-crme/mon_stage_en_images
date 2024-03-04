@@ -1,8 +1,8 @@
-import 'package:defi_photo/common/models/database.dart';
-import 'package:defi_photo/main.dart';
-import 'package:defi_photo/screens/login/login_screen.dart';
-import 'package:defi_photo/screens/login/widgets/main_title_background.dart';
 import 'package:flutter/material.dart';
+import 'package:mon_stage_en_images/common/models/database.dart';
+import 'package:mon_stage_en_images/main.dart';
+import 'package:mon_stage_en_images/screens/login/login_screen.dart';
+import 'package:mon_stage_en_images/screens/login/widgets/main_title_background.dart';
 import 'package:provider/provider.dart';
 
 class CheckVersionScreen extends StatelessWidget {

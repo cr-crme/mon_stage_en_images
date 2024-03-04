@@ -1,6 +1,6 @@
-import 'package:defi_photo/common/models/themes.dart';
-import 'package:defi_photo/common/widgets/colored_corners.dart';
 import 'package:flutter/material.dart';
+import 'package:mon_stage_en_images/common/models/themes.dart';
+import 'package:mon_stage_en_images/common/widgets/colored_corners.dart';
 
 class MainTitleBackground extends StatelessWidget {
   const MainTitleBackground({super.key, this.child});

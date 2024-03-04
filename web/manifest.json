@@ -1,6 +1,6 @@
 {
-    "name": "defi_photo",
-    "short_name": "defi_photo",
+    "name": "Mon stage en images",
+    "short_name": "Mon stage en images",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

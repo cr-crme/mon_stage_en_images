@@ -1,9 +1,9 @@
-import 'package:defi_photo/common/models/database.dart';
-import 'package:defi_photo/common/models/enum.dart';
-import 'package:defi_photo/common/widgets/are_you_sure_dialog.dart';
-import 'package:defi_photo/screens/all_students/students_screen.dart';
-import 'package:defi_photo/screens/login/login_screen.dart';
-import 'package:defi_photo/screens/q_and_a/q_and_a_screen.dart';
+import 'package:mon_stage_en_images/common/models/database.dart';
+import 'package:mon_stage_en_images/common/models/enum.dart';
+import 'package:mon_stage_en_images/common/widgets/are_you_sure_dialog.dart';
+import 'package:mon_stage_en_images/screens/all_students/students_screen.dart';
+import 'package:mon_stage_en_images/screens/login/login_screen.dart';
+import 'package:mon_stage_en_images/screens/q_and_a/q_and_a_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

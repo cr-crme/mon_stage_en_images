@@ -1,4 +1,4 @@
-# CRCRME - Défi Photo
+# CRCRME - Mon stage en images
 
 ## Installation
 

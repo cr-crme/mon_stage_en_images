@@ -1,7 +1,7 @@
-import 'package:defi_photo/common/models/database.dart';
-import 'package:defi_photo/common/models/enum.dart';
-import 'package:defi_photo/common/models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:mon_stage_en_images/common/models/database.dart';
+import 'package:mon_stage_en_images/common/models/enum.dart';
+import 'package:mon_stage_en_images/common/models/user.dart';
 import 'package:provider/provider.dart';
 
 class NewStudentAlertDialog extends StatefulWidget {

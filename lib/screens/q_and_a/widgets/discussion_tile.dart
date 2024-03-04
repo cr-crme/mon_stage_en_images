@@ -1,11 +1,11 @@
 import 'dart:typed_data';
 
-import 'package:defi_photo/common/misc/storage_service.dart';
-import 'package:defi_photo/common/models/database.dart';
-import 'package:defi_photo/common/models/enum.dart';
-import 'package:defi_photo/common/models/message.dart';
-import 'package:defi_photo/common/models/themes.dart';
 import 'package:flutter/material.dart';
+import 'package:mon_stage_en_images/common/misc/storage_service.dart';
+import 'package:mon_stage_en_images/common/models/database.dart';
+import 'package:mon_stage_en_images/common/models/enum.dart';
+import 'package:mon_stage_en_images/common/models/message.dart';
+import 'package:mon_stage_en_images/common/models/themes.dart';
 import 'package:provider/provider.dart';
 
 class DiscussionTile extends StatelessWidget {

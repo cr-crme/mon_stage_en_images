@@ -1,18 +1,18 @@
 import 'dart:async';
 
-import 'package:defi_photo/common/misc/storage_service.dart';
-import 'package:defi_photo/common/models/database.dart';
-import 'package:defi_photo/common/models/enum.dart';
-import 'package:defi_photo/common/models/message.dart';
-import 'package:defi_photo/common/models/question.dart';
-import 'package:defi_photo/common/models/text_reader.dart';
-import 'package:defi_photo/common/models/user.dart';
-import 'package:defi_photo/common/providers/all_answers.dart';
-import 'package:defi_photo/common/providers/speecher.dart';
-import 'package:defi_photo/common/widgets/animated_icon.dart';
-import 'package:defi_photo/screens/q_and_a/widgets/discussion_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mon_stage_en_images/common/misc/storage_service.dart';
+import 'package:mon_stage_en_images/common/models/database.dart';
+import 'package:mon_stage_en_images/common/models/enum.dart';
+import 'package:mon_stage_en_images/common/models/message.dart';
+import 'package:mon_stage_en_images/common/models/question.dart';
+import 'package:mon_stage_en_images/common/models/text_reader.dart';
+import 'package:mon_stage_en_images/common/models/user.dart';
+import 'package:mon_stage_en_images/common/providers/all_answers.dart';
+import 'package:mon_stage_en_images/common/providers/speecher.dart';
+import 'package:mon_stage_en_images/common/widgets/animated_icon.dart';
+import 'package:mon_stage_en_images/screens/q_and_a/widgets/discussion_tile.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

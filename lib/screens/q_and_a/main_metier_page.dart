@@ -1,7 +1,6 @@
-import 'package:defi_photo/common/models/user.dart';
 import 'package:flutter/material.dart';
-
-import 'widgets/metier_tile.dart';
+import 'package:mon_stage_en_images/common/models/user.dart';
+import 'package:mon_stage_en_images/screens/q_and_a/widgets/metier_tile.dart';
 
 class MainMetierPage extends StatelessWidget {
   const MainMetierPage({

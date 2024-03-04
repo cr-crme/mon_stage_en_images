@@ -1,9 +1,9 @@
-import 'package:defi_photo/common/models/answer.dart';
-import 'package:defi_photo/common/models/enum.dart';
-import 'package:defi_photo/common/models/question.dart';
-import 'package:defi_photo/common/models/section.dart';
-import 'package:defi_photo/common/models/user.dart';
-import 'package:defi_photo/common/providers/all_answers.dart';
+import 'package:mon_stage_en_images/common/models/answer.dart';
+import 'package:mon_stage_en_images/common/models/enum.dart';
+import 'package:mon_stage_en_images/common/models/question.dart';
+import 'package:mon_stage_en_images/common/models/section.dart';
+import 'package:mon_stage_en_images/common/models/user.dart';
+import 'package:mon_stage_en_images/common/providers/all_answers.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
 
 class AllQuestions extends FirebaseListProvided<Question> with Section {

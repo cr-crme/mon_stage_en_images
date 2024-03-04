@@ -1,15 +1,15 @@
-import 'package:defi_photo/common/models/answer_sort_and_filter.dart';
-import 'package:defi_photo/common/models/database.dart';
-import 'package:defi_photo/common/models/enum.dart';
-import 'package:defi_photo/common/models/section.dart';
-import 'package:defi_photo/common/models/user.dart';
-import 'package:defi_photo/common/widgets/main_drawer.dart';
-import 'package:defi_photo/screens/all_students/students_screen.dart';
-import 'package:defi_photo/screens/q_and_a/main_metier_page.dart';
-import 'package:defi_photo/screens/q_and_a/question_and_answer_page.dart';
-import 'package:defi_photo/screens/q_and_a/widgets/filter_answers_dialog.dart';
-import 'package:defi_photo/screens/q_and_a/widgets/metier_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:mon_stage_en_images/common/models/answer_sort_and_filter.dart';
+import 'package:mon_stage_en_images/common/models/database.dart';
+import 'package:mon_stage_en_images/common/models/enum.dart';
+import 'package:mon_stage_en_images/common/models/section.dart';
+import 'package:mon_stage_en_images/common/models/user.dart';
+import 'package:mon_stage_en_images/common/widgets/main_drawer.dart';
+import 'package:mon_stage_en_images/screens/all_students/students_screen.dart';
+import 'package:mon_stage_en_images/screens/q_and_a/main_metier_page.dart';
+import 'package:mon_stage_en_images/screens/q_and_a/question_and_answer_page.dart';
+import 'package:mon_stage_en_images/screens/q_and_a/widgets/filter_answers_dialog.dart';
+import 'package:mon_stage_en_images/screens/q_and_a/widgets/metier_app_bar.dart';
 import 'package:provider/provider.dart';
 
 class QAndAScreen extends StatefulWidget {
@@ -124,7 +124,7 @@ class _QAndAScreenState extends State<QAndAScreen> {
           if (_userType == UserType.student)
             Text(
                 _currentPage == 0
-                    ? "Mon défi photo"
+                    ? "Mon stage en images"
                     : Section.name(_currentPage - 1),
                 style:
                     currentTheme.copyWith(fontSize: 15, color: onPrimaryColor)),

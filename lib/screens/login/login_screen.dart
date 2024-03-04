@@ -1,15 +1,15 @@
-import 'package:defi_photo/common/models/database.dart';
-import 'package:defi_photo/common/models/enum.dart';
-import 'package:defi_photo/common/models/themes.dart';
-import 'package:defi_photo/common/models/user.dart';
-import 'package:defi_photo/common/providers/all_questions.dart';
-import 'package:defi_photo/default_questions.dart';
-import 'package:defi_photo/screens/all_students/students_screen.dart';
-import 'package:defi_photo/screens/login/widgets/change_password_alert_dialog.dart';
-import 'package:defi_photo/screens/login/widgets/main_title_background.dart';
-import 'package:defi_photo/screens/login/widgets/new_user_alert_dialog.dart';
-import 'package:defi_photo/screens/q_and_a/q_and_a_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:mon_stage_en_images/common/models/database.dart';
+import 'package:mon_stage_en_images/common/models/enum.dart';
+import 'package:mon_stage_en_images/common/models/themes.dart';
+import 'package:mon_stage_en_images/common/models/user.dart';
+import 'package:mon_stage_en_images/common/providers/all_questions.dart';
+import 'package:mon_stage_en_images/default_questions.dart';
+import 'package:mon_stage_en_images/screens/all_students/students_screen.dart';
+import 'package:mon_stage_en_images/screens/login/widgets/change_password_alert_dialog.dart';
+import 'package:mon_stage_en_images/screens/login/widgets/main_title_background.dart';
+import 'package:mon_stage_en_images/screens/login/widgets/new_user_alert_dialog.dart';
+import 'package:mon_stage_en_images/screens/q_and_a/q_and_a_screen.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {

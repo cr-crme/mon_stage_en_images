@@ -1,16 +1,16 @@
-import 'package:defi_photo/common/models/answer.dart';
-import 'package:defi_photo/common/models/answer_sort_and_filter.dart';
-import 'package:defi_photo/common/models/database.dart';
-import 'package:defi_photo/common/models/enum.dart';
-import 'package:defi_photo/common/models/question.dart';
-import 'package:defi_photo/common/models/text_reader.dart';
-import 'package:defi_photo/common/models/user.dart';
-import 'package:defi_photo/common/providers/all_answers.dart';
-import 'package:defi_photo/common/providers/all_questions.dart';
-import 'package:defi_photo/screens/q_and_a/widgets/answer_tile_part.dart';
-import 'package:defi_photo/screens/q_and_a/widgets/new_question_alert_dialog.dart';
-import 'package:defi_photo/screens/q_and_a/widgets/question_tile_part.dart';
 import 'package:flutter/material.dart';
+import 'package:mon_stage_en_images/common/models/answer.dart';
+import 'package:mon_stage_en_images/common/models/answer_sort_and_filter.dart';
+import 'package:mon_stage_en_images/common/models/database.dart';
+import 'package:mon_stage_en_images/common/models/enum.dart';
+import 'package:mon_stage_en_images/common/models/question.dart';
+import 'package:mon_stage_en_images/common/models/text_reader.dart';
+import 'package:mon_stage_en_images/common/models/user.dart';
+import 'package:mon_stage_en_images/common/providers/all_answers.dart';
+import 'package:mon_stage_en_images/common/providers/all_questions.dart';
+import 'package:mon_stage_en_images/screens/q_and_a/widgets/answer_tile_part.dart';
+import 'package:mon_stage_en_images/screens/q_and_a/widgets/new_question_alert_dialog.dart';
+import 'package:mon_stage_en_images/screens/q_and_a/widgets/question_tile_part.dart';
 import 'package:provider/provider.dart';
 
 class QuestionAndAnswerTile extends StatefulWidget {

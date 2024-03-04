@@ -1,11 +1,11 @@
-import 'package:defi_photo/common/models/answer.dart';
-import 'package:defi_photo/common/models/enum.dart';
-import 'package:defi_photo/common/providers/all_answers.dart';
-import 'package:defi_photo/common/providers/all_questions.dart';
 import 'package:ezlogin/ezlogin.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fireauth;
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:mon_stage_en_images/common/models/answer.dart';
+import 'package:mon_stage_en_images/common/models/enum.dart';
+import 'package:mon_stage_en_images/common/providers/all_answers.dart';
+import 'package:mon_stage_en_images/common/providers/all_questions.dart';
 
 import 'user.dart';
 

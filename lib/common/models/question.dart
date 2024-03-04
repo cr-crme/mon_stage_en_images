@@ -1,6 +1,6 @@
-import 'package:defi_photo/common/models/enum.dart';
-import 'package:defi_photo/common/providers/all_answers.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
+import 'package:mon_stage_en_images/common/models/enum.dart';
+import 'package:mon_stage_en_images/common/providers/all_answers.dart';
 
 class Question extends ItemSerializableWithCreationTime {
   // Constructors and (de)serializer

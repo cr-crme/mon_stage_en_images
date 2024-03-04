@@ -1,13 +1,13 @@
-import 'package:defi_photo/common/models/answer.dart';
-import 'package:defi_photo/common/models/database.dart';
-import 'package:defi_photo/common/models/enum.dart';
-import 'package:defi_photo/common/models/question.dart';
-import 'package:defi_photo/common/models/user.dart';
-import 'package:defi_photo/common/providers/all_answers.dart';
-import 'package:defi_photo/common/providers/speecher.dart';
-import 'package:defi_photo/common/widgets/animated_icon.dart';
-import 'package:defi_photo/common/widgets/are_you_sure_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:mon_stage_en_images/common/models/answer.dart';
+import 'package:mon_stage_en_images/common/models/database.dart';
+import 'package:mon_stage_en_images/common/models/enum.dart';
+import 'package:mon_stage_en_images/common/models/question.dart';
+import 'package:mon_stage_en_images/common/models/user.dart';
+import 'package:mon_stage_en_images/common/providers/all_answers.dart';
+import 'package:mon_stage_en_images/common/providers/speecher.dart';
+import 'package:mon_stage_en_images/common/widgets/animated_icon.dart';
+import 'package:mon_stage_en_images/common/widgets/are_you_sure_dialog.dart';
 import 'package:provider/provider.dart';
 
 class NewQuestionAlertDialog extends StatefulWidget {
