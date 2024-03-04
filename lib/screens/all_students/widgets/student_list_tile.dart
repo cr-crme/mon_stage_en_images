@@ -35,8 +35,7 @@ class StudentListTile extends StatelessWidget {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(student.companyNames.last,
-                style: const TextStyle(fontSize: 16)),
+            Text(student.companyNames, style: const TextStyle(fontSize: 16)),
             Text(
                 'Questions répondues : ${AllAnswers.numberAnsweredFrom(allAnswers)} '
                 '/ ${AllAnswers.numberActiveFrom(allAnswers)}',

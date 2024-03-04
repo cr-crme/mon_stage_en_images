@@ -130,8 +130,7 @@ class _QAndAScreenState extends State<QAndAScreen> {
                     currentTheme.copyWith(fontSize: 15, color: onPrimaryColor)),
           if (_userType == UserType.teacher && _student != null)
             Text(
-              _student!.companyNames
-                  .last, // TODO: see how to make this professor dependent
+              _student!.companyNames,
               style: currentTheme.copyWith(fontSize: 15, color: onPrimaryColor),
             ),
         ],

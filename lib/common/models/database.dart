@@ -67,8 +67,7 @@ class Database extends EzloginFirebase with ChangeNotifier {
     await answers.initializeFetchingData();
 
     if (_currentUser!.userType == UserType.student) {
-      questions.pathToData =
-          'questions/${_currentUser!.supervisedBy.keys.last}';
+      questions.pathToData = 'questions/${_currentUser!.supervisedBy}';
     } else {
       questions.pathToData = 'questions/${_currentUser!.id}';
     }
@@ -100,15 +99,27 @@ class Database extends EzloginFirebase with ChangeNotifier {
   }
 
   @override
-  Future<User?> user(String username) async {
+  Future<User?> user(String id) async {
     try {
-      final data =
-          await FirebaseDatabase.instance.ref('$usersPath/$username').get();
+      final data = await FirebaseDatabase.instance.ref('$usersPath/$id').get();
       return data.value == null ? null : User.fromSerialized(data.value);
     } on Exception {
-      debugPrint('Error while fetching user $username');
+      debugPrint('Error while fetching user $id');
       return null;
     }
+  }
+
+  @override
+  Future<User?> userFromEmail(String email) async {
+    final data = await FirebaseDatabase.instance
+        .ref(usersPath)
+        .orderByChild('email')
+        .equalTo(email)
+        .get();
+
+    if (data.value == null) return null;
+
+    return User.fromSerialized((data.value as Map?)!.values.first as Map);
   }
 
   final List<User> _students = [];
@@ -153,29 +164,9 @@ class Database extends EzloginFirebase with ChangeNotifier {
       required AllQuestions questions,
       required AllAnswers answers}) async {
     var newUser = await addUser(newUser: newStudent, password: 'defiPhoto');
+    if (newUser == null) return EzloginStatus.alreadyCreated;
 
-    if (newUser == null) {
-      // If the student was already in the database, we can't add them again,
-      // but we can add ourself to the [supervisedBy] list.
-
-      final studentUser = await user(newStudent.id);
-      if (studentUser != null) return EzloginStatus.unrecognizedError;
-
-      if (studentUser!.supervisedBy.keys.contains(currentUser!.id)) {
-        return EzloginStatus.alreadyCreated;
-      }
-      if (studentUser.firstName != newStudent.firstName ||
-          studentUser.lastName != newStudent.lastName) {
-        return EzloginStatus.wrongInfoWhileCreating;
-      }
-
-      studentUser.supervisedBy[currentUser!.id] = true;
-      studentUser.companyNames.add(newStudent.companyNames.last);
-      final status = await modifyUser(user: studentUser, newInfo: studentUser);
-      if (status != EzloginStatus.success) return status;
-    }
-    newStudent = newStudent.copyWith(id: newUser!.id);
-
+    newStudent = newStudent.copyWith(id: newUser.id);
     currentUser!.supervising[newStudent.id] = true;
 
     try {

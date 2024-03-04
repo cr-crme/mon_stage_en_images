@@ -4,7 +4,9 @@ import 'package:defi_photo/common/providers/all_questions.dart';
 import 'package:defi_photo/common/providers/all_answers.dart';
 import 'package:defi_photo/common/widgets/are_you_sure_dialog.dart';
 import 'package:defi_photo/common/widgets/main_drawer.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:provider/provider.dart';
 
 import 'widgets/new_student_alert_dialog.dart';
@@ -61,13 +63,28 @@ class _StudentsScreenState extends State<StudentsScreen> {
       case EzloginStatus.success:
         return;
       case EzloginStatus.alreadyCreated:
-        // TODO: Test that and test the case where another teachers add them
-        _showSnackbar(
-            const Text('Cet élève est déjà dans vos élève'), scaffold);
-        return;
       case EzloginStatus.wrongInfoWhileCreating:
         _showSnackbar(
-            const Text('Cet élève est déjà dans vos élève'), scaffold);
+            Text.rich(TextSpan(
+              children: [
+                const TextSpan(
+                    text: 'Il n\'est pas possible d\'ajouter deux étudiant(e) '
+                        'avec la même adresse courriel.\n\n'
+                        'Si vous souhaitez demander les droits pour cet élève, '
+                        'veuillez '),
+                TextSpan(
+                  text: 'cliquer ici',
+                  style: const TextStyle(
+                      color: Colors.blue, decoration: TextDecoration.underline),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () => _requestStudent(student.email),
+                ),
+                const TextSpan(
+                  text: '.',
+                ),
+              ],
+            )),
+            scaffold);
         return;
       default:
         _showSnackbar(
@@ -110,6 +127,28 @@ class _StudentsScreenState extends State<StudentsScreen> {
             scaffold);
         return;
     }
+  }
+
+  Future<void> _requestStudent(String studentEmail) async {
+    final database = Provider.of<Database>(context, listen: false);
+    final student = await database.userFromEmail(studentEmail);
+    if (student == null) return;
+
+    final email = Email(
+        recipients: ['pariterre@hotmail.com'],
+        subject: 'Prise en charge d\'un élève',
+        body:
+            'Bonjour,\n\nJe suis un\u00b7e utilisateur\u00b7trice de l\'application '
+            'Défi Photos et je souhaiterais faire la demande de la '
+            'prise en charge d\'un élève. Vous trouverez les données importantes '
+            'ci-bas :\n\n'
+            '\tMon courriel : ${database.currentUser!.email}\n'
+            '\tMon identifiant : ${database.currentUser!.id}\n'
+            '\tCourriel de l\'élève : ${student.email}\n'
+            '\tIdentifiant de l\'élève : ${student.id}.\n\n'
+            '\tNom de la compagnie : ${student.companyNames}\n\n'
+            'Merci de votre aide.');
+    await FlutterEmailSender.send(email);
   }
 
   Future<void> _removeStudent(User student) async {

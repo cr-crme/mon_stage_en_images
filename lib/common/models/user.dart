@@ -8,7 +8,6 @@ class User extends EzloginUser {
     required this.firstName,
     required this.lastName,
     required super.email,
-    required this.addedBy,
     required this.supervisedBy,
     required this.supervising,
     required this.userType,
@@ -20,15 +19,11 @@ class User extends EzloginUser {
   User.fromSerialized(map)
       : firstName = map['firstName'],
         lastName = map['lastName'],
-        addedBy = map['addedBy'],
-        supervisedBy =
-            (map['supervisedBy'] as Map?)?.map((k, v) => MapEntry(k, v)) ?? {},
+        supervisedBy = map['supervisedBy'],
         supervising =
             (map['supervising'] as Map?)?.map((k, v) => MapEntry(k, v)) ?? {},
         userType = UserType.values[map['userType'] as int],
-        companyNames =
-            (map['companyNames'] as List?)?.map((e) => e as String).toList() ??
-                [],
+        companyNames = map['companyNames'],
         super.fromSerialized(map);
 
   @override
@@ -36,18 +31,16 @@ class User extends EzloginUser {
     String? firstName,
     String? lastName,
     String? email,
-    String? addedBy,
-    Map<String, bool>? supervisedBy,
+    String? supervisedBy,
     Map<String, bool>? supervising,
     UserType? userType,
     bool? mustChangePassword,
     String? id,
-    List<String>? companyNames,
+    String? companyNames,
   }) {
     firstName ??= this.firstName;
     lastName ??= this.lastName;
     email ??= this.email;
-    addedBy ??= this.addedBy;
     supervisedBy ??= this.supervisedBy;
     supervising ??= this.supervising;
     userType ??= this.userType;
@@ -58,7 +51,6 @@ class User extends EzloginUser {
       firstName: firstName,
       lastName: lastName,
       email: email,
-      addedBy: addedBy,
       supervisedBy: supervisedBy,
       supervising: supervising,
       userType: userType,
@@ -74,7 +66,6 @@ class User extends EzloginUser {
       ..addAll({
         'firstName': firstName,
         'lastName': lastName,
-        'addedBy': addedBy,
         'supervisedBy': supervisedBy,
         'supervising': supervising,
         'userType': userType.index,
@@ -90,11 +81,10 @@ class User extends EzloginUser {
   // Attributes and methods
   final String firstName;
   final String lastName;
-  final String addedBy;
-  final Map<String, bool> supervisedBy;
+  final String supervisedBy;
   final Map<String, bool> supervising;
   final UserType userType;
-  final List<String> companyNames;
+  final String companyNames;
 
   @override
   String toString() {

@@ -42,12 +42,11 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
       firstName: _firstName!,
       lastName: _lastName!,
       email: _email!,
-      addedBy: database.currentUser!.id,
-      supervisedBy: {database.currentUser!.id: true},
+      supervisedBy: database.currentUser!.id,
       supervising: {},
       userType: UserType.student,
       mustChangePassword: true,
-      companyNames: [_companyName ?? ''],
+      companyNames: _companyName!,
       id: widget.student?.id,
     );
 
@@ -98,7 +97,7 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
               TextFormField(
                 decoration:
                     const InputDecoration(labelText: 'Nom de l\'entreprise'),
-                initialValue: widget.student?.companyNames.last,
+                initialValue: widget.student?.companyNames,
                 validator: (value) => value == null || value.isEmpty
                     ? 'Ajouter un nom d\'entreprise'
                     : null,

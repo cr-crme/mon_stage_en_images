@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+
+import 'package:defi_photo/common/misc/storage_service.dart';
 import 'package:defi_photo/common/models/database.dart';
 import 'package:defi_photo/common/models/enum.dart';
 import 'package:defi_photo/common/models/message.dart';
@@ -54,16 +57,34 @@ class DiscussionTile extends StatelessWidget {
           children: [
             if (discussion.isPhotoUrl) _showNameOfSender(),
             if (discussion.isPhotoUrl)
-              Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.only(left: 15, bottom: 5),
-                  child: InkWell(
-                    onTap: () => _showImageFullScreen(context),
-                    child: SizedBox(
-                        height: MediaQuery.of(context).size.height * 1 / 4,
-                        child:
-                            Image.network(discussion.text, fit: BoxFit.cover)),
-                  )),
+              FutureBuilder<Uint8List?>(
+                  future: StorageService.getImage(discussion.text),
+                  builder: (context, snapshot) {
+                    if (snapshot.data == null) {
+                      return Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            height: MediaQuery.of(context).size.height * 1 / 4,
+                          ),
+                          const CircularProgressIndicator(),
+                        ],
+                      );
+                    }
+
+                    return Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.only(left: 15, bottom: 5),
+                        child: InkWell(
+                          onTap: () => _showImageFullScreen(context),
+                          child: SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 1 / 4,
+                              child: Image.memory(snapshot.data!,
+                                  fit: BoxFit.cover)),
+                        ));
+                  }),
             if (!discussion.isPhotoUrl)
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
