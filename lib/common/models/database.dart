@@ -83,7 +83,7 @@ class Database extends EzloginFirebase with ChangeNotifier {
   @override
   Future<EzloginStatus> logout() async {
     _currentUser = null;
-    _stopFetchingData();
+    await _stopFetchingData();
     notifyListeners();
     return super.logout();
   }
@@ -144,6 +144,7 @@ class Database extends EzloginFirebase with ChangeNotifier {
         if (student != null) _students.add(student);
       }
     }
+
     notifyListeners();
   }
 
