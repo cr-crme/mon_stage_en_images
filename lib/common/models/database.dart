@@ -162,7 +162,7 @@ class Database extends EzloginFirebase with ChangeNotifier {
       {required User newStudent,
       required AllQuestions questions,
       required AllAnswers answers}) async {
-    var newUser = await addUser(newUser: newStudent, password: 'defiPhoto');
+    var newUser = await addUser(newUser: newStudent, password: 'monStage');
     if (newUser == null) return EzloginStatus.alreadyCreated;
 
     newStudent = newStudent.copyWith(id: newUser.id);

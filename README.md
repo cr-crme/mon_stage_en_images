@@ -24,7 +24,7 @@ Rouler la commande suivante pour cloner les dépôts nécessaires pour compiler 
 
         firebase login
         firebase init
-        flutterfire configure --project=defiphoto
+        flutterfire configure --project=monstageenimages
 
 Pour plus d'informations, visitez [cette page](https://firebase.google.com/docs/flutter/setup).
 
