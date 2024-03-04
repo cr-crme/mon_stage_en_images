@@ -61,17 +61,15 @@ class User extends EzloginUser {
   }
 
   @override
-  Map<String, dynamic> serializedMap() {
-    return super.serializedMap()
-      ..addAll({
-        'firstName': firstName,
-        'lastName': lastName,
-        'supervisedBy': supervisedBy,
-        'supervising': supervising,
-        'userType': userType.index,
-        'companyNames': companyNames,
-      });
-  }
+  Map<String, dynamic> serializedMap() => super.serializedMap()
+    ..addAll({
+      'firstName': firstName,
+      'lastName': lastName,
+      'supervisedBy': supervisedBy,
+      'supervising': supervising,
+      'userType': userType.index,
+      'companyNames': companyNames,
+    });
 
   @override
   User deserializeItem(map) {
@@ -87,7 +85,5 @@ class User extends EzloginUser {
   final String companyNames;
 
   @override
-  String toString() {
-    return '$firstName $lastName';
-  }
+  String toString() => '$firstName $lastName';
 }

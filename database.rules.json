@@ -19,20 +19,13 @@
       }
     },
     "users":{
+      ".read":    "  auth.uid !== null  &&                           root.child('/users/'+auth.uid+'/userType').val() === 1",
       "$uid": {
-        ".read":    "auth.uid !== null  &&  ( $uid === auth.uid  ||  ( root.child('/users/'+auth.uid+'/userType').val() === 1  &&  root.child('/users/'+auth.uid+'/supervising/'+$uid).val() === true ) )",
-        ".write":   "auth.uid !== null  &&  ( $uid === auth.uid  ||    root.child('/users/'+auth.uid+'/userType').val() === 1 )",
+        ".read":    "auth.uid !== null  &&  ( $uid === auth.uid  ||  root.child('/users/'+auth.uid+'/userType').val() === 1 )",
+        ".write":   "auth.uid !== null  &&  ( $uid === auth.uid  ||  root.child('/users/'+auth.uid+'/userType').val() === 1 )",
         "supervising": {
           ".read":  "auth.uid !== null  &&    $uid === auth.uid  &&  root.child('/users/'+auth.uid+'/userType').val() === 1",
           ".write": "auth.uid !== null  &&    $uid === auth.uid  &&  root.child('/users/'+auth.uid+'/userType').val() === 1"
-        },
-        "supervisedBy": {
-          ".read":  "auth.uid !== null  &&  ( $uid === auth.uid  ||  ( root.child('/users/'+auth.uid+'/userType').val() === 1  &&  root.child('/users/'+auth.uid+'/supervising/'+$uid).val() === true ) )",
-          ".write": "auth.uid !== null  &&                             root.child('/users/'+auth.uid+'/userType').val() === 1  &&  root.child('/users/'+auth.uid+'/supervising/'+$uid).val() === true"
-        }, 
-        "companyNames": {
-          ".read":  "auth.uid !== null  &&  ( $uid === auth.uid  ||  ( root.child('/users/'+auth.uid+'/userType').val() === 1  &&  root.child('/users/'+auth.uid+'/supervising/'+$uid).val() === true ) )",
-          ".write": "auth.uid !== null  &&                             root.child('/users/'+auth.uid+'/userType').val() === 1  &&  root.child('/users/'+auth.uid+'/supervising/'+$uid).val() === true"
         }
       }
     }

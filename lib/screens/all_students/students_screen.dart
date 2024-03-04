@@ -142,11 +142,14 @@ class _StudentsScreenState extends State<StudentsScreen> {
             'Défi Photos et je souhaiterais faire la demande de la '
             'prise en charge d\'un élève. Vous trouverez les données importantes '
             'ci-bas :\n\n'
-            '\tMon courriel : ${database.currentUser!.email}\n'
-            '\tMon identifiant : ${database.currentUser!.id}\n'
-            '\tCourriel de l\'élève : ${student.email}\n'
-            '\tIdentifiant de l\'élève : ${student.id}.\n\n'
-            '\tNom de la compagnie : ${student.companyNames}\n\n'
+            'Mes informations :\n'
+            '    Courriel : ${database.currentUser!.email}\n'
+            '    Identifiant : ${database.currentUser!.id}\n'
+            'Informations de l\'élève :\n'
+            '    Courriel : ${student.email}\n'
+            '    Identifiant : ${student.id}\n'
+            '    Indentifiant du superviseur actuel : ${student.supervisedBy}\n'
+            '    Nom de la nouvelle compagnie de stage : ${student.companyNames}\n\n'
             'Merci de votre aide.');
     await FlutterEmailSender.send(email);
   }

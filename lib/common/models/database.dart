@@ -111,15 +111,14 @@ class Database extends EzloginFirebase with ChangeNotifier {
 
   @override
   Future<User?> userFromEmail(String email) async {
-    final data = await FirebaseDatabase.instance
-        .ref(usersPath)
-        .orderByChild('email')
-        .equalTo(email)
-        .get();
-
+    final data = await FirebaseDatabase.instance.ref(usersPath).get();
     if (data.value == null) return null;
 
-    return User.fromSerialized((data.value as Map?)!.values.first as Map);
+    final userdata =
+        (data.value as Map).values.firstWhere((e) => e['email'] == email);
+    if (userdata == null) return null;
+
+    return User.fromSerialized(userdata);
   }
 
   final List<User> _students = [];
