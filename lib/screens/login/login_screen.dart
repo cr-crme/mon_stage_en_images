@@ -157,8 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             content: Text.rich(TextSpan(children: [
               const TextSpan(
-                text:
-                    'Si vous êtes un\u00b7e enseignant\u00b7e, vous pouvez faire '
+                text: 'Si vous êtes un(e) enseignant(e), vous pouvez faire '
                     'la demande pour un compte en remplissant ',
               ),
               TextSpan(
@@ -169,7 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         recipients: ['recherchetic@gmail.com'],
                         subject: 'Mon stage en images - Inscription',
                         body:
-                            'Bonjour,\n\nJe suis un\u00b7e enseignant\u00b7e et je souhaite utiliser '
+                            'Bonjour,\n\nJe suis un(e) enseignant(e) et je souhaite utiliser '
                             '« Mon stage en images ». Voici mes informations :\n\n'
                             'Mes informations :\n'
                             '    Commission scolaire : INSCRIRE VOTRE COMMISSION SCOLAIRE\n'
@@ -268,7 +267,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             TextButton(
               onPressed: _newTeacher,
-              child: const Text('Nouvel\u00b7le utilisateur\u00b7trice'),
+              child: const Text('Nouvel(le) utilisateur(trice)'),
             ),
           ],
         );

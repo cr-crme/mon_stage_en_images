@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:mon_stage_en_images/common/helpers/helpers.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
+import 'package:mon_stage_en_images/common/models/themes.dart';
 import 'package:mon_stage_en_images/common/models/user.dart';
 import 'package:mon_stage_en_images/common/providers/all_answers.dart';
 import 'package:mon_stage_en_images/common/providers/all_questions.dart';
@@ -52,7 +53,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
       },
     );
     if (student == null) {
-      _showSnackbar(const Text('Ajout de l\'étudiant(e) annulé'), scaffold);
+      _showSnackbar(const Text('Ajout de l\'élève annulé'), scaffold);
       return;
     }
 
@@ -62,6 +63,42 @@ class _StudentsScreenState extends State<StudentsScreen> {
 
     switch (status) {
       case EzloginStatus.success:
+        await showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: ((context) => AlertDialog(
+                  title: const Text('Élève ajouté'),
+                  content: Text.rich(TextSpan(
+                    children: [
+                      const TextSpan(
+                          text: 'L\'élève a été ajouté(e) avec succès.'),
+                      const TextSpan(
+                          text: 'Vous pouvez maintenant demander à l\'élève de '
+                              'télécharger l\'application '),
+                      const TextSpan(
+                          text: 'Mon stage en images',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const TextSpan(
+                          text: ' et de s\'authentifier avec '
+                              'les informations suivantes:\n'
+                              '    Courriel: '),
+                      TextSpan(
+                          text: student.email,
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      const TextSpan(text: '\n    Mot de passe: '),
+                      const TextSpan(
+                          text: Database.defaultStudentPassword,
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                    ],
+                  )),
+                  actions: [
+                    ElevatedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: studentTheme().elevatedButtonTheme.style,
+                      child: const Text('C\'est noté!'),
+                    ),
+                  ],
+                )));
         return;
       case EzloginStatus.needAuthentication:
         _showSnackbar(
@@ -92,7 +129,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
             Text.rich(TextSpan(
               children: [
                 const TextSpan(
-                    text: 'Il n\'est pas possible d\'ajouter deux étudiant(e) '
+                    text: 'Il n\'est pas possible d\'ajouter deux élèves '
                         'avec la même adresse courriel.\n\n'
                         'Si vous souhaitez demander les droits pour cet élève, '
                         'veuillez '),
@@ -141,13 +178,12 @@ class _StudentsScreenState extends State<StudentsScreen> {
       case EzloginStatus.userNotFound:
         _showSnackbar(
             const Text(
-                'Étudiant(e) n\'a pas été trouvé(e) dans la base de donnée'),
+                'L\'élève n\'a pas été trouvé(e) dans la base de donnée'),
             scaffold);
         return;
       default:
         _showSnackbar(
-            const Text(
-                'Erreur inconnue lors de la modification de l\'étudiant'),
+            const Text('Erreur inconnue lors de la modification de l\'élève'),
             scaffold);
         return;
     }
@@ -161,8 +197,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
     final email = Email(
         recipients: ['recherchetic@gmail.com'],
         subject: 'Mon stage en images - Prise en charge d\'un élève',
-        body:
-            'Bonjour,\n\nJe suis un\u00b7e utilisateur\u00b7trice de l\'application '
+        body: 'Bonjour,\n\nJe suis un(e) utilisateur(trice) de l\'application '
             '« Mon stage en images » et je souhaiterais faire la demande de la '
             'prise en charge d\'un élève. Vous trouverez les données importantes '
             'ci-bas :\n\n'
@@ -187,7 +222,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AreYouSureDialog(
-          title: 'Suppression des données d\'un étudiant',
+          title: 'Suppression des données d\'un élève',
           content:
               'Êtes-vous certain(e) de vouloir supprimer les données de $student?',
         );
@@ -195,7 +230,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
     );
 
     if (!sure!) {
-      _showSnackbar(const Text('Suppression de l\'étudiant annulée'), scaffold);
+      _showSnackbar(const Text('Suppression de l\'élève annulée'), scaffold);
       return;
     }
 
@@ -204,7 +239,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
     var status = await database.deleteUser(user: studentUser);
     if (status != EzloginStatus.success) {
       _showSnackbar(
-          const Text('La supression d\'étudiant n\'est pas encore disponible.'),
+          const Text('La supression d\'élève n\'est pas encore disponible.'),
           scaffold);
       return;
     }

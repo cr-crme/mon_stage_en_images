@@ -20,6 +20,8 @@ class Database extends EzloginFirebase with ChangeNotifier {
   final questions = AllQuestions();
   final answers = AllAnswers();
 
+  static const defaultStudentPassword = 'monStage';
+
   bool _fromAutomaticLogin = false;
   User? _currentUser;
 
@@ -168,7 +170,8 @@ class Database extends EzloginFirebase with ChangeNotifier {
       required AllAnswers answers}) async {
     if (_fromAutomaticLogin) return EzloginStatus.needAuthentication;
 
-    var newUser = await addUser(newUser: newStudent, password: 'monStage');
+    var newUser =
+        await addUser(newUser: newStudent, password: defaultStudentPassword);
     if (newUser == null) return EzloginStatus.alreadyCreated;
 
     newStudent = newStudent.copyWith(id: newUser.id);
