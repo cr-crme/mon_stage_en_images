@@ -18,14 +18,14 @@ class Answer extends ItemSerializable {
     required String questionId,
   })  : discussion = discussion ??= Discussion(),
         super(id: questionId);
-  Answer.fromSerialized(map)
+  Answer.fromSerialized(super.map)
       : discussion = Discussion.fromSerialized(map['discussion'] ?? {}),
         isActive = map['isActive'],
         isValidated = map['isValidated'],
         actionRequired = ActionRequired.values[map['actionRequired']],
         createdById = map['createdById'],
         studentId = map['studentId'],
-        super.fromSerialized(map);
+        super.fromSerialized();
   Answer copyWith({
     Discussion? discussion,
     bool? isActive,

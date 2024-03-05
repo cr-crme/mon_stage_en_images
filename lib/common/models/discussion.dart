@@ -9,7 +9,7 @@ class Discussion extends ListSerializable<Message> with ItemsWithCreationTimed {
       add(message);
     }
   }
-  Discussion.fromSerialized(map) : super.fromSerialized(map);
+  Discussion.fromSerialized(super.map) : super.fromSerialized();
 
   @override
   Message deserializeItem(data) {

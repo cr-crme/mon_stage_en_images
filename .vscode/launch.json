@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Defi photo",
+            "name": "Mon stage en images",
             "request": "launch",
             "type": "dart",
             "preLaunchTask": "Run Firebase Emulator"

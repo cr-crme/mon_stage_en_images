@@ -54,7 +54,7 @@ class _MainTitle extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Text(
-                'DÉFI',
+                'STAGE',
                 style: TextStyle(
                     fontSize: 40, color: studentTheme().colorScheme.onPrimary),
               ),
@@ -65,7 +65,7 @@ class _MainTitle extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Text(
-                'PHOTO',
+                'IMAGES',
                 style: TextStyle(
                     fontSize: 40, color: teacherTheme().colorScheme.onPrimary),
               ),

@@ -38,12 +38,12 @@ class Speecher with ChangeNotifier {
 
     _onErrorUserCallback = onErrorCallback;
     await _speechToText.listen(
-      listenMode: ListenMode.dictation,
+      listenOptions: SpeechListenOptions(
+          listenMode: ListenMode.dictation, partialResults: false),
       pauseFor: const Duration(seconds: 5),
       listenFor: const Duration(seconds: 20),
       onResult: (SpeechRecognitionResult result) =>
           onResultCallback(result.recognizedWords),
-      partialResults: false,
     );
   }
 

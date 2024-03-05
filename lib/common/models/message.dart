@@ -10,12 +10,12 @@ class Message extends ItemSerializableWithCreationTime {
     super.creationTimeStamp,
     required this.creatorId,
   });
-  Message.fromSerialized(map)
+  Message.fromSerialized(super.map)
       : name = map['name'],
         text = map['text'],
         isPhotoUrl = map['isPhotoUrl'],
         creatorId = map['creatorId'],
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   Message deserializeItem(map) => Message.fromSerialized(map);
 

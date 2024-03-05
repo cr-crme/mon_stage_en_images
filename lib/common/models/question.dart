@@ -12,12 +12,12 @@ class Question extends ItemSerializableWithCreationTime {
     super.creationTimeStamp,
     this.canBeDeleted = true,
   });
-  Question.fromSerialized(map)
+  Question.fromSerialized(super.map)
       : text = map['text'],
         section = map['section'],
         defaultTarget = Target.values[map['defaultTarget']],
         canBeDeleted = map['canBeDeleted'] ?? false,
-        super.fromSerialized(map);
+        super.fromSerialized();
   Question copyWith({
     String? text,
     int? section,

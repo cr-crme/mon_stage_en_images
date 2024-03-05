@@ -16,7 +16,7 @@ class User extends EzloginUser {
     super.id,
   });
 
-  User.fromSerialized(map)
+  User.fromSerialized(super.map)
       : firstName = map['firstName'],
         lastName = map['lastName'],
         supervisedBy = map['supervisedBy'],
@@ -24,7 +24,7 @@ class User extends EzloginUser {
             (map['supervising'] as Map?)?.map((k, v) => MapEntry(k, v)) ?? {},
         userType = UserType.values[map['userType'] as int],
         companyNames = map['companyNames'],
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   User copyWith({
