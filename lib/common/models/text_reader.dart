@@ -29,6 +29,15 @@ class TextReader {
     await _textToSpeech.stop();
   }
 
+  Future readText(String text,
+      {required VoidCallback hasFinishedCallback}) async {
+    while (!_isInitialized) {
+      await Future.delayed(const Duration(milliseconds: 1));
+    }
+    await _textToSpeech.speak(text);
+    hasFinishedCallback();
+  }
+
   Future read(Question question, Answer? answer,
       {required VoidCallback hasFinishedCallback}) async {
     while (!_isInitialized) {

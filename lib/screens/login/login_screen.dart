@@ -1,6 +1,9 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
+import 'package:mon_stage_en_images/common/models/text_reader.dart';
 import 'package:mon_stage_en_images/common/models/themes.dart';
 import 'package:mon_stage_en_images/common/models/user.dart';
 import 'package:mon_stage_en_images/common/providers/all_questions.dart';
@@ -27,6 +30,8 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _password;
   EzloginStatus _status = EzloginStatus.none;
   bool _isNewUser = false;
+
+  final _textReader = TextReader();
 
   @override
   void initState() {
@@ -132,6 +137,55 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _newTeacher() async {
+    const studentTextPart =
+        'Si vous êtes un ou une élève, veuillez attendre que votre enseignant ou enseignante vous inscrive.';
+    await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Inscription'),
+                IconButton(
+                    onPressed: () => _textReader.readText(
+                          'Inscription.\n$studentTextPart',
+                          hasFinishedCallback: () => _textReader.stopReading(),
+                        ),
+                    icon: const Icon(Icons.volume_up))
+              ],
+            ),
+            content: Text.rich(TextSpan(children: [
+              const TextSpan(
+                text:
+                    'Si vous êtes un\u00b7e enseignant\u00b7e, vous pouvez faire '
+                    'la demande pour un compte en remplissant ',
+              ),
+              TextSpan(
+                text: 'ce formulaire',
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () async {
+                    final email = Email(
+                        recipients: ['recherchetic@gmail.com'],
+                        subject: 'Mon stage en images - Inscription',
+                        body:
+                            'Bonjour,\n\nJe suis un\u00b7e enseignant\u00b7e et je souhaite utiliser '
+                            '« Mon stage en images ». Voici mes informations :\n\n'
+                            'Mes informations :\n'
+                            '    Commission scolaire : INSCRIRE VOTRE COMMISSION SCOLAIRE\n'
+                            '    Nom de l\'école : INSCRIRE LE NOM DE VOTRE ÉCOLE\n'
+                            '    Indentifiant : INSCRIRE UN IDENTIFIANT À VOTRE COMMISSION SCOLAIRE QUI NOUS PERMETTRA DE VOUS IDENTIFIER\n'
+                            '    Courriel : INSCRIRE UN COURRIEL VALIDE\n\n'
+                            'Merci de votre aide.');
+                    await FlutterEmailSender.send(email);
+                  },
+                style: const TextStyle(
+                    color: Colors.blue, decoration: TextDecoration.underline),
+              ),
+              const TextSpan(text: '.\n\n$studentTextPart'),
+            ]))));
+  }
+
   Widget _buildPage() {
     switch (_status) {
       case EzloginStatus.success:
@@ -205,12 +259,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 36),
             ElevatedButton(
               onPressed: _processConnexion,
               style: ElevatedButton.styleFrom(
                   backgroundColor: studentTheme().colorScheme.primary),
               child: const Text('Se connecter'),
+            ),
+            TextButton(
+              onPressed: _newTeacher,
+              child: const Text('Nouvel\u00b7le utilisateur\u00b7trice'),
             ),
           ],
         );

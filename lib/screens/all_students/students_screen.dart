@@ -159,8 +159,8 @@ class _StudentsScreenState extends State<StudentsScreen> {
     if (student == null) return;
 
     final email = Email(
-        recipients: ['pariterre@hotmail.com'],
-        subject: 'Prise en charge d\'un élève',
+        recipients: ['recherchetic@gmail.com'],
+        subject: 'Mon stage en images - Prise en charge d\'un élève',
         body:
             'Bonjour,\n\nJe suis un\u00b7e utilisateur\u00b7trice de l\'application '
             '« Mon stage en images » et je souhaiterais faire la demande de la '

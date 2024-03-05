@@ -155,10 +155,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
 
     Future<void> read() async {
       reader = TextReader();
-      reader!.read(
-          Question('$instructionsTitle\n$instructions',
-              section: -1, defaultTarget: Target.none),
-          null,
+      reader!.readText('$instructionsTitle.\n$instructions',
           hasFinishedCallback: stopReading);
     }
 
