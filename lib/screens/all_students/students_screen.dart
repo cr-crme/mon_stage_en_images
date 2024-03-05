@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:mon_stage_en_images/common/helpers/helpers.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
 import 'package:mon_stage_en_images/common/models/user.dart';
 import 'package:mon_stage_en_images/common/providers/all_answers.dart';
@@ -61,6 +62,29 @@ class _StudentsScreenState extends State<StudentsScreen> {
 
     switch (status) {
       case EzloginStatus.success:
+        return;
+      case EzloginStatus.needAuthentication:
+        _showSnackbar(
+            Text.rich(TextSpan(
+              children: [
+                const TextSpan(
+                    text:
+                        'Vous devez confirmer votre identité pour pouvoir ajouter '
+                        'un élève. Svp, déconnectez-vous et reconnectez-vous en '),
+                TextSpan(
+                  text: 'cliquant ici',
+                  style: const TextStyle(
+                      color: Colors.blue, decoration: TextDecoration.underline),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      if (!mounted) return;
+                      scaffold.hideCurrentSnackBar;
+                      Helpers.onClickQuit(context);
+                    },
+                ),
+              ],
+            )),
+            scaffold);
         return;
       case EzloginStatus.alreadyCreated:
       case EzloginStatus.wrongInfoWhileCreating:

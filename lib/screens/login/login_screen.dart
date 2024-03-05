@@ -155,6 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
       case EzloginStatus.wrongPassword:
       case EzloginStatus.wrongInfoWhileCreating:
       case EzloginStatus.couldNotCreateUser:
+      case EzloginStatus.needAuthentication:
       case EzloginStatus.userNotFound:
       case EzloginStatus.unrecognizedError:
         return Column(

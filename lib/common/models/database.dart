@@ -20,6 +20,7 @@ class Database extends EzloginFirebase with ChangeNotifier {
   final questions = AllQuestions();
   final answers = AllAnswers();
 
+  bool _fromAutomaticLogin = false;
   User? _currentUser;
 
   @override
@@ -31,6 +32,7 @@ class Database extends EzloginFirebase with ChangeNotifier {
         .initialize(useEmulator: useEmulator, currentPlatform: currentPlatform);
 
     if (super.currentUser != null) {
+      _fromAutomaticLogin = true;
       await _postLogin();
     }
     return status;
@@ -49,6 +51,7 @@ class Database extends EzloginFirebase with ChangeNotifier {
         getNewUserInfo: getNewUserInfo,
         getNewPassword: getNewPassword);
     if (status != EzloginStatus.success) return status;
+    _fromAutomaticLogin = false;
     await _postLogin();
     return status;
   }
@@ -84,6 +87,7 @@ class Database extends EzloginFirebase with ChangeNotifier {
     _currentUser = null;
     await _stopFetchingData();
     notifyListeners();
+    _fromAutomaticLogin = false;
     return super.logout();
   }
 
@@ -162,6 +166,8 @@ class Database extends EzloginFirebase with ChangeNotifier {
       {required User newStudent,
       required AllQuestions questions,
       required AllAnswers answers}) async {
+    if (_fromAutomaticLogin) return EzloginStatus.needAuthentication;
+
     var newUser = await addUser(newUser: newStudent, password: 'monStage');
     if (newUser == null) return EzloginStatus.alreadyCreated;
 
