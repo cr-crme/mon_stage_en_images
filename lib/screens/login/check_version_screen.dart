@@ -42,7 +42,8 @@ class CheckVersionScreen extends StatelessWidget {
                           .pushReplacementNamed(LoginScreen.routeName);
                     });
                   }
-// Tell the user their version is obsolete so they have to download the latest version from the Apple or Google store
+                  // Tell the user their version is obsolete so they have to download the latest
+                  // version from the Apple or Google store
                   return const Text(
                       'La version de l\'application est obsolète. '
                       'Veuillez télécharger la dernière mise à jour '

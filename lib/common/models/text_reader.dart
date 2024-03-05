@@ -14,6 +14,10 @@ class TextReader {
 
   Future _initTts() async {
     _textToSpeech = FlutterTts();
+
+    if ((await _textToSpeech.getLanguages).contains('fr-FR')) {
+      await _textToSpeech.setLanguage('fr-FR');
+    }
     await _textToSpeech.awaitSpeakCompletion(true);
     await _textToSpeech.setVolume(1);
     await _textToSpeech.setSpeechRate(0.5);

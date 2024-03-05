@@ -3,8 +3,10 @@ import 'package:mon_stage_en_images/common/helpers/helpers.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
 import 'package:mon_stage_en_images/screens/all_students/students_screen.dart';
+import 'package:mon_stage_en_images/screens/login/go_to_irsst_screen.dart';
 import 'package:mon_stage_en_images/screens/q_and_a/q_and_a_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key});
@@ -43,6 +45,16 @@ class MainDrawer extends StatelessWidget {
                   onTap: () => Navigator.of(context).pushReplacementNamed(
                       QAndAScreen.routeName,
                       arguments: [Target.all, PageMode.edit, null])),
+            if (userType == UserType.teacher) const Divider(),
+            if (userType == UserType.teacher)
+              MenuItem(
+                  title: 'Apprendre sur la SST',
+                  icon: Icons.web,
+                  onTap: () async {
+                    await launchUrl(GoToIrsstScreen.url);
+                    if (!context.mounted) return;
+                    Navigator.of(context).pop();
+                  }),
             if (userType == UserType.teacher) const Divider(),
             MenuItem(
                 title: 'Déconnexion',

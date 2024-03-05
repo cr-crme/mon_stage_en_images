@@ -5,7 +5,7 @@ import 'package:mon_stage_en_images/common/models/themes.dart';
 import 'package:mon_stage_en_images/common/models/user.dart';
 import 'package:mon_stage_en_images/common/providers/all_questions.dart';
 import 'package:mon_stage_en_images/default_questions.dart';
-import 'package:mon_stage_en_images/screens/all_students/students_screen.dart';
+import 'package:mon_stage_en_images/screens/login/go_to_irsst_screen.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/change_password_alert_dialog.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/main_title_background.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/new_user_alert_dialog.dart';
@@ -114,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (database.currentUser!.userType == UserType.student) {
       Future.delayed(
-          Duration(seconds: automaticConnexion ? 3 : 0),
+          Duration(seconds: automaticConnexion ? 2 : 0),
           () => Navigator.of(context).pushReplacementNamed(
               QAndAScreen.routeName,
               arguments: [Target.individual, PageMode.editableView, null]));
@@ -126,9 +126,9 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       }
       Future.delayed(
-          Duration(seconds: automaticConnexion ? 3 : 0),
+          Duration(seconds: automaticConnexion ? 2 : 0),
           () => Navigator.of(context)
-              .pushReplacementNamed(StudentsScreen.routeName));
+              .pushReplacementNamed(GoToIrsstScreen.routeName));
     }
   }
 
