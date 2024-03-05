@@ -8,11 +8,10 @@ import 'package:mon_stage_en_images/common/models/themes.dart';
 import 'package:mon_stage_en_images/common/models/user.dart';
 import 'package:mon_stage_en_images/common/providers/all_questions.dart';
 import 'package:mon_stage_en_images/default_questions.dart';
-import 'package:mon_stage_en_images/screens/login/go_to_irsst_screen.dart';
+import 'package:mon_stage_en_images/screens/login/terms_and_services_screen.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/change_password_alert_dialog.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/main_title_background.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/new_user_alert_dialog.dart';
-import 'package:mon_stage_en_images/screens/q_and_a/q_and_a_screen.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -117,24 +116,16 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
     }
 
-    if (database.currentUser!.userType == UserType.student) {
-      Future.delayed(
-          Duration(seconds: automaticConnexion ? 2 : 0),
-          () => Navigator.of(context).pushReplacementNamed(
-              QAndAScreen.routeName,
-              arguments: [Target.individual, PageMode.editableView, null]));
-    } else {
-      if (_isNewUser) {
-        final questions = Provider.of<AllQuestions>(context, listen: false);
-        for (final question in DefaultQuestion.questions) {
-          questions.add(question);
-        }
+    if (_isNewUser && database.currentUser!.userType == UserType.teacher) {
+      final questions = Provider.of<AllQuestions>(context, listen: false);
+      for (final question in DefaultQuestion.questions) {
+        questions.add(question);
       }
-      Future.delayed(
-          Duration(seconds: automaticConnexion ? 2 : 0),
-          () => Navigator.of(context)
-              .pushReplacementNamed(GoToIrsstScreen.routeName));
     }
+    Future.delayed(
+        Duration(seconds: automaticConnexion ? 2 : 0),
+        () => Navigator.of(context)
+            .pushReplacementNamed(TermsAndServicesScreen.routeName));
   }
 
   Future<void> _newTeacher() async {

@@ -7,6 +7,7 @@ import 'package:mon_stage_en_images/screens/all_students/students_screen.dart';
 import 'package:mon_stage_en_images/screens/login/check_version_screen.dart';
 import 'package:mon_stage_en_images/screens/login/go_to_irsst_screen.dart';
 import 'package:mon_stage_en_images/screens/login/login_screen.dart';
+import 'package:mon_stage_en_images/screens/login/terms_and_services_screen.dart';
 import 'package:mon_stage_en_images/screens/q_and_a/q_and_a_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -61,6 +62,8 @@ class MyApp extends StatelessWidget {
             CheckVersionScreen.routeName: (context) =>
                 const CheckVersionScreen(),
             LoginScreen.routeName: (context) => const LoginScreen(),
+            TermsAndServicesScreen.routeName: (context) =>
+                const TermsAndServicesScreen(),
             GoToIrsstScreen.routeName: (context) => const GoToIrsstScreen(),
             StudentsScreen.routeName: (context) => const StudentsScreen(),
             QAndAScreen.routeName: (context) => const QAndAScreen(),

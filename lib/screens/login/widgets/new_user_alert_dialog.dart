@@ -39,6 +39,7 @@ class _NewUserAlertDialogState extends State<NewUserAlertDialog> {
       supervisedBy: 'The Administrator',
       supervising: {},
       companyNames: '',
+      termsAndServicesAccepted: false,
     );
 
     Navigator.pop(context, user);

@@ -13,6 +13,7 @@ class User extends EzloginUser {
     required this.userType,
     required super.mustChangePassword,
     required this.companyNames,
+    required this.termsAndServicesAccepted,
     super.id,
   });
 
@@ -24,6 +25,7 @@ class User extends EzloginUser {
             (map['supervising'] as Map?)?.map((k, v) => MapEntry(k, v)) ?? {},
         userType = UserType.values[map['userType'] as int],
         companyNames = map['companyNames'],
+        termsAndServicesAccepted = map['termsAndServicesAccepted'] ?? false,
         super.fromSerialized();
 
   @override
@@ -37,6 +39,7 @@ class User extends EzloginUser {
     bool? mustChangePassword,
     String? id,
     String? companyNames,
+    bool? termsAndServicesAccepted,
   }) {
     firstName ??= this.firstName;
     lastName ??= this.lastName;
@@ -47,6 +50,7 @@ class User extends EzloginUser {
     mustChangePassword ??= this.mustChangePassword;
     id ??= this.id;
     companyNames ??= this.companyNames;
+    termsAndServicesAccepted ??= this.termsAndServicesAccepted;
     return User(
       firstName: firstName,
       lastName: lastName,
@@ -57,6 +61,7 @@ class User extends EzloginUser {
       mustChangePassword: mustChangePassword,
       id: id,
       companyNames: companyNames,
+      termsAndServicesAccepted: termsAndServicesAccepted,
     );
   }
 
@@ -69,6 +74,7 @@ class User extends EzloginUser {
       'supervising': supervising,
       'userType': userType.index,
       'companyNames': companyNames,
+      'termsAndServicesAccepted': termsAndServicesAccepted,
     });
 
   @override
@@ -83,6 +89,7 @@ class User extends EzloginUser {
   final Map<String, bool> supervising;
   final UserType userType;
   final String companyNames;
+  final bool termsAndServicesAccepted;
 
   @override
   String toString() => '$firstName $lastName';

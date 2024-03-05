@@ -47,6 +47,7 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
       userType: UserType.student,
       mustChangePassword: true,
       companyNames: _companyName!,
+      termsAndServicesAccepted: false,
       id: widget.student?.id,
     );
 
