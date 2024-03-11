@@ -92,7 +92,7 @@ sécurité de vos données et autres informations personnelles.
 
 ### Supprimer Vos Données Personnelles
 
-Vous avez le droit de demander que nous supprimions les Données Personnelles que nous avons collectées à votre sujet.
+Vous avez le droit de demander que nous supprimions les Données Personnelles que nous avons collectées à votre sujet. Pour ce faire, veuillez nous contacter à l'adresse suivante indiquée dans la section [Nous Contacter](#nous-contacter). Veuilez préciser le courriel que vous avez utilisé pour vous inscrire à notre Service. Nous prendrons les mesures nécessaires pour supprimer vos informations de nos serveurs.
 
 Veuillez noter, cependant, que nous pouvons être amenés à conserver certaines informations lorsque nous avons une obligation légale ou une base légale pour le faire.
 
