@@ -62,48 +62,52 @@ class TermsAndServicesScreen extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: MainTitleBackground(
-            child: FutureBuilder<bool>(
-                future: _haveAlreadyAcceptedTermsAndServices(context),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState != ConnectionState.done) {
-                    return Container();
-                  }
+            child: SingleChildScrollView(
+          child: FutureBuilder<bool>(
+              future: _haveAlreadyAcceptedTermsAndServices(context),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState != ConnectionState.done) {
+                  return Container();
+                }
 
-                  return Column(
-                    children: [
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Conditions d\'utilisation',
-                              style: TextStyle(fontSize: 24)),
-                          IconButton(
-                              onPressed: () {
-                                final textReader = TextReader();
-                                textReader.readText(
-                                  'Conditions d\'utilisation.\n$termsAndServicesText\n'
-                                  'Cliquez sur « Accepter les conditions » si vous acceptez.',
-                                  hasFinishedCallback: () =>
-                                      textReader.stopReading(),
-                                );
-                              },
-                              icon: const Icon(Icons.volume_up))
-                        ],
-                      ),
-                      const Text(termsAndServicesText),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ElevatedButton(
-                              onPressed: () => _acceptTermsAndServices(context),
-                              style: studentTheme().elevatedButtonTheme.style,
-                              child: const Text('Accepter les conditions')),
-                        ],
-                      )
-                    ],
-                  );
-                })),
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Conditions d\'utilisation',
+                            style: TextStyle(fontSize: 24)),
+                        IconButton(
+                            onPressed: () {
+                              final textReader = TextReader();
+                              textReader.readText(
+                                'Conditions d\'utilisation.\n$termsAndServicesText\n'
+                                'Cliquez sur « Accepter les conditions » si vous acceptez.',
+                                hasFinishedCallback: () =>
+                                    textReader.stopReading(),
+                              );
+                            },
+                            icon: const Icon(Icons.volume_up))
+                      ],
+                    ),
+                    const Text(termsAndServicesText),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                            onPressed: () => _acceptTermsAndServices(context),
+                            style: studentTheme().elevatedButtonTheme.style,
+                            child: const Text('Accepter les conditions')),
+                      ],
+                    )
+                  ],
+                );
+              }),
+        )),
       ),
     );
   }

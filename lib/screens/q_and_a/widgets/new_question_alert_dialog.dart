@@ -243,34 +243,38 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
     return Row(
       children: [
         Expanded(
-          child: TextFormField(
-            keyboardType: TextInputType.multiline,
-            minLines: 1,
-            maxLines: 3,
-            decoration: InputDecoration(
-              labelText: 'Libellé de la question',
-              suffixIcon: GestureDetector(
-                  onTapDown: (_) => _dictateMessage(),
-                  child: _isVoiceRecording
-                      ? const CustomAnimatedIcon(
-                          maxSize: 25,
-                          minSize: 20,
-                          color: Colors.red,
-                        )
-                      : const CustomStaticIcon(
-                          boxSize: 25,
-                          iconSize: 20,
-                          color: Colors.black87,
-                        )),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 4.0),
+            child: TextFormField(
+              keyboardType: TextInputType.multiline,
+              minLines: 1,
+              maxLines: 3,
+              decoration: InputDecoration(
+                labelText: 'Libellé de la question',
+                suffixIcon: GestureDetector(
+                    onTapDown: (_) => _dictateMessage(),
+                    child: _isVoiceRecording
+                        ? const CustomAnimatedIcon(
+                            maxSize: 25,
+                            minSize: 20,
+                            color: Colors.red,
+                          )
+                        : const CustomStaticIcon(
+                            boxSize: 25,
+                            iconSize: 20,
+                            color: Colors.black87,
+                          )),
+              ),
+              validator: (value) => value == null || value.isEmpty
+                  ? 'Ajouter une question'
+                  : null,
+              onSaved: (value) => _text = value,
+              enabled: widget.isQuestionModifiable,
+              style: TextStyle(
+                  color:
+                      widget.isQuestionModifiable ? Colors.black : Colors.grey),
+              controller: _fieldText,
             ),
-            validator: (value) =>
-                value == null || value.isEmpty ? 'Ajouter une question' : null,
-            onSaved: (value) => _text = value,
-            enabled: widget.isQuestionModifiable,
-            style: TextStyle(
-                color:
-                    widget.isQuestionModifiable ? Colors.black : Colors.grey),
-            controller: _fieldText,
           ),
         ),
       ],
