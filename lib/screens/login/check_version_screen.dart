@@ -1,4 +1,6 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
 import 'package:mon_stage_en_images/main.dart';
 import 'package:mon_stage_en_images/screens/login/login_screen.dart';
@@ -33,6 +35,29 @@ class CheckVersionScreen extends StatelessWidget {
                             style: TextStyle(fontSize: 18)),
                       ],
                     );
+                  }
+
+                  if (snapshot.data == null) {
+                    return Text.rich(TextSpan(children: [
+                      const TextSpan(
+                          text:
+                              'Une erreur s\'est produite lors de la lecture du numéro de version. '
+                              'SVP, contacter le soutien technique à l\'adresse suivante : '),
+                      TextSpan(
+                        text: 'recherchetic@gmail.com',
+                        style: const TextStyle(
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () async {
+                            await FlutterEmailSender.send(Email(
+                                recipients: ['recherchetic@gmail.com'],
+                                subject:
+                                    'Mon stage en images - Problème de connexion'));
+                          },
+                      ),
+                      const TextSpan(text: '.')
+                    ]));
                   }
 
                   // If the version is valid
