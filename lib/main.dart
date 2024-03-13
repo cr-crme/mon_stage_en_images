@@ -21,7 +21,7 @@ void main() async {
   // one can create a user, login with it, then in the drawer, select the
   // 'Reinitialize the database' button.
 
-  const useEmulator = true;
+  const useEmulator = false;
   final userDatabase = Database();
   await userDatabase.initialize(
       useEmulator: useEmulator,
