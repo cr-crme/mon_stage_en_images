@@ -4,6 +4,10 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Reconnaissance vocale</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Microphone pour la reconnaissance vocale</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
