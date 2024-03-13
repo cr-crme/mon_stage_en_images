@@ -1,5 +1,5 @@
 # Politique de confidentialité
-Dernière mise à jour : 11 mars 2024
+Dernière mise à jour : 13 mars 2024
 
 Cette Politique de confidentialité décrit nos politiques et procédures concernant la collecte, l'utilisation et la divulgation de vos informations lorsque vous utilisez le Service, et vous informe de vos droits en matière de confidentialité et de la manière dont la loi vous protège.
 
@@ -18,8 +18,8 @@ Pour les besoins de cette Politique de confidentialité :
 
 - **Compte** désigne un compte unique créé pour vous permettre d'accéder à notre Service ou à des parties de notre Service.
 - **Application** fait référence à *Mon stage en images*, le programme logiciel fourni par la Société.
-- **Société** (désignée par "la Société", "Nous", "Notre" ou "Nos" dans le présent Accord) fait référence au Centre de Recherche du Centre de Réadaptation Marie-Enfant, 5200 Rue Bélanger, Montréal, QC H1T 1C9.
-- **Pays** désigne : Québec, Canada
+- **Société** (désignée par "la Société", "Nous", "Notre" ou "Nos" dans le présent Accord) fait référence à la Chaire de recherche du Canada en prévention de l'incapacité de travail dès l'adolescence, dirigée par la professeure Marie Laberge, Université de Montréal.
+- **Pays** désigne : Québec
 - **Appareil** désigne tout appareil capable d'accéder au Service, tel qu'un ordinateur, un téléphone portable ou une tablette numérique.
 - **Données personnelles** désigne toute information se rapportant à un individu identifié ou identifiable.
 - **Service** fait référence à l'Application.
@@ -72,12 +72,12 @@ La Société peut utiliser les Données Personnelles à des fins suivantes :
 Nous pouvons partager vos informations personnelles dans les situations suivantes :
 
 - **Avec des Prestataires de services :** Nous pouvons partager vos informations personnelles avec des Prestataires de services pour surveiller et analyser l'utilisation de notre Service, pour vous contacter.
-- **Avec d'autres utilisateurs :** lorsque vous partagez des informations personnelles ou interagissez autrement dans les espaces publics avec d'autres utilisateurs, ces informations peuvent être consultées par ces utilisateurs.
-- **Avec votre consentement** : Nous pouvons divulguer vos informations personnelles à d'autres fins avec votre consentement.
+- **Avec d'autres utilisateurs :** lorsque vous partagez des informations personnelles ou interagissez autrement avec d'autres utilisateurs dans l'application, ces informations peuvent être consultées par ces utilisateurs.
+- **Avec votre consentement :**  Nous pouvons divulguer vos informations personnelles à d'autres fins avec un nouveau consentement de votre part.
 
 ### Conservation de Vos Données Personnelles
 
-La Société ne conservera vos Données Personnelles que le temps nécessaire aux fins énoncées dans cette Politique de confidentialité. Nous conserverons et utiliserons vos Données Personnelles dans la mesure nécessaire pour nous conformer à nos obligations légales (par exemple, si nous sommes tenus de conserver vos données pour nous conformer aux lois applicables), régler les litiges et appliquer nos accords et politiques juridiques.
+La Société ne conservera vos Données Personnelles que le temps nécessaire aux fins énoncées dans cette Politique de confidentialité. Nous conserverons et utiliserons vos Données Personnelles dans la mesure nécessaire pour nous conformer à nos obligations légales (par exemple, si nous sommes tenus de conserver vos données pour nous conformer aux lois applicables), régler les litiges, appliquer nos accords et politiques juridiques, ainsi qu'améliorer nos processus de recherche et développement.
 
 La Société conservera également les Données d'Utilisation à des fins d'analyse interne. Les Données d'Utilisation sont généralement conservées pour une période plus courte, sauf lorsque ces données sont utilisées pour renforcer la sécurité ou améliorer la fonctionnalité de notre Service, ou si nous sommes légalement obligés de conserver ces données pendant des périodes plus longues.
 
