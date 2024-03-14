@@ -4,10 +4,6 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
-	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>Reconnaissance vocale</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Microphone pour la reconnaissance vocale</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -30,6 +26,10 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Microphone pour la reconnaissance vocale</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Reconnaissance vocale</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
