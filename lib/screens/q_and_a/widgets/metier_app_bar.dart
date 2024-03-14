@@ -97,21 +97,25 @@ class MetierAppBar extends StatelessWidget {
       number: AllAnswers.numberOfActionsRequiredFrom(answers, context) > 0
           ? 0
           : null,
-      child: TextButton(
-        onPressed: onPressed,
-        style: TextButton.styleFrom(
-            backgroundColor: isSelected
-                ? Theme.of(context).colorScheme.primary.withAlpha(100)
-                : null),
-        child: Text(
-          Section.letter(sectionIndex),
-          style: TextStyle(
-              fontSize: 16,
-              color: userType == UserType.student
-                  ? isSelected
-                      ? Colors.white
-                      : Colors.black
-                  : Theme.of(context).colorScheme.onPrimary),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width / Section.nbSections),
+        child: TextButton(
+          onPressed: onPressed,
+          style: TextButton.styleFrom(
+              backgroundColor: isSelected
+                  ? Theme.of(context).colorScheme.primary.withAlpha(100)
+                  : null),
+          child: Text(
+            Section.letter(sectionIndex),
+            style: TextStyle(
+                fontSize: 16,
+                color: userType == UserType.student
+                    ? isSelected
+                        ? Colors.white
+                        : Colors.black
+                    : Theme.of(context).colorScheme.onPrimary),
+          ),
         ),
       ),
     );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Section {
-  final int nbSections = 6;
+  static const int nbSections = 6;
 
   static String letter(index) {
     return name(index)[0];
