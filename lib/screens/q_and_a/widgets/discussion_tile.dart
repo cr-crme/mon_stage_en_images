@@ -18,13 +18,13 @@ class DiscussionTile extends StatelessWidget {
   final Message discussion;
   final bool isLast;
 
-  void _showImageFullScreen(context) {
+  void _showImageFullScreen(context, {required Uint8List imageData}) {
     showDialog(
         context: context,
         builder: (context) => GestureDetector(
               onTap: () => Navigator.pop(context),
               child: AlertDialog(
-                  content: Image.network(discussion.text, fit: BoxFit.contain)),
+                  content: Image.memory(imageData, fit: BoxFit.contain)),
             ));
   }
 
@@ -77,7 +77,8 @@ class DiscussionTile extends StatelessWidget {
                         width: double.infinity,
                         padding: const EdgeInsets.only(left: 15, bottom: 5),
                         child: InkWell(
-                          onTap: () => _showImageFullScreen(context),
+                          onTap: () => _showImageFullScreen(context,
+                              imageData: snapshot.data!),
                           child: SizedBox(
                               height:
                                   MediaQuery.of(context).size.height * 1 / 4,
