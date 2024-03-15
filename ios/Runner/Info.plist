@@ -31,11 +31,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Microphone pour la reconnaissance vocale</string>
+	<string>Diction de messages pour la messagerie instantannée. L'audio n'est pas conservé</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Prise de photos du stage</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>Reconnaissance vocale</string>
+	<string>Diction de messages pour la messagerie instantannée. L'audio n'est pas conservé</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
