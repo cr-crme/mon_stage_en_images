@@ -1,4 +1,4 @@
-package ca.crcrme.mon_stage_en_images
+package qc.crcrme.mon_stage_en_images
 
 import io.flutter.embedding.android.FlutterActivity
 
