@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+
 import 'package:flutter/material.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
@@ -21,7 +23,7 @@ class StudentListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final student = Provider.of<Database>(context, listen: false)
         .students
-        .firstWhere((e) => e.id == studentId);
+        .firstWhereOrNull((e) => e.id == studentId);
 
     final allAnswers = Provider.of<AllAnswers>(context, listen: false)
         .filter(studentIds: [studentId]);
@@ -31,11 +33,13 @@ class StudentListTile extends StatelessWidget {
     return Card(
       elevation: 5,
       child: ListTile(
-        title: Text(student.toString(), style: const TextStyle(fontSize: 20)),
+        title: Text(student?.toString() ?? '',
+            style: const TextStyle(fontSize: 20)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(student.companyNames, style: const TextStyle(fontSize: 16)),
+            Text(student?.companyNames ?? '',
+                style: const TextStyle(fontSize: 16)),
             Text(
                 'Questions répondues : ${AllAnswers.numberAnsweredFrom(allAnswers)} '
                 '/ ${AllAnswers.numberActiveFrom(allAnswers)}',
@@ -50,7 +54,10 @@ class StudentListTile extends StatelessWidget {
         ),
         onTap: () => Navigator.of(context).pushNamed(QAndAScreen.routeName,
             arguments: [Target.individual, PageMode.editableView, student]),
-        onLongPress: () => modifyStudentCallback(student),
+        onLongPress: () {
+          if (student == null) return;
+          modifyStudentCallback(student);
+        },
       ),
     );
   }
