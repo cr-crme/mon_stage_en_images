@@ -21,7 +21,7 @@ class MainMetierPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userType =
-        Provider.of<Database>(context, listen: false).currentUser!.userType;
+        Provider.of<Database>(context, listen: false).currentUser?.userType;
 
     return SingleChildScrollView(
       child: Column(
@@ -55,14 +55,12 @@ class MainMetierPage extends StatelessWidget {
                           color: Colors.black,
                           decoration: TextDecoration.underline),
                       recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          launchUrl(Uri(
-                            scheme: 'https',
-                            host: 'www.irsst.qc.ca',
-                            path:
-                                'media/documents/PubIRSST/DF-1071.pdf?v=2020-06-25',
-                          ));
-                        },
+                        ..onTap = () => launchUrl(Uri(
+                              scheme: 'https',
+                              host: 'www.irsst.qc.ca',
+                              path:
+                                  'media/documents/PubIRSST/DF-1071.pdf?v=2020-06-25',
+                            )),
                       text: 'cliquant ici',
                     ),
                     const TextSpan(

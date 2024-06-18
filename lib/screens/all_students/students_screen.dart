@@ -41,9 +41,39 @@ void _showSnackbar(Widget content, ScaffoldMessengerState scaffold) {
 class _StudentsScreenState extends State<StudentsScreen> {
   Future<void> _addStudent() async {
     final scaffold = ScaffoldMessenger.of(context);
+
+    Future<void> needAuthenticationFailed() async {
+      _showSnackbar(
+          Text.rich(TextSpan(
+            children: [
+              const TextSpan(
+                  text:
+                      'Vous devez confirmer votre identité pour pouvoir ajouter '
+                      'un élève. Svp, déconnectez-vous et reconnectez-vous en '),
+              TextSpan(
+                text: 'cliquant ici',
+                style: const TextStyle(
+                    color: Colors.blue, decoration: TextDecoration.underline),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    if (!mounted) return;
+                    scaffold.hideCurrentSnackBar;
+                    Helpers.onClickQuit(context);
+                  },
+              ),
+            ],
+          )),
+          scaffold);
+    }
+
     final database = Provider.of<Database>(context, listen: false);
     final questions = Provider.of<AllQuestions>(context, listen: false);
     final answers = Provider.of<AllAnswers>(context, listen: false);
+
+    if (database.fromAutomaticLogin) {
+      await needAuthenticationFailed();
+      return;
+    }
 
     final student = await showDialog<User>(
       context: context,
@@ -118,27 +148,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
                 )));
         return;
       case EzloginStatus.needAuthentication:
-        _showSnackbar(
-            Text.rich(TextSpan(
-              children: [
-                const TextSpan(
-                    text:
-                        'Vous devez confirmer votre identité pour pouvoir ajouter '
-                        'un élève. Svp, déconnectez-vous et reconnectez-vous en '),
-                TextSpan(
-                  text: 'cliquant ici',
-                  style: const TextStyle(
-                      color: Colors.blue, decoration: TextDecoration.underline),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      if (!mounted) return;
-                      scaffold.hideCurrentSnackBar;
-                      Helpers.onClickQuit(context);
-                    },
-                ),
-              ],
-            )),
-            scaffold);
+        await needAuthenticationFailed();
         return;
       case EzloginStatus.alreadyCreated:
       case EzloginStatus.wrongInfoWhileCreating:

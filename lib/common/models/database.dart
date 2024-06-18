@@ -23,6 +23,7 @@ class Database extends EzloginFirebase with ChangeNotifier {
   static const defaultStudentPassword = 'monStage';
 
   bool _fromAutomaticLogin = false;
+  bool get fromAutomaticLogin => _fromAutomaticLogin;
   User? _currentUser;
 
   @override
