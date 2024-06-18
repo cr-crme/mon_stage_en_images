@@ -92,10 +92,27 @@ class _StudentsScreenState extends State<StudentsScreen> {
                     ],
                   )),
                   actions: [
-                    ElevatedButton(
+                    OutlinedButton(
                       onPressed: () => Navigator.pop(context),
+                      style: studentTheme().outlinedButtonTheme.style,
+                      child: const Text('Fermer'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        final email = Email(
+                            recipients: [student.email],
+                            subject: 'Mon stage en images',
+                            body:
+                                'Bonjour,\n\nJe suis ton enseignant(e)! Je t\'ai inscrit(e) à '
+                                '« Mon stage en images ». Une fois l\'application téléchargée, tu '
+                                'pourras t\'y connecter avec ces informations:\n\n'
+                                'Courriel : ${student.email}\n'
+                                'Mot de passe: ${Database.defaultStudentPassword}\n\n'
+                                'Bonne journée!');
+                        await FlutterEmailSender.send(email);
+                      },
                       style: studentTheme().elevatedButtonTheme.style,
-                      child: const Text('C\'est noté!'),
+                      child: const Text('Envoyer courriel'),
                     ),
                   ],
                 )));

@@ -129,8 +129,10 @@ ThemeData studentTheme() {
       style: OutlinedButton.styleFrom(
     backgroundColor: Colors.transparent,
     surfaceTintColor: Colors.white,
+    foregroundColor: primaryColor,
     side: const BorderSide(color: primaryColor),
-    textStyle: const TextStyle(fontWeight: FontWeight.bold),
+    textStyle:
+        const TextStyle(fontWeight: FontWeight.bold, color: primaryColor),
   ));
 
   final checkboxTheme = CheckboxThemeData(
