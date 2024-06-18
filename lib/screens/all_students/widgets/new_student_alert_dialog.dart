@@ -97,7 +97,7 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
               const SizedBox(height: 12),
               TextFormField(
                 decoration:
-                    const InputDecoration(labelText: 'Nom de l\'entreprise'),
+                    const InputDecoration(labelText: 'Entreprise de stage'),
                 initialValue: widget.student?.companyNames,
                 validator: (value) => value == null || value.isEmpty
                     ? 'Ajouter un nom d\'entreprise'
