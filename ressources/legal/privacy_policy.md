@@ -1,5 +1,5 @@
 # Politique de confidentialité
-Dernière mise à jour : 13 mars 2024
+Dernière mise à jour : 18 juin 2024
 
 Cette Politique de confidentialité décrit nos politiques et procédures concernant la collecte, l'utilisation et la divulgation de vos informations lorsque vous utilisez le Service, et vous informe de vos droits en matière de confidentialité et de la manière dont la loi vous protège.
 
@@ -78,6 +78,8 @@ Nous pouvons partager vos informations personnelles dans les situations suivante
 ### Conservation de Vos Données Personnelles
 
 La Société ne conservera vos Données Personnelles que le temps nécessaire aux fins énoncées dans cette Politique de confidentialité. Nous conserverons et utiliserons vos Données Personnelles dans la mesure nécessaire pour nous conformer à nos obligations légales (par exemple, si nous sommes tenus de conserver vos données pour nous conformer aux lois applicables), régler les litiges, appliquer nos accords et politiques juridiques, ainsi qu'améliorer nos processus de recherche et développement.
+
+De façon annuelle, à l'extérieur de la période scolaire, les Données Personnelles pourront être supprimées par la Société sans autres préavis.
 
 La Société conservera également les Données d'Utilisation à des fins d'analyse interne. Les Données d'Utilisation sont généralement conservées pour une période plus courte, sauf lorsque ces données sont utilisées pour renforcer la sécurité ou améliorer la fonctionnalité de notre Service, ou si nous sommes légalement obligés de conserver ces données pendant des périodes plus longues.
 
