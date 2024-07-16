@@ -51,18 +51,16 @@ ThemeData teacherTheme() {
   ));
 
   final switchTheme = SwitchThemeData(
-    thumbColor: MaterialStateProperty.all(Colors.white),
-    trackColor: MaterialStateProperty.resolveWith((status) {
-      return status.contains(MaterialState.selected)
-          ? primaryColor
-          : Colors.grey;
+    thumbColor: WidgetStateProperty.all(Colors.white),
+    trackColor: WidgetStateProperty.resolveWith((status) {
+      return status.contains(WidgetState.selected) ? primaryColor : Colors.grey;
     }),
-    trackOutlineColor: MaterialStateProperty.all(Colors.transparent),
+    trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
   );
 
   final dividerTheme = DividerThemeData(color: Colors.grey[200], thickness: 1);
   final checkboxTheme = CheckboxThemeData(
-    checkColor: MaterialStateProperty.all(Colors.white),
+    checkColor: WidgetStateProperty.all(Colors.white),
     side: BorderSide(color: Colors.grey[700]!),
   );
 
@@ -136,7 +134,7 @@ ThemeData studentTheme() {
   ));
 
   final checkboxTheme = CheckboxThemeData(
-    checkColor: MaterialStateProperty.all(Colors.white),
+    checkColor: WidgetStateProperty.all(Colors.white),
     side: BorderSide(color: Colors.grey[700]!),
   );
 
