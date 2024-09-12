@@ -8,7 +8,7 @@
             "name": "Mon stage en images",
             "request": "launch",
             "type": "dart",
-            "preLaunchTask": "Run Firebase Emulator"
+            "preLaunchTask": "Open Firebase Emulator Console"
         }
     ]
 }

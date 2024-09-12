@@ -368,7 +368,9 @@ class _MessageListView extends StatelessWidget {
   Widget build(BuildContext context) {
     final scroller = ScrollController();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollDown(scroller));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (context.mounted) _scrollDown(scroller);
+    });
 
     // We have to reverse the answers so last appears first allowing to "scroll"
     // to the end without having to load the photo to know their size. Since we

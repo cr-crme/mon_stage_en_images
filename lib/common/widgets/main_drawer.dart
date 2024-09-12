@@ -14,7 +14,8 @@ class MainDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userType =
-        Provider.of<Database>(context, listen: false).currentUser!.userType;
+        Provider.of<Database>(context, listen: false).currentUser?.userType ??
+            UserType.student;
 
     return Drawer(
       child: Scaffold(

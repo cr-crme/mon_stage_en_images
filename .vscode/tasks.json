@@ -19,10 +19,9 @@
                     "endsPattern": "All emulators ready! It is now safe to connect your app."
                 }
             },
-            "dependsOn": ["Open Firebase Emulator's Console"]
         },
         {
-            "label": "Open Firebase Emulator's Console",
+            "label": "Open Firebase Emulator Console",
             "args": ["http://localhost:4000"],
             "type": "shell",
             "presentation": {
@@ -34,7 +33,8 @@
             },
             "windows": { "command": "start" },
             "linux": { "command": "xdg-open" },
-            "osx": { "command": "open" }
+            "osx": { "command": "open" },
+            "dependsOn": ["Run Firebase Emulator"]
         }
     ]
 }
