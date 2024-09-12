@@ -122,10 +122,11 @@ class _LoginScreenState extends State<LoginScreen> {
         questions.add(question);
       }
     }
-    Future.delayed(
-        Duration(seconds: automaticConnexion ? 2 : 0),
-        () => Navigator.of(context)
-            .pushReplacementNamed(TermsAndServicesScreen.routeName));
+    Future.delayed(Duration(seconds: automaticConnexion ? 2 : 0), () {
+      if (!mounted) return;
+      Navigator.of(context)
+          .pushReplacementNamed(TermsAndServicesScreen.routeName);
+    });
   }
 
   Future<void> _newTeacher() async {

@@ -162,7 +162,8 @@ class _DiscussionListViewState extends State<DiscussionListView> {
     showDialog(
         context: context,
         builder: (context) => PopScope(
-              onPopInvoked: (didPop) async => await stopReading(),
+              onPopInvokedWithResult: (didPop, result) async =>
+                  await stopReading(),
               child: AlertDialog(
                 title: const Text(instructionsTitle),
                 content: Row(
