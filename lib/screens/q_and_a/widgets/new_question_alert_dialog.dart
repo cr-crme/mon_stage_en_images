@@ -52,7 +52,7 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
         _questionStatus[student.id] = false;
       } else {
         final index = answers.indexWhere((e) => e.studentId == student.id);
-        _questionStatus[student.id] = answers[index].isActive;
+        if (index >= 0) _questionStatus[student.id] = answers[index].isActive;
       }
     }
     _fieldText.text = widget.question?.text ?? '';
@@ -112,12 +112,12 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
   Widget _buildStudentTile(User student) {
     return GestureDetector(
       onTap: () {
-        _questionStatus[student.id] = !_questionStatus[student.id]!;
+        _questionStatus[student.id] = !(_questionStatus[student.id] ?? false);
         setState(() {});
       },
       child: Row(children: [
         Checkbox(
-            value: _questionStatus[student.id],
+            value: _questionStatus[student.id] ?? false,
             onChanged: (value) {
               _questionStatus[student.id] = value!;
               setState(() {});

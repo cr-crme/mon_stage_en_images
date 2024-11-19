@@ -75,14 +75,26 @@ class AllQuestions extends FirebaseListProvided<Question> with Section {
     replace(question, notify: notify);
 
     for (var student in studentAnswers) {
+      bool hasQuestion = false;
       for (int i = 0; i < student.answers.length; i++) {
         final answer = student.answers[i];
         if (answer.questionId != question.id) continue;
 
+        hasQuestion = true;
         studentAnswers.modifyAnswer(answer.copyWith(
             isActive: isActive == null
                 ? answer.isActive
                 : isActive[answer.studentId]));
+      }
+      if (!hasQuestion) {
+        studentAnswers.addAnswers([
+          Answer(
+              isActive: isActive?[student.id] ?? false,
+              questionId: question.id,
+              createdById: currentUser.id,
+              studentId: student.id,
+              actionRequired: ActionRequired.fromStudent)
+        ]);
       }
     }
   }
