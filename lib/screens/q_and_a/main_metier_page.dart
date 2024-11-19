@@ -56,10 +56,9 @@ class MainMetierPage extends StatelessWidget {
                           decoration: TextDecoration.underline),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () => launchUrl(Uri(
-                              scheme: 'https',
-                              host: 'www.irsst.qc.ca',
-                              path:
-                                  'media/documents/PubIRSST/DF-1071.pdf?v=2020-06-25',
+                              scheme: 'http',
+                              host: 'adoprevit.org',
+                              path: 'ressources',
                             )),
                       text: 'cliquant ici',
                     ),
