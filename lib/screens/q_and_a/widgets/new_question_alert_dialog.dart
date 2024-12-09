@@ -3,6 +3,7 @@ import 'package:mon_stage_en_images/common/models/answer.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
 import 'package:mon_stage_en_images/common/models/question.dart';
+import 'package:mon_stage_en_images/common/models/section.dart';
 import 'package:mon_stage_en_images/common/models/user.dart';
 import 'package:mon_stage_en_images/common/providers/all_answers.dart';
 import 'package:mon_stage_en_images/common/providers/speecher.dart';
@@ -31,6 +32,8 @@ class NewQuestionAlertDialog extends StatefulWidget {
 }
 
 class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
+  late int section = widget.section;
+
   final _formKey = GlobalKey<FormState>();
   bool _isVoiceRecording = false;
   final _fieldText = TextEditingController();
@@ -70,7 +73,7 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
     _formKey.currentState!.save();
 
     var question = Question(_text!,
-        section: widget.section,
+        section: section,
         defaultTarget: widget.student != null ? Target.individual : Target.all);
 
     Navigator.pop(context, [question, _questionStatus]);
@@ -127,6 +130,11 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
     );
   }
 
+  void _selectNewSection(int newSection) {
+    section = newSection;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final students =
@@ -160,15 +168,27 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             if (widget.question?.text != null && widget.deleteCallback != null)
-              Tooltip(
-                message: widget.question!.canBeDeleted
-                    ? ''
-                    : 'Il n\'est pas possible de supprimer\n'
-                        'les questions par défaut',
-                child: IconButton(
-                    onPressed:
-                        widget.question!.canBeDeleted ? _confirmDeleting : null,
-                    icon: const Icon(Icons.delete)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ...List.generate(Section.nbSections, (index) {
+                    return _MetierTile(
+                        sectionIndex: index,
+                        isSelected: index == section,
+                        onTap: () => _selectNewSection(index));
+                  }),
+                  Tooltip(
+                    message: widget.question!.canBeDeleted
+                        ? ''
+                        : 'Il n\'est pas possible de supprimer\n'
+                            'les questions par défaut',
+                    child: IconButton(
+                        onPressed: widget.question!.canBeDeleted
+                            ? _confirmDeleting
+                            : null,
+                        icon: const Icon(Icons.delete)),
+                  ),
+                ],
               ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -278,6 +298,37 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _MetierTile extends StatelessWidget {
+  const _MetierTile(
+      {required this.sectionIndex,
+      required this.isSelected,
+      required this.onTap});
+
+  final int sectionIndex;
+  final bool isSelected;
+  final Function()? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 30,
+        height: 30,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: isSelected ? Section.color(sectionIndex) : Colors.grey),
+        child: Text(Section.letter(sectionIndex),
+            style: const TextStyle(
+                fontSize: 15,
+                color: Colors.white,
+                fontWeight: FontWeight.bold)),
+      ),
     );
   }
 }
