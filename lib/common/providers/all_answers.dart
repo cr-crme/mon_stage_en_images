@@ -1,9 +1,9 @@
+import 'package:enhanced_containers/enhanced_containers.dart';
+import 'package:flutter/material.dart';
 import 'package:mon_stage_en_images/common/models/answer.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
 import 'package:mon_stage_en_images/common/models/question.dart';
-import 'package:enhanced_containers/enhanced_containers.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AllAnswers extends FirebaseListProvided<StudentAnswers> {
@@ -53,11 +53,11 @@ class AllAnswers extends FirebaseListProvided<StudentAnswers> {
 
   @override
   void add(StudentAnswers item, {bool notify = true}) =>
-      throw 'Use the addAnswer method instead';
+      throw 'Use the "addAnswers" or "removeQuestion" methods instead';
 
   @override
   Future<void> replace(StudentAnswers item, {bool notify = true}) =>
-      throw 'Use the addAnswer method instead';
+      throw 'Use the "addAnswers" of "removeQuestion" methods instead';
 
   Future<StudentAnswers> getOrSetStudentAnswers(String studentId,
       {int maxRetry = 10}) async {
@@ -174,9 +174,10 @@ class AllAnswers extends FirebaseListProvided<StudentAnswers> {
   void removeQuestion(Question question) {
     for (final student in this) {
       final toRemove =
-          student.answers.where((e) => e.questionId == question.id);
-      toRemove.forEach(student.answers.remove);
-      replace(student, notify: true);
+          student.answers.indexWhere((e) => e.questionId == question.id);
+      if (toRemove != -1) student.answers.removeAt(toRemove);
+
+      super.replace(student);
     }
     notifyListeners();
   }
