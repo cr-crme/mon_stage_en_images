@@ -9,6 +9,13 @@
             "request": "launch",
             "type": "dart",
             "preLaunchTask": "Open Firebase Emulator Console"
+        },
+        {
+            "name": "Data analyses",
+            "request": "launch",
+            "type": "debugpy",
+            "program": "${workspaceFolder}/ressources/analyses/firebase_excel_coverter.py",
+            "cwd": "${workspaceFolder}/ressources/analyses/",
         }
     ]
 }
