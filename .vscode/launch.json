@@ -8,6 +8,10 @@
             "name": "Mon stage en images",
             "request": "launch",
             "type": "dart",
+        }, {
+            "name": "Mon stage en images (with emulator)",
+            "request": "launch",
+            "type": "dart",
             "preLaunchTask": "Open Firebase Emulator Console"
         },
         {
