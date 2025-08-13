@@ -22,7 +22,7 @@ class StudentListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final student = Provider.of<Database>(context, listen: false)
-        .students
+        .students(onlyActive: false)
         .firstWhereOrNull((e) => e.id == studentId);
 
     final allAnswers = Provider.of<AllAnswers>(context, listen: false)
@@ -52,6 +52,9 @@ class StudentListTile extends StatelessWidget {
           borderColor: Colors.black,
           child: const Text(""),
         ),
+        tileColor: student != null && student.isNotActive
+            ? Colors.blueGrey[100]
+            : null,
         onTap: () => Navigator.of(context).pushNamed(QAndAScreen.routeName,
             arguments: [Target.individual, PageMode.editableView, student]),
         onLongPress: () {

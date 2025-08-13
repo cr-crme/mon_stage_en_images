@@ -38,6 +38,9 @@ void _showSnackbar(Widget content, ScaffoldMessengerState scaffold) {
   );
 }
 
+// Static variable so the value is remembered when we come back to this screen
+bool _onlyActiveStudents = true;
+
 class _StudentsScreenState extends State<StudentsScreen> {
   Future<void> _addStudent() async {
     final scaffold = ScaffoldMessenger.of(context);
@@ -274,9 +277,16 @@ class _StudentsScreenState extends State<StudentsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final students = Provider.of<Database>(context).students.toList();
+    final students = Provider.of<Database>(context)
+        .students(onlyActive: _onlyActiveStudents)
+        .toList();
     students.sort(
         (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
+    students.sort((a, b) => a.isActive && b.isNotActive
+        ? -1
+        : a.isNotActive && b.isActive
+            ? 1
+            : 0);
 
     return Scaffold(
       appBar: AppBar(
@@ -293,20 +303,38 @@ class _StudentsScreenState extends State<StudentsScreen> {
           const SizedBox(width: 15),
         ],
       ),
-      body: Column(
+      body: Stack(
+        alignment: Alignment.topCenter,
         children: [
-          const SizedBox(height: 15),
-          Text('Mon stage en images',
-              style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: 3),
-          Expanded(
-            child: ListView.builder(
-              itemBuilder: (context, index) => StudentListTile(
-                students[index].id,
-                modifyStudentCallback: _modifyStudent,
+          Column(
+            children: [
+              const SizedBox(height: 15),
+              Text('Mon stage en images',
+                  style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 3),
+              Align(
+                  alignment: Alignment.topRight,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Afficher les élèves archivés'),
+                      SizedBox(width: 10),
+                      Switch(
+                          onChanged: (value) =>
+                              setState(() => _onlyActiveStudents = !value),
+                          value: !_onlyActiveStudents),
+                    ],
+                  )),
+              Expanded(
+                child: ListView.builder(
+                  itemBuilder: (context, index) => StudentListTile(
+                    students[index].id,
+                    modifyStudentCallback: _modifyStudent,
+                  ),
+                  itemCount: students.length,
+                ),
               ),
-              itemCount: students.length,
-            ),
+            ],
           ),
         ],
       ),

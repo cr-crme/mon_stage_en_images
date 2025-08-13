@@ -1,4 +1,5 @@
 import 'package:ezlogin/ezlogin.dart';
+import 'package:mon_stage_en_images/common/misc/database_helper.dart';
 
 import 'enum.dart';
 
@@ -14,6 +15,7 @@ class User extends EzloginUser {
     required super.mustChangePassword,
     required this.companyNames,
     required this.termsAndServicesAccepted,
+    required this.creationDate,
     super.id,
   });
 
@@ -26,6 +28,8 @@ class User extends EzloginUser {
         userType = UserType.values[map['userType'] as int],
         companyNames = map['companyNames'],
         termsAndServicesAccepted = map['termsAndServicesAccepted'] ?? false,
+        creationDate =
+            DateTime.parse(map['creationDate'] ?? defaultCreationDate),
         super.fromSerialized();
 
   @override
@@ -40,28 +44,21 @@ class User extends EzloginUser {
     String? id,
     String? companyNames,
     bool? termsAndServicesAccepted,
+    DateTime? creationDate,
   }) {
-    firstName ??= this.firstName;
-    lastName ??= this.lastName;
-    email ??= this.email;
-    supervisedBy ??= this.supervisedBy;
-    supervising ??= this.supervising;
-    userType ??= this.userType;
-    mustChangePassword ??= this.mustChangePassword;
-    id ??= this.id;
-    companyNames ??= this.companyNames;
-    termsAndServicesAccepted ??= this.termsAndServicesAccepted;
     return User(
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      supervisedBy: supervisedBy,
-      supervising: supervising,
-      userType: userType,
-      mustChangePassword: mustChangePassword,
-      id: id,
-      companyNames: companyNames,
-      termsAndServicesAccepted: termsAndServicesAccepted,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      email: email ?? this.email,
+      supervisedBy: supervisedBy ?? this.supervisedBy,
+      supervising: supervising ?? this.supervising,
+      userType: userType ?? this.userType,
+      mustChangePassword: mustChangePassword ?? this.mustChangePassword,
+      id: id ?? this.id,
+      companyNames: companyNames ?? this.companyNames,
+      termsAndServicesAccepted:
+          termsAndServicesAccepted ?? this.termsAndServicesAccepted,
+      creationDate: creationDate ?? this.creationDate,
     );
   }
 
@@ -75,6 +72,7 @@ class User extends EzloginUser {
       'userType': userType.index,
       'companyNames': companyNames,
       'termsAndServicesAccepted': termsAndServicesAccepted,
+      'creationDate': creationDate.toIso8601String(),
     });
 
   @override
@@ -90,6 +88,10 @@ class User extends EzloginUser {
   final UserType userType;
   final String companyNames;
   final bool termsAndServicesAccepted;
+  final DateTime creationDate;
+
+  bool get isActive => creationDate.isAfter(isActiveLimitDate);
+  bool get isNotActive => !isActive;
 
   @override
   String toString() => '$firstName $lastName';

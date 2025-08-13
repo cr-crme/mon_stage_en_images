@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 
 import '/firebase_options.dart';
 
-const String softwareVersion = '1.0.0';
+const String softwareVersion = '1.1.0';
 
 void main() async {
   // Initialization of the user database. If [useEmulator] is set to [true],

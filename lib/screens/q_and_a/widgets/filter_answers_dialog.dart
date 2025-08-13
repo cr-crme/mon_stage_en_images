@@ -20,6 +20,8 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
       widget.currentFilter.fromWhomFilter;
   late final List<AnswerContentFilter> _content =
       widget.currentFilter.contentFilter;
+  late bool _includeArchivedStudents =
+      widget.currentFilter.includeArchivedStudents;
 
   void _selectSorting(value) {
     _sorting = value;
@@ -44,6 +46,11 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
     setState(() {});
   }
 
+  void _toggleIncludeArchived(value) {
+    _includeArchivedStudents = value;
+    setState(() {});
+  }
+
   void _finalize(BuildContext context, {bool hasCancelled = false}) {
     if (hasCancelled) {
       Navigator.pop(context);
@@ -57,6 +64,7 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
           filled: _filled,
           fromWhomFilter: _fromWhom,
           contentFilter: _content,
+          includeArchivedStudents: _includeArchivedStudents,
         ));
   }
 
@@ -81,6 +89,10 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
               value: _fromWhom.contains(AnswerFromWhomFilter.teacherOnly),
               onTap: (_) => _toggleFromWhom(AnswerFromWhomFilter.teacherOnly),
             ),
+            _buildCheckBoxTile(
+                onTap: _toggleIncludeArchived,
+                value: _includeArchivedStudents,
+                text: 'Inclure les élèves archivés'),
             const Divider(),
             const SizedBox(height: 8),
             const Text(
@@ -179,15 +191,15 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
   Widget _buildCheckBoxTile({
     required String text,
     required value,
-    required Function onTap,
+    required Function(bool) onTap,
   }) {
     return GestureDetector(
-      onTap: () => onTap(value),
+      onTap: () => onTap(!value),
       child: Row(
         children: [
           Checkbox(
             value: value,
-            onChanged: (value) => onTap(value),
+            onChanged: (value) => onTap(value!),
           ),
           Text(text, maxLines: 1),
         ],

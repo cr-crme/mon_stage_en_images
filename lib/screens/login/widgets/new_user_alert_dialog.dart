@@ -40,6 +40,7 @@ class _NewUserAlertDialogState extends State<NewUserAlertDialog> {
       supervising: {},
       companyNames: '',
       termsAndServicesAccepted: false,
+      creationDate: DateTime.now(),
     );
 
     Navigator.pop(context, user);

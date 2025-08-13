@@ -49,6 +49,7 @@ class _NewStudentAlertDialogState extends State<NewStudentAlertDialog> {
       companyNames: _companyName!,
       termsAndServicesAccepted: false,
       id: widget.student?.id,
+      creationDate: DateTime.now(),
     );
 
     Navigator.pop(context, student);

@@ -261,7 +261,9 @@ class _DiscussionListViewState extends State<DiscussionListView> {
               ],
             ),
           ),
-        if (!widget.isAnswerValidated && widget.student != null)
+        if (!widget.isAnswerValidated &&
+            widget.student != null &&
+            widget.student!.isActive)
           Container(
             padding: const EdgeInsets.only(left: 15),
             child: Form(
@@ -323,6 +325,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
           ),
         if (userType == UserType.teacher &&
             widget.student != null &&
+            widget.student!.isActive &&
             answer!.hasAnswer)
           Align(
             alignment: Alignment.centerLeft,
