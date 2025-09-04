@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
 import 'package:mon_stage_en_images/common/models/themes.dart';
@@ -21,12 +22,13 @@ void main() async {
   // one can create a user, login with it, then in the drawer, select the
   // 'Reinitialize the database' button.
 
-  const useEmulator = false;
+  const useEmulator = true;
   final userDatabase = Database();
   await userDatabase.initialize(
       useEmulator: useEmulator,
       currentPlatform: DefaultFirebaseOptions.currentPlatform);
 
+  await initializeDateFormatting('fr_FR', null);
   // Run the app
   runApp(MyApp(userDatabase: userDatabase));
 }

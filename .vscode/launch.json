@@ -5,10 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Flutter",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main.dart",
+            "preLaunchTask": "my task",
+        },
+        {
             "name": "Mon stage en images",
             "request": "launch",
             "type": "dart",
-        }, {
+        },
+        {
             "name": "Mon stage en images (with emulator)",
             "request": "launch",
             "type": "dart",

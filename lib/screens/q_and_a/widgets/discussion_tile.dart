@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:mon_stage_en_images/common/misc/date_formatting.dart';
 import 'package:mon_stage_en_images/common/misc/storage_service.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
@@ -98,11 +99,12 @@ class DiscussionTile extends StatelessWidget {
                   )),
                 ],
               ),
-            if (discussion.creatorId == currentUser.id && isLast)
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(discussion.creationTimeStamp.toFullDateFromEpoch()),
+                if (discussion.creatorId == currentUser.id && isLast) ...[
                   Icon(
                     Icons.check,
                     color: Colors.blueGrey.withAlpha(150),
@@ -113,8 +115,9 @@ class DiscussionTile extends StatelessWidget {
                     'envoyé',
                     style: TextStyle(color: Colors.blueGrey.withAlpha(150)),
                   ),
-                ],
-              ),
+                ]
+              ],
+            ),
           ],
         ),
       ),
