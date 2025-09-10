@@ -338,14 +338,15 @@ class _DiscussionListViewState extends State<DiscussionListView> {
                               color: Theme.of(context).colorScheme.secondary)),
                       onPressed: () => _manageAnswer(markAsValidated: false),
                     )
-                  : ElevatedButton(
+                  : ElevatedButton.icon(
                       onPressed: () {
                         _fieldText.text.isEmpty
                             ? _manageAnswer(markAsValidated: true)
                             : _sendMessage(markAsValidated: true);
                       },
                       style: ElevatedButton.styleFrom(backgroundColor: null),
-                      child: const Text('Valider la question'),
+                      icon: const Icon(Icons.check),
+                      label: const Text('Clore la discussion'),
                     ),
             ),
           ),

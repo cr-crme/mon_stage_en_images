@@ -270,7 +270,9 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
               minLines: 1,
               maxLines: 3,
               decoration: InputDecoration(
-                labelText: 'Libellé de la question',
+                labelText: _fieldText.text.isEmpty
+                    ? 'Écrire la question'
+                    : 'Modifier la question',
                 suffixIcon: GestureDetector(
                     onTapDown: (_) => _dictateMessage(),
                     child: _isVoiceRecording

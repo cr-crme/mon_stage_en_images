@@ -64,7 +64,8 @@ class QuestionPart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(question == null ? 'Nouvelle question' : question!.text,
+      title: Text(
+          question == null ? 'Créer une nouvelle question' : question!.text,
           style: _pickTextStyle(context, answer)),
       trailing: _QuestionPartTrailing(
         question: question,
