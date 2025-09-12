@@ -29,6 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _password;
   EzloginStatus _status = EzloginStatus.none;
   bool _isNewUser = false;
+  bool _hidePassword = true;
 
   final _textReader = TextReader();
 
@@ -102,11 +103,18 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       _formKey.currentState!.save();
 
-      _status = await database.login(
+      _status = await database
+          .login(
         username: _email!,
         password: _password!,
         getNewUserInfo: () => _createUser(_email!),
         getNewPassword: _changePassword,
+      )
+          .then(
+        (value) {
+          debugPrint("$value login is complete");
+          return value;
+        },
       );
       if (_status != EzloginStatus.success) {
         _showSnackbar();
@@ -228,6 +236,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ? 'Inscrire un courriel'
                           : null,
                       onSaved: (value) => _email = value,
+                      initialValue: _email,
                       keyboardType: TextInputType.emailAddress,
                     ),
                   ),
@@ -235,13 +244,25 @@ class _LoginScreenState extends State<LoginScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: TextFormField(
-                      decoration:
-                          const InputDecoration(labelText: 'Mot de passe'),
+                      decoration: InputDecoration(
+                          labelText: 'Mot de passe',
+                          suffixIcon: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: IconButton.outlined(
+                                onPressed: () {
+                                  _hidePassword = !_hidePassword;
+                                  setState(() {});
+                                },
+                                icon: Icon(_hidePassword
+                                    ? Icons.visibility
+                                    : Icons.visibility_off)),
+                          )),
                       validator: (value) => value == null || value.isEmpty
                           ? 'Entrer le mot de passe'
                           : null,
                       onSaved: (value) => _password = value,
-                      obscureText: true,
+                      obscureText: _hidePassword,
                       enableSuggestions: false,
                       autocorrect: false,
                       keyboardType: TextInputType.visiblePassword,

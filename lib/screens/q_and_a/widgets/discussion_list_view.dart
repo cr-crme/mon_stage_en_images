@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mon_stage_en_images/common/misc/storage_service.dart';
@@ -72,6 +73,20 @@ class _DiscussionListViewState extends State<DiscussionListView> {
   }
 
   Future<void> _addPhoto(ImageSource source) async {
+    //TODO changer règles firebase pour autoriser utilisateur enseignant à write dans storage
+    //TODO implémenter image picking en version web
+    final userType =
+        Provider.of<Database>(context, listen: false).currentUser!.userType;
+    if (userType == UserType.teacher || kIsWeb) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          content: Text('Fonctionnalité à venir'),
+        ),
+      );
+      return;
+    }
+
     final imagePicker = ImagePicker();
     final imageXFile =
         await imagePicker.pickImage(source: source, maxWidth: 500);
@@ -223,9 +238,12 @@ class _DiscussionListViewState extends State<DiscussionListView> {
         _MessageListView(
           discussion: widget.messages,
         ),
-        if (userType == UserType.student && !widget.isAnswerValidated)
+        SizedBox(
+          height: 4,
+        ),
+        if (!widget.isAnswerValidated)
           Padding(
-            padding: const EdgeInsets.only(bottom: 4.0),
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
