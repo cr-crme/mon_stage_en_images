@@ -26,13 +26,17 @@ class MainTitleBackground extends StatelessWidget {
           Colors.white10,
         ],
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const _MainTitle(),
-          const SizedBox(height: 50),
-          if (child != null) child!,
-        ],
+      child: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const _MainTitle(),
+              const SizedBox(height: 80),
+              if (child != null) child!,
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -43,35 +47,39 @@ class _MainTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Transform(
-      alignment: FractionalOffset.center,
-      transform: Matrix4.identity()..rotateZ(-15 * 3.1415927 / 180),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ColoredBox(
-            color: studentTheme().colorScheme.primary,
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text(
-                'STAGE',
-                style: TextStyle(
-                    fontSize: 40, color: studentTheme().colorScheme.onPrimary),
+    return FittedBox(
+      child: Transform(
+        alignment: FractionalOffset.center,
+        transform: Matrix4.identity()..rotateZ(-15 * 3.1415927 / 180),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ColoredBox(
+              color: studentTheme().colorScheme.primary,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  'STAGE',
+                  style: TextStyle(
+                      fontSize: 40,
+                      color: studentTheme().colorScheme.onPrimary),
+                ),
               ),
             ),
-          ),
-          ColoredBox(
-            color: teacherTheme().colorScheme.primary,
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text(
-                'IMAGES',
-                style: TextStyle(
-                    fontSize: 40, color: teacherTheme().colorScheme.onPrimary),
+            ColoredBox(
+              color: teacherTheme().colorScheme.primary,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  'IMAGES',
+                  style: TextStyle(
+                      fontSize: 40,
+                      color: teacherTheme().colorScheme.onPrimary),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

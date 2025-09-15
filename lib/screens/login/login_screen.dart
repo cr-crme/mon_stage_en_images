@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:mon_stage_en_images/common/misc/firebase_password_reset.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
 import 'package:mon_stage_en_images/common/models/text_reader.dart';
@@ -10,6 +11,7 @@ import 'package:mon_stage_en_images/common/providers/all_questions.dart';
 import 'package:mon_stage_en_images/default_questions.dart';
 import 'package:mon_stage_en_images/screens/login/terms_and_services_screen.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/change_password_alert_dialog.dart';
+import 'package:mon_stage_en_images/screens/login/widgets/forgot_password_alert_dialog.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/main_title_background.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/new_user_alert_dialog.dart';
 import 'package:provider/provider.dart';
@@ -137,6 +139,21 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
+  Future<void> _showForgotPasswordDialog(email) async {
+    await showDialog<FirebasePasswordResetStatus?>(
+      context: context,
+      builder: (context) => ForgotPasswordAlertDialog(email: email),
+    ).then((response) {
+      if (response != null && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(response.message),
+            backgroundColor: response != FirebasePasswordResetStatus.success
+                ? Theme.of(context).colorScheme.error
+                : Theme.of(context).snackBarTheme.backgroundColor));
+      }
+    });
+  }
+
   Future<void> _newTeacher() async {
     const studentTextPart =
         'Si vous êtes un ou une élève, veuillez attendre que votre enseignant ou enseignante vous inscrive.';
@@ -211,78 +228,107 @@ class _LoginScreenState extends State<LoginScreen> {
       case EzloginStatus.needAuthentication:
       case EzloginStatus.userNotFound:
       case EzloginStatus.unrecognizedError:
-        return Column(
-          children: [
-            Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              Form(
+                key: _formKey,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
                         'Informations de connexion',
-                        style: TextStyle(fontSize: 15),
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        decoration:
+                            const InputDecoration(labelText: 'Courriel'),
+                        validator: (value) => value == null || value.isEmpty
+                            ? 'Inscrire un courriel'
+                            : null,
+                        onSaved: (value) => _email = value,
+                        initialValue: _email,
+                        keyboardType: TextInputType.emailAddress,
+                      ),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        decoration: InputDecoration(
+                            labelText: 'Mot de passe',
+                            suffixIcon: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: IconButton.outlined(
+                                  onPressed: () {
+                                    _hidePassword = !_hidePassword;
+                                    setState(() {});
+                                  },
+                                  icon: Icon(_hidePassword
+                                      ? Icons.visibility
+                                      : Icons.visibility_off)),
+                            )),
+                        validator: (value) => value == null || value.isEmpty
+                            ? 'Entrer le mot de passe'
+                            : null,
+                        onSaved: (value) => _password = value,
+                        obscureText: _hidePassword,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        keyboardType: TextInputType.visiblePassword,
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                            onPressed: () {
+                              _formKey.currentState?.save();
+                              _showForgotPasswordDialog(_email);
+                            },
+                            child: Text(
+                              'Mot de passe oublié',
+                              style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  fontWeight: FontWeight.bold),
+                            )),
+                      )
                     ],
                   ),
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: TextFormField(
-                      decoration: const InputDecoration(labelText: 'Courriel'),
-                      validator: (value) => value == null || value.isEmpty
-                          ? 'Inscrire un courriel'
-                          : null,
-                      onSaved: (value) => _email = value,
-                      initialValue: _email,
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                          labelText: 'Mot de passe',
-                          suffixIcon: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: IconButton.outlined(
-                                onPressed: () {
-                                  _hidePassword = !_hidePassword;
-                                  setState(() {});
-                                },
-                                icon: Icon(_hidePassword
-                                    ? Icons.visibility
-                                    : Icons.visibility_off)),
-                          )),
-                      validator: (value) => value == null || value.isEmpty
-                          ? 'Entrer le mot de passe'
-                          : null,
-                      onSaved: (value) => _password = value,
-                      obscureText: _hidePassword,
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      keyboardType: TextInputType.visiblePassword,
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-            const SizedBox(height: 36),
-            ElevatedButton(
-              onPressed: _processConnexion,
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: studentTheme().colorScheme.primary),
-              child: const Text('Se connecter'),
-            ),
-            TextButton(
-              onPressed: _newTeacher,
-              child: const Text('Nouvel(le) utilisateur(trice)'),
-            ),
-          ],
+              const SizedBox(height: 36),
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 500),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 60,
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _processConnexion,
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                studentTheme().colorScheme.primary),
+                        child: const Text('Se connecter'),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        onPressed: _newTeacher,
+                        child: const Text('Nouvel(le) utilisateur(trice)'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         );
     }
   }
@@ -290,11 +336,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: MainTitleBackground(child: _buildPage()),
-        ),
-      ),
+      body: MainTitleBackground(child: _buildPage()),
     );
   }
 }
