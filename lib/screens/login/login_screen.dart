@@ -14,6 +14,9 @@ import 'package:mon_stage_en_images/screens/login/widgets/change_password_alert_
 import 'package:mon_stage_en_images/screens/login/widgets/forgot_password_alert_dialog.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/main_title_background.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/new_user_alert_dialog.dart';
+import 'package:mon_stage_en_images/screens/onboarding/onboarding_dialog_clipped_background.dart';
+import 'package:mon_stage_en_images/screens/onboarding/onboarding_keys.dart';
+import 'package:mon_stage_en_images/screens/onboarding/onboarding_step.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -257,6 +260,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 12),
                       TextFormField(
+                        key: onboardingKey1,
                         decoration: InputDecoration(
                             labelText: 'Mot de passe',
                             suffixIcon: Padding(
@@ -303,6 +307,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 constraints: BoxConstraints(maxWidth: 500),
                 child: Column(
                   children: [
+                    FilledButton(
+                        onPressed: () async {
+                          OnboardingDialogClippedBackground(
+                            onboardingStep: OnboardingStep(
+                                widgetKey: onboardingKey1,
+                                id: 'id',
+                                rank: 1,
+                                message:
+                                    'Une explication sur le widget en évidence'),
+                          ).showOnBoardingDialog(context);
+                        },
+                        child: Text('Test onboarding')),
                     SizedBox(
                       height: 60,
                       width: double.infinity,
