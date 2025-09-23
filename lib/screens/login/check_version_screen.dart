@@ -63,8 +63,12 @@ class CheckVersionScreen extends StatelessWidget {
                   // If the version is valid
                   if (snapshot.data == true) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                      Navigator.of(context)
-                          .pushReplacementNamed(LoginScreen.routeName);
+                      debugPrint(
+                          "will navigato to LoginScreen from CheckVersionScreen");
+                      rootNavigatorKey.currentState
+                          ?.pushReplacementNamed(LoginScreen.routeName);
+                      // Navigator.of(context)
+                      //     .pushReplacementNamed(LoginScreen.routeName);
                     });
                   }
                   // Tell the user their version is obsolete so they have to download the latest

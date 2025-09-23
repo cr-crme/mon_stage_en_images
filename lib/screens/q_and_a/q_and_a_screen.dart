@@ -13,12 +13,28 @@ import 'package:mon_stage_en_images/screens/q_and_a/widgets/metier_app_bar.dart'
 import 'package:provider/provider.dart';
 
 class QAndAScreen extends StatefulWidget {
-  const QAndAScreen({super.key});
+  const QAndAScreen({
+    super.key,
+  });
 
-  static const routeName = '/q-and-a-screen';
+  // static const routeName = '/q-and-a-screen';
+  static const String routeName = '/q-and-a-screen';
 
   @override
   State<QAndAScreen> createState() => _QAndAScreenState();
+
+  static void onPageChangedRequestFromOutside(
+      State<QAndAScreen> outsideState, int int) {
+    // debugPrint("context for onPageChangedRequestFromOutside is $context");
+    // final state = context.findAncestorStateOfType<_QAndAScreenState>();
+    final state = outsideState as _QAndAScreenState;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final controller = state._pageController;
+      controller.animateToPage(int,
+          duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
+      // state.setState(() {});
+    });
+  }
 }
 
 class _QAndAScreenState extends State<QAndAScreen> {
@@ -26,7 +42,8 @@ class _QAndAScreenState extends State<QAndAScreen> {
   UserType _userType = UserType.none;
   User? _student;
   Target _viewSpan = Target.individual;
-  late PageMode _pageMode;
+  // late PageMode _pageMode;
+  PageMode _pageMode = PageMode.fixView;
   var _answerFilter = AnswerSortAndFilter();
 
   final _pageController = PageController();
@@ -42,12 +59,17 @@ class _QAndAScreenState extends State<QAndAScreen> {
 
     final currentUser = database.currentUser!;
     _userType = currentUser.userType;
-
-    final arguments = ModalRoute.of(context)!.settings.arguments as List;
-    _viewSpan = arguments[0] as Target;
-    _pageMode = arguments[1] as PageMode;
-    _student =
-        _userType == UserType.student ? currentUser : arguments[2] as User?;
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        final arguments = ModalRoute.of(context)!.settings.arguments as List;
+        _viewSpan = arguments[0] as Target;
+        setState(() {
+          _pageMode = arguments[1] as PageMode;
+        });
+        _student =
+            _userType == UserType.student ? currentUser : arguments[2] as User?;
+      },
+    );
 
     _isInitialized = true;
   }

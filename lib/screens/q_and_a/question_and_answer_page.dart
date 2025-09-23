@@ -6,6 +6,8 @@ import 'package:mon_stage_en_images/common/models/question.dart';
 import 'package:mon_stage_en_images/common/models/section.dart';
 import 'package:mon_stage_en_images/common/providers/all_answers.dart';
 import 'package:mon_stage_en_images/common/providers/all_questions.dart';
+import 'package:mon_stage_en_images/onboarding/data/onboarding_steps_list.dart';
+import 'package:mon_stage_en_images/onboarding/widgets/onboarding_target.dart';
 import 'package:mon_stage_en_images/screens/q_and_a/widgets/question_and_answer_tile.dart';
 import 'package:provider/provider.dart';
 
@@ -99,13 +101,16 @@ class QuestionAndAnswerPage extends StatelessWidget {
             ),
           if (viewSpan != Target.individual) const SizedBox(height: 10),
           if (viewSpan != Target.individual && pageMode == PageMode.edit)
-            QuestionAndAnswerTile(
-              null,
-              sectionIndex: sectionIndex,
-              studentId: studentId,
-              viewSpan: viewSpan,
-              pageMode: pageMode,
-              answerFilterMode: null,
+            OnboardingTarget(
+              onboardingId: newQuestion,
+              child: QuestionAndAnswerTile(
+                null,
+                sectionIndex: sectionIndex,
+                studentId: studentId,
+                viewSpan: viewSpan,
+                pageMode: pageMode,
+                answerFilterMode: null,
+              ),
             ),
           if (viewSpan != Target.individual &&
               questions.isNotEmpty &&
@@ -200,21 +205,27 @@ class _QAndAListViewState extends State<QAndAListView> {
       }
     }
 
-    return ListView.builder(
-      reverse: true,
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemBuilder: (context, index) => QuestionAndAnswerTile(
-        widget.questions[index],
-        sectionIndex: widget.sectionIndex,
-        studentId: widget.studentId,
-        viewSpan: widget.viewSpan,
-        pageMode: widget.pageMode,
-        answerFilterMode: widget.answerFilterMode,
-        overrideExpandState: _isExpanded[index],
-        onExpand: () => _onExpand(index),
+    return OnboardingTarget(
+      onboardingId: exampleQuestions,
+      child: ListView.builder(
+        reverse: true,
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          final child = QuestionAndAnswerTile(
+            widget.questions[index],
+            sectionIndex: widget.sectionIndex,
+            studentId: widget.studentId,
+            viewSpan: widget.viewSpan,
+            pageMode: widget.pageMode,
+            answerFilterMode: widget.answerFilterMode,
+            overrideExpandState: _isExpanded[index],
+            onExpand: () => _onExpand(index),
+          );
+          return child;
+        },
+        itemCount: widget.questions.length,
       ),
-      itemCount: widget.questions.length,
     );
   }
 }

@@ -1,24 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:mon_stage_en_images/screens/onboarding/hole_clipper.dart';
-import 'package:mon_stage_en_images/screens/onboarding/onboarding_step.dart';
+import 'package:mon_stage_en_images/onboarding/models/onboarding_step.dart';
+import 'package:mon_stage_en_images/onboarding/widgets/hole_clipper.dart';
 
+///Main widget for displaying an onboarding dialog with a background clipped
+///to highlight the targeted Widget.
 class OnboardingDialogClippedBackground extends StatefulWidget {
   const OnboardingDialogClippedBackground(
-      {super.key, this.manualHoleRect = Rect.zero, this.onboardingStep});
+      {super.key,
+      this.manualHoleRect = Rect.zero,
+      this.onboardingStep,
+      this.onForward,
+      this.onBackward});
 
   ///Optional holeRect for overriding the clip provided by the globalKey (onboardingStep property)
   final Rect? manualHoleRect;
   final OnboardingStep? onboardingStep;
 
+  final void Function()? onForward;
+  final void Function()? onBackward;
+
   @override
   State<OnboardingDialogClippedBackground> createState() =>
       _OnboardingDialogClippedBackgroundState();
 
+  ///function to be called when displaying the actual dialog
+  ///allows the injection of an outter context
   showOnBoardingDialog(context) async {
     await showDialog(
         barrierColor: Colors.transparent,
+        barrierDismissible: false,
         context: context,
-        builder: (context) => this);
+        builder: (dialogContext) => this);
   }
 }
 
@@ -53,6 +65,7 @@ class _OnboardingDialogClippedBackgroundState
     super.dispose();
   }
 
+  ///updates to the current Rect used for defining the clipped background area
   void _updateRect() {
     setState(() {
       newHoleRect = widget.onboardingStep!.rectFromWidgetKey;
@@ -82,6 +95,7 @@ class _OnboardingDialogClippedBackgroundState
             width: double.infinity,
           ),
         ),
+        //TODO appliquer style pour le dialog
         Dialog(
           alignment: Alignment.bottomCenter,
           child: Padding(
@@ -96,24 +110,28 @@ class _OnboardingDialogClippedBackgroundState
                   constraints: BoxConstraints(maxWidth: 600),
                   child: SizedBox(
                     width: double.infinity,
-                    child: ColoredBox(
-                      color: Colors.red,
-                      child: Wrap(
-                        spacing: 12,
-                        runAlignment: WrapAlignment.spaceBetween,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        alignment: WrapAlignment.spaceBetween,
-                        children: [
-                          OutlinedButton.icon(
-                              onPressed: () => Navigator.pop(context),
-                              label: Text("Précédent")),
-                          FilledButton.icon(
-                            onPressed: () => Navigator.of(context).pop(),
-                            label: Text("Suivant"),
-                            icon: Icon(Icons.arrow_right),
-                          )
-                        ],
-                      ),
+                    child: Wrap(
+                      spacing: 12,
+                      runAlignment: WrapAlignment.spaceBetween,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      alignment: WrapAlignment.spaceBetween,
+                      children: [
+                        OutlinedButton.icon(
+                            onPressed: () {
+                              widget.onBackward?.call();
+                              Navigator.pop(context);
+                            },
+                            label: Text("Précédent")),
+                        FilledButton.icon(
+                          onPressed: () async {
+                            widget.onForward?.call();
+                            Navigator.pop(context);
+                          },
+                          label: Text("Suivant"),
+                          icon: Icon(Icons.arrow_right_alt),
+                          iconAlignment: IconAlignment.end,
+                        )
+                      ],
                     ),
                   ),
                 )

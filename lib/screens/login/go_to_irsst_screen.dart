@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mon_stage_en_images/common/models/themes.dart';
+import 'package:mon_stage_en_images/main.dart';
 import 'package:mon_stage_en_images/screens/all_students/students_screen.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/main_title_background.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,7 +37,9 @@ class GoToIrsstScreen extends StatelessWidget {
 
   Future<void> _continueToApp(BuildContext context) async {
     if (!context.mounted) return;
-    Navigator.of(context).pushReplacementNamed(StudentsScreen.routeName);
+    rootNavigatorKey.currentState
+        ?.pushReplacementNamed(StudentsScreen.routeName);
+    // Navigator.of(context).pushReplacementNamed(StudentsScreen.routeName);
   }
 
   @override

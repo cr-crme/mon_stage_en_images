@@ -4,6 +4,12 @@ import 'package:mon_stage_en_images/common/models/database.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
 import 'package:mon_stage_en_images/common/models/themes.dart';
 import 'package:mon_stage_en_images/common/providers/speecher.dart';
+import 'package:mon_stage_en_images/onboarding/application/onboarding_keys_service.dart';
+import 'package:mon_stage_en_images/onboarding/application/onboarding_observer.dart';
+import 'package:mon_stage_en_images/onboarding/application/onboarding_service.dart';
+import 'package:mon_stage_en_images/onboarding/application/onboarding_state_notifier.dart';
+import 'package:mon_stage_en_images/onboarding/application/shared_preferences_notifier.dart';
+import 'package:mon_stage_en_images/onboarding/data/onboarding_steps_list.dart';
 import 'package:mon_stage_en_images/screens/all_students/students_screen.dart';
 import 'package:mon_stage_en_images/screens/login/check_version_screen.dart';
 import 'package:mon_stage_en_images/screens/login/go_to_irsst_screen.dart';
@@ -11,10 +17,12 @@ import 'package:mon_stage_en_images/screens/login/login_screen.dart';
 import 'package:mon_stage_en_images/screens/login/terms_and_services_screen.dart';
 import 'package:mon_stage_en_images/screens/q_and_a/q_and_a_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '/firebase_options.dart';
 
 const String softwareVersion = '1.1.0';
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   // Initialization of the user database. If [useEmulator] is set to [true],
@@ -30,19 +38,26 @@ void main() async {
 
   await initializeDateFormatting('fr_FR', null);
   // Run the app
-  runApp(MyApp(userDatabase: userDatabase));
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  runApp(MyApp(
+    userDatabase: userDatabase,
+    prefs: prefs,
+  ));
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({
     super.key,
     required this.userDatabase,
+    required this.prefs,
   });
 
   final Database userDatabase;
+  final SharedPreferences prefs;
 
   @override
   Widget build(BuildContext context) {
+    final sharedPreferencesNotifier = SharedPreferencesNotifier(prefs: prefs);
     final speecher = Speecher();
 
     return MultiProvider(
@@ -51,27 +66,105 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => userDatabase.answers),
         ChangeNotifierProvider(create: (context) => userDatabase.questions),
         ChangeNotifierProvider(create: (context) => speecher),
+        ChangeNotifierProvider(create: (context) => sharedPreferencesNotifier),
+        ChangeNotifierProxyProvider2<Database, SharedPreferencesNotifier,
+                OnboardingStateNotifier>(
+            create: (_) => OnboardingStateNotifier.fromAuthAndPreferences(
+                onBoardingSteps: onboardingSteps,
+                currentUser: userDatabase.currentUser,
+                hasAlreadySeenTheIrrstPage:
+                    sharedPreferencesNotifier.hasAlreadySeenTheIrrstPage,
+                hasSeenOnboarding: sharedPreferencesNotifier.hasSeenOnboarding),
+            update: (context, database, sharedPreferences,
+                onBoardingStateProvider) {
+              onBoardingStateProvider!.updateDependencies(
+                  currentUser: database.currentUser,
+                  hasAlreadySeenTheIrrstPage:
+                      sharedPreferences.hasAlreadySeenTheIrrstPage,
+                  hasSeenOnboarding: sharedPreferences.hasSeenOnboarding);
+              return onBoardingStateProvider;
+            })
       ],
       child: Consumer<Database>(builder: (context, database, static) {
         return MaterialApp(
+          navigatorKey: rootNavigatorKey,
           debugShowCheckedModeBanner: false,
           initialRoute: CheckVersionScreen.routeName,
+
           theme: database.currentUser != null &&
                   database.currentUser!.userType == UserType.teacher
               ? teacherTheme()
               : studentTheme(),
-          routes: {
-            CheckVersionScreen.routeName: (context) =>
-                const CheckVersionScreen(),
-            LoginScreen.routeName: (context) => const LoginScreen(),
-            TermsAndServicesScreen.routeName: (context) =>
-                const TermsAndServicesScreen(),
-            GoToIrsstScreen.routeName: (context) => const GoToIrsstScreen(),
-            StudentsScreen.routeName: (context) => const StudentsScreen(),
-            QAndAScreen.routeName: (context) => const QAndAScreen(),
+          onGenerateInitialRoutes: (initialRoute) {
+            debugPrint(
+                "initial route in onGenerateInitial Routes is $initialRoute");
+            final key = GlobalKey<State<StatefulWidget>>();
+            final String id = initialRoute;
+
+            OnboardingKeysService.instance.addScreenKey(id, key);
+            return [
+              MaterialPageRoute(
+                settings: RouteSettings(name: initialRoute),
+                builder: (context) {
+                  return getWidgetFromRouteName(initialRoute, key);
+                },
+              )
+            ];
+          },
+          onGenerateRoute: (settings) {
+            debugPrint(
+                "onGenerateRoute runs with settings.name : ${settings.name}");
+            final String? routeName = settings.name;
+            if (routeName == null) return null;
+            final key = GlobalKey<State<StatefulWidget>>();
+            final String id = routeName;
+
+            OnboardingKeysService.instance.addScreenKey(id, key);
+            return MaterialPageRoute(
+                builder: (_) => getWidgetFromRouteName(routeName, key),
+                settings: settings);
+          },
+          navigatorObservers: [
+            OnboardingNavigatorObserver(context.read<OnboardingStateNotifier>())
+          ],
+          // routes: {
+          //   CheckVersionScreen.routeName: (context) =>
+          //       const CheckVersionScreen(),
+          //   LoginScreen.routeName: (context) => const LoginScreen(),
+          //   TermsAndServicesScreen.routeName: (context) =>
+          //       const TermsAndServicesScreen(),
+          //   GoToIrsstScreen.routeName: (context) => const GoToIrsstScreen(),
+          //   StudentsScreen.routeName: (context) => const StudentsScreen(),
+          //   QAndAScreen.routeName: (context) => const QAndAScreen(),
+          // },
+          builder: (context, child) {
+            return Stack(
+              //TODO add a Gesture Detector layer in between to prevent any interaction with the underlying screen during onboarding transitions
+              children: [child!, const OnboardingService()],
+            );
           },
         );
       }),
     );
+  }
+}
+
+Widget getWidgetFromRouteName(
+    String routeName, GlobalKey<State<StatefulWidget>> key) {
+  switch (routeName) {
+    case CheckVersionScreen.routeName:
+      return CheckVersionScreen(key: key);
+    case LoginScreen.routeName:
+      return LoginScreen(key: key);
+    case TermsAndServicesScreen.routeName:
+      return TermsAndServicesScreen(key: key);
+    case GoToIrsstScreen.routeName:
+      return GoToIrsstScreen(key: key);
+    case StudentsScreen.routeName:
+      return StudentsScreen(key: key);
+    case QAndAScreen.routeName:
+      return QAndAScreen(key: key);
+    default:
+      return SizedBox.shrink(key: key);
   }
 }

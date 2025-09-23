@@ -9,14 +9,12 @@ import 'package:mon_stage_en_images/common/models/themes.dart';
 import 'package:mon_stage_en_images/common/models/user.dart';
 import 'package:mon_stage_en_images/common/providers/all_questions.dart';
 import 'package:mon_stage_en_images/default_questions.dart';
+import 'package:mon_stage_en_images/main.dart';
 import 'package:mon_stage_en_images/screens/login/terms_and_services_screen.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/change_password_alert_dialog.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/forgot_password_alert_dialog.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/main_title_background.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/new_user_alert_dialog.dart';
-import 'package:mon_stage_en_images/screens/onboarding/onboarding_dialog_clipped_background.dart';
-import 'package:mon_stage_en_images/screens/onboarding/onboarding_keys.dart';
-import 'package:mon_stage_en_images/screens/onboarding/onboarding_step.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -137,8 +135,10 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     Future.delayed(Duration(seconds: automaticConnexion ? 2 : 0), () {
       if (!mounted) return;
-      Navigator.of(context)
-          .pushReplacementNamed(TermsAndServicesScreen.routeName);
+      rootNavigatorKey.currentState
+          ?.pushReplacementNamed(TermsAndServicesScreen.routeName);
+      // Navigator.of(context)
+      //     .pushReplacementNamed(TermsAndServicesScreen.routeName);
     });
   }
 
@@ -238,67 +238,69 @@ class _LoginScreenState extends State<LoginScreen> {
                 key: _formKey,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        'Informations de connexion',
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        decoration:
-                            const InputDecoration(labelText: 'Courriel'),
-                        validator: (value) => value == null || value.isEmpty
-                            ? 'Inscrire un courriel'
-                            : null,
-                        onSaved: (value) => _email = value,
-                        initialValue: _email,
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                      const SizedBox(height: 12),
-                      TextFormField(
-                        key: onboardingKey1,
-                        decoration: InputDecoration(
-                            labelText: 'Mot de passe',
-                            suffixIcon: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: IconButton.outlined(
-                                  onPressed: () {
-                                    _hidePassword = !_hidePassword;
-                                    setState(() {});
-                                  },
-                                  icon: Icon(_hidePassword
-                                      ? Icons.visibility
-                                      : Icons.visibility_off)),
-                            )),
-                        validator: (value) => value == null || value.isEmpty
-                            ? 'Entrer le mot de passe'
-                            : null,
-                        onSaved: (value) => _password = value,
-                        obscureText: _hidePassword,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        keyboardType: TextInputType.visiblePassword,
-                      ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                            onPressed: () {
-                              _formKey.currentState?.save();
-                              _showForgotPasswordDialog(_email);
-                            },
-                            child: Text(
-                              'Mot de passe oublié',
-                              style: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  fontWeight: FontWeight.bold),
-                            )),
-                      )
-                    ],
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: 500),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          'Informations de connexion',
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          decoration:
+                              const InputDecoration(labelText: 'Courriel'),
+                          validator: (value) => value == null || value.isEmpty
+                              ? 'Inscrire un courriel'
+                              : null,
+                          onSaved: (value) => _email = value,
+                          initialValue: _email,
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                        const SizedBox(height: 12),
+                        TextFormField(
+                          decoration: InputDecoration(
+                              labelText: 'Mot de passe',
+                              suffixIcon: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: IconButton.outlined(
+                                    onPressed: () {
+                                      _hidePassword = !_hidePassword;
+                                      setState(() {});
+                                    },
+                                    icon: Icon(_hidePassword
+                                        ? Icons.visibility
+                                        : Icons.visibility_off)),
+                              )),
+                          validator: (value) => value == null || value.isEmpty
+                              ? 'Entrer le mot de passe'
+                              : null,
+                          onSaved: (value) => _password = value,
+                          obscureText: _hidePassword,
+                          enableSuggestions: false,
+                          autocorrect: false,
+                          keyboardType: TextInputType.visiblePassword,
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                              onPressed: () {
+                                _formKey.currentState?.save();
+                                _showForgotPasswordDialog(_email);
+                              },
+                              child: Text(
+                                'Mot de passe oublié',
+                                style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    fontWeight: FontWeight.bold),
+                              )),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -307,18 +309,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 constraints: BoxConstraints(maxWidth: 500),
                 child: Column(
                   children: [
-                    FilledButton(
-                        onPressed: () async {
-                          OnboardingDialogClippedBackground(
-                            onboardingStep: OnboardingStep(
-                                widgetKey: onboardingKey1,
-                                id: 'id',
-                                rank: 1,
-                                message:
-                                    'Une explication sur le widget en évidence'),
-                          ).showOnBoardingDialog(context);
-                        },
-                        child: Text('Test onboarding')),
+                    // FilledButton(
+                    //     onPressed: () async {}, child: Text('Test onboarding')),
                     SizedBox(
                       height: 60,
                       width: double.infinity,

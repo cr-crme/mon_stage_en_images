@@ -9,6 +9,8 @@ import 'package:mon_stage_en_images/common/providers/all_answers.dart';
 import 'package:mon_stage_en_images/common/providers/all_questions.dart';
 import 'package:mon_stage_en_images/common/widgets/are_you_sure_dialog.dart';
 import 'package:mon_stage_en_images/common/widgets/main_drawer.dart';
+import 'package:mon_stage_en_images/onboarding/data/onboarding_steps_list.dart';
+import 'package:mon_stage_en_images/onboarding/widgets/onboarding_target.dart';
 import 'package:provider/provider.dart';
 
 import 'widgets/new_student_alert_dialog.dart';
@@ -22,7 +24,7 @@ class StudentsScreen extends StatefulWidget {
   static const routeName = '/students-screen';
 
   @override
-  State<StudentsScreen> createState() => _StudentsScreenState();
+  State<StudentsScreen> createState() => StudentsScreenState();
 }
 
 void _showSnackbar(Widget content, ScaffoldMessengerState scaffold) {
@@ -41,7 +43,13 @@ void _showSnackbar(Widget content, ScaffoldMessengerState scaffold) {
 // Static variable so the value is remembered when we come back to this screen
 bool _onlyActiveStudents = true;
 
-class _StudentsScreenState extends State<StudentsScreen> {
+//StudentsScreenState is purposefully made public so onboarding can access its inner methods (like openDrawer)
+class StudentsScreenState extends State<StudentsScreen> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void openDrawer() => scaffoldKey.currentState?.openDrawer();
+  bool? get isDrawerOpen => scaffoldKey.currentState?.isDrawerOpen;
+
   Future<void> _addStudent() async {
     final scaffold = ScaffoldMessenger.of(context);
 
@@ -289,16 +297,29 @@ class _StudentsScreenState extends State<StudentsScreen> {
             : 0);
 
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: const Text('Mes élèves'),
+        leading: OnboardingTarget(
+          onboardingId: drawer,
+          child: IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () {
+              scaffoldKey.currentState?.openDrawer();
+            },
+          ),
+        ),
         actions: [
-          IconButton(
-            onPressed: _addStudent,
-            icon: const Icon(
-              Icons.add,
+          OnboardingTarget(
+            onboardingId: 'add-student',
+            child: IconButton(
+              onPressed: _addStudent,
+              icon: const Icon(
+                Icons.add,
+              ),
+              iconSize: 35,
+              color: Colors.black,
             ),
-            iconSize: 35,
-            color: Colors.black,
           ),
           const SizedBox(width: 15),
         ],

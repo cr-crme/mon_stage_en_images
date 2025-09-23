@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mon_stage_en_images/common/helpers/helpers.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
+import 'package:mon_stage_en_images/onboarding/data/onboarding_steps_list.dart';
+import 'package:mon_stage_en_images/onboarding/widgets/onboarding_target.dart';
 import 'package:mon_stage_en_images/screens/all_students/students_screen.dart';
 import 'package:mon_stage_en_images/screens/login/go_to_irsst_screen.dart';
 import 'package:mon_stage_en_images/screens/q_and_a/q_and_a_screen.dart';
@@ -31,31 +33,40 @@ class MainDrawer extends StatelessWidget {
                   onTap: () => Navigator.of(context)
                       .pushNamed(StudentsScreen.routeName)),
             if (userType == UserType.teacher)
-              MenuItem(
-                  title: 'Gestion des questions',
-                  icon: Icons.speaker_notes,
-                  onTap: () => Navigator.of(context).pushReplacementNamed(
-                      QAndAScreen.routeName,
-                      arguments: [Target.all, PageMode.edit, null])),
-            if (userType == UserType.teacher) const Divider(),
-            if (userType == UserType.teacher)
-              MenuItem(
-                title: 'Résumé des réponses',
-                icon: Icons.question_answer,
-                onTap: () => Navigator.of(context).pushReplacementNamed(
-                    QAndAScreen.routeName,
-                    arguments: [Target.all, PageMode.fixView, null]),
+              OnboardingTarget(
+                onboardingId: drawerOpened,
+                child: MenuItem(
+                    title: 'Gestion des questions',
+                    icon: Icons.speaker_notes,
+                    onTap: () => Navigator.of(context).pushReplacementNamed(
+                        QAndAScreen.routeName,
+                        arguments: [Target.all, PageMode.edit, null])),
               ),
             if (userType == UserType.teacher) const Divider(),
             if (userType == UserType.teacher)
-              MenuItem(
-                  title: 'Apprendre sur la SST',
-                  icon: Icons.web,
-                  onTap: () async {
-                    await launchUrl(GoToIrsstScreen.url);
-                    if (!context.mounted) return;
-                    Navigator.of(context).pop();
-                  }),
+              OnboardingTarget(
+                onboardingId: questionsSummary,
+                child: MenuItem(
+                  title: 'Résumé des réponses',
+                  icon: Icons.question_answer,
+                  onTap: () => Navigator.of(context).pushReplacementNamed(
+                      QAndAScreen.routeName,
+                      arguments: [Target.all, PageMode.fixView, null]),
+                ),
+              ),
+            if (userType == UserType.teacher) const Divider(),
+            if (userType == UserType.teacher)
+              OnboardingTarget(
+                onboardingId: learnMore,
+                child: MenuItem(
+                    title: 'Apprendre sur la SST',
+                    icon: Icons.web,
+                    onTap: () async {
+                      await launchUrl(GoToIrsstScreen.url);
+                      if (!context.mounted) return;
+                      Navigator.of(context).pop();
+                    }),
+              ),
             if (userType == UserType.teacher) const Divider(),
             MenuItem(
                 title: 'Déconnexion',
