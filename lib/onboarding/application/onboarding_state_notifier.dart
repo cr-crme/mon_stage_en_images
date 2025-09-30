@@ -1,8 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:mon_stage_en_images/common/models/user.dart';
-import 'package:mon_stage_en_images/main.dart';
 import 'package:mon_stage_en_images/onboarding/models/onboarding_step.dart';
-import 'package:mon_stage_en_images/onboarding/widgets/onboarding_dialog_clipped_background.dart';
 
 ///Source of truth for the Onboarding status. Deals with other Notifier dependencies
 ///and sets flags for OnboardingObserver regarding navigation. Internally,
@@ -29,11 +27,13 @@ class OnboardingStateNotifier extends ChangeNotifier {
   }
   final List<OnboardingStep> onBoardingsteps;
   final Set<int> _stepsActive = {};
-  bool _showTutorial = false;
+  final Set<int> _stepsShown = {};
+  OnboardingStatus _status = OnboardingStatus.dontShow;
+  final bool _showTutorial = false;
   bool _isValidScreenToShowTutorial = false;
   bool _hasSeenOnboarding = false;
   bool _hasAlreadySeenTheIrrstPage = false;
-  int? _lastIndexUsed;
+  // int? _lastIndexUsed;
   int? _currentIndex;
   User? _currentUser;
 
@@ -43,24 +43,41 @@ class OnboardingStateNotifier extends ChangeNotifier {
       _currentIndex != null ? onBoardingsteps[_currentIndex!] : null;
   bool get _isNotValid => currentIndex == null || onBoardingsteps.isEmpty;
 
+  bool get isOnboardingShowing => _status == OnboardingStatus.showing;
+  OnboardingStatus get status => _status;
+
+  void _setStatus(OnboardingStatus newStatus) {
+    if (_status == newStatus) return;
+    _status = newStatus;
+    notifyListeners();
+  }
+
   bool isStepActive(int index) => _stepsActive.contains(index);
   void makeStepActive(int index) => _stepsActive.add(index);
   void makeStepInactive(int index) => _stepsActive.remove(index);
-  bool stepHasBeenShown(int index) => _lastIndexUsed == index;
-  void makeStepLastShown(int index) => _lastIndexUsed = index;
-
-  Map<String, bool> showOnboardingConditions = {"": true};
-
-  bool _isNavigatingForOnboarding = false;
-  bool get isNavigatingForOnboarding => _isNavigatingForOnboarding;
-
-  void markOnboardingNavigationStart() {
-    _isNavigatingForOnboarding = true;
+  bool stepHasBeenShown(int index) => _stepsShown.contains(index);
+  void makeStepShown(int index) => _stepsShown.add(index);
+  void emptyStepsActive() {
+    _stepsActive.clear();
   }
 
-  void markOnboardingNavigationEnd() {
-    _isNavigatingForOnboarding = false;
+  void emptyStepsShown() {
+    _stepsShown.clear();
   }
+
+  bool get isNavigatingForOnboarding =>
+      _status == OnboardingStatus.preparing ||
+      _status == OnboardingStatus.navigating;
+
+  void markOnboardingNavigationStart() =>
+      _setStatus(OnboardingStatus.navigating);
+
+  void markOnboardingNavigationEnd() => _setStatus(OnboardingStatus.ready);
+
+  void markPreparing() => _setStatus(OnboardingStatus.preparing);
+  void markShowing() => _setStatus(OnboardingStatus.showing);
+  void markCompleting() => _setStatus(OnboardingStatus.completing);
+  void markCompleted() => _setStatus(OnboardingStatus.completed);
 
   void updateDependencies({
     required User? currentUser,
@@ -78,29 +95,25 @@ class OnboardingStateNotifier extends ChangeNotifier {
         "completedHasAlreadySeenTheIrrstPage is $_hasAlreadySeenTheIrrstPage "
         "termsAndServicesAccepted is ${currentUser?.termsAndServicesAccepted}");
 
-    // final newShowTutorial = currentUser != null &&
-    //     !_hasSeenOnboarding &&
-    //     _hasAlreadySeenTheIrrstPage &&
-    //     currentUser.termsAndServicesAccepted &&
-    //     _isValidScreenToShowTutorial;
-    // if (_showTutorial != newShowTutorial) {
-    //   _showTutorial = newShowTutorial;
+    checkShowTutorial();
 
-    // }
     debugPrint("ending UpdateDependencies : _showTutorial is $_showTutorial");
   }
 
   void checkShowTutorial() {
-    final newShowTutorial = _currentUser != null &&
+    final showTutorial = _currentUser != null &&
         !_hasSeenOnboarding &&
         _hasAlreadySeenTheIrrstPage &&
         _currentUser!.termsAndServicesAccepted &&
         _isValidScreenToShowTutorial;
-    if (_showTutorial != newShowTutorial) {
-      _showTutorial = newShowTutorial;
+    if (!showTutorial) {
+      _setStatus(OnboardingStatus.dontShow);
+    } else {
+      _setStatus(OnboardingStatus.ready);
     }
     resetIndex();
-    notifyListeners();
+    emptyStepsActive();
+    notifyListeners(); //à virer ???
   }
 
   void setIsValidScreen(bool value) {
@@ -111,7 +124,7 @@ class OnboardingStateNotifier extends ChangeNotifier {
   void increment() {
     debugPrint('increment running');
     if (_isNotValid) {
-      debugPrint('isNotValide inside increment, return');
+      debugPrint('isNotValid inside increment, return');
       return;
     }
     if (currentIndex! < onBoardingsteps.length - 1) {
@@ -130,10 +143,6 @@ class OnboardingStateNotifier extends ChangeNotifier {
     }
   }
 
-  go(BuildContext context, String routeName) {
-    Navigator.of(context).pushReplacementNamed(routeName);
-  }
-
   void notify() {
     notifyListeners();
   }
@@ -145,70 +154,24 @@ class OnboardingStateNotifier extends ChangeNotifier {
 
   void resetIndex() {
     _currentIndex = onBoardingsteps.isNotEmpty ? 0 : null;
+    // _lastIndexUsed = null;
     notifyListeners();
   }
 
-  //TODO remove after check in future commit
-  ///Discontinued method to be remove in future commit
-  Future<BuildContext?> _matchDestination(
-      BuildContext context, String routeName) async {
-    debugPrint('will check if destinations match');
-    if (!context.mounted || currentStep == null) return null;
-    if (currentStep!.routeName != ModalRoute.of(context)?.settings.name) {
-      // Navigator.of(context).pushReplacementNamed(routeName);
-      final result = await rootNavigatorKey.currentState
-          ?.pushNamed(
-        routeName,
-      )
-          .then(
-        (value) {
-          return currentStep!.widgetKey?.currentContext;
-        },
-      );
-
-      debugPrint('has travelled with _matchDestination');
-      return result;
-    }
-    return null;
+  void resetOnboarding() {
+    resetIndex();
+    emptyStepsActive();
+    emptyStepsShown();
+    notifyListeners();
   }
+}
 
-  //TODO remove after check in future commit
-  ///Discontinued method to be remove in future commit
-  Future<void> runOnboarding(BuildContext context) async {
-    debugPrint('runOnBoarding starts');
-
-    if (!showTutorial || _isNotValid) {
-      debugPrint('runOnboarding return, invalid');
-      return;
-    }
-    if (_currentIndex == _lastIndexUsed) {
-      debugPrint('_currentIndex and _lastIndexUsed are identical, return');
-      return;
-    }
-    await _matchDestination(context, currentStep!.routeName);
-    () => currentStep!.prepareNav;
-
-    _lastIndexUsed = _currentIndex;
-    debugPrint("_lastIndexUsed is $_lastIndexUsed");
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final widgetContext = currentStep!.widgetKey?.currentContext;
-      if (widgetContext == null) {
-        debugPrint("widgetContext isn't mounted yet");
-        return;
-      }
-
-      OnboardingDialogClippedBackground(
-              onForward: increment,
-              onBackward: decrement,
-              onboardingStep: currentStep)
-          .showOnBoardingDialog(widgetContext);
-    }
-
-        // if (ModalRoute.of(context) == null) {
-        //   debugPrint("ModalRoute is null");
-        //   return;
-        // }
-
-        );
-  }
+enum OnboardingStatus {
+  dontShow,
+  ready,
+  showing,
+  navigating,
+  preparing,
+  completing,
+  completed,
 }
