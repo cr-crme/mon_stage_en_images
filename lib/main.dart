@@ -37,8 +37,8 @@ void main() async {
       currentPlatform: DefaultFirebaseOptions.currentPlatform);
 
   await initializeDateFormatting('fr_FR', null);
-  // Run the app
   final SharedPreferences prefs = await SharedPreferences.getInstance();
+  // Run the app
   runApp(MyApp(
     userDatabase: userDatabase,
     prefs: prefs,
@@ -138,9 +138,53 @@ class MyApp extends StatelessWidget {
           //   QAndAScreen.routeName: (context) => const QAndAScreen(),
           // },
           builder: (context, child) {
+            final shared = Provider.of<SharedPreferencesNotifier>(context);
             return Stack(
               //TODO add a Gesture Detector layer in between to prevent any interaction with the underlying screen during onboarding transitions
-              children: [child!, const OnboardingService()],
+              children: [
+                // child!,
+                // Consumer<OnboardingStateNotifier>(
+                //   builder: (context, onboarding, child) {
+                //     return GestureDetector(
+                //       behavior: onboarding.showTutorial
+                //           ? HitTestBehavior.opaque
+                //           : HitTestBehavior.translucent,
+                //     );
+                //   },
+                // ),
+                OnboardingService(
+                  child: Stack(alignment: Alignment.bottomCenter, children: [
+                    child!,
+                    FutureBuilder<bool>(
+                        future: shared.hasSeenOnboarding,
+                        builder: (ctx, value) => value.hasData
+                            ? Material(
+                                child: Container(
+                                  height: 80,
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    // crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(value.data!
+                                          ? "Onboarding vu"
+                                          : "Onboarding non vu"),
+                                      Switch(
+                                        value: value.data!,
+                                        onChanged: (_) async {
+                                          await shared.setHasSeenOnboardingTo(
+                                              !value.data!);
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : Material(child: CircularProgressIndicator()))
+                  ]),
+                ),
+              ],
             );
           },
         );

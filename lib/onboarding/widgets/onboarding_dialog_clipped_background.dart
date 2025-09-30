@@ -27,6 +27,7 @@ class OnboardingDialogClippedBackground extends StatefulWidget {
   ///allows the injection of an outter context
   showOnBoardingDialog(context) async {
     await showDialog(
+        useRootNavigator: true,
         barrierColor: Colors.transparent,
         barrierDismissible: false,
         context: context,

@@ -4,31 +4,34 @@ import 'package:flutter/material.dart';
 import 'package:mon_stage_en_images/main.dart';
 import 'package:mon_stage_en_images/onboarding/application/onboarding_keys_service.dart';
 import 'package:mon_stage_en_images/onboarding/application/onboarding_state_notifier.dart';
+import 'package:mon_stage_en_images/onboarding/application/shared_preferences_notifier.dart';
 import 'package:mon_stage_en_images/onboarding/models/onboarding_step.dart';
 import 'package:mon_stage_en_images/onboarding/widgets/onboarding_dialog_clipped_background.dart';
 import 'package:provider/provider.dart';
+
+//TODO update comments to match OnboardingStatus enum changes
 
 ///Main orchestrator for the Onboarding feature.  instead of a service or Notifier class,
 /// it is defined as a SatefulWidget to access some properties of MaterialApp deeper in the tree,
 ///while allowing a single listening point throughout the app, rather than Consumer on every screen.
 ///See instanciation in main, inside a Stack Widget.
 class OnboardingService extends StatefulWidget {
-  const OnboardingService({super.key});
+  const OnboardingService({super.key, required this.child});
 
+  final Widget child;
   @override
   State<OnboardingService> createState() => _OnboardingServiceState();
 }
 
 class _OnboardingServiceState extends State<OnboardingService> {
   OnboardingStateNotifier? _onboardingNotifier;
-  bool _isActive = false;
 
 //Using didChangeDependencies since initState doesn't allow for dependencies (context can't be accessed)
   @override
   void didChangeDependencies() {
     debugPrint("didChangeDependencies running in _OnBoardingService");
     final newNotifier = Provider.of<OnboardingStateNotifier>(context);
-    if (!newNotifier.showTutorial) return;
+    // if (!newNotifier.showTutorial) return;
     debugPrint("newNotifier is $newNotifier");
     if (newNotifier != _onboardingNotifier) {
       _onboardingNotifier?.removeListener(_onNotifierChanged);
@@ -58,10 +61,10 @@ class _OnboardingServiceState extends State<OnboardingService> {
     debugPrint("_onNotifierChanged running in OnboardingService");
     // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
     final notifier = _onboardingNotifier;
-    if (notifier == null || !notifier.showTutorial) {
+    if (notifier == null || notifier.status != OnboardingStatus.ready) {
       debugPrint(
           "_onNotifierChanged will not trigger _maybeShowStep either because notifier is null or showTutorial property is false."
-          " notifier = $notifier and showTutorial = ${notifier?.showTutorial}");
+          " notifier = $notifier and status = ${notifier?.status}");
       return;
     } else {
       _maybeShowStep();
@@ -69,7 +72,7 @@ class _OnboardingServiceState extends State<OnboardingService> {
     // });
   }
 
-  void _resetActiveIndex(int index) {
+  void _removeActiveIndex(int index) {
     _onboardingNotifier?.makeStepInactive(index);
   }
 
@@ -78,12 +81,12 @@ class _OnboardingServiceState extends State<OnboardingService> {
   void _maybeShowStep() {
     debugPrint('_maybeShowStep running');
     //If we already are in the process of showing an OnboardingStep, we should return;
-    if (_isActive) return;
+    // if (_isActive) return;
     final notifier = _onboardingNotifier;
-    if (notifier == null || !notifier.showTutorial) {
+    if (notifier == null || notifier.status != OnboardingStatus.ready) {
       debugPrint(
-          "_maybeShowStep returns either because notifier is null or showTutorial property is false."
-          " notifier = $notifier and showTutorial = ${notifier?.showTutorial}");
+          "_maybeShowStep returns either because notifier is null or isOnboardingShowing property is false."
+          " notifier = $notifier and isOnboardingShowing = ${notifier?.isOnboardingShowing}");
       return;
     }
 
@@ -103,13 +106,12 @@ class _OnboardingServiceState extends State<OnboardingService> {
     }
 
     //switching our widget state to active to prevent multiple dialog displays
-    _isActive = true;
-    notifier.makeStepActive(index);
-    debugPrint("maybeShowStep : _isActive has become $_isActive ");
 
+    notifier.makeStepActive(index);
+    debugPrint("maybeShowStep : status has become ${notifier.status}");
     _showStep(index).whenComplete(() {
-      _isActive = false;
-      debugPrint("showStep is complete, _isActive has become $_isActive");
+      debugPrint("showStep is complete, status has become ${notifier.status}");
+      // _insertClickBarrier();
     });
   }
 
@@ -152,7 +154,7 @@ class _OnboardingServiceState extends State<OnboardingService> {
       }
     } catch (e, st) {
       debugPrint('error on _showStep navigation : ${e.toString()} $st');
-      _resetActiveIndex(index);
+      _removeActiveIndex(index);
     }
 
     //Maybe our targeted widget is not mounted yet and required additional actions
@@ -160,7 +162,8 @@ class _OnboardingServiceState extends State<OnboardingService> {
     await _shouldPrepareNav(step, index, notifier);
 
     //Once navigation is done, we will restore our navigation observer
-    notifier.markOnboardingNavigationEnd();
+    // notifier.markOnboardingNavigationEnd();
+    notifier.markShowing();
 
     final targetKey = await _waitForTargetKeyRegistration(step.targetId);
     debugPrint("Looking for key with id=${step.targetId}, got key=$targetKey");
@@ -169,13 +172,13 @@ class _OnboardingServiceState extends State<OnboardingService> {
     if (targetKey == null) {
       debugPrint(
           "cannot find Key in Onboarding service, key is null, resetting index");
-      _resetActiveIndex(index);
+      _removeActiveIndex(index);
     }
     final widgetContext =
         await _tryGiveWidgetContextWhenAvalaible(key: targetKey);
     if (widgetContext == null) {
       debugPrint("cannot obtain widgetContext for id=${step.targetId}");
-      _resetActiveIndex(index);
+      _removeActiveIndex(index);
     }
 
     //We will finally use the WidgetContext to display the dialog
@@ -195,20 +198,48 @@ class _OnboardingServiceState extends State<OnboardingService> {
           // rootNavigatorKey.currentState!.pushReplacementNamed(step.routeName);
           // Navigator.of(widgetContext!).pop();
           WidgetsBinding.instance.addPostFrameCallback(
-            (timeStamp) {
-              notifier.makeStepLastShown(index);
-              _onboardingNotifier?.increment();
+            (timeStamp) async {
+              // notifier.makeStepLastShown(index);
+              // _onboardingNotifier?.increment();
+              await _next();
             },
           );
         },
         //TODO onBackward à définir
-        onBackward: null,
+        onBackward: _complete,
       ).showOnBoardingDialog(widgetContext);
     } catch (e, st) {
       debugPrint(
           'Error when trying to showDialog during onboarding : ${e.toString()} $st');
     }
-    //TODO fin de séquence et refactor index shown
+    //TODO refactor index shown
+  }
+
+  Future<void> _next() async {
+    final notifier = _onboardingNotifier;
+    if (notifier == null || notifier.currentIndex == null) return;
+    notifier.makeStepShown(notifier.currentIndex!);
+    if (notifier.currentIndex! < notifier.onBoardingsteps.length - 1) {
+      //Making the onboarding status ready for next step
+      notifier.markOnboardingNavigationEnd();
+      notifier.increment();
+    } else {
+      await _complete();
+    }
+  }
+
+  /// Ends the onboarding sequence by writing in local storage that onboarding has been shown.
+  /// Resets the onboarding sequence to allow another run
+  Future<void> _complete() async {
+    debugPrint("_complete is running");
+    //Important to prevent concurrency
+    _onboardingNotifier?.markCompleting();
+    await Provider.of<SharedPreferencesNotifier>(context, listen: false)
+        .setHasSeenOnboardingTo(true);
+    //setting status to completed, it is up to the OnboardingStateNotifier to
+    //set the status to "ready" again.
+    _onboardingNotifier?.markCompleted();
+    _onboardingNotifier?.resetOnboarding();
   }
 
   ///Checks if further actions are needed after navigation to show the targeted widget.
@@ -222,6 +253,7 @@ class _OnboardingServiceState extends State<OnboardingService> {
     //to get a valid context
     debugPrint("_shouldPrepareNav running");
     if (step.prepareNav == null) return;
+    notifier.markPreparing();
     debugPrint("will attempt to get key for prepareNav");
 
     //Retrieves the GlobalKey<State<StatefulWidget> registered for this screen upon navigation.
@@ -246,6 +278,7 @@ class _OnboardingServiceState extends State<OnboardingService> {
     debugPrint("will try to prepareNav");
     if (state == null) {
       debugPrint("state is null after _waitforScreenState, will return");
+      notifier.makeStepInactive(index);
       return;
     }
     await step.prepareNav!(null, state);
@@ -332,6 +365,6 @@ class _OnboardingServiceState extends State<OnboardingService> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.shrink();
+    return widget.child;
   }
 }
