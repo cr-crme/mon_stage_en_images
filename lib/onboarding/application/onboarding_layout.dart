@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
+import 'package:mon_stage_en_images/common/models/enum.dart';
 import 'package:mon_stage_en_images/common/models/user.dart';
 import 'package:mon_stage_en_images/main.dart';
 import 'package:mon_stage_en_images/onboarding/application/onboarding_keys_service.dart';
@@ -49,6 +50,7 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
 
   bool _checkShowTutorial() {
     final showTutorial = _currentUser != null &&
+        _currentUser?.userType == UserType.teacher &&
         !_hasSeenOnboarding &&
         _hasAlreadySeenTheIrrstPage &&
         _currentUser!.termsAndServicesAccepted &&
@@ -343,7 +345,7 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
     debugPrint(
         "build : _currentUser is $_currentUser | _hasSeenOnboarding is $_hasSeenOnboarding ");
     debugPrint(
-        "| _hasAlreadySeenTheIrrstPage is $_hasAlreadySeenTheIrrstPage | _currentUser!.termsAndServicesAccepted is ${_currentUser!.termsAndServicesAccepted}");
+        "| _hasAlreadySeenTheIrrstPage is $_hasAlreadySeenTheIrrstPage | _currentUser!.termsAndServicesAccepted is ${_currentUser?.termsAndServicesAccepted}");
     debugPrint("| isValidScreenToShowTutorial is $isValidScreenToShowTutorial");
     debugPrint("build : showTutorial is ${_checkShowTutorial()}");
 
