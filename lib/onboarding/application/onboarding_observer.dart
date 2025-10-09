@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:mon_stage_en_images/onboarding/application/onboarding_state_notifier.dart';
+import 'package:mon_stage_en_images/main.dart';
 import 'package:mon_stage_en_images/screens/login/check_version_screen.dart';
 import 'package:mon_stage_en_images/screens/login/go_to_irsst_screen.dart';
 import 'package:mon_stage_en_images/screens/login/login_screen.dart';
@@ -13,9 +13,11 @@ import 'package:mon_stage_en_images/screens/login/terms_and_services_screen.dart
 ///if the onGenerateInitialRoute parameter were to be change later.
 
 class OnboardingNavigatorObserver extends NavigatorObserver {
-  OnboardingNavigatorObserver(this.onboarding);
+  OnboardingNavigatorObserver._();
 
-  final OnboardingStateNotifier onboarding;
+  static final instance = OnboardingNavigatorObserver._();
+
+  // final OnboardingStateController onboarding;
 
   ///This list contains every route that should be ignore by the navigation observer
   ///when it comes to decide whether or not the observed route is a valid entry point
@@ -34,6 +36,9 @@ class OnboardingNavigatorObserver extends NavigatorObserver {
     //were to be changed later.
     "/"
   ];
+
+  String? _currentRouteName;
+  String? get currentRouteName => _currentRouteName;
 
   @override
   void didPush(Route route, Route? previousRoute) {
@@ -55,38 +60,28 @@ class OnboardingNavigatorObserver extends NavigatorObserver {
   }
 
   _reactToNavigationEvent(Route? route) {
-    //toggled by Onboarding service to stop listening navigation events when the onboarding is in progress.
-    if (onboarding.isNavigatingForOnboarding) {
-      debugPrint("_reactToNavigationEvent will ignore navigation event,"
-          " onboarding.isNavigatingForOnboarding is ${onboarding.isNavigatingForOnboarding}");
-      return;
-    }
-
     debugPrint(
         "routeName in _reactToNavigationevent is ${route?.settings.name}");
 
-    //Redundant check to ignore the default initial null route initialized by  the navigator.
-    if (route?.settings.name == null) {
-      debugPrint("Ignoring anonymous route push");
+    if (route is! PageRoute) {
       return;
     }
-    if (route is PageRoute) {
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) {
-          final routeContext = route.subtreeContext;
+    _currentRouteName = route.settings.name;
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        final routeContext = route.subtreeContext;
 
-          if (routeContext != null
-              // && !routeExclusionList.contains(route.settings.name)
-              ) {
-            final bool isValidScreen =
-                !routeExclusionList.contains(route.settings.name);
+        if (routeContext != null
+            // && !routeExclusionList.contains(route.settings.name)
+            ) {
+          final bool isValidScreen =
+              !routeExclusionList.contains(route.settings.name);
 
-            debugPrint("is ValidScreen is $isValidScreen");
-            onboarding.setIsValidScreen(isValidScreen);
-            // onboarding.runOnboarding(routeContext);
-          }
-        },
-      );
-    }
+          debugPrint("is ValidScreen is $isValidScreen");
+
+          isValidScreenToShowTutorial.value = isValidScreen;
+        }
+      },
+    );
   }
 }

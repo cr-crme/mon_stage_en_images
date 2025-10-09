@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mon_stage_en_images/onboarding/application/onboarding_keys_service.dart';
 
@@ -42,30 +41,20 @@ class OnboardingStep {
   GlobalKey? get widgetKey =>
       OnboardingKeysService.instance.findTargetKeyWithId(targetId);
 
-  //TODO Peut-être refactoriser rectFromWidget pour le découpler du model OnBoardingStep.
-  ///Get the RenderBox from the widgetKey getter, which is linked to the targeted Widget in the tree
-  ///Uses the Render Box to draw a Rect with an absolute position on the screen and some padding around.
-  Rect? get rectFromWidgetKey {
-    final GlobalKey? key = widgetKey;
+  void resetScaffoldElements(
+      BuildContext? context, State<StatefulWidget> state) {
+    debugPrint("resetScaffoldElements running");
+    if (!state.mounted && context == null) return;
 
-    if (key?.currentContext == null || !key!.currentContext!.mounted) {
-      return null;
+    ScaffoldState? scaffoldState;
+
+    if (widgetKey?.currentContext != null) {
+      scaffoldState = Scaffold.of(widgetKey!.currentContext!);
     }
-
-    final context = key.currentContext!;
-    final widgetObject = context.findRenderObject() as RenderBox;
-
-    final insets = EdgeInsets.all(12);
-
-    final vertOffset = kIsWeb
-        ? 0 as double
-        : Scaffold.of(context).hasAppBar
-            ? MediaQuery.of(context).padding.top + kToolbarHeight
-            : MediaQuery.of(context).padding.top;
-
-    final offset = widgetObject.localToGlobal(Offset(0, 0 - vertOffset));
-    final size = widgetObject.size;
-
-    return insets.inflateRect(offset & size);
+    // final scaffoldState = Scaffold.of(context!);
+    debugPrint("scaffold State is $scaffoldState");
+    if (scaffoldState?.isDrawerOpen == true) {
+      scaffoldState?.closeDrawer();
+    }
   }
 }

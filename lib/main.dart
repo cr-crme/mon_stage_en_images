@@ -5,9 +5,8 @@ import 'package:mon_stage_en_images/common/models/enum.dart';
 import 'package:mon_stage_en_images/common/models/themes.dart';
 import 'package:mon_stage_en_images/common/providers/speecher.dart';
 import 'package:mon_stage_en_images/onboarding/application/onboarding_keys_service.dart';
+import 'package:mon_stage_en_images/onboarding/application/onboarding_layout.dart';
 import 'package:mon_stage_en_images/onboarding/application/onboarding_observer.dart';
-import 'package:mon_stage_en_images/onboarding/application/onboarding_service.dart';
-import 'package:mon_stage_en_images/onboarding/application/onboarding_state_notifier.dart';
 import 'package:mon_stage_en_images/onboarding/application/shared_preferences_notifier.dart';
 import 'package:mon_stage_en_images/onboarding/data/onboarding_steps_list.dart';
 import 'package:mon_stage_en_images/screens/all_students/students_screen.dart';
@@ -23,6 +22,7 @@ import '/firebase_options.dart';
 
 const String softwareVersion = '1.1.0';
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
+ValueNotifier<bool> isValidScreenToShowTutorial = ValueNotifier<bool>(false);
 
 void main() async {
   // Initialization of the user database. If [useEmulator] is set to [true],
@@ -66,24 +66,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => userDatabase.answers),
         ChangeNotifierProvider(create: (context) => userDatabase.questions),
         ChangeNotifierProvider(create: (context) => speecher),
-        ChangeNotifierProvider(create: (context) => sharedPreferencesNotifier),
-        ChangeNotifierProxyProvider2<Database, SharedPreferencesNotifier,
-                OnboardingStateNotifier>(
-            create: (_) => OnboardingStateNotifier.fromAuthAndPreferences(
-                onBoardingSteps: onboardingSteps,
-                currentUser: userDatabase.currentUser,
-                hasAlreadySeenTheIrrstPage:
-                    sharedPreferencesNotifier.hasAlreadySeenTheIrrstPage,
-                hasSeenOnboarding: sharedPreferencesNotifier.hasSeenOnboarding),
-            update: (context, database, sharedPreferences,
-                onBoardingStateProvider) {
-              onBoardingStateProvider!.updateDependencies(
-                  currentUser: database.currentUser,
-                  hasAlreadySeenTheIrrstPage:
-                      sharedPreferences.hasAlreadySeenTheIrrstPage,
-                  hasSeenOnboarding: sharedPreferences.hasSeenOnboarding);
-              return onBoardingStateProvider;
-            })
+        ChangeNotifierProvider(create: (context) => sharedPreferencesNotifier)
       ],
       child: Consumer<Database>(builder: (context, database, static) {
         return MaterialApp(
@@ -120,13 +103,15 @@ class MyApp extends StatelessWidget {
             final String id = routeName;
 
             OnboardingKeysService.instance.addScreenKey(id, key);
-            return MaterialPageRoute(
+            final pageRoute = MaterialPageRoute(
                 builder: (_) => getWidgetFromRouteName(routeName, key),
-                settings: settings);
+                settings: RouteSettings(
+                    name: settings.name, arguments: settings.arguments));
+            debugPrint(
+                "onGenerateRoute : pageRoute settings name is ${pageRoute.settings.name}");
+            return pageRoute;
           },
-          navigatorObservers: [
-            OnboardingNavigatorObserver(context.read<OnboardingStateNotifier>())
-          ],
+          navigatorObservers: [OnboardingNavigatorObserver.instance],
           // routes: {
           //   CheckVersionScreen.routeName: (context) =>
           //       const CheckVersionScreen(),
@@ -139,52 +124,38 @@ class MyApp extends StatelessWidget {
           // },
           builder: (context, child) {
             final shared = Provider.of<SharedPreferencesNotifier>(context);
-            return Stack(
-              //TODO add a Gesture Detector layer in between to prevent any interaction with the underlying screen during onboarding transitions
-              children: [
-                // child!,
-                // Consumer<OnboardingStateNotifier>(
-                //   builder: (context, onboarding, child) {
-                //     return GestureDetector(
-                //       behavior: onboarding.showTutorial
-                //           ? HitTestBehavior.opaque
-                //           : HitTestBehavior.translucent,
-                //     );
-                //   },
-                // ),
-                OnboardingService(
-                  child: Stack(alignment: Alignment.bottomCenter, children: [
-                    child!,
-                    FutureBuilder<bool>(
-                        future: shared.hasSeenOnboarding,
-                        builder: (ctx, value) => value.hasData
-                            ? Material(
-                                child: Container(
-                                  height: 80,
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    // crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(value.data!
-                                          ? "Onboarding vu"
-                                          : "Onboarding non vu"),
-                                      Switch(
-                                        value: value.data!,
-                                        onChanged: (_) async {
-                                          await shared.setHasSeenOnboardingTo(
-                                              !value.data!);
-                                        },
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              )
-                            : Material(child: CircularProgressIndicator()))
-                  ]),
-                ),
-              ],
+            return OnboardingLayout(
+              onBoardingSteps: onboardingSteps,
+              child: Stack(alignment: Alignment.bottomCenter, children: [
+                child!,
+                FutureBuilder<bool>(
+                    future: shared.hasSeenOnboarding,
+                    builder: (ctx, value) => value.hasData
+                        ? Material(
+                            child: Container(
+                              height: 80,
+                              color: Theme.of(context).secondaryHeaderColor,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                // crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(value.data!
+                                      ? "Onboarding vu"
+                                      : "Onboarding non vu"),
+                                  Switch(
+                                    value: value.data!,
+                                    onChanged: (_) async {
+                                      await shared
+                                          .setHasSeenOnboardingTo(!value.data!);
+                                    },
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                        : Material(child: CircularProgressIndicator()))
+              ]),
             );
           },
         );
