@@ -104,7 +104,11 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
     debugPrint("_complete is running");
     await Provider.of<SharedPreferencesNotifier>(context, listen: false)
         .setHasSeenOnboardingTo(true);
-    _resetIndex();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        _resetIndex();
+      },
+    );
   }
 
   void _tata() async {
