@@ -28,18 +28,6 @@ class _OnboardingTargetState extends State<OnboardingTarget> {
     super.initState();
   }
 
-  // @override
-  // void didChangeDependencies() {
-  //   //We want to prevent registering of OnboardingTargetKeys if we are not supposed to show the onboarding
-  //   final onboarding = Provider.of<OnboardingStateNotifier>(context);
-  //   if (onboarding.showTutorial) {
-  //     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-  //       onboardingKeyService.addTargetKey(widget.onboardingId, _key);
-  //     });
-  //   }
-  //   super.didChangeDependencies();
-  // }
-
   @override
   void dispose() {
     onboardingKeyService.removeTargetKey(widget.onboardingId, _key);

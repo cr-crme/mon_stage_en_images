@@ -11,8 +11,6 @@ class OnboardingKeysService {
   final Map<String, GlobalKey<State<StatefulWidget>>> _screenKeysMap = {};
   OnboardingKeysService._();
 
-  ///Not in use currently
-  final Map<String, GlobalKey> _intermediateKeys = {};
   static final OnboardingKeysService instance = OnboardingKeysService._();
 
   void addTargetKey(String id, GlobalKey key) {
@@ -39,10 +37,6 @@ class OnboardingKeysService {
     debugPrint("new key added in screenKeysMap for$id : ${_screenKeysMap[id]}");
   }
 
-//TODO check duplicate
-  void addIntermediateKey(String id, GlobalKey key) =>
-      _intermediateKeys[id] = key;
-
   void removeScreenKey(String id, GlobalKey<State<StatefulWidget>> key) {
     if (_screenKeysMap[id] != null && _screenKeysMap[id] == key) {
       _screenKeysMap.remove(id);
@@ -50,7 +44,4 @@ class OnboardingKeysService {
   }
 
   GlobalKey? findScreenKeyWithId(String id) => _screenKeysMap[id];
-  GlobalKey? findIntermediateKey(String id) => _intermediateKeys[id];
 }
-
-//TODO add removeIntermediateKeys

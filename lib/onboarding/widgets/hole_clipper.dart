@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-///Takes the Rect drawed from the Render Box of the targeted onboarding Widget
+///Takes the Rect drawn from the Render Box of the targeted onboarding Widget
 ///and substracts it to another path filling the whole view. Meant to be provided
 ///to the OnBoardingDialogClippedBackground widget as a background for the onboarding dialog.
 class HoleClipper extends CustomClipper<Path> {
@@ -13,7 +13,7 @@ class HoleClipper extends CustomClipper<Path> {
   ///Radius for the rounded corners clipped zone
   final double radius;
 
-  ///Rect drawed from the RenderBox of the targeted onboarding Widget.
+  ///Rect drawn from the RenderBox of the targeted onboarding Widget.
   final Rect holeRect;
 
   @override

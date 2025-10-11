@@ -5,6 +5,7 @@ import 'package:mon_stage_en_images/common/models/enum.dart';
 import 'package:mon_stage_en_images/common/models/section.dart';
 import 'package:mon_stage_en_images/common/models/user.dart';
 import 'package:mon_stage_en_images/common/widgets/main_drawer.dart';
+import 'package:mon_stage_en_images/onboarding/application/onboarding_observer.dart';
 import 'package:mon_stage_en_images/screens/all_students/students_screen.dart';
 import 'package:mon_stage_en_images/screens/q_and_a/main_metier_page.dart';
 import 'package:mon_stage_en_images/screens/q_and_a/question_and_answer_page.dart';
@@ -45,10 +46,27 @@ class _QAndAScreenState extends State<QAndAScreen> {
   // late PageMode _pageMode;
   PageMode _pageMode = PageMode.fixView;
   var _answerFilter = AnswerSortAndFilter();
+  VoidCallback? _pageViewAnimationListener;
 
   final _pageController = PageController();
   var _currentPage = 0;
   VoidCallback? _switchQuestionModeCallback;
+
+  @override
+  void initState() {
+    _pageViewAnimationListener = () {
+      debugPrint("page in pageControlller is ${_pageController.page}");
+      if (_pageController.page == _pageController.page?.roundToDouble()) {
+        OnboardingNavigatorObserver.instance.animationStatus.value =
+            AnimationStatus.completed;
+      } else {
+        OnboardingNavigatorObserver.instance.animationStatus.value =
+            AnimationStatus.dismissed;
+      }
+    };
+    _pageController.addListener(_pageViewAnimationListener!);
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {
@@ -76,6 +94,8 @@ class _QAndAScreenState extends State<QAndAScreen> {
 
   void onPageChanged(BuildContext context, int page) {
     _currentPage = page;
+    // OnboardingNavigatorObserver.instance.animationStatus.value =
+    //     AnimationStatus.forward;
 
     // On the main question page, if it is the teacher on a single student, then
     // back brings back to the student page. Otherwise, it opens the drawer.
@@ -103,14 +123,15 @@ class _QAndAScreenState extends State<QAndAScreen> {
 
   void onPageChangedRequest(int page) {
     _pageController.animateToPage(page + 1,
-        duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
+        duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
     setState(() {});
   }
 
   @override
   void dispose() {
-    super.dispose();
+    _pageController.removeListener(_pageViewAnimationListener!);
     _pageController.dispose();
+    super.dispose();
   }
 
   void _onBackPressed() {

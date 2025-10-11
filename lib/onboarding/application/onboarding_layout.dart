@@ -84,7 +84,7 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
     if (_currentIndex == null) return;
     if (_currentIndex! < widget.onBoardingSteps.length - 1) {
       _increment();
-      _tata();
+      _maybeNavAndSetState();
     } else {
       _complete();
     }
@@ -94,7 +94,7 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
     if (_currentIndex == null) return;
     if (_currentIndex! > 0) {
       _decrement();
-      _tata();
+      _maybeNavAndSetState();
     }
   }
 
@@ -111,13 +111,13 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
     );
   }
 
-  void _tata() async {
+  void _maybeNavAndSetState() async {
     await _showStep(_currentIndex!).whenComplete(() => setState(() {}));
   }
 
   @override
   void initState() {
-    isValidScreenToShowTutorial.addListener(_tata);
+    isValidScreenToShowTutorial.addListener(_maybeNavAndSetState);
     _resetIndex();
     super.initState();
   }
@@ -140,14 +140,14 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
     await _getDependencies();
     Future.delayed(Duration(milliseconds: 300));
     WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) => _tata(),
+      (timeStamp) => _maybeNavAndSetState(),
     );
     super.didChangeDependencies();
   }
 
   @override
   void dispose() {
-    isValidScreenToShowTutorial.removeListener(_tata);
+    isValidScreenToShowTutorial.removeListener(_maybeNavAndSetState);
     super.dispose();
   }
 
@@ -347,7 +347,7 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
   @override
   Widget build(BuildContext context) {
     debugPrint(
-        "build : _currentUser is $_currentUser | _hasSeenOnboarding is $_hasSeenOnboarding ");
+        "OnboardingLayout build : _currentUser is $_currentUser | _hasSeenOnboarding is $_hasSeenOnboarding ");
     debugPrint(
         "| _hasAlreadySeenTheIrrstPage is $_hasAlreadySeenTheIrrstPage | _currentUser!.termsAndServicesAccepted is ${_currentUser?.termsAndServicesAccepted}");
     debugPrint("| isValidScreenToShowTutorial is $isValidScreenToShowTutorial");

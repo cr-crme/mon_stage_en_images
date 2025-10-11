@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mon_stage_en_images/onboarding/application/onboarding_keys_service.dart';
+import 'package:mon_stage_en_images/onboarding/application/onboarding_observer.dart';
 import 'package:mon_stage_en_images/onboarding/models/onboarding_step.dart';
 import 'package:mon_stage_en_images/onboarding/widgets/hole_clipper.dart';
 
@@ -16,6 +17,7 @@ class OnboardingOverlayClippedBackground extends StatefulWidget {
 
   ///Optional holeRect for overriding the clip provided by the globalKey (onboardingStep property)
   final Rect? manualHoleRect;
+
   final OnboardingStep? onboardingStep;
   String? get targetId => onboardingStep?.targetId;
 
@@ -43,17 +45,83 @@ class _OnboardingOverlayClippedBackgroundState
     extends State<OnboardingOverlayClippedBackground>
     with WidgetsBindingObserver {
   Rect? newHoleRect;
+  Rect? _currentRect;
+  ModalRoute? _route;
+  VoidCallback? _animationListener;
+  VoidCallback? _routeListener;
+  AnimationStatus? _widgetAnimationStatus;
+  final Map<String, AnimationStatus?> _status = {};
+
+  late Future<Rect?> _futureRect;
+
+  @override
+  void initState() {
+    _futureRect = _rectFromWidgetKeyLabel(widget.targetId!);
+    _animationListener = () {
+      debugPrint(
+          "Onboardingnavigation observer for AnimationStatus in OnboardingDialog : ${OnboardingNavigatorObserver.instance.animationStatus.value}");
+      _status["widgetAnimation"] =
+          OnboardingNavigatorObserver.instance.animationStatus.value;
+      if (_status["widgetAnimation"] == AnimationStatus.completed) {
+        _futureRect = _rectFromWidgetKeyLabel(widget.targetId!);
+        setState(() {});
+      }
+      // setState(() {});
+    };
+
+    OnboardingNavigatorObserver.instance.animationStatus
+        .addListener(_animationListener!);
+    debugPrint("_route is $_route");
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    OnboardingNavigatorObserver.instance.animationStatus
+        .removeListener(_animationListener!);
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant OnboardingOverlayClippedBackground oldWidget) {
+    if (oldWidget.targetId != widget.targetId) {
+      setState(() {
+        _futureRect = _rectFromWidgetKeyLabel(widget.targetId!);
+      });
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void didChangeDependencies() {
+    _route = OnboardingNavigatorObserver.instance.currentRoute;
+
+    // _route?.animation?.addStatusListener((status) {
+    //   WidgetsBinding.instance.addPostFrameCallback(
+    //     (timeStamp) {
+    //       debugPrint("status listener running");
+    //       _status["routeAnimation"] = status;
+    //     },
+    //   );
+    // });
+
+    // setState(() {});
+    super.didChangeDependencies();
+  }
 
   ///Get the RenderBox from the widgetKey getter, which is linked to the targeted Widget in the tree
   ///Uses the Render Box to draw a Rect with an absolute position on the screen and some padding around.
   Future<Rect?> _rectFromWidgetKeyLabel(String keyLabel) async {
     GlobalKey? targetKey;
     Rect? rect;
+
     while (targetKey == null) {
-      await Future.delayed(Duration(milliseconds: 200));
+      // await Future.delayed(Duration(milliseconds: 300));
       targetKey = OnboardingKeysService.instance.findTargetKeyWithId(keyLabel);
-      await Future.delayed(Duration(milliseconds: 100));
-      debugPrint("_rectFromWidgetKeyLabel : waiting for targetKey");
+      // await Future.delayed(Duration(milliseconds: 300));
+      debugPrint(
+          "_rectFromWidgetKeyLabel : waiting for targetKey with label $keyLabel");
     }
 
     if (targetKey.currentContext == null ||
@@ -110,9 +178,17 @@ class _OnboardingOverlayClippedBackgroundState
     // Triggering rebuilds upon sudden window enlargement or shrinking on web/desktop
     // to overcome limitations of didChangeMetrics
     MediaQuery.sizeOf(context);
-
+    debugPrint("$_status");
     return FutureBuilder(
-      future: _rectFromWidgetKeyLabel(widget.targetId!),
+      key: ValueKey(widget.targetId),
+      future: _status.values.every(
+                (element) {
+                  return element == AnimationStatus.completed;
+                },
+              ) ==
+              true
+          ? _futureRect
+          : Future.value(null),
       builder: (build, snapshot) => Stack(
         children: [
           //Ignoring click events inside the scrim's window

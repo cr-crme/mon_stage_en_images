@@ -129,6 +129,7 @@ class MyApp extends StatelessWidget {
               child: Stack(alignment: Alignment.bottomCenter, children: [
                 child!,
                 FutureBuilder<bool>(
+                    key: ValueKey("Debug onboarding shared pref switch"),
                     future: shared.hasSeenOnboarding,
                     builder: (ctx, value) => value.hasData
                         ? Material(

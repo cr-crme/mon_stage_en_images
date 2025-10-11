@@ -39,6 +39,14 @@ class OnboardingNavigatorObserver extends NavigatorObserver {
 
   String? _currentRouteName;
   String? get currentRouteName => _currentRouteName;
+  ModalRoute? _currentRoute;
+  ModalRoute? get currentRoute => _currentRoute;
+  final ValueNotifier<AnimationStatus?> animationStatus =
+      ValueNotifier(AnimationStatus.completed);
+
+  setAnimationStatus(AnimationStatus status) {
+    animationStatus.value = status;
+  }
 
   @override
   void didPush(Route route, Route? previousRoute) {
@@ -66,7 +74,9 @@ class OnboardingNavigatorObserver extends NavigatorObserver {
     if (route is! PageRoute) {
       return;
     }
+    _currentRoute = route;
     _currentRouteName = route.settings.name;
+
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
         final routeContext = route.subtreeContext;
