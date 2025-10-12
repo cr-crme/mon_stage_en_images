@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
@@ -128,34 +129,35 @@ class MyApp extends StatelessWidget {
               onBoardingSteps: onboardingSteps,
               child: Stack(alignment: Alignment.bottomCenter, children: [
                 child!,
-                FutureBuilder<bool>(
-                    key: ValueKey("Debug onboarding shared pref switch"),
-                    future: shared.hasSeenOnboarding,
-                    builder: (ctx, value) => value.hasData
-                        ? Material(
-                            child: Container(
-                              height: 80,
-                              color: Theme.of(context).secondaryHeaderColor,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                // crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(value.data!
-                                      ? "Onboarding vu"
-                                      : "Onboarding non vu"),
-                                  Switch(
-                                    value: value.data!,
-                                    onChanged: (_) async {
-                                      await shared
-                                          .setHasSeenOnboardingTo(!value.data!);
-                                    },
-                                  )
-                                ],
+                if (kDebugMode)
+                  FutureBuilder<bool>(
+                      key: ValueKey("Debug onboarding shared pref switch"),
+                      future: shared.hasSeenOnboarding,
+                      builder: (ctx, value) => value.hasData
+                          ? Material(
+                              child: Container(
+                                height: 80,
+                                color: Theme.of(context).secondaryHeaderColor,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  // crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(value.data!
+                                        ? "Onboarding vu"
+                                        : "Onboarding non vu"),
+                                    Switch(
+                                      value: value.data!,
+                                      onChanged: (_) async {
+                                        await shared.setHasSeenOnboardingTo(
+                                            !value.data!);
+                                      },
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                          )
-                        : Material(child: CircularProgressIndicator()))
+                            )
+                          : Material(child: CircularProgressIndicator()))
               ]),
             );
           },

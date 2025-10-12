@@ -7,7 +7,6 @@ class OnboardingStep {
       {required this.targetId,
       required this.routeName,
       required this.message,
-      this.intermediateId,
       this.arguments,
       this.isLast = false,
       this.prepareNav});
@@ -21,10 +20,6 @@ class OnboardingStep {
   ///A string shared by instance of this class and the OnboardingTarget widget to find the targeted widget across the tree.
   ///Link between these objects is permitted by the OnboardingKeysService. targetId Strings are available in the OnboardingStepList.
   final String targetId;
-
-  ///Currently unused intermediateId (to be paired with IntermediateTarget widget for edge cases scenarios
-  /// required additional actions that prepareNav would failed to perform
-  final String? intermediateId;
 
   final bool isLast;
 
@@ -51,7 +46,7 @@ class OnboardingStep {
     if (widgetKey?.currentContext != null) {
       scaffoldState = Scaffold.of(widgetKey!.currentContext!);
     }
-    // final scaffoldState = Scaffold.of(context!);
+
     debugPrint("scaffold State is $scaffoldState");
     if (scaffoldState?.isDrawerOpen == true) {
       scaffoldState?.closeDrawer();

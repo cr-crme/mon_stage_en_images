@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mon_stage_en_images/onboarding/application/onboarding_keys_service.dart';
 import 'package:mon_stage_en_images/onboarding/application/onboarding_observer.dart';
@@ -28,28 +29,15 @@ class OnboardingOverlayClippedBackground extends StatefulWidget {
   @override
   State<OnboardingOverlayClippedBackground> createState() =>
       _OnboardingOverlayClippedBackgroundState();
-
-  ///function to be called when displaying the actual dialog
-  ///allows the injection of an outter context
-  showOnBoardingDialog(context) async {
-    await showDialog(
-        useRootNavigator: true,
-        barrierColor: Colors.transparent,
-        barrierDismissible: false,
-        context: context,
-        builder: (dialogContext) => this);
-  }
 }
 
 class _OnboardingOverlayClippedBackgroundState
     extends State<OnboardingOverlayClippedBackground>
     with WidgetsBindingObserver {
   Rect? newHoleRect;
-  Rect? _currentRect;
   ModalRoute? _route;
   VoidCallback? _animationListener;
-  VoidCallback? _routeListener;
-  AnimationStatus? _widgetAnimationStatus;
+  //currently a map to add others animations status to react to.
   final Map<String, AnimationStatus?> _status = {};
 
   late Future<Rect?> _futureRect;
@@ -66,13 +54,10 @@ class _OnboardingOverlayClippedBackgroundState
         _futureRect = _rectFromWidgetKeyLabel(widget.targetId!);
         setState(() {});
       }
-      // setState(() {});
     };
-
     OnboardingNavigatorObserver.instance.animationStatus
         .addListener(_animationListener!);
     debugPrint("_route is $_route");
-
     super.initState();
   }
 
@@ -83,6 +68,7 @@ class _OnboardingOverlayClippedBackgroundState
     super.dispose();
   }
 
+  //rect refresh when the onboardingStep provided to this widget changes.
   @override
   void didUpdateWidget(covariant OnboardingOverlayClippedBackground oldWidget) {
     if (oldWidget.targetId != widget.targetId) {
@@ -91,23 +77,6 @@ class _OnboardingOverlayClippedBackgroundState
       });
     }
     super.didUpdateWidget(oldWidget);
-  }
-
-  @override
-  void didChangeDependencies() {
-    _route = OnboardingNavigatorObserver.instance.currentRoute;
-
-    // _route?.animation?.addStatusListener((status) {
-    //   WidgetsBinding.instance.addPostFrameCallback(
-    //     (timeStamp) {
-    //       debugPrint("status listener running");
-    //       _status["routeAnimation"] = status;
-    //     },
-    //   );
-    // });
-
-    // setState(() {});
-    super.didChangeDependencies();
   }
 
   ///Get the RenderBox from the widgetKey getter, which is linked to the targeted Widget in the tree
@@ -129,38 +98,32 @@ class _OnboardingOverlayClippedBackgroundState
       debugPrint("_rectFromWidgetKeyLabel : cannot obtain context");
       return null;
     }
-    final context = targetKey.currentContext!;
-    debugPrint("_rectFromWidgetKeyLabel : context is $context");
+    final targetContext = targetKey.currentContext!;
+    debugPrint("_rectFromWidgetKeyLabel : context is $targetContext");
 
     RenderBox? widgetObject;
     while (widgetObject == null) {
       debugPrint("waiting for WidgetObject RenderBox");
-      if (!context.mounted) {
+      if (!targetContext.mounted) {
         debugPrint(
-            "_rectFromWidgetKeyLabel : context is not mounted ahen trying to get widgetObject, returning");
+            "_rectFromWidgetKeyLabel : context is not mounted when trying to get widgetObject, returning");
         return null;
       }
-      widgetObject = context.findRenderObject() as RenderBox?;
+      widgetObject = targetContext.findRenderObject() as RenderBox?;
       await Future.delayed(Duration(milliseconds: 100));
     }
-    final insets = EdgeInsets.all(12);
 
-    // while (!context.mounted) {
-    //   Future.delayed(Duration(milliseconds: 500));
-    //   debugPrint("_rectFromWidgetKeyLabel :waiting for context to be mounted");
-    // }
-    if (!context.mounted) {
+    if (!targetContext.mounted) {
       debugPrint(
           "_rectFromWidgetKeyLabel :mounted is false after defining insets");
       return null;
     }
 
-    final vertOffset = Scaffold.of(context).hasAppBar
-        ? MediaQuery.of(context).padding.top
-        : MediaQuery.of(context).padding.top;
+    final vertOffset = MediaQuery.of(targetContext).padding.top;
 
     final offset = widgetObject.localToGlobal(Offset(0, 0 - vertOffset));
     final size = widgetObject.size;
+    final insets = EdgeInsets.all(12);
 
     rect = insets.inflateRect(offset & size);
 
@@ -182,21 +145,18 @@ class _OnboardingOverlayClippedBackgroundState
     return FutureBuilder(
       key: ValueKey(widget.targetId),
       future: _status.values.every(
-                (element) {
-                  return element == AnimationStatus.completed;
-                },
-              ) ==
-              true
+        (element) {
+          return element == AnimationStatus.completed;
+        },
+      )
           ? _futureRect
           : Future.value(null),
       builder: (build, snapshot) => Stack(
         children: [
-          //Ignoring click events inside the scrim's window
+          //Ignoring click events inside the scrim
           AbsorbPointer(
             absorbing: true,
-            child: Container(
-                // color: Colors.red,
-                ),
+            child: Container(),
           ),
           ClipPath(
             clipper: widget.manualHoleRect == null
@@ -210,56 +170,82 @@ class _OnboardingOverlayClippedBackgroundState
               width: double.infinity,
             ),
           ),
-          Center(
-            child: FloatingActionButton(
-              onPressed: widget.complete,
-              child: Icon(Icons.check),
+          if (kDebugMode)
+            Center(
+              child: FloatingActionButton(
+                onPressed: widget.complete,
+                child: Icon(Icons.check),
+              ),
             ),
-          ),
-          //TODO appliquer style pour le dialog
           Dialog(
+            backgroundColor: Theme.of(context).colorScheme.scrim.withAlpha(225),
             alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                spacing: 12,
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(widget.onboardingStep!.message),
-                  ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: 600),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Wrap(
-                        spacing: 12,
-                        runAlignment: WrapAlignment.spaceBetween,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        alignment: WrapAlignment.spaceEvenly,
-                        children: [
-                          if (widget.onBackward != null)
-                            OutlinedButton.icon(
-                                onPressed: () {
-                                  widget.onBackward?.call();
-                                  // Navigator.pop(context);
-                                },
-                                iconAlignment: IconAlignment.start,
-                                icon: Icon(Icons.keyboard_arrow_left_sharp),
-                                label: Text("Précédent")),
-                          FilledButton.icon(
-                            onPressed: () async {
-                              widget.onForward?.call();
-                              // Navigator.pop(context);
-                            },
-                            label: Text("Suivant"),
-                            icon: Icon(Icons.keyboard_arrow_right_sharp),
-                            iconAlignment: IconAlignment.end,
-                          )
-                        ],
-                      ),
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                      width: 4, color: Theme.of(context).primaryColor)),
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  spacing: 12,
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(widget.onboardingStep!.message,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineSmall!
+                            .copyWith(color: Theme.of(context).cardColor)),
+                    SizedBox(
+                      height: 4,
                     ),
-                  )
-                ],
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 600),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Wrap(
+                          spacing: 12,
+                          runAlignment: WrapAlignment.spaceBetween,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          alignment: WrapAlignment.spaceEvenly,
+                          children: [
+                            if (widget.onBackward != null)
+                              OutlinedButton.icon(
+                                  onPressed: () {
+                                    widget.onBackward?.call();
+                                    // Navigator.pop(context);
+                                  },
+                                  iconAlignment: IconAlignment.start,
+                                  icon: Icon(Icons.keyboard_arrow_left_sharp),
+                                  label: Text(
+                                    "Précédent",
+                                    style: TextStyle(
+                                        fontSize: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge!
+                                            .fontSize),
+                                  )),
+                            FilledButton.icon(
+                              onPressed: () async {
+                                widget.onForward?.call();
+                                // Navigator.pop(context);
+                              },
+                              label: Text("Suivant",
+                                  style: TextStyle(
+                                      fontSize: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge!
+                                          .fontSize)),
+                              icon: Icon(Icons.keyboard_arrow_right_sharp),
+                              iconAlignment: IconAlignment.end,
+                            )
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           )

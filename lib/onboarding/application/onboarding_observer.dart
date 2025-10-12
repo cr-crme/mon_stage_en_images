@@ -81,9 +81,7 @@ class OnboardingNavigatorObserver extends NavigatorObserver {
       (_) {
         final routeContext = route.subtreeContext;
 
-        if (routeContext != null
-            // && !routeExclusionList.contains(route.settings.name)
-            ) {
+        if (routeContext != null) {
           final bool isValidScreen =
               !routeExclusionList.contains(route.settings.name);
 

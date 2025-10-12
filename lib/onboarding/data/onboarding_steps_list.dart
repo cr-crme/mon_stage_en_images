@@ -47,7 +47,6 @@ List<OnboardingStep> onboardingSteps = [
         QAndAScreen.onPageChangedRequestFromOutside(state, 0);
       },
       targetId: metier,
-      intermediateId: metier,
       message:
           'Ici, choisissez la section M.É.T.I.E.R. associée à la question à poser'),
   OnboardingStep(
@@ -62,7 +61,6 @@ List<OnboardingStep> onboardingSteps = [
         QAndAScreen.onPageChangedRequestFromOutside(state, 1);
       },
       targetId: newQuestion,
-      intermediateId: newQuestion,
       message: 'Vous pourrez créer une nouvelle question originale'),
   OnboardingStep(
       routeName: QAndAScreen.routeName,
@@ -76,7 +74,6 @@ List<OnboardingStep> onboardingSteps = [
         QAndAScreen.onPageChangedRequestFromOutside(state, 1);
       },
       targetId: exampleQuestions,
-      intermediateId: exampleQuestions,
       message: 'Ou en choisir une déjà créée et la modifier'),
   OnboardingStep(
     routeName: StudentsScreen.routeName,

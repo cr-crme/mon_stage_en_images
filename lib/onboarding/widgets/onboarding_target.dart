@@ -36,7 +36,6 @@ class _OnboardingTargetState extends State<OnboardingTarget> {
 
   @override
   Widget build(BuildContext context) {
-    // onboardingKeyService.addKey(widget.onboardingId, _key);
     debugPrint("OnboardingTarget.build pour ${widget.onboardingId}");
     return KeyedSubtree(
       key: _key,
