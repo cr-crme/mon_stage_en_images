@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:mon_stage_en_images/common/misc/firebase_password_reset.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
 import 'package:mon_stage_en_images/common/models/text_reader.dart';
@@ -143,16 +142,18 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _showForgotPasswordDialog(email) async {
-    await showDialog<FirebasePasswordResetStatus?>(
+    await showDialog<bool?>(
       context: context,
       builder: (context) => ForgotPasswordAlertDialog(email: email),
     ).then((response) {
       if (response != null && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(response.message),
-            backgroundColor: response != FirebasePasswordResetStatus.success
-                ? Theme.of(context).colorScheme.error
-                : Theme.of(context).snackBarTheme.backgroundColor));
+            content: Text(response
+                ? "Un courriel de réinitialisation a été envoyé à l'adresse fournie, si elle correspond à un compte utilisateur"
+                : "Une erreur est survenue, le courriel de réinitialisation n'a pas pu être envoyé."),
+            backgroundColor: response
+                ? Theme.of(context).snackBarTheme.backgroundColor
+                : Theme.of(context).colorScheme.error));
       }
     });
   }

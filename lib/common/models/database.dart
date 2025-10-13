@@ -2,7 +2,6 @@ import 'package:ezlogin/ezlogin.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fireauth;
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:mon_stage_en_images/common/misc/firebase_password_reset.dart';
 import 'package:mon_stage_en_images/common/models/answer.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
 import 'package:mon_stage_en_images/common/providers/all_answers.dart';
@@ -221,9 +220,9 @@ class Database extends EzloginFirebase with ChangeNotifier {
     return data.value as String?;
   }
 
-  Future<FirebasePasswordResetStatus?> resetPassword({String? email}) async {
-    if (email == null) return FirebasePasswordResetStatus.invalidEmail;
-    return FirebasePasswordResetStatus.switchCodeToStatus(
-        await super.sendPasswordResetEmail(email: email));
+  @override
+  Future<bool> resetPassword({String? email}) async {
+    if (email == null) return false;
+    return await super.resetPassword(email: email);
   }
 }

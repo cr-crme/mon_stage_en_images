@@ -129,7 +129,7 @@ class MyApp extends StatelessWidget {
               onBoardingSteps: onboardingSteps,
               child: Stack(alignment: Alignment.bottomCenter, children: [
                 child!,
-                if (kDebugMode)
+                if (kDebugMode && false)
                   FutureBuilder<bool>(
                       key: ValueKey("Debug onboarding shared pref switch"),
                       future: shared.hasSeenOnboarding,
@@ -137,7 +137,9 @@ class MyApp extends StatelessWidget {
                           ? Material(
                               child: Container(
                                 height: 80,
-                                color: Theme.of(context).secondaryHeaderColor,
+                                color: Theme.of(context)
+                                    .secondaryHeaderColor
+                                    .withAlpha(100),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,

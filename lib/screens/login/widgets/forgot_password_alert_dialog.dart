@@ -19,21 +19,13 @@ class _ForgotPasswordAlertDialogState extends State<ForgotPasswordAlertDialog> {
   String? _validationError;
   bool _isloading = false;
 
-  Future<String?> _asyncValidateEmail(String? value) async {
+  String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) return 'Entrez une adresse courriel';
     if (!value.isValidEmail())
       // ignore: curly_braces_in_flow_control_structures
       return 'Merci d\'entrer une adresse au format "adresse@courriel.com"';
 
-    //TODO Décider si sécuritaire de vérifier l'existence du courriel.
-    //TODO Si sécuritaire, autoriser .userFromEmail() quand user == null dans les règles firebase
-    final existingUser = await Future.delayed(Duration(seconds: 1),
-        () => value == 'ploufi@ploufi.com' ? null : 'ploufi');
-
-    // final existingUser = await Provider.of<Database>(context, listen: false).userFromEmail(value);
-    return existingUser == null
-        ? 'Votre courriel n\'est associé à aucun compte utilisateur.'
-        : null;
+    return null;
   }
 
   _finalize() async {
@@ -41,7 +33,7 @@ class _ForgotPasswordAlertDialogState extends State<ForgotPasswordAlertDialog> {
 
     _isloading = true;
     setState(() {});
-    _validationError = await _asyncValidateEmail(_email);
+    _validationError = _validateEmail(_email);
 
     if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
       return;
@@ -95,7 +87,7 @@ class _ForgotPasswordAlertDialogState extends State<ForgotPasswordAlertDialog> {
                     },
                     onSaved: (value) async {
                       _email = value;
-                      _validationError = await _asyncValidateEmail(value);
+                      _validationError = _validateEmail(value);
                     },
                   ),
                   Wrap(
