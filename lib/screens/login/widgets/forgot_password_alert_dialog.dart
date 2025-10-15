@@ -42,14 +42,14 @@ class _ForgotPasswordAlertDialogState extends State<ForgotPasswordAlertDialog> {
     if (mounted) {
       final database = Provider.of<Database>(context, listen: false);
       if (database.currentUser != null) {
-        Navigator.pop(context);
+        Navigator.pop(context, null);
       }
 
-      final resetPasswordStatuts =
+      final resetPasswordStatus =
           await Provider.of<Database>(context, listen: false)
               .resetPassword(email: _email);
 
-      Navigator.pop(context, resetPasswordStatuts);
+      Navigator.pop(context, resetPasswordStatus);
     }
   }
 

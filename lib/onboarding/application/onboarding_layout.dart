@@ -10,7 +10,7 @@ import 'package:mon_stage_en_images/onboarding/application/onboarding_observer.d
 import 'package:mon_stage_en_images/onboarding/application/shared_preferences_notifier.dart';
 import 'package:mon_stage_en_images/onboarding/data/onboarding_steps_list.dart';
 import 'package:mon_stage_en_images/onboarding/models/onboarding_step.dart';
-import 'package:mon_stage_en_images/onboarding/widgets/onboarding_dialog_clipped_background.dart';
+import 'package:mon_stage_en_images/onboarding/widgets/onboarding_dialog_with_highlight.dart';
 import 'package:provider/provider.dart';
 
 ///Main orchestrator for the Onboarding feature. Listens to conditions for showing the onboarding sequence
@@ -148,7 +148,7 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
   Future<void> _navToStep(int index) async {
     debugPrint('_navToStep : running');
 
-    //Checking if our step isn't null and if we should mark its index as inactive
+    //Checking if our step is null and if we should flag its index as inactive
     final step = current;
     if (step == null) {
       debugPrint("_navToStep : will return because currentStep is null");
@@ -200,7 +200,7 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
   }
 
   ///Checks if further actions are needed after navigation to show the targeted widget.
-  ///Performs then necessary actions to allow the targeted widget to be mounted inside the tree,
+  ///Performs then required actions to allow the targeted widget to be mounted inside the tree,
   ///through the prepareNav parameter of the provided OnboardingStep
   Future<void> _shouldPrepareOnboardingTargetDisplay(
     OnboardingStep step,
@@ -287,7 +287,6 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
     return completer.future;
   }
 
-  //TODO refactoriser les waiters pour accepter un type T et une fonction, si pertinent
   Future<GlobalKey<State<StatefulWidget>>?> _waitForTargetKeyRegistration(
       String targetKeyId,
       {int timeoutMs = 2000}) async {
@@ -347,7 +346,8 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
     return Stack(children: [
       widget.child,
       if (current != null)
-        OnboardingOverlayClippedBackground(
+        OnboardingDialogWithHighlight(
+            key: ValueKey(current!.targetId),
             complete: _complete,
             onboardingStep: current,
             onForward: () {

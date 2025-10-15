@@ -35,29 +35,36 @@ class _OnboardingOverlayClippedBackgroundState
     extends State<OnboardingOverlayClippedBackground>
     with WidgetsBindingObserver {
   Rect? newHoleRect;
-  ModalRoute? _route;
+
   VoidCallback? _animationListener;
-  //currently a map to add others animations status to react to.
-  final Map<String, AnimationStatus?> _status = {};
+  AnimationStatus? _status;
+  bool get showRect => _status == AnimationStatus.completed;
 
   late Future<Rect?> _futureRect;
 
   @override
   void initState() {
+    _status = AnimationStatus.completed;
     _futureRect = _rectFromWidgetKeyLabel(widget.targetId!);
+    // Listening to the state of a navigation animation and trigerring redraws of the rect.
+    // prevents wrong offset and size from early call to _rectFromWidgetKeyLabel during
+    // a pageView transition.
     _animationListener = () {
       debugPrint(
           "Onboardingnavigation observer for AnimationStatus in OnboardingDialog : ${OnboardingNavigatorObserver.instance.animationStatus.value}");
-      _status["widgetAnimation"] =
-          OnboardingNavigatorObserver.instance.animationStatus.value;
-      if (_status["widgetAnimation"] == AnimationStatus.completed) {
-        _futureRect = _rectFromWidgetKeyLabel(widget.targetId!);
-        setState(() {});
-      }
+      WidgetsBinding.instance.addPostFrameCallback(
+        (timeStamp) {
+          _status = OnboardingNavigatorObserver.instance.animationStatus.value;
+          if (_status == AnimationStatus.completed) {
+            _futureRect = _rectFromWidgetKeyLabel(widget.targetId!);
+            setState(() {});
+          }
+        },
+      );
     };
     OnboardingNavigatorObserver.instance.animationStatus
         .addListener(_animationListener!);
-    debugPrint("_route is $_route");
+
     super.initState();
   }
 
@@ -72,9 +79,8 @@ class _OnboardingOverlayClippedBackgroundState
   @override
   void didUpdateWidget(covariant OnboardingOverlayClippedBackground oldWidget) {
     if (oldWidget.targetId != widget.targetId) {
-      setState(() {
-        _futureRect = _rectFromWidgetKeyLabel(widget.targetId!);
-      });
+      _futureRect = _rectFromWidgetKeyLabel(widget.targetId!);
+      setState(() {});
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -84,17 +90,20 @@ class _OnboardingOverlayClippedBackgroundState
   Future<Rect?> _rectFromWidgetKeyLabel(String keyLabel) async {
     GlobalKey? targetKey;
     Rect? rect;
+    final int maxAttempts = 50;
+    int attempts = 0;
 
-    while (targetKey == null) {
-      // await Future.delayed(Duration(milliseconds: 300));
+    while (targetKey == null && attempts <= maxAttempts) {
+      await Future.delayed(Duration(milliseconds: 100));
       targetKey = OnboardingKeysService.instance.findTargetKeyWithId(keyLabel);
       // await Future.delayed(Duration(milliseconds: 300));
       debugPrint(
           "_rectFromWidgetKeyLabel : waiting for targetKey with label $keyLabel");
+      attempts++;
     }
 
-    if (targetKey.currentContext == null ||
-        !targetKey.currentContext!.mounted) {
+    if (targetKey?.currentContext == null ||
+        !targetKey!.currentContext!.mounted) {
       debugPrint("_rectFromWidgetKeyLabel : cannot obtain context");
       return null;
     }
@@ -115,7 +124,7 @@ class _OnboardingOverlayClippedBackgroundState
 
     if (!targetContext.mounted) {
       debugPrint(
-          "_rectFromWidgetKeyLabel :mounted is false after defining insets");
+          "_rectFromWidgetKeyLabel : mounted is false after defining insets");
       return null;
     }
 
@@ -132,7 +141,7 @@ class _OnboardingOverlayClippedBackgroundState
           "_rectFromWidgetKeyLabel : context isn't mounted after getting widgetObject's renderbox, returning null");
       return null;
     }
-    debugPrint("rect is $rect");
+    debugPrint("_rectFromWidgetKeyLabel : rect is $rect");
     return rect;
   }
 
@@ -141,23 +150,24 @@ class _OnboardingOverlayClippedBackgroundState
     // Triggering rebuilds upon sudden window enlargement or shrinking on web/desktop
     // to overcome limitations of didChangeMetrics
     MediaQuery.sizeOf(context);
-    debugPrint("$_status");
+
+    debugPrint(
+        "OnboardingDialogClippedBackground build : animations status is $_status");
     return FutureBuilder(
-      key: ValueKey(widget.targetId),
-      future: _status.values.every(
-        (element) {
-          return element == AnimationStatus.completed;
-        },
-      )
+      // key: ValueKey(widget.targetId),
+      future: showRect
+          //returning _futurRect variable instead of calling _rectFromWidgetKeyLabel
+          //to prevent unwanted rebuilds
           ? _futureRect
           : Future.value(null),
-      builder: (build, snapshot) => Stack(
+      builder: (build, AsyncSnapshot<Rect?> snapshot) => Stack(
         children: [
           //Ignoring click events inside the scrim
           AbsorbPointer(
             absorbing: true,
             child: Container(),
           ),
+          //Clipping the area of the screen where the targeted widget is visible
           ClipPath(
             clipper: widget.manualHoleRect == null
                 ? null
@@ -170,6 +180,7 @@ class _OnboardingOverlayClippedBackgroundState
               width: double.infinity,
             ),
           ),
+          //Shortcut to complete the onboarding
           if (kDebugMode)
             Center(
               child: FloatingActionButton(
@@ -177,6 +188,7 @@ class _OnboardingOverlayClippedBackgroundState
                 child: Icon(Icons.check),
               ),
             ),
+          //Displays the onboardingStep
           Dialog(
             backgroundColor: Theme.of(context).colorScheme.scrim.withAlpha(225),
             alignment: Alignment.bottomCenter,
