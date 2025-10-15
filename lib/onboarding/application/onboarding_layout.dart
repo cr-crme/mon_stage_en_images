@@ -10,7 +10,7 @@ import 'package:mon_stage_en_images/onboarding/application/onboarding_observer.d
 import 'package:mon_stage_en_images/onboarding/application/shared_preferences_notifier.dart';
 import 'package:mon_stage_en_images/onboarding/data/onboarding_steps_list.dart';
 import 'package:mon_stage_en_images/onboarding/models/onboarding_step.dart';
-import 'package:mon_stage_en_images/onboarding/widgets/onboarding_dialog_clipped_background.dart';
+import 'package:mon_stage_en_images/onboarding/widgets/onboarding_dialog_with_highlight.dart';
 import 'package:provider/provider.dart';
 
 ///Main orchestrator for the Onboarding feature. Listens to conditions for showing the onboarding sequence
@@ -347,7 +347,8 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
     return Stack(children: [
       widget.child,
       if (current != null)
-        OnboardingOverlayClippedBackground(
+        OnboardingDialogWithHighlight(
+            key: ValueKey(current!.targetId),
             complete: _complete,
             onboardingStep: current,
             onForward: () {

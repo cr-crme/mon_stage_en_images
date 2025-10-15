@@ -129,37 +129,43 @@ class MyApp extends StatelessWidget {
               onBoardingSteps: onboardingSteps,
               child: Stack(alignment: Alignment.bottomCenter, children: [
                 child!,
-                if (kDebugMode && false)
-                  FutureBuilder<bool>(
-                      key: ValueKey("Debug onboarding shared pref switch"),
-                      future: shared.hasSeenOnboarding,
-                      builder: (ctx, value) => value.hasData
-                          ? Material(
-                              child: Container(
-                                height: 80,
-                                color: Theme.of(context)
-                                    .secondaryHeaderColor
-                                    .withAlpha(100),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  // crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(value.data!
-                                        ? "Onboarding vu"
-                                        : "Onboarding non vu"),
-                                    Switch(
-                                      value: value.data!,
-                                      onChanged: (_) async {
-                                        await shared.setHasSeenOnboardingTo(
-                                            !value.data!);
-                                      },
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )
-                          : Material(child: CircularProgressIndicator()))
+                if (kDebugMode)
+                  Positioned(
+                    bottom: 150,
+                    child: Material(
+                      child: FutureBuilder<bool>(
+                          key: ValueKey("Debug onboarding shared pref switch"),
+                          future: shared.hasSeenOnboarding,
+                          builder: (ctx, value) => value.hasData
+                              ? SizedBox(
+                                  width: 250,
+                                  child: Card(
+                                    color: Theme.of(context)
+                                        .secondaryHeaderColor
+                                        .withAlpha(150),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      // crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        Text(value.data!
+                                            ? "Onboarding vu"
+                                            : "Onboarding non vu"),
+                                        Switch(
+                                          value: value.data!,
+                                          onChanged: (_) async {
+                                            await shared.setHasSeenOnboardingTo(
+                                                !value.data!);
+                                          },
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              : CircularProgressIndicator()),
+                    ),
+                  )
               ]),
             );
           },
