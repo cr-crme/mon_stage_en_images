@@ -115,7 +115,8 @@ class StudentAnswers extends ItemSerializable {
       : answers = (map as Map?)
                 ?.values
                 .where((e) => map?['id'] != e)
-                .map((answer) => Answer.fromSerialized(answer))
+                .map((answer) => Answer.fromSerialized(
+                    (answer as Map).cast<String, dynamic>()))
                 .toList() ??
             [],
         super(id: map?['id']);

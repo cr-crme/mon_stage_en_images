@@ -39,18 +39,18 @@ class _ForgotPasswordAlertDialogState extends State<ForgotPasswordAlertDialog> {
       return;
     }
 
-    if (mounted) {
-      final database = Provider.of<Database>(context, listen: false);
-      if (database.currentUser != null) {
-        Navigator.pop(context, null);
-      }
-
-      final resetPasswordStatus =
-          await Provider.of<Database>(context, listen: false)
-              .resetPassword(email: _email);
-
-      Navigator.pop(context, resetPasswordStatus);
+    if (!mounted) return;
+    final database = Provider.of<Database>(context, listen: false);
+    if (database.currentUser != null) {
+      Navigator.pop(context, null);
     }
+
+    final resetPasswordStatus =
+        await Provider.of<Database>(context, listen: false)
+            .resetPassword(email: _email);
+
+    if (!mounted) return;
+    Navigator.pop(context, resetPasswordStatus);
   }
 
   @override

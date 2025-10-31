@@ -123,26 +123,28 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
               'Triage des réponses',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Flexible(
-                  child: _buildRadioTile<AnswerSorting>(
-                    text: 'Par date',
-                    value: AnswerSorting.byDate,
-                    groupValue: _sorting,
-                    onTap: _selectSorting,
+            RadioGroup<AnswerSorting>(
+              groupValue: _sorting,
+              onChanged: _selectSorting,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: _buildRadioTile<AnswerSorting>(
+                      text: 'Par date',
+                      value: AnswerSorting.byDate,
+                      onTap: _selectSorting,
+                    ),
                   ),
-                ),
-                Flexible(
-                  child: _buildRadioTile<AnswerSorting>(
-                    text: 'Par élève',
-                    value: AnswerSorting.byStudent,
-                    groupValue: _sorting,
-                    onTap: _selectSorting,
+                  Flexible(
+                    child: _buildRadioTile<AnswerSorting>(
+                      text: 'Par élève',
+                      value: AnswerSorting.byStudent,
+                      onTap: _selectSorting,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
@@ -167,21 +169,16 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
     );
   }
 
-  GestureDetector _buildRadioTile<T>({
+  Widget _buildRadioTile<T>({
     required String text,
     required T value,
-    required T groupValue,
     required Function(T) onTap,
   }) {
-    return GestureDetector(
+    return InkWell(
       onTap: () => onTap(value),
       child: Row(
         children: [
-          Radio<T>(
-            value: value,
-            groupValue: groupValue,
-            onChanged: (_) => onTap(value),
-          ),
+          Radio<T>(value: value),
           Flexible(child: Text(text)),
         ],
       ),

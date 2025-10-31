@@ -111,7 +111,7 @@ class Database extends EzloginFirebase with ChangeNotifier {
       final data = await FirebaseDatabase.instance.ref('$usersPath/$id').get();
       return data.value == null
           ? null
-          : User.fromSerialized(data.value as Map<String, dynamic>?);
+          : User.fromSerialized((data.value as Map?)?.cast<String, dynamic>());
     } on Exception {
       debugPrint('Error while fetching user $id');
       return null;

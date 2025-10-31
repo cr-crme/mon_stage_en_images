@@ -15,7 +15,7 @@ ThemeData teacherTheme() {
   final appBarTheme = AppBarTheme(
     titleTextStyle: TextStyle(
         fontSize: 20, color: colorSwatch.onPrimary, fontFamily: fontFamily),
-    color: primaryColor,
+    backgroundColor: primaryColor,
     iconTheme: const IconThemeData(color: Colors.black),
   );
   final dialogTheme = DialogThemeData(
@@ -96,7 +96,7 @@ ThemeData studentTheme() {
   final appBarTheme = AppBarTheme(
     titleTextStyle: TextStyle(
         fontSize: 20, color: colorSwatch.onPrimary, fontFamily: fontFamily),
-    color: primaryColor,
+    backgroundColor: primaryColor,
     iconTheme: const IconThemeData(color: Colors.white),
   );
 
