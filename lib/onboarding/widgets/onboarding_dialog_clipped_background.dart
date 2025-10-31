@@ -181,6 +181,7 @@ class _OnboardingOverlayClippedBackgroundState
             ),
           ),
           //Shortcut to complete the onboarding
+          // TODO Add showDebugOverlay
           if (kDebugMode)
             Center(
               child: FloatingActionButton(
