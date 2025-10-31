@@ -18,6 +18,7 @@ import 'package:mon_stage_en_images/screens/login/terms_and_services_screen.dart
 import 'package:mon_stage_en_images/screens/q_and_a/q_and_a_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:logging/logging.dart';
 
 import '/firebase_options.dart';
 
@@ -26,6 +27,14 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 ValueNotifier<bool> isValidScreenToShowTutorial = ValueNotifier<bool>(false);
 
 void main() async {
+  // Set logging to INFO
+  Logger.root.level = Level.INFO;
+  Logger.root.onRecord.listen((record) {
+    // ignore: avoid_print
+    print(
+        '${record.level.name}: ${record.time}: ${record.loggerName}: ${record.message}');
+  });
+
   // Initialization of the user database. If [useEmulator] is set to [true],
   // then a local database is created. To facilitate the filling of the database
   // one can create a user, login with it, then in the drawer, select the

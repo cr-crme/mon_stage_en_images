@@ -20,10 +20,10 @@ class _ForgotPasswordAlertDialogState extends State<ForgotPasswordAlertDialog> {
   bool _isloading = false;
 
   String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) return 'Entrez une adresse courriel';
+    if (value == null || value.isEmpty) return 'Entrer une adresse courriel';
     if (!value.isValidEmail())
       // ignore: curly_braces_in_flow_control_structures
-      return 'Merci d\'entrer une adresse au format "adresse@courriel.com"';
+      return 'Entrer une adresse valide';
 
     return null;
   }
@@ -67,7 +67,7 @@ class _ForgotPasswordAlertDialogState extends State<ForgotPasswordAlertDialog> {
                 children: [
                   Text.rich(TextSpan(
                       text:
-                          'Indiquez l\'adresse courriel utilisée lors de votre inscription '
+                          'Indiquer l\'adresse courriel utilisée lors de votre inscription '
                           'pour recevoir',
                       children: [
                         TextSpan(

@@ -6,6 +6,10 @@ import 'package:mon_stage_en_images/onboarding/application/onboarding_keys_servi
 import 'package:mon_stage_en_images/onboarding/models/onboarding_step.dart';
 import 'package:mon_stage_en_images/onboarding/widgets/hole_clipper.dart';
 
+import 'package:logging/logging.dart';
+
+final _logger = Logger('OnboardingDialogWithHighlight');
+
 ///Main widget for displaying an onboarding dialog with a background clipped
 ///to highlight the targeted Widget. Performs some stabilty checks,
 ///allowing any standard duration animation to complete
@@ -115,7 +119,8 @@ class _OnboardingDialogWithHighlightState
 
     //Do we exceed the permitted max attempts ?
     if (_drawAttempts >= _maxAttempts) {
-      debugPrint("_tryDrawRect : max Attempts reached, returning");
+      // TODO Change all debugPrint for _logger
+      _logger.finest("_tryDrawRect : max Attempts reached, returning");
       _setNavTo(true);
       return;
     }

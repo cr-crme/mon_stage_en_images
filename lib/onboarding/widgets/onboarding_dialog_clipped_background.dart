@@ -156,6 +156,8 @@ class _OnboardingOverlayClippedBackgroundState
     return FutureBuilder(
       // key: ValueKey(widget.targetId),
       future: showRect
+          // TODO make sure there is a space between // and the comment
+          // TODO Start comments with a capital letter
           //returning _futurRect variable instead of calling _rectFromWidgetKeyLabel
           //to prevent unwanted rebuilds
           ? _futureRect
@@ -226,7 +228,8 @@ class _OnboardingOverlayClippedBackgroundState
                             if (widget.onBackward != null)
                               OutlinedButton.icon(
                                   onPressed: () {
-                                    widget.onBackward?.call();
+                                    // TODO Change to if null ! of even "onPressed:widget.onBackward"
+                                    widget.onBackward!.call();
                                     // Navigator.pop(context);
                                   },
                                   iconAlignment: IconAlignment.start,
@@ -242,8 +245,10 @@ class _OnboardingOverlayClippedBackgroundState
                             FilledButton.icon(
                               onPressed: () async {
                                 widget.onForward?.call();
+                                // TODO Remove unused code
                                 // Navigator.pop(context);
                               },
+                              // TODO Use ' instead ""
                               label: Text("Suivant",
                                   style: TextStyle(
                                       fontSize: Theme.of(context)

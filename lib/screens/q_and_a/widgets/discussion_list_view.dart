@@ -73,8 +73,9 @@ class _DiscussionListViewState extends State<DiscussionListView> {
   }
 
   Future<void> _addPhoto(ImageSource source) async {
-    //TODO changer règles firebase pour autoriser utilisateur enseignant à write dans storage
-    //TODO implémenter image picking en version web
+    // TODO Translate
+    // TODO changer règles firebase pour autoriser utilisateur enseignant à write dans storage
+    // TODO implémenter image picking en version web
     final userType =
         Provider.of<Database>(context, listen: false).currentUser!.userType;
     if (userType == UserType.teacher || kIsWeb) {
