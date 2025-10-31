@@ -55,9 +55,9 @@ dependencies:
 
 dependency_overrides:
     enhanced_containers:
-        path: ./external/ezlogin/external/enhanced_containers 
+        path: ./external/enhanced_containers 
     enhanced_containers_foundation:
-        path: ./external/ezlogin/external/enhanced_containers/plugins/enhanced_containers_foundation
+        path: .//external/enhanced_containers/plugins/enhanced_containers_foundation
     ezlogin:
         path: ./external/ezlogin 
 

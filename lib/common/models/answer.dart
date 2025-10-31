@@ -19,12 +19,12 @@ class Answer extends ItemSerializable {
   })  : discussion = discussion ??= Discussion(),
         super(id: questionId);
   Answer.fromSerialized(super.map)
-      : discussion = Discussion.fromSerialized(map['discussion'] ?? {}),
-        isActive = map['isActive'],
-        isValidated = map['isValidated'],
-        actionRequired = ActionRequired.values[map['actionRequired']],
-        createdById = map['createdById'],
-        studentId = map['studentId'],
+      : discussion = Discussion.fromSerialized(map?['discussion'] ?? {}),
+        isActive = map?['isActive'],
+        isValidated = map?['isValidated'],
+        actionRequired = ActionRequired.values[map?['actionRequired']],
+        createdById = map?['createdById'],
+        studentId = map?['studentId'],
         super.fromSerialized();
   Answer copyWith({
     Discussion? discussion,

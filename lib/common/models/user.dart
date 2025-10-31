@@ -20,16 +20,18 @@ class User extends EzloginUser {
   });
 
   User.fromSerialized(super.map)
-      : firstName = map['firstName'],
-        lastName = map['lastName'],
-        supervisedBy = map['supervisedBy'],
+      : firstName = map?['firstName'],
+        lastName = map?['lastName'],
+        supervisedBy = map?['supervisedBy'],
         supervising =
-            (map['supervising'] as Map?)?.map((k, v) => MapEntry(k, v)) ?? {},
-        userType = UserType.values[map['userType'] as int],
-        companyNames = map['companyNames'],
-        termsAndServicesAccepted = map['termsAndServicesAccepted'] ?? false,
+            (map?['supervising'] as Map?)?.map((k, v) => MapEntry(k, v)) ?? {},
+        userType = map == null
+            ? UserType.none
+            : UserType.values[map['userType'] as int],
+        companyNames = map?['companyNames'],
+        termsAndServicesAccepted = map?['termsAndServicesAccepted'] ?? false,
         creationDate =
-            DateTime.parse(map['creationDate'] ?? defaultCreationDate),
+            DateTime.parse(map?['creationDate'] ?? defaultCreationDate),
         super.fromSerialized();
 
   @override
