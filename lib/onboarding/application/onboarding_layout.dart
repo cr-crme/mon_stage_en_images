@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
 import 'package:mon_stage_en_images/common/models/user.dart';
@@ -13,8 +14,10 @@ import 'package:mon_stage_en_images/onboarding/models/onboarding_step.dart';
 import 'package:mon_stage_en_images/onboarding/widgets/onboarding_dialog_with_highlight.dart';
 import 'package:provider/provider.dart';
 
-///Main orchestrator for the Onboarding feature. Listens to conditions for showing the onboarding sequence
-///and manages both the navigation to the current target and the arguments passing to the onboarding overlay dialog.
+final _logger = Logger('OnboardingLayout');
+
+/// Main orchestrator for the Onboarding feature. Listens to conditions for showing the onboarding sequence
+/// and manages both the navigation to the current target and the arguments passing to the onboarding overlay dialog.
 class OnboardingLayout extends StatefulWidget {
   const OnboardingLayout({
     super.key,
@@ -37,8 +40,8 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
   int? _currentIndex;
 
   OnboardingStep? get current {
-    debugPrint(
-        "When accessing current, _checkShowTutorial is ${_checkShowTutorial()} and _currentIndex is $_currentIndex");
+    _logger.finest(
+        'When accessing current, _checkShowTutorial is ${_checkShowTutorial()} and _currentIndex is $_currentIndex');
     if (_checkShowTutorial() && _currentIndex != null) {
       return onboardingSteps[_currentIndex!];
     } else {
@@ -59,13 +62,13 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
   void _increment() {
     if (_currentIndex == null) return;
     _currentIndex = _currentIndex! + 1;
-    debugPrint("increment : _currentIndex is now $_currentIndex ");
+    _logger.finest('increment : _currentIndex is now $_currentIndex ');
   }
 
   void _decrement() {
     if (_currentIndex == null || _currentIndex! < 1) return;
     _currentIndex = _currentIndex! - 1;
-    debugPrint("increment : _currentIndex is now $_currentIndex ");
+    _logger.finest('increment : _currentIndex is now $_currentIndex ');
   }
 
   void _resetIndex() {
@@ -93,7 +96,7 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
   /// Ends the onboarding sequence by writing in local storage that onboarding has been shown.
   /// Resets the onboarding sequence to allow another run
   Future<void> _complete() async {
-    debugPrint("_complete is running");
+    _logger.finest('_complete is running');
     await Provider.of<SharedPreferencesNotifier>(context, listen: false)
         .setHasSeenOnboardingTo(true);
     WidgetsBinding.instance.addPostFrameCallback(
@@ -115,7 +118,7 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
   }
 
   Future<void> _getDependencies() async {
-    debugPrint("_getDependencies running");
+    _logger.finest('_getDependencies running');
     _currentUser = Provider.of<Database>(context, listen: true).currentUser;
     final sharedPrefs =
         Provider.of<SharedPreferencesNotifier>(context, listen: true);
@@ -127,7 +130,7 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
 // Using didChangeDependencies since initState doesn't allow for dependencies (context can't be accessed)
   @override
   void didChangeDependencies() async {
-    debugPrint("didChangeDependencies running in _OnBoardingLayout");
+    _logger.finest('didChangeDependencies running in _OnBoardingLayout');
 
     await _getDependencies();
     Future.delayed(Duration(milliseconds: 300));
@@ -143,116 +146,117 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
     super.dispose();
   }
 
-  ///Navigates to screen based on the index provided if needed. Then, it prepares the screen to actually
-  ///display the targeted widget
+  /// Navigates to screen based on the index provided if needed. Then, it prepares the screen to actually
+  /// display the targeted widget
   Future<void> _navToStep(int index) async {
-    debugPrint('_navToStep : running');
+    _logger.finest('_navToStep : running');
 
-    //Checking if our step is null and if we should flag its index as inactive
+    // Checking if our step is null and if we should flag its index as inactive
     final step = current;
     if (step == null) {
-      debugPrint("_navToStep : will return because currentStep is null");
+      _logger.severe('_navToStep : will return because currentStep is null');
       return;
     }
-    //Navigating to the OnboardingStep Widget's route.
+    // Navigating to the OnboardingStep Widget's route.
     try {
       final currentRoute =
           OnboardingNavigatorObserver.instance.currentRouteName;
 
-      debugPrint(
-          "_navToStep : currentRoute is $currentRoute  and step.routeName is ${step.routeName}");
-      //We want to navigate only if we are not already on the desired route.
-      //If we are on the first step, we always want to navigate to this screen's step.
+      _logger.finest(
+          '_navToStep : currentRoute is $currentRoute  and step.routeName is ${step.routeName}');
+      // We want to navigate only if we are not already on the desired route.
+      // If we are on the first step, we always want to navigate to this screen's step.
       if (currentRoute != step.routeName || _currentIndex == 0) {
         rootNavigatorKey.currentState
             ?.pushReplacementNamed(step.routeName, arguments: step.arguments)
             .then(
-              (value) => debugPrint(
+              (value) => _logger.finest(
                   '_navToStep : after navigation with rootNavigatorKey, $value'),
             );
       }
     } catch (e, st) {
-      debugPrint(
+      _logger.severe(
           '_navToStep : error on _navToStep navigation : ${e.toString()} $st');
       _resetIndex();
     }
 
-    //Maybe our targeted widget is not mounted yet and required additional actions
-    //Like opening a drawer or using a pagecontroller. We will check if this is needed.
+    // Maybe our targeted widget is not mounted yet and required additional actions
+    // Like opening a drawer or using a pagecontroller. We will check if this is needed.
     await _shouldPrepareOnboardingTargetDisplay(step);
 
     final targetKey = await _waitForTargetKeyRegistration(step.targetId);
-    debugPrint("Looking for key with id=${step.targetId}, got key=$targetKey");
+    _logger
+        .finest('Looking for key with id=${step.targetId}, got key=$targetKey');
 
-    //Waiting for the widget context to be available
+    // Waiting for the widget context to be available
     if (targetKey == null) {
-      debugPrint(
-          "cannot find Key in Onboarding service, key is null, resetting index");
+      _logger.warning(
+          'cannot find Key in Onboarding service, key is null, resetting index');
       _resetIndex();
     }
     final widgetContext =
         await _tryGiveWidgetContextWhenAvalaible(key: targetKey);
 
     if (widgetContext == null) {
-      debugPrint("cannot obtain widgetContext for id=${step.targetId}");
+      _logger.severe('cannot obtain widgetContext for id=${step.targetId}');
       _resetIndex();
     }
   }
 
-  ///Checks if further actions are needed after navigation to show the targeted widget.
-  ///Performs then required actions to allow the targeted widget to be mounted inside the tree,
-  ///through the prepareNav parameter of the provided OnboardingStep
+  /// Checks if further actions are needed after navigation to display the targeted widget.
+  /// Performs required actions to allow the targeted widget to be mounted inside the tree,
+  /// through the prepareNav parameter of the provided OnboardingStep
   Future<void> _shouldPrepareOnboardingTargetDisplay(
     OnboardingStep step,
   ) async {
-    //Maybe our targeted widget is not mounted yet and required additional actions
+    // Maybe our targeted widget is not mounted yet and required additional actions
     // Like opening a drawer or using a pagecontroller.
     // So we use the GlobalKey<State<StatefulWidget>> declared for the widget by onGenerateRoute
-    //to get a valid context
+    // to get a valid context
 
-    debugPrint(
-        "_shouldPrepareOnboardingTargetDisplay : will attempt to get key for prepareNav");
+    _logger.finest(
+        '_shouldPrepareOnboardingTargetDisplay : will attempt to get key for prepareNav');
 
-    //Retrieves the GlobalKey<State<StatefulWidget> registered for this screen upon navigation.
-    //This key can be used to obtain the State and performs actions like opening drawers, jumping in a page view, ...
+    // Retrieves the GlobalKey<State<StatefulWidget> registered for this screen upon navigation.
+    // This key can be used to obtain the State and performs actions like opening drawers, jumping in a page view, ...
     final key =
         OnboardingKeysService.instance.findScreenKeyWithId(step.routeName);
     if (key == null) {
-      debugPrint(
-          " findScreenKeyWithId could not obtain key for ${step.routeName}"
-          " cannot run prepareNav and will return");
+      _logger.severe(
+          ' findScreenKeyWithId could not obtain key for ${step.routeName}'
+          ' cannot run prepareNav and will return');
       return;
     }
-    debugPrint(
-        "_shouldPrepareOnboardingTargetDisplay : key for prepare nav is $key");
+    _logger.finest(
+        '_shouldPrepareOnboardingTargetDisplay : key for prepare nav is $key');
 
-    //Waiting for the State of the screen
+    // Waiting for the State of the screen
     final State<StatefulWidget>? state =
         await _waitForScreenState(key).then((value) {
-      debugPrint(
-          "_shouldPrepareOnboardingTargetDisplay : state for prepareNav is $value");
+      _logger.finest(
+          '_shouldPrepareOnboardingTargetDisplay : state for prepareNav is $value');
       return value;
     });
-    debugPrint(
-        "_shouldPrepareOnboardingTargetDisplay : will try to prepareNav");
+    _logger.finest(
+        '_shouldPrepareOnboardingTargetDisplay : will try to prepareNav');
     if (state == null) {
-      debugPrint(
-          "_shouldPrepareOnboardingTargetDisplay : state is null after _waitforScreenState, will return");
+      _logger.info(
+          '_shouldPrepareOnboardingTargetDisplay : state is null after _waitforScreenState, will return');
       return;
     }
     step.prepareNav == null
-        //No prepareNav was provided by the step, we still want to reset scaffold state
-        //to prevent conflicts when displaying our overlay : our targeted widget may be under a scaffold element,
-        //like a drawer and wouldn't be visible otherwise
+        // No prepareNav was provided by the step, we still want to reset scaffold state
+        // to prevent conflicts when displaying our overlay : our targeted widget may be under a scaffold element,
+        // like a drawer and wouldn't be visible otherwise
         ? await _tryGiveWidgetContextWhenAvalaible(key: key).then(
             (value) {
-              debugPrint("value is $value");
+              _logger.finest('value is $value');
               if (value != null && value.mounted) {
                 step.resetScaffoldElements(value, state);
               }
             },
           )
-        //A prepareNav was provided by the step, we will run it.
+        // A prepareNav was provided by the step, we will run it.
         : await step.prepareNav!(null, state);
   }
 
@@ -273,13 +277,13 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
       }
       final elapsed = DateTime.now().difference(start).inMilliseconds;
 
-      //If we outreach our timer limit,
-      //then we give up and return a null instead of context
+      // If we outreach our timer limit,
+      // then we give up and return a null instead of context
       if (elapsed >= timeout) {
         if (!completer.isCompleted) completer.complete(null);
         return;
       }
-      // if we still have time, we check again in the next frame
+      // If we still have time, we check again in the next frame
       WidgetsBinding.instance.addPostFrameCallback((_) => checkFuture());
     }
 
@@ -336,12 +340,13 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(
-        "OnboardingLayout build : _currentUser is $_currentUser | _hasSeenOnboarding is $_hasSeenOnboarding ");
-    debugPrint(
-        "| _hasAlreadySeenTheIrrstPage is $_hasAlreadySeenTheIrrstPage | _currentUser!.termsAndServicesAccepted is ${_currentUser?.termsAndServicesAccepted}");
-    debugPrint("| isValidScreenToShowTutorial is $isValidScreenToShowTutorial");
-    debugPrint("build : showTutorial is ${_checkShowTutorial()}");
+    _logger.info(
+        'OnboardingLayout build : _currentUser is $_currentUser | _hasSeenOnboarding is $_hasSeenOnboarding ');
+    _logger.info(
+        '| _hasAlreadySeenTheIrrstPage is $_hasAlreadySeenTheIrrstPage | _currentUser!.termsAndServicesAccepted is ${_currentUser?.termsAndServicesAccepted}');
+    _logger
+        .info('| isValidScreenToShowTutorial is $isValidScreenToShowTutorial');
+    _logger.info('build : showTutorial is ${_checkShowTutorial()}');
 
     return Stack(children: [
       widget.child,

@@ -1,6 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:logging/logging.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
 import 'package:mon_stage_en_images/common/models/themes.dart';
@@ -18,17 +18,18 @@ import 'package:mon_stage_en_images/screens/login/terms_and_services_screen.dart
 import 'package:mon_stage_en_images/screens/q_and_a/q_and_a_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:logging/logging.dart';
 
 import '/firebase_options.dart';
 
 const String softwareVersion = '1.1.0';
+final _logger = Logger('main');
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 ValueNotifier<bool> isValidScreenToShowTutorial = ValueNotifier<bool>(false);
+const showDebugOverlay = false;
 
 void main() async {
   // Set logging to INFO
-  Logger.root.level = Level.INFO;
+  Logger.root.level = Level.WARNING;
   Logger.root.onRecord.listen((record) {
     // ignore: avoid_print
     print(
@@ -39,7 +40,6 @@ void main() async {
   // then a local database is created. To facilitate the filling of the database
   // one can create a user, login with it, then in the drawer, select the
   // 'Reinitialize the database' button.
-
   const useEmulator = true;
   final userDatabase = Database();
   await userDatabase.initialize(
@@ -89,8 +89,8 @@ class MyApp extends StatelessWidget {
               ? teacherTheme()
               : studentTheme(),
           onGenerateInitialRoutes: (initialRoute) {
-            debugPrint(
-                "initial route in onGenerateInitial Routes is $initialRoute");
+            _logger.finest(
+                'initial route in onGenerateInitial Routes is $initialRoute');
             final key = GlobalKey<State<StatefulWidget>>();
             final String id = initialRoute;
 
@@ -105,8 +105,8 @@ class MyApp extends StatelessWidget {
             ];
           },
           onGenerateRoute: (settings) {
-            debugPrint(
-                "onGenerateRoute runs with settings.name : ${settings.name}");
+            _logger.finest(
+                'onGenerateRoute runs with settings.name : ${settings.name}');
             final String? routeName = settings.name;
             if (routeName == null) return null;
             final key = GlobalKey<State<StatefulWidget>>();
@@ -117,8 +117,8 @@ class MyApp extends StatelessWidget {
                 builder: (_) => getWidgetFromRouteName(routeName, key),
                 settings: RouteSettings(
                     name: settings.name, arguments: settings.arguments));
-            debugPrint(
-                "onGenerateRoute : pageRoute settings name is ${pageRoute.settings.name}");
+            _logger.finest(
+                'onGenerateRoute : pageRoute settings name is ${pageRoute.settings.name}');
             return pageRoute;
           },
           navigatorObservers: [OnboardingNavigatorObserver.instance],
@@ -138,12 +138,12 @@ class MyApp extends StatelessWidget {
               onBoardingSteps: onboardingSteps,
               child: Stack(alignment: Alignment.bottomCenter, children: [
                 child!,
-                if (kDebugMode)
+                if (showDebugOverlay)
                   Positioned(
                     bottom: 150,
                     child: Material(
                       child: FutureBuilder<bool>(
-                          key: ValueKey("Debug onboarding shared pref switch"),
+                          key: ValueKey('Debug onboarding shared pref switch'),
                           future: shared.hasSeenOnboarding,
                           builder: (ctx, value) => value.hasData
                               ? SizedBox(
@@ -156,11 +156,10 @@ class MyApp extends StatelessWidget {
                                       mainAxisSize: MainAxisSize.max,
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceAround,
-                                      // crossAxisAlignment: CrossAxisAlignment.end,
                                       children: [
                                         Text(value.data!
-                                            ? "Onboarding vu"
-                                            : "Onboarding non vu"),
+                                            ? 'Onboarding vu'
+                                            : 'Onboarding non vu'),
                                         Switch(
                                           value: value.data!,
                                           onChanged: (_) async {

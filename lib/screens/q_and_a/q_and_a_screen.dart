@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:mon_stage_en_images/common/models/answer_sort_and_filter.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
@@ -13,6 +14,8 @@ import 'package:mon_stage_en_images/screens/q_and_a/widgets/filter_answers_dialo
 import 'package:mon_stage_en_images/screens/q_and_a/widgets/metier_app_bar.dart';
 import 'package:provider/provider.dart';
 
+final _logger = Logger('QAndAScreen');
+
 class QAndAScreen extends StatefulWidget {
   const QAndAScreen({
     super.key,
@@ -26,7 +29,7 @@ class QAndAScreen extends StatefulWidget {
 
   static void onPageChangedRequestFromOutside(
       State<QAndAScreen> outsideState, int int) {
-    // debugPrint("context for onPageChangedRequestFromOutside is $context");
+    // _logger.("context for onPageChangedRequestFromOutside is $context");
     // final state = context.findAncestorStateOfType<_QAndAScreenState>();
     final state = outsideState as _QAndAScreenState;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -55,7 +58,7 @@ class _QAndAScreenState extends State<QAndAScreen> {
   @override
   void initState() {
     _pageViewAnimationListener = () {
-      debugPrint("page in pageControlller is ${_pageController.page}");
+      _logger.finest("page in pageControlller is ${_pageController.page}");
       if (_pageController.page == _pageController.page?.roundToDouble()) {
         OnboardingNavigatorObserver.instance.animationStatus.value =
             AnimationStatus.completed;

@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 
-///Takes the Rect drawn from the Render Box of the targeted onboarding Widget
-///and substracts it to another path filling the whole view. Meant to be provided
-///to the OnBoardingDialogClippedBackground widget as a background for the onboarding dialog.
+/// Takes the Rect drawn from the Render Box of the targeted onboarding Widget
+/// and substracts it to another path filling the whole view. Meant to be provided
+/// to the OnBoardingDialogClippedBackground widget as a background for the onboarding dialog.
 class HoleClipper extends CustomClipper<Path> {
   const HoleClipper(
       {required this.holeRect, this.radius = 12, this.makeRRect = true});
 
-  ///Whether the clipped zone should have rounded corners or not
+  /// Whether the clipped zone should have rounded corners or not
   final bool makeRRect;
 
-  ///Radius for the rounded corners clipped zone
+  /// Radius for the rounded corners clipped zone
   final double radius;
 
-  ///Rect drawn from the RenderBox of the targeted onboarding Widget.
+  /// Rect drawn from the RenderBox of the targeted onboarding Widget.
   final Rect holeRect;
 
   @override
@@ -32,8 +32,6 @@ class HoleClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(covariant HoleClipper oldClipper) {
-    // return oldClipper.holeRect != holeRect;
-    // debugPrint("shouldReclip is running");
     return true;
   }
 }

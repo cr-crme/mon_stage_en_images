@@ -8,33 +8,32 @@ class SharedPreferencesNotifier extends ChangeNotifier {
 
   final SharedPreferences prefs;
 
-  final String _nameForHasAlreadySeenTheIrrstPage =
-      "hasAlreadySeenTheIrrstPage";
-  final String _nameForHasSeenOnboarding = "hasSeenOnboarding";
+  final String _keyForHasAlreadySeenTheIrrstPage = 'hasAlreadySeenTheIrrstPage';
+  final String _keyForHasSeenOnboarding = 'hasSeenOnboarding';
 
   Future<bool> get hasAlreadySeenTheIrrstPage async {
-    return prefs.getBool(_nameForHasAlreadySeenTheIrrstPage) ??
+    return prefs.getBool(_keyForHasAlreadySeenTheIrrstPage) ??
         await prefs
-            .setBool(_nameForHasAlreadySeenTheIrrstPage, false)
+            .setBool(_keyForHasAlreadySeenTheIrrstPage, false)
             .whenComplete(
               () => notifyListeners(),
             );
   }
 
   Future<bool> get hasSeenOnboarding async {
-    return prefs.getBool(_nameForHasSeenOnboarding) ??
-        await prefs.setBool(_nameForHasSeenOnboarding, false).whenComplete(
+    return prefs.getBool(_keyForHasSeenOnboarding) ??
+        await prefs.setBool(_keyForHasSeenOnboarding, false).whenComplete(
               () => notifyListeners(),
             );
   }
 
   Future<void> setHasSeenOnboardingTo(bool value) async {
-    await prefs.setBool(_nameForHasSeenOnboarding, value);
+    await prefs.setBool(_keyForHasSeenOnboarding, value);
     notifyListeners();
   }
 
   Future<void> sethasAlreadySeenTheIrrstPage(bool value) async {
-    await prefs.setBool(_nameForHasAlreadySeenTheIrrstPage, value);
+    await prefs.setBool(_keyForHasAlreadySeenTheIrrstPage, value);
     notifyListeners();
   }
 }

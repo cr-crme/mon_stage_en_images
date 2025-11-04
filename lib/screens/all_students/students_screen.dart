@@ -311,7 +311,7 @@ class StudentsScreenState extends State<StudentsScreen> {
         ),
         actions: [
           OnboardingTarget(
-            onboardingId: 'add-student',
+            onboardingId: addStudent,
             child: IconButton(
               onPressed: _addStudent,
               icon: const Icon(

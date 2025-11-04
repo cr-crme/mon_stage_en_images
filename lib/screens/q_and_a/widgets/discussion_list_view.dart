@@ -73,9 +73,8 @@ class _DiscussionListViewState extends State<DiscussionListView> {
   }
 
   Future<void> _addPhoto(ImageSource source) async {
-    // TODO Translate
-    // TODO changer règles firebase pour autoriser utilisateur enseignant à write dans storage
-    // TODO implémenter image picking en version web
+    // TODO Edit firebase rules to allow userType 'teacher' to write in storage
+
     final userType =
         Provider.of<Database>(context, listen: false).currentUser!.userType;
     if (userType == UserType.teacher || kIsWeb) {
@@ -114,8 +113,8 @@ class _DiscussionListViewState extends State<DiscussionListView> {
     bool markAsValidated = false,
   }) async {
     // If it is the very first time the teacher validates an answer, we want to
-    // show a pop explaining that the student can continue to see the question
-    // but cannot modify his answer anymore.
+    // Show a pop explaining that the student can continue to see the question
+    // But cannot modify his answer anymore.
     final showPopup = (await SharedPreferences.getInstance())
             .getBool('showValidatingWarning') ??
         true;

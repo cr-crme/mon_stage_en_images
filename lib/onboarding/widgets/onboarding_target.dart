@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:mon_stage_en_images/onboarding/application/onboarding_keys_service.dart';
+
+final _logger = Logger('OnboardingTarget');
 
 class OnboardingTarget extends StatefulWidget {
   const OnboardingTarget(
@@ -18,8 +21,8 @@ class _OnboardingTargetState extends State<OnboardingTarget> {
 
   @override
   void initState() {
-    debugPrint(
-        "initState running for OnBoardingTarget, will try to register key $_key for targetId ${widget.onboardingId}");
+    _logger.finest(
+        'initState running for OnBoardingTarget, will try to register key $_key for targetId ${widget.onboardingId}');
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
         onboardingKeyService.addTargetKey(widget.onboardingId, _key);
@@ -36,7 +39,7 @@ class _OnboardingTargetState extends State<OnboardingTarget> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("OnboardingTarget.build pour ${widget.onboardingId}");
+    _logger.finest('OnboardingTarget.build pour ${widget.onboardingId}');
     return KeyedSubtree(
       key: _key,
       child: widget.child,

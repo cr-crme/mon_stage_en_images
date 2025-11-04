@@ -1,9 +1,13 @@
 import 'package:flutter/widgets.dart';
+import 'package:logging/logging.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
 import 'package:mon_stage_en_images/onboarding/models/onboarding_step.dart';
 import 'package:mon_stage_en_images/screens/all_students/students_screen.dart';
 import 'package:mon_stage_en_images/screens/q_and_a/q_and_a_screen.dart';
 
+final _logger = Logger('OnboardingSteps');
+
+const String addStudent = 'addStudent';
 const String newQuestion = 'newQuestion';
 const String drawer = 'drawer';
 const String drawerOpened = 'drawerOpened';
@@ -12,24 +16,24 @@ const String exampleQuestions = 'examplesQuestions';
 const String questionsSummary = 'questionsSummary';
 const String learnMore = 'learnMore';
 
-///The onboarding steps to be shown during the onboarding sequence
+/// The onboarding steps to be shown during the onboarding sequence
 List<OnboardingStep> onboardingSteps = [
   OnboardingStep(
       routeName: StudentsScreen.routeName,
-      targetId: 'add-student',
+      targetId: addStudent,
       message: 'Appuyez ici pour ajouter des élèves'),
   OnboardingStep(
       routeName: StudentsScreen.routeName,
       targetId: drawer,
       message:
-          "Appuyez ici pour accéder aux différentes pages de l’application."),
+          'Appuyez ici pour accéder aux différentes pages de l’application.'),
   OnboardingStep(
     routeName: StudentsScreen.routeName,
     targetId: drawerOpened,
-    message: "Appuyez ici pour poser une question à vos élèves.",
+    message: 'Appuyez ici pour poser une question à vos élèves.',
     prepareNav: (context, outsideState) async {
       final state = outsideState as StudentsScreenState;
-      debugPrint("prepareNav for OnboardinStep $drawer running");
+      _logger.finest('prepareNav for OnboardinStep $drawer running');
       if (state.isDrawerOpen == false) {
         state.openDrawer();
       }
@@ -42,7 +46,7 @@ List<OnboardingStep> onboardingSteps = [
           (BuildContext? context, State<StatefulWidget>? outsideState) async {
         final state = outsideState as State<QAndAScreen>;
 
-        debugPrint("prepareNav for OnboardinStep $newQuestion running");
+        _logger.finest('prepareNav for OnboardinStep $newQuestion running');
 
         QAndAScreen.onPageChangedRequestFromOutside(state, 0);
       },
@@ -56,7 +60,7 @@ List<OnboardingStep> onboardingSteps = [
           (BuildContext? context, State<StatefulWidget>? outsideState) async {
         final state = outsideState as State<QAndAScreen>;
 
-        debugPrint("prepareNav for OnboardinStep $newQuestion running");
+        _logger.finest('prepareNav for OnboardinStep $newQuestion running');
 
         QAndAScreen.onPageChangedRequestFromOutside(state, 1);
       },
@@ -69,7 +73,8 @@ List<OnboardingStep> onboardingSteps = [
           (BuildContext? context, State<StatefulWidget>? outsideState) async {
         final state = outsideState as State<QAndAScreen>;
 
-        debugPrint("prepareNav for OnboardinStep $exampleQuestions running");
+        _logger
+            .finest('prepareNav for OnboardinStep $exampleQuestions running');
 
         QAndAScreen.onPageChangedRequestFromOutside(state, 1);
       },
@@ -79,10 +84,10 @@ List<OnboardingStep> onboardingSteps = [
     routeName: StudentsScreen.routeName,
     targetId: questionsSummary,
     message:
-        "Sur cette page, vous verrez toutes les réponses à une même question.",
+        'Sur cette page, vous verrez toutes les réponses à une même question.',
     prepareNav: (context, outsideState) async {
       final state = outsideState as StudentsScreenState;
-      debugPrint("prepareNav for OnboardinStep $questionsSummary running");
+      _logger.finest('prepareNav for OnboardinStep $questionsSummary running');
       if (state.isDrawerOpen == false) {
         state.openDrawer();
       }
@@ -91,10 +96,10 @@ List<OnboardingStep> onboardingSteps = [
   OnboardingStep(
     routeName: StudentsScreen.routeName,
     targetId: learnMore,
-    message: "Vous trouverez ici davantage d'informations et du support.",
+    message: 'Vous trouverez ici davantage d\'informations et du support.',
     prepareNav: (context, outsideState) async {
       final state = outsideState as StudentsScreenState;
-      debugPrint("prepareNav for OnboardinStep $learnMore running");
+      _logger.finest('prepareNav for OnboardinStep $learnMore running');
       if (state.isDrawerOpen == false) {
         state.openDrawer();
       }
