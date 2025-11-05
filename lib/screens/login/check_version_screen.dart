@@ -7,6 +7,7 @@ import 'package:mon_stage_en_images/main.dart';
 import 'package:mon_stage_en_images/screens/login/login_screen.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/main_title_background.dart';
 import 'package:provider/provider.dart';
+import 'package:pub_semver/pub_semver.dart';
 
 final _logger = Logger('CheckVersionScreen');
 
@@ -17,9 +18,12 @@ class CheckVersionScreen extends StatelessWidget {
 
   Future<bool> _checkSoftwareVersion(BuildContext context) async {
     // Check the software version
-    final requiredVersion = await Provider.of<Database>(context, listen: false)
-        .getRequiredSoftwareVersion();
-    return requiredVersion == softwareVersion;
+    final requiredVersion = Version.parse(
+        await Provider.of<Database>(context, listen: false)
+                .getRequiredSoftwareVersion() ??
+            '0.0.0');
+    final current = Version.parse(softwareVersion);
+    return current >= requiredVersion;
   }
 
   @override
