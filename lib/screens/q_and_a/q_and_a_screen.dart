@@ -21,7 +21,6 @@ class QAndAScreen extends StatefulWidget {
     super.key,
   });
 
-  // static const routeName = '/q-and-a-screen';
   static const String routeName = '/q-and-a-screen';
 
   @override
@@ -29,14 +28,11 @@ class QAndAScreen extends StatefulWidget {
 
   static void onPageChangedRequestFromOutside(
       State<QAndAScreen> outsideState, int int) {
-    // _logger.("context for onPageChangedRequestFromOutside is $context");
-    // final state = context.findAncestorStateOfType<_QAndAScreenState>();
     final state = outsideState as _QAndAScreenState;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final controller = state._pageController;
       controller.animateToPage(int,
           duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
-      // state.setState(() {});
     });
   }
 }
@@ -46,7 +42,6 @@ class _QAndAScreenState extends State<QAndAScreen> {
   UserType _userType = UserType.none;
   User? _student;
   Target _viewSpan = Target.individual;
-  // late PageMode _pageMode;
   PageMode _pageMode = PageMode.fixView;
   var _answerFilter = AnswerSortAndFilter();
   VoidCallback? _pageViewAnimationListener;
@@ -97,9 +92,6 @@ class _QAndAScreenState extends State<QAndAScreen> {
 
   void onPageChanged(BuildContext context, int page) {
     _currentPage = page;
-    // OnboardingNavigatorObserver.instance.animationStatus.value =
-    //     AnimationStatus.forward;
-
     // On the main question page, if it is the teacher on a single student, then
     // back brings back to the student page. Otherwise, it opens the drawer.
     _switchQuestionModeCallback = page > 0 &&
