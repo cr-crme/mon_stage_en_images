@@ -15,7 +15,7 @@ class CheckVersionScreen extends StatelessWidget {
 
   static const routeName = '/check-version-screen';
 
-  Future<bool> _checkSoftwareVersion(context) async {
+  Future<bool> _checkSoftwareVersion(BuildContext context) async {
     // Check the software version
     final requiredVersion = await Provider.of<Database>(context, listen: false)
         .getRequiredSoftwareVersion();

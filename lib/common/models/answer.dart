@@ -56,7 +56,7 @@ class Answer extends ItemSerializable {
 
   String get questionId => id;
 
-  Answer deserializeItem(map) {
+  Answer deserializeItem(Map? map) {
     return Answer.fromSerialized(map);
   }
 
@@ -111,10 +111,9 @@ class StudentAnswers extends ItemSerializable {
   StudentAnswers(this.answers, {required String studentId})
       : super(id: studentId);
 
-  StudentAnswers.fromSerialized(map)
-      : answers = (map as Map?)
-                ?.values
-                .where((e) => map?['id'] != e)
+  StudentAnswers.fromSerialized(Map? map)
+      : answers = map?.values
+                .where((e) => map['id'] != e)
                 .map((answer) => Answer.fromSerialized(
                     (answer as Map).cast<String, dynamic>()))
                 .toList() ??

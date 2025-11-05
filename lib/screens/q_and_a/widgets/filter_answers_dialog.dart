@@ -23,12 +23,12 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
   late bool _includeArchivedStudents =
       widget.currentFilter.includeArchivedStudents;
 
-  void _selectSorting(value) {
-    _sorting = value;
+  void _selectSorting(AnswerSorting? value) {
+    _sorting = value ?? AnswerSorting.byDate;
     setState(() {});
   }
 
-  void _toggleFromWhom(value) {
+  void _toggleFromWhom(AnswerFromWhomFilter value) {
     if (_fromWhom.contains(value)) {
       _fromWhom.remove(value);
     } else {
@@ -37,7 +37,7 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
     setState(() {});
   }
 
-  void _toggleContent(value) {
+  void _toggleContent(AnswerContentFilter value) {
     if (_content.contains(value)) {
       _content.remove(value);
     } else {
@@ -46,7 +46,7 @@ class _FilterAnswerDialogState extends State<FilterAnswerDialog> {
     setState(() {});
   }
 
-  void _toggleIncludeArchived(value) {
+  void _toggleIncludeArchived(bool value) {
     _includeArchivedStudents = value;
     setState(() {});
   }

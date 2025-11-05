@@ -28,7 +28,7 @@ class _ForgotPasswordAlertDialogState extends State<ForgotPasswordAlertDialog> {
     return null;
   }
 
-  _finalize() async {
+  Future<void> _finalize() async {
     _formKey.currentState?.save();
 
     _isloading = true;

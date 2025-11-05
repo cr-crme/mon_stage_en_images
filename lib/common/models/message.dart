@@ -17,7 +17,7 @@ class Message extends ItemSerializableWithCreationTime {
         creatorId = map?['creatorId'],
         super.fromSerialized();
 
-  Message deserializeItem(map) => Message.fromSerialized(map);
+  Message deserializeItem(Map? map) => Message.fromSerialized(map);
 
   @override
   Map<String, dynamic> serializedMap() {

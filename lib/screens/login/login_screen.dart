@@ -142,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  Future<void> _showForgotPasswordDialog(email) async {
+  Future<void> _showForgotPasswordDialog(String? email) async {
     await showDialog<bool?>(
       context: context,
       builder: (context) => ForgotPasswordAlertDialog(email: email),

@@ -14,7 +14,7 @@ class AllQuestions extends FirebaseListProvided<Question> with Section {
 
   @override
   Question deserializeItem(data) {
-    return Question.fromSerialized(data.cast<String, dynamic>());
+    return Question.fromSerialized(data);
   }
 
   ///

@@ -15,7 +15,8 @@ class TermsAndServicesScreen extends StatelessWidget {
 
   final sharedPrefName = 'hasAlreadyAcceptedTermsAndServices';
 
-  Future<bool> _haveAlreadyAcceptedTermsAndServices(context) async {
+  Future<bool> _haveAlreadyAcceptedTermsAndServices(
+      BuildContext context) async {
     if (Provider.of<Database>(context, listen: false)
         .currentUser!
         .termsAndServicesAccepted) {
@@ -27,12 +28,13 @@ class TermsAndServicesScreen extends StatelessWidget {
     return false;
   }
 
-  Future<void> _acceptTermsAndServices(context) async {
+  Future<void> _acceptTermsAndServices(BuildContext context) async {
     final database = Provider.of<Database>(context, listen: false);
     final user = database.currentUser!;
     await database.modifyUser(
         user: user, newInfo: user.copyWith(termsAndServicesAccepted: true));
 
+    if (!context.mounted) return;
     _continueToApp(context);
   }
 

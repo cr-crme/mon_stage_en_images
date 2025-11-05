@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 mixin Section {
   static const int nbSections = 6;
 
-  static String letter(index) {
+  static String letter(int index) {
     return name(index)[0];
   }
 
-  static String name(index) {
+  static String name(int index) {
     return [
       'Matières et produits',
       'Équipements',
@@ -18,7 +18,7 @@ mixin Section {
     ][index];
   }
 
-  static MaterialColor color(index) {
+  static MaterialColor color(int index) {
     return [
       Colors.red,
       Colors.orange,

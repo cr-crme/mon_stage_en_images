@@ -40,7 +40,7 @@ class Question extends ItemSerializableWithCreationTime {
     );
   }
 
-  Question deserializeItem(map) => Question.fromSerialized(map);
+  Question deserializeItem(Map? map) => Question.fromSerialized(map);
 
   @override
   Map<String, dynamic> serializedMap() => {

@@ -154,7 +154,7 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
     // Checking if our step is null and if we should flag its index as inactive
     final step = current;
     if (step == null) {
-      _logger.severe('_navToStep : will return because currentStep is null');
+      _logger.finest('_navToStep : will return because currentStep is null');
       return;
     }
     // Navigating to the OnboardingStep Widget's route.
@@ -340,13 +340,13 @@ class _OnboardingLayoutState extends State<OnboardingLayout> {
 
   @override
   Widget build(BuildContext context) {
-    _logger.info(
+    _logger.finer(
         'OnboardingLayout build : _currentUser is $_currentUser | _hasSeenOnboarding is $_hasSeenOnboarding ');
-    _logger.info(
+    _logger.finer(
         '| _hasAlreadySeenTheIrrstPage is $_hasAlreadySeenTheIrrstPage | _currentUser!.termsAndServicesAccepted is ${_currentUser?.termsAndServicesAccepted}');
     _logger
-        .info('| isValidScreenToShowTutorial is $isValidScreenToShowTutorial');
-    _logger.info('build : showTutorial is ${_checkShowTutorial()}');
+        .finer('| isValidScreenToShowTutorial is $isValidScreenToShowTutorial');
+    _logger.finer('build : showTutorial is ${_checkShowTutorial()}');
 
     return Stack(children: [
       widget.child,

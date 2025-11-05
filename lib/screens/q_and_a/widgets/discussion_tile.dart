@@ -19,7 +19,8 @@ class DiscussionTile extends StatelessWidget {
   final Message discussion;
   final bool isLast;
 
-  void _showImageFullScreen(context, {required Uint8List imageData}) {
+  void _showImageFullScreen(BuildContext context,
+      {required Uint8List imageData}) {
     showDialog(
         context: context,
         builder: (context) => GestureDetector(

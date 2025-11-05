@@ -20,9 +20,9 @@ class GoToIrsstScreen extends StatelessWidget {
 
   final sharedPrefName = 'hasAlreadySeenTheIrrstPage';
 
-  Future<bool> _haveAlreadySeenThePage(context) async {
+  Future<bool> _haveAlreadySeenThePage(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.getBool(sharedPrefName) ?? false) {
+    if (context.mounted && (prefs.getBool(sharedPrefName) ?? false)) {
       _continueToApp(context);
     }
     await prefs.setBool(sharedPrefName, true);
@@ -30,8 +30,9 @@ class GoToIrsstScreen extends StatelessWidget {
     return false;
   }
 
-  Future<void> _goVisitWebSite(context) async {
+  Future<void> _goVisitWebSite(BuildContext context) async {
     await launchUrl(url);
+    if (!context.mounted) return;
     _continueToApp(context);
   }
 

@@ -182,7 +182,7 @@ class _QAndAListViewState extends State<QAndAListView> {
     }
   }
 
-  void _onExpand(index) {
+  void _onExpand(int index) {
     // If we closed the card, just do it
     if (_isExpanded[index]) {
       _isExpanded[index] = false;

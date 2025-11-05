@@ -45,7 +45,7 @@ class OnboardingNavigatorObserver extends NavigatorObserver {
   final ValueNotifier<AnimationStatus?> animationStatus =
       ValueNotifier(AnimationStatus.completed);
 
-  setAnimationStatus(AnimationStatus status) {
+  void setAnimationStatus(AnimationStatus status) {
     animationStatus.value = status;
   }
 
@@ -68,7 +68,7 @@ class OnboardingNavigatorObserver extends NavigatorObserver {
     super.didPop(route, previousRoute);
   }
 
-  _reactToNavigationEvent(Route? route) {
+  void _reactToNavigationEvent(Route? route) {
     _logger.finest(
         'routeName in _reactToNavigationevent is ${route?.settings.name}');
 
