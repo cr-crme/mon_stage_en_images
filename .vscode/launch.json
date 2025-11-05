@@ -15,12 +15,18 @@
             "name": "Mon stage en images",
             "request": "launch",
             "type": "dart",
+             "args": [
+                "--dart-define=MSEI_USE_EMULATOR=true"
+            ],
         },
         {
             "name": "Mon stage en images (with emulator)",
             "request": "launch",
             "type": "dart",
-            "preLaunchTask": "Open Firebase Emulator Console"
+            "preLaunchTask": "Open Firebase Emulator Console",
+            "args": [
+                "--dart-define=MSEI_USE_EMULATOR=true"
+            ],
         },
         {
             "name": "Data analyses",

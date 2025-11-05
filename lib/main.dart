@@ -21,7 +21,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '/firebase_options.dart';
 
-const String softwareVersion = '1.1.0';
+const String softwareVersion = '1.1.1';
 final _logger = Logger('main');
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 ValueNotifier<bool> isValidScreenToShowTutorial = ValueNotifier<bool>(false);
@@ -40,7 +40,8 @@ void main() async {
   // then a local database is created. To facilitate the filling of the database
   // one can create a user, login with it, then in the drawer, select the
   // 'Reinitialize the database' button.
-  const useEmulator = true;
+  const useEmulator =
+      bool.fromEnvironment('MSEI_USE_EMULATOR', defaultValue: false);
   final userDatabase = Database();
   await userDatabase.initialize(
       useEmulator: useEmulator,
