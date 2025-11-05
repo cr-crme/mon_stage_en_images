@@ -2,14 +2,16 @@ import 'package:ezlogin/ezlogin.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fireauth;
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:logging/logging.dart';
 import 'package:mon_stage_en_images/common/models/answer.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
+import 'package:mon_stage_en_images/common/models/user.dart';
 import 'package:mon_stage_en_images/common/providers/all_answers.dart';
 import 'package:mon_stage_en_images/common/providers/all_questions.dart';
 
-import 'user.dart';
-
 export 'package:ezlogin/ezlogin.dart';
+
+final _logger = Logger('Database');
 
 class Database extends EzloginFirebase with ChangeNotifier {
   ///
@@ -113,7 +115,7 @@ class Database extends EzloginFirebase with ChangeNotifier {
           ? null
           : User.fromSerialized((data.value as Map?)?.cast<String, dynamic>());
     } on Exception {
-      debugPrint('Error while fetching user $id');
+      _logger.severe('Error while fetching user $id');
       return null;
     }
   }
@@ -152,7 +154,7 @@ class Database extends EzloginFirebase with ChangeNotifier {
           .ref('$usersPath/${_currentUser!.id}')
           .get();
     } on Exception {
-      debugPrint('Error while fetching user ${_currentUser!.id}');
+      _logger.severe('Error while fetching user ${_currentUser!.id}');
       return;
     }
 

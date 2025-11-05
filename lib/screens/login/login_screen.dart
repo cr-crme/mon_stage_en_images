@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:logging/logging.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
 import 'package:mon_stage_en_images/common/models/text_reader.dart';
@@ -15,6 +16,8 @@ import 'package:mon_stage_en_images/screens/login/widgets/forgot_password_alert_
 import 'package:mon_stage_en_images/screens/login/widgets/main_title_background.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/new_user_alert_dialog.dart';
 import 'package:provider/provider.dart';
+
+final _logger = Logger('LoginScreen');
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -114,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
       )
           .then(
         (value) {
-          debugPrint("$value login is complete");
+          _logger.info("$value login is complete");
           return value;
         },
       );

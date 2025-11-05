@@ -29,7 +29,7 @@ const showDebugOverlay = false;
 
 void main() async {
   // Set logging to INFO
-  Logger.root.level = Level.WARNING;
+  Logger.root.level = Level.INFO;
   Logger.root.onRecord.listen((record) {
     // ignore: avoid_print
     print(
