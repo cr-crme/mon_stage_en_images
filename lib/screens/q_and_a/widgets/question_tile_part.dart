@@ -64,7 +64,8 @@ class QuestionPart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(question == null ? 'Nouvelle question' : question!.text,
+      title: Text(
+          question == null ? 'Créer une nouvelle question' : question!.text,
           style: _pickTextStyle(context, answer)),
       trailing: _QuestionPartTrailing(
         question: question,
@@ -126,11 +127,13 @@ class _QuestionPartTrailing extends StatelessWidget {
     final userType =
         Provider.of<Database>(context, listen: false).currentUser!.userType;
 
-    final allAnswers = question == null
+    final List<Answer> allAnswers = question == null
         ? []
-        : Provider.of<AllAnswers>(context, listen: false).filter(
+        : Provider.of<AllAnswers>(context, listen: true).filter(
             questionIds: [question!.id],
             studentIds: studentId == null ? null : [studentId!]).toList();
+
+    final checkIcon = Icon(Icons.check, size: 35, color: Colors.green[600]);
 
     if (userType == UserType.student) {
       return Row(
@@ -138,7 +141,7 @@ class _QuestionPartTrailing extends StatelessWidget {
         children: [
           TakingActionNotifier(
             number: hasAction ? 1 : null,
-            forcedText: '?',
+            // forcedText: '?',
             borderColor: Colors.black,
             child: const Text(''),
           ),
@@ -149,6 +152,8 @@ class _QuestionPartTrailing extends StatelessWidget {
               : IconButton(
                   onPressed: startReadingCallback,
                   icon: const Icon(Icons.volume_up)),
+          if (allAnswers.isNotEmpty)
+            allAnswers.first.isValidated ? checkIcon : const SizedBox.shrink()
         ],
       );
     } else if (userType == UserType.teacher) {
@@ -163,8 +168,11 @@ class _QuestionPartTrailing extends StatelessWidget {
           viewSpan: viewSpan,
           pageMode: pageMode,
         );
-      } else if (studentId != null && allAnswers.first.isValidated) {
-        return Icon(Icons.check, size: 35, color: Colors.green[600]);
+      } else if (studentId != null && allAnswers.isNotEmpty) {
+        return allAnswers.first.isValidated
+            ? checkIcon
+            : TakingActionNotifier(
+                number: hasAction ? 1 : null, child: const Text(''));
       } else {
         return const SizedBox();
       }
@@ -216,7 +224,7 @@ class _QuestionActivatedState extends StatelessWidget {
             barrierDismissible: false,
             builder: (BuildContext context) {
               return AreYouSureDialog(
-                title: 'Confimer le choix',
+                title: 'Confirmer le choix',
                 content:
                     'Voulez-vous vraiment ${value ? 'activer' : 'désactiver'} '
                     'cette question pour tous les élèves ?',

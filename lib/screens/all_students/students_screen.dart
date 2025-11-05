@@ -9,6 +9,8 @@ import 'package:mon_stage_en_images/common/providers/all_answers.dart';
 import 'package:mon_stage_en_images/common/providers/all_questions.dart';
 import 'package:mon_stage_en_images/common/widgets/are_you_sure_dialog.dart';
 import 'package:mon_stage_en_images/common/widgets/main_drawer.dart';
+import 'package:mon_stage_en_images/onboarding/data/onboarding_steps_list.dart';
+import 'package:mon_stage_en_images/onboarding/widgets/onboarding_target.dart';
 import 'package:provider/provider.dart';
 
 import 'widgets/new_student_alert_dialog.dart';
@@ -22,7 +24,7 @@ class StudentsScreen extends StatefulWidget {
   static const routeName = '/students-screen';
 
   @override
-  State<StudentsScreen> createState() => _StudentsScreenState();
+  State<StudentsScreen> createState() => StudentsScreenState();
 }
 
 void _showSnackbar(Widget content, ScaffoldMessengerState scaffold) {
@@ -38,7 +40,16 @@ void _showSnackbar(Widget content, ScaffoldMessengerState scaffold) {
   );
 }
 
-class _StudentsScreenState extends State<StudentsScreen> {
+// Static variable so the value is remembered when we come back to this screen
+bool _onlyActiveStudents = true;
+
+//StudentsScreenState is purposefully made public so onboarding can access its inner methods (like openDrawer)
+class StudentsScreenState extends State<StudentsScreen> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void openDrawer() => scaffoldKey.currentState?.openDrawer();
+  bool? get isDrawerOpen => scaffoldKey.currentState?.isDrawerOpen;
+
   Future<void> _addStudent() async {
     final scaffold = ScaffoldMessenger.of(context);
 
@@ -274,39 +285,77 @@ class _StudentsScreenState extends State<StudentsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final students = Provider.of<Database>(context).students.toList();
+    final students = Provider.of<Database>(context)
+        .students(onlyActive: _onlyActiveStudents)
+        .toList();
     students.sort(
         (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
+    students.sort((a, b) => a.isActive && b.isNotActive
+        ? -1
+        : a.isNotActive && b.isActive
+            ? 1
+            : 0);
 
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: const Text('Mes élèves'),
+        leading: OnboardingTarget(
+          onboardingId: drawer,
+          child: IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () {
+              scaffoldKey.currentState?.openDrawer();
+            },
+          ),
+        ),
         actions: [
-          IconButton(
-            onPressed: _addStudent,
-            icon: const Icon(
-              Icons.add,
+          OnboardingTarget(
+            onboardingId: addStudent,
+            child: IconButton(
+              onPressed: _addStudent,
+              icon: const Icon(
+                Icons.add,
+              ),
+              iconSize: 35,
+              color: Colors.black,
             ),
-            iconSize: 35,
-            color: Colors.black,
           ),
           const SizedBox(width: 15),
         ],
       ),
-      body: Column(
+      body: Stack(
+        alignment: Alignment.topCenter,
         children: [
-          const SizedBox(height: 15),
-          Text('Mon stage en images',
-              style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: 3),
-          Expanded(
-            child: ListView.builder(
-              itemBuilder: (context, index) => StudentListTile(
-                students[index].id,
-                modifyStudentCallback: _modifyStudent,
+          Column(
+            children: [
+              const SizedBox(height: 15),
+              Text('Mon stage en images',
+                  style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 3),
+              Align(
+                  alignment: Alignment.topRight,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Afficher les élèves archivés'),
+                      SizedBox(width: 10),
+                      Switch(
+                          onChanged: (value) =>
+                              setState(() => _onlyActiveStudents = !value),
+                          value: !_onlyActiveStudents),
+                    ],
+                  )),
+              Expanded(
+                child: ListView.builder(
+                  itemBuilder: (context, index) => StudentListTile(
+                    students[index].id,
+                    modifyStudentCallback: _modifyStudent,
+                  ),
+                  itemCount: students.length,
+                ),
               ),
-              itemCount: students.length,
-            ),
+            ],
           ),
         ],
       ),

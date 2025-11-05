@@ -29,7 +29,7 @@ class MetierAppBar extends StatelessWidget {
         color: Theme.of(context).colorScheme.primary.withAlpha(90),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
+            color: Colors.grey.withAlpha(255 ~/ 2),
             spreadRadius: 5,
             blurRadius: 7,
           ),

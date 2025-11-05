@@ -2,14 +2,16 @@ import 'package:ezlogin/ezlogin.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fireauth;
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:logging/logging.dart';
 import 'package:mon_stage_en_images/common/models/answer.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
+import 'package:mon_stage_en_images/common/models/user.dart';
 import 'package:mon_stage_en_images/common/providers/all_answers.dart';
 import 'package:mon_stage_en_images/common/providers/all_questions.dart';
 
-import 'user.dart';
-
 export 'package:ezlogin/ezlogin.dart';
+
+final _logger = Logger('Database');
 
 class Database extends EzloginFirebase with ChangeNotifier {
   ///
@@ -109,9 +111,11 @@ class Database extends EzloginFirebase with ChangeNotifier {
   Future<User?> user(String id) async {
     try {
       final data = await FirebaseDatabase.instance.ref('$usersPath/$id').get();
-      return data.value == null ? null : User.fromSerialized(data.value);
+      return data.value == null
+          ? null
+          : User.fromSerialized((data.value as Map?)?.cast<String, dynamic>());
     } on Exception {
-      debugPrint('Error while fetching user $id');
+      _logger.severe('Error while fetching user $id');
       return null;
     }
   }
@@ -129,7 +133,9 @@ class Database extends EzloginFirebase with ChangeNotifier {
   }
 
   final List<User> _students = [];
-  Iterable<User> get students => [..._students];
+  Iterable<User> students({bool onlyActive = true}) {
+    return onlyActive ? _students.where((s) => s.isActive) : [..._students];
+  }
 
   Future<void> _fetchStudents() async {
     if (_currentUser == null) return;
@@ -148,7 +154,7 @@ class Database extends EzloginFirebase with ChangeNotifier {
           .ref('$usersPath/${_currentUser!.id}')
           .get();
     } on Exception {
-      debugPrint('Error while fetching user ${_currentUser!.id}');
+      _logger.severe('Error while fetching user ${_currentUser!.id}');
       return;
     }
 
@@ -216,5 +222,11 @@ class Database extends EzloginFirebase with ChangeNotifier {
     final data =
         await FirebaseDatabase.instance.ref('appInfo/requiredVersion').get();
     return data.value as String?;
+  }
+
+  @override
+  Future<bool> resetPassword({String? email}) async {
+    if (email == null) return false;
+    return await super.resetPassword(email: email);
   }
 }

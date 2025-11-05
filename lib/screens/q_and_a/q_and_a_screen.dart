@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:mon_stage_en_images/common/models/answer_sort_and_filter.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
 import 'package:mon_stage_en_images/common/models/section.dart';
 import 'package:mon_stage_en_images/common/models/user.dart';
 import 'package:mon_stage_en_images/common/widgets/main_drawer.dart';
+import 'package:mon_stage_en_images/onboarding/application/onboarding_observer.dart';
 import 'package:mon_stage_en_images/screens/all_students/students_screen.dart';
 import 'package:mon_stage_en_images/screens/q_and_a/main_metier_page.dart';
 import 'package:mon_stage_en_images/screens/q_and_a/question_and_answer_page.dart';
@@ -12,13 +14,27 @@ import 'package:mon_stage_en_images/screens/q_and_a/widgets/filter_answers_dialo
 import 'package:mon_stage_en_images/screens/q_and_a/widgets/metier_app_bar.dart';
 import 'package:provider/provider.dart';
 
-class QAndAScreen extends StatefulWidget {
-  const QAndAScreen({super.key});
+final _logger = Logger('QAndAScreen');
 
-  static const routeName = '/q-and-a-screen';
+class QAndAScreen extends StatefulWidget {
+  const QAndAScreen({
+    super.key,
+  });
+
+  static const String routeName = '/q-and-a-screen';
 
   @override
   State<QAndAScreen> createState() => _QAndAScreenState();
+
+  static void onPageChangedRequestFromOutside(
+      State<QAndAScreen> outsideState, int int) {
+    final state = outsideState as _QAndAScreenState;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final controller = state._pageController;
+      controller.animateToPage(int,
+          duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
+    });
+  }
 }
 
 class _QAndAScreenState extends State<QAndAScreen> {
@@ -26,12 +42,29 @@ class _QAndAScreenState extends State<QAndAScreen> {
   UserType _userType = UserType.none;
   User? _student;
   Target _viewSpan = Target.individual;
-  late PageMode _pageMode;
+  PageMode _pageMode = PageMode.fixView;
   var _answerFilter = AnswerSortAndFilter();
+  VoidCallback? _pageViewAnimationListener;
 
   final _pageController = PageController();
   var _currentPage = 0;
   VoidCallback? _switchQuestionModeCallback;
+
+  @override
+  void initState() {
+    _pageViewAnimationListener = () {
+      _logger.finest("page in pageControlller is ${_pageController.page}");
+      if (_pageController.page == _pageController.page?.roundToDouble()) {
+        OnboardingNavigatorObserver.instance.animationStatus.value =
+            AnimationStatus.completed;
+      } else {
+        OnboardingNavigatorObserver.instance.animationStatus.value =
+            AnimationStatus.dismissed;
+      }
+    };
+    _pageController.addListener(_pageViewAnimationListener!);
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {
@@ -42,19 +75,23 @@ class _QAndAScreenState extends State<QAndAScreen> {
 
     final currentUser = database.currentUser!;
     _userType = currentUser.userType;
-
-    final arguments = ModalRoute.of(context)!.settings.arguments as List;
-    _viewSpan = arguments[0] as Target;
-    _pageMode = arguments[1] as PageMode;
-    _student =
-        _userType == UserType.student ? currentUser : arguments[2] as User?;
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        final arguments = ModalRoute.of(context)!.settings.arguments as List;
+        _viewSpan = arguments[0] as Target;
+        setState(() {
+          _pageMode = arguments[1] as PageMode;
+        });
+        _student =
+            _userType == UserType.student ? currentUser : arguments[2] as User?;
+      },
+    );
 
     _isInitialized = true;
   }
 
   void onPageChanged(BuildContext context, int page) {
     _currentPage = page;
-
     // On the main question page, if it is the teacher on a single student, then
     // back brings back to the student page. Otherwise, it opens the drawer.
     _switchQuestionModeCallback = page > 0 &&
@@ -81,14 +118,15 @@ class _QAndAScreenState extends State<QAndAScreen> {
 
   void onPageChangedRequest(int page) {
     _pageController.animateToPage(page + 1,
-        duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
+        duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
     setState(() {});
   }
 
   @override
   void dispose() {
-    super.dispose();
+    _pageController.removeListener(_pageViewAnimationListener!);
     _pageController.dispose();
+    super.dispose();
   }
 
   void _onBackPressed() {

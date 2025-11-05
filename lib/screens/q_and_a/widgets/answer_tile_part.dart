@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mon_stage_en_images/common/misc/database_helper.dart';
 import 'package:mon_stage_en_images/common/models/answer.dart';
 import 'package:mon_stage_en_images/common/models/answer_sort_and_filter.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
@@ -33,9 +34,6 @@ class AnswerPart extends StatefulWidget {
 }
 
 class _AnswerPartState extends State<AnswerPart> {
-  late final _filterMode =
-      widget.filterMode ?? AnswerSortAndFilter(sorting: AnswerSorting.byDate);
-
   List<Message> _combineMessagesFromAllStudents(List<Answer> answers) {
     final teacherId =
         Provider.of<Database>(context, listen: false).currentUser!.id;
@@ -44,27 +42,34 @@ class _AnswerPartState extends State<AnswerPart> {
     var discussions = Discussion();
     for (final answer in answers) {
       for (final message in answer.discussion.toListByTime(reversed: true)) {
-        final isTheRightCreatorId = (_filterMode.fromWhomFilter
-                    .contains(AnswerFromWhomFilter.studentOnly) &&
-                message.creatorId != teacherId) ||
-            (_filterMode.fromWhomFilter
-                    .contains(AnswerFromWhomFilter.teacherOnly) &&
-                message.creatorId == teacherId);
+        final isTheRightCreatorId = widget.filterMode == null ||
+            ((widget.filterMode!.fromWhomFilter
+                        .contains(AnswerFromWhomFilter.studentOnly) &&
+                    message.creatorId != teacherId) ||
+                (widget.filterMode!.fromWhomFilter
+                        .contains(AnswerFromWhomFilter.teacherOnly) &&
+                    message.creatorId == teacherId));
 
-        final isTheRightContent =
-            (_filterMode.contentFilter.contains(AnswerContentFilter.textOnly) &&
+        final isTheRightContent = widget.filterMode == null ||
+            ((widget.filterMode!.contentFilter
+                        .contains(AnswerContentFilter.textOnly) &&
                     !message.isPhotoUrl) ||
-                (_filterMode.contentFilter
+                (widget.filterMode!.contentFilter
                         .contains(AnswerContentFilter.photoOnly) &&
-                    message.isPhotoUrl);
-        if (isTheRightCreatorId && isTheRightContent) {
+                    message.isPhotoUrl));
+        final isAllowed = widget.filterMode == null ||
+            (widget.filterMode!.includeArchivedStudents ||
+                DateTime.fromMicrosecondsSinceEpoch(message.creationTimeStamp)
+                    .isAfter(isActiveLimitDate));
+        if (isTheRightCreatorId && isTheRightContent && isAllowed) {
           discussions.add(message);
         }
       }
     }
 
-    // Filter by date if required
-    return _filterMode.sorting == AnswerSorting.byDate
+    // Filter by date if required (and default)
+    return widget.filterMode == null ||
+            widget.filterMode!.sorting == AnswerSorting.byDate
         ? discussions.toListByTime(reversed: true)
         : discussions.toList();
   }
@@ -121,7 +126,7 @@ class _AnswerPartState extends State<AnswerPart> {
     final student = widget.studentId == null
         ? null
         : Provider.of<Database>(context, listen: false)
-            .students
+            .students(onlyActive: false)
             .firstWhere((e) => e.id == widget.studentId);
 
     final answers = Provider.of<AllAnswers>(context).filter(

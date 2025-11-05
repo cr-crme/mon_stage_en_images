@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mon_stage_en_images/common/misc/storage_service.dart';
@@ -72,6 +73,20 @@ class _DiscussionListViewState extends State<DiscussionListView> {
   }
 
   Future<void> _addPhoto(ImageSource source) async {
+    // TODO Edit firebase rules to allow userType 'teacher' to write in storage
+
+    final userType =
+        Provider.of<Database>(context, listen: false).currentUser!.userType;
+    if (userType == UserType.teacher || kIsWeb) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          content: Text('Fonctionnalité à venir'),
+        ),
+      );
+      return;
+    }
+
     final imagePicker = ImagePicker();
     final imageXFile =
         await imagePicker.pickImage(source: source, maxWidth: 500);
@@ -98,8 +113,8 @@ class _DiscussionListViewState extends State<DiscussionListView> {
     bool markAsValidated = false,
   }) async {
     // If it is the very first time the teacher validates an answer, we want to
-    // show a pop explaining that the student can continue to see the question
-    // but cannot modify his answer anymore.
+    // Show a pop explaining that the student can continue to see the question
+    // But cannot modify his answer anymore.
     final showPopup = (await SharedPreferences.getInstance())
             .getBool('showValidatingWarning') ??
         true;
@@ -223,9 +238,12 @@ class _DiscussionListViewState extends State<DiscussionListView> {
         _MessageListView(
           discussion: widget.messages,
         ),
-        if (userType == UserType.student && !widget.isAnswerValidated)
+        SizedBox(
+          height: 4,
+        ),
+        if (!widget.isAnswerValidated)
           Padding(
-            padding: const EdgeInsets.only(bottom: 4.0),
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -261,7 +279,9 @@ class _DiscussionListViewState extends State<DiscussionListView> {
               ],
             ),
           ),
-        if (!widget.isAnswerValidated && widget.student != null)
+        if (!widget.isAnswerValidated &&
+            widget.student != null &&
+            widget.student!.isActive)
           Container(
             padding: const EdgeInsets.only(left: 15),
             child: Form(
@@ -323,6 +343,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
           ),
         if (userType == UserType.teacher &&
             widget.student != null &&
+            widget.student!.isActive &&
             answer!.hasAnswer)
           Align(
             alignment: Alignment.centerLeft,
@@ -335,14 +356,15 @@ class _DiscussionListViewState extends State<DiscussionListView> {
                               color: Theme.of(context).colorScheme.secondary)),
                       onPressed: () => _manageAnswer(markAsValidated: false),
                     )
-                  : ElevatedButton(
+                  : ElevatedButton.icon(
                       onPressed: () {
                         _fieldText.text.isEmpty
                             ? _manageAnswer(markAsValidated: true)
                             : _sendMessage(markAsValidated: true);
                       },
                       style: ElevatedButton.styleFrom(backgroundColor: null),
-                      child: const Text('Valider la question'),
+                      icon: const Icon(Icons.check),
+                      label: const Text('Clore la discussion'),
                     ),
             ),
           ),

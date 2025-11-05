@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
 import 'package:mon_stage_en_images/common/models/user.dart';
+import 'package:mon_stage_en_images/onboarding/data/onboarding_steps_list.dart';
+import 'package:mon_stage_en_images/onboarding/widgets/onboarding_target.dart';
 import 'package:mon_stage_en_images/screens/q_and_a/widgets/metier_tile.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -31,7 +33,14 @@ class MainMetierPage extends StatelessWidget {
             Text('Résumé des réponses',
                 style: Theme.of(context).textTheme.titleLarge),
           if (student != null) const SizedBox(height: 5),
-          MetierTile(0, studentId: student?.id, onTap: onPageChanged),
+          OnboardingTarget(
+            onboardingId: metier,
+            child: MetierTile(
+              0,
+              studentId: student?.id,
+              onTap: onPageChanged,
+            ),
+          ),
           MetierTile(1, studentId: student?.id, onTap: onPageChanged),
           MetierTile(2, studentId: student?.id, onTap: onPageChanged),
           MetierTile(3, studentId: student?.id, onTap: onPageChanged),

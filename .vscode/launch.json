@@ -5,10 +5,29 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Flutter",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main.dart",
+            "preLaunchTask": "my task",
+        },
+        {
             "name": "Mon stage en images",
             "request": "launch",
             "type": "dart",
+        },
+        {
+            "name": "Mon stage en images (with emulator)",
+            "request": "launch",
+            "type": "dart",
             "preLaunchTask": "Open Firebase Emulator Console"
+        },
+        {
+            "name": "Data analyses",
+            "request": "launch",
+            "type": "debugpy",
+            "program": "${workspaceFolder}/ressources/analyses/firebase_excel_coverter.py",
+            "cwd": "${workspaceFolder}/ressources/analyses/",
         }
     ]
 }

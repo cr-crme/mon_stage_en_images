@@ -1,11 +1,14 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:logging/logging.dart';
 import 'package:mon_stage_en_images/common/models/database.dart';
 import 'package:mon_stage_en_images/main.dart';
 import 'package:mon_stage_en_images/screens/login/login_screen.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/main_title_background.dart';
 import 'package:provider/provider.dart';
+
+final _logger = Logger('CheckVersionScreen');
 
 class CheckVersionScreen extends StatelessWidget {
   const CheckVersionScreen({super.key});
@@ -63,8 +66,12 @@ class CheckVersionScreen extends StatelessWidget {
                   // If the version is valid
                   if (snapshot.data == true) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                      Navigator.of(context)
-                          .pushReplacementNamed(LoginScreen.routeName);
+                      _logger.finest(
+                          "will navigate to LoginScreen from CheckVersionScreen");
+                      rootNavigatorKey.currentState
+                          ?.pushReplacementNamed(LoginScreen.routeName);
+                      // Navigator.of(context)
+                      //     .pushReplacementNamed(LoginScreen.routeName);
                     });
                   }
                   // Tell the user their version is obsolete so they have to download the latest

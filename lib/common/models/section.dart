@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Section {
+mixin Section {
   static const int nbSections = 6;
 
   static String letter(index) {

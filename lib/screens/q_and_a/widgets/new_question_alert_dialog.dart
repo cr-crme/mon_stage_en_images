@@ -43,7 +43,7 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
   @override
   void initState() {
     super.initState();
-    final students = Provider.of<Database>(context, listen: false).students;
+    final students = Provider.of<Database>(context, listen: false).students();
     final List<Answer> answers = widget.question == null
         ? []
         : Provider.of<AllAnswers>(context, listen: false).filter(
@@ -138,7 +138,7 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
   @override
   Widget build(BuildContext context) {
     final students =
-        Provider.of<Database>(context, listen: false).students.toList();
+        Provider.of<Database>(context, listen: false).students().toList();
     students.sort(
         (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
 
@@ -270,7 +270,9 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
               minLines: 1,
               maxLines: 3,
               decoration: InputDecoration(
-                labelText: 'Libellé de la question',
+                labelText: _fieldText.text.isEmpty
+                    ? 'Écrire la question'
+                    : 'Modifier la question',
                 suffixIcon: GestureDetector(
                     onTapDown: (_) => _dictateMessage(),
                     child: _isVoiceRecording

@@ -15,10 +15,10 @@ ThemeData teacherTheme() {
   final appBarTheme = AppBarTheme(
     titleTextStyle: TextStyle(
         fontSize: 20, color: colorSwatch.onPrimary, fontFamily: fontFamily),
-    color: primaryColor,
+    backgroundColor: primaryColor,
     iconTheme: const IconThemeData(color: Colors.black),
   );
-  final dialogTheme = DialogTheme(
+  final dialogTheme = DialogThemeData(
       backgroundColor: Colors.white, surfaceTintColor: Colors.grey[200]);
 
   const inputDecorationTheme = InputDecorationTheme(
@@ -33,7 +33,7 @@ ThemeData teacherTheme() {
   );
 
   final cardTheme =
-      CardTheme(color: Colors.grey[100], surfaceTintColor: Colors.white);
+      CardThemeData(color: Colors.grey[100], surfaceTintColor: Colors.white);
 
   final elevatedButton = ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
@@ -96,11 +96,11 @@ ThemeData studentTheme() {
   final appBarTheme = AppBarTheme(
     titleTextStyle: TextStyle(
         fontSize: 20, color: colorSwatch.onPrimary, fontFamily: fontFamily),
-    color: primaryColor,
+    backgroundColor: primaryColor,
     iconTheme: const IconThemeData(color: Colors.white),
   );
 
-  final dialogTheme = DialogTheme(
+  final dialogTheme = DialogThemeData(
       backgroundColor: Colors.white, surfaceTintColor: Colors.grey[200]);
 
   const inputDecorationTheme = InputDecorationTheme(
@@ -114,7 +114,7 @@ ThemeData studentTheme() {
   );
 
   final cardTheme =
-      CardTheme(color: Colors.grey[100], surfaceTintColor: Colors.white);
+      CardThemeData(color: Colors.grey[100], surfaceTintColor: Colors.white);
 
   final elevatedButton = ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
