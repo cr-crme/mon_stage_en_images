@@ -139,8 +139,6 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
       rootNavigatorKey.currentState
           ?.pushReplacementNamed(TermsAndServicesScreen.routeName);
-      // Navigator.of(context)
-      //     .pushReplacementNamed(TermsAndServicesScreen.routeName);
     });
   }
 
