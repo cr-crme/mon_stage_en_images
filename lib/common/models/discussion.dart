@@ -13,6 +13,6 @@ class Discussion extends ListSerializable<Message> with ItemsWithCreationTimed {
 
   @override
   Message deserializeItem(data) {
-    return Message.fromSerialized((data as Map?)?.cast<String, dynamic>());
+    return Message.fromSerialized(data);
   }
 }
