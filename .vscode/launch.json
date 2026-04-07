@@ -10,7 +10,7 @@
       "program": "lib/main.dart",
       "type": "dart",
       "args": [
-        "--dart-define=MSEI_USE_EMULATOR=true"
+        "--dart-define=MSEI_USE_EMULATOR=false"
       ],
     },
     {
