@@ -1,5 +1,9 @@
 {
   "rules": {
+    "isConnected": {
+      ".read": "auth.uid !== null",
+    	".write": false
+    },
     "appInfo": {
       ".read": true,
       ".write": false

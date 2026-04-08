@@ -38,8 +38,7 @@ void main() async {
       currentPlatform: DefaultFirebaseOptions.currentPlatform);
 
   try {
-    await Database.getRequiredSoftwareVersion()
-        .timeout(const Duration(seconds: 10));
+    await Database.getRequiredSoftwareVersion();
   } catch (_) {
     // If previous session crashed, user may sometime remains logged in, preventing
     // from connecting to the database

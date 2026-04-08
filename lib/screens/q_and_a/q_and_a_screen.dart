@@ -322,10 +322,18 @@ class QAndAScreenState extends State<QAndAScreen> {
     if (!mounted) return;
 
     setState(() => _isConnectingToken = true);
+    final database = Provider.of<Database>(context, listen: false);
     final teacherId = (await TeachingTokenHelpers.creatorIdOf(token: _token))!;
     if (!mounted) return;
 
-    final database = Provider.of<Database>(context, listen: false);
+    // Disconnect from previous token if exists
+    final previousToken = (await TeachingTokenHelpers.connectedToken(
+        studentId: database.currentUser!.id));
+    if (previousToken != null) {
+      await TeachingTokenHelpers.disconnectFromToken(
+          database.currentUser!.id, previousToken);
+    }
+
     _currentToken = _token;
     final studentId = database.currentUser!.id;
 
