@@ -84,3 +84,17 @@ Il est normal que la commande crash à la fin puisque nous n'avons pas accès au
 Utiliser enfin `Transporter` pour envoyer le fichier sur `App Store Connect`.
 
 ATTENTION: Vous allez recevoir un courriel de la part d'Apple environ 5 à 10 minutes après que le téléchargement ait réussi. Dans ce courriel, il y aura la mention de réussite ou échec de la soumission. Si c'est un échec, vous ne verrez pas le build dans votre liste de builds sur `App Store Connect`. Corrigez les erreurs et reprenez du début. Si c'est un succès, le build devrait immédiatement apparaître dans la liste de builds sur `App Store Connect`. Vous pouvez alors le sélectionner pour le soumettre à la revue.
+
+### Web
+
+Le bucket Firestore doit accepter les CORS du domaine de production (À faire une seule fois dans l'histoire du projet). Pour ce faire, il faut 
+
+- Premièrement installer le [CLI gsutil](https://dl.google.com/dl/cloudsdk/channels/rapid/GoogleCloudSDKInstaller.exe)
+- Ensuite, il faut s'authentifier avec un compte ayant accès au projet Firebase :
+
+        gcloud init
+        gcloud auth login
+
+ et ensuite rouler la commande suivante :
+
+    gcloud storage buckets update gs://monstageenimages.appspot.com --cors-file=cors.json
