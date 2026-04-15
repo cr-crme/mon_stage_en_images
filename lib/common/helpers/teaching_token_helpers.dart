@@ -58,7 +58,8 @@ class TeachingTokenHelpers {
     if (token == null) return;
 
     final user =
-        (await Database.root.child('users').child(userId).get()).value as Map?;
+        (await Database.safeGet(Database.root.child('users').child(userId)))
+            ?.value as Map?;
     final firstName = user?['firstName'];
     final lastName = user?['lastName'];
     final avatar = user?['avatar'];
@@ -78,15 +79,14 @@ class TeachingTokenHelpers {
 
   static Future<Map?> getPublicInformation(
       String teacherId, String token) async {
-    return (await Database.root
+    return (await Database.safeGet(Database.root
             .child('users')
             .child(teacherId)
             .child('tokens')
             .child('created')
             .child(token)
-            .child('public')
-            .get())
-        .value as Map?;
+            .child('public')))
+        ?.value as Map?;
   }
 
   static Future<void> deletePublicInformation(String teacherId) async {
@@ -171,8 +171,9 @@ class TeachingTokenHelpers {
   }
 
   static Future<Set<String>> _existingTokens() async {
-    final data = await Database.root.child('tokens').child('existing').get();
-    return (data.value as Map?)?.keys.cast<String>().toSet() ?? {};
+    final data =
+        await Database.safeGet(Database.root.child('tokens').child('existing'));
+    return (data?.value as Map?)?.keys.cast<String>().toSet() ?? {};
   }
 
   static Future<String?> connectedToken({required String studentId}) async {
@@ -181,30 +182,26 @@ class TeachingTokenHelpers {
         .child(studentId)
         .child('tokens')
         .child('connected');
-    final tokens = ((await tokensSnapshot.get()).value as Map?);
+    final tokens = (await Database.safeGet(tokensSnapshot))?.value as Map?;
     if (tokens == null || tokens.isEmpty) return null;
 
     return tokens.keys.first;
   }
 
   static Future<String?> creatorIdOf({required String token}) async {
-    final snapshot = (await Database.root
+    final snapshot = await Database.safeGet(Database.root
         .child('tokens')
         .child(token)
         .child('metadata')
-        .child('createdBy')
-        .get());
-    return snapshot.value as String?;
+        .child('createdBy'));
+    return snapshot?.value as String?;
   }
 
   static Future<Iterable<String>> userIdsConnectedTo(
       {required String token}) async {
-    final snapshot = await Database.root
-        .child('tokens')
-        .child(token)
-        .child('connectedUsers')
-        .get();
-    return (snapshot.value as Map?)?.keys.cast<String>() ?? [];
+    final snapshot = await Database.safeGet(
+        Database.root.child('tokens').child(token).child('connectedUsers'));
+    return (snapshot?.value as Map?)?.keys.cast<String>() ?? [];
   }
 
   static Future<String?> createdActiveToken({required String userId}) async {
@@ -214,14 +211,13 @@ class TeachingTokenHelpers {
 
   static Future<Iterable<String>> createdTokens(
       {required String userId, bool activeOnly = true}) async {
-    final snapshot = await Database.root
+    final snapshot = await Database.safeGet(Database.root
         .child('users')
         .child(userId)
         .child('tokens')
-        .child('created')
-        .get();
+        .child('created'));
 
-    final tokens = (snapshot.value as Map?)?.cast<String, dynamic>() ?? {};
+    final tokens = (snapshot?.value as Map?)?.cast<String, dynamic>() ?? {};
     if (activeOnly) {
       return tokens.entries
           .where((entry) => (entry.value as Map?)?['isActive'] == true)

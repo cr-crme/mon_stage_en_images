@@ -2,7 +2,7 @@
   "rules": {
     "isConnected": {
       ".read": "auth.uid !== null",
-      ".write": false
+    	".write": false
     },
     "appInfo": {
       ".read": true,

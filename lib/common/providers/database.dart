@@ -185,12 +185,9 @@ class Database extends EzloginFirebase with ChangeNotifier {
   Future<EzloginStatus> modifyUser(
       {required EzloginUser user, required EzloginUser newInfo}) async {
     // Get a copy of current tokens before modification (as they will be lost and needs to be updated)
-    final tokens = (await Database.root
-            .child('users')
-            .child(user.id)
-            .child('tokens')
-            .get())
-        .value as Map?;
+    final tokens = (await safeGet(
+            Database.root.child('users').child(user.id).child('tokens')))
+        ?.value as Map?;
     final status = await super.modifyUser(user: user, newInfo: newInfo);
     // Restore tokens after modification
     if (tokens != null) {
@@ -212,9 +209,10 @@ class Database extends EzloginFirebase with ChangeNotifier {
   @override
   Future<User?> user(String id) async {
     try {
-      final data = await Database.root.child(_userPathInternal).child(id).get();
-      return data.value is Map
-          ? User.fromSerialized((data.value as Map).cast<String, dynamic>())
+      final data =
+          await safeGet(Database.root.child(_userPathInternal).child(id));
+      return data?.value is Map
+          ? User.fromSerialized((data!.value as Map).cast<String, dynamic>())
           : null;
     } on Exception catch (error, stackTrace) {
       _logger.severe('Error while fetching ({$error}) user $id', stackTrace);
@@ -224,11 +222,11 @@ class Database extends EzloginFirebase with ChangeNotifier {
 
   @override
   Future<User?> userFromEmail(String email) async {
-    final data = await Database.root.child(_userPathInternal).get();
-    if (data.value == null) return null;
+    final data = await safeGet(Database.root.child(_userPathInternal));
+    if (data?.value == null) return null;
 
     final userdata =
-        (data.value as Map).values.firstWhere((e) => e['email'] == email);
+        (data!.value as Map).values.firstWhere((e) => e['email'] == email);
     if (userdata == null) return null;
 
     return User.fromSerialized(userdata);
@@ -292,9 +290,9 @@ class Database extends EzloginFirebase with ChangeNotifier {
     if (teacherId == null) return;
 
     // Fetch all questions from that teacher
-    final data = await root.child('questions').child(teacherId).get();
-    if (data.value == null) return;
-    final questionsData = data.value as Map?;
+    final data = await safeGet(root.child('questions').child(teacherId));
+    if (data?.value == null) return;
+    final questionsData = data!.value as Map?;
     if (questionsData == null) return;
     final questions = questionsData.values
         .map((q) => Question.fromSerialized((q as Map).cast<String, dynamic>()))
@@ -387,13 +385,21 @@ class Database extends EzloginFirebase with ChangeNotifier {
 
   static Future<String?> getRequiredSoftwareVersion() async {
     final data =
-        await FirebaseDatabase.instance.ref('appInfo/requiredVersion').get();
-    return data.value as String?;
+        await safeGet(FirebaseDatabase.instance.ref('appInfo/requiredVersion'));
+    return data?.value as String?;
   }
 
   @override
   Future<bool> resetPassword({String? email}) async {
     if (email == null) return false;
     return await super.resetPassword(email: email);
+  }
+
+  static Future<DataSnapshot?> safeGet(DatabaseReference ref) async {
+    try {
+      return await ref.get().timeout(const Duration(seconds: 10));
+    } catch (_) {
+      throw Exception('Failed to fetch data from the database');
+    }
   }
 }
