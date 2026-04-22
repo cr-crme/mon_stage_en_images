@@ -153,6 +153,23 @@ class _QuestionAndAnswerPageState extends State<QuestionAndAnswerPage> {
               ],
             ),
           ),
+          if (widget.pageMode == PageMode.edit)
+            Positioned(
+              bottom: MediaQuery.of(context).viewPadding.bottom + 32,
+              right: MediaQuery.of(context).viewPadding.right + 32,
+              child: AnimatedSlide(
+                  duration: Durations.long1,
+                  curve: Curves.easeInOut,
+                  offset: Offset(showInfo ? 2 : 0, 0),
+                  // TODO : extract addOrModifyQuestion logic from QuestionAndAnswerTile
+                  child: QuestionAndAnswerTile(null,
+                      isIconOnly: true,
+                      studentId: widget.studentId,
+                      sectionIndex: widget.sectionIndex,
+                      viewSpan: widget.viewSpan,
+                      pageMode: widget.pageMode,
+                      answerFilterMode: widget.answerFilterMode)),
+            ),
           Positioned(
             bottom: MediaQuery.of(context).viewPadding.bottom,
             left: 0,

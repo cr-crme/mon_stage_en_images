@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:mon_stage_en_images/common/models/section.dart';
+import 'package:mon_stage_en_images/common/providers/database.dart';
+import 'package:provider/provider.dart';
 
 class MetierTooltip extends StatelessWidget {
   const MetierTooltip(
@@ -24,9 +26,11 @@ class MetierTooltip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userType = Provider.of<Database>(context, listen: false).userType;
+
     return RawTooltip(
         hoverDelay: Duration.zero,
-        semanticsTooltip: Section.description(sectionIndex),
+        semanticsTooltip: Section.description(sectionIndex, userType),
         positionDelegate: (TooltipPositionContext context) =>
             (setOffset ?? defaultOffset)(context),
         tooltipBuilder: (context, animation) => ConstrainedBox(
@@ -37,7 +41,7 @@ class MetierTooltip extends StatelessWidget {
                 surfaceTintColor: Section.color(sectionIndex).shade900,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(Section.description(sectionIndex)),
+                  child: Text(Section.description(sectionIndex, userType)),
                 ),
               ),
             ),
