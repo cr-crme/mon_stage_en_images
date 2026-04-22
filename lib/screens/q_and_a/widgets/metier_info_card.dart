@@ -8,12 +8,28 @@ class MetierInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textColor = Section.color(sectionIndex).computeLuminance() > 0.85
+        ? Colors.white
+        : Colors.black;
+
     return Card(
-      surfaceTintColor: Section.color(sectionIndex).shade900,
+      color: Section.color(sectionIndex).shade300.withAlpha(255),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Row(children: [
-          Text(Section.description(sectionIndex)),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          Icon(
+            Section.icon(sectionIndex),
+            color: textColor,
+            size: MediaQuery.sizeOf(context).height / 28,
+          ),
+          SizedBox(
+            width: 12,
+          ),
+          Expanded(
+              child: Text(Section.description(sectionIndex),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: textColor,
+                      ))),
         ]),
       ),
     );
