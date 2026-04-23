@@ -149,11 +149,15 @@ class _QuestionAndAnswerPageState extends State<QuestionAndAnswerPage> {
                       SizedBox(width: 25)
                     ],
                   ),
-                questionSection,
+                Padding(
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.sizeOf(context).height / 4),
+                  child: questionSection,
+                ),
               ],
             ),
           ),
-          if (widget.pageMode == PageMode.edit)
+          if (userType == UserType.teacher && widget.pageMode == PageMode.edit)
             Positioned(
               bottom: MediaQuery.of(context).viewPadding.bottom + 32,
               right: MediaQuery.of(context).viewPadding.right + 32,

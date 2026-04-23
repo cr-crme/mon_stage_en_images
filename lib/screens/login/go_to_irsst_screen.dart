@@ -23,6 +23,11 @@ class GoToIrsstScreen extends StatelessWidget {
     host: 'monstageenimages.adoprevit.org',
     path: 'resources/ApprendreMETIER.pdf',
   );
+  static final learnAboutApp = Uri(
+    scheme: 'https',
+    host: 'adoprevit.org',
+    path: 'stage-en-images',
+  );
 
   @override
   Widget build(context) {
@@ -36,20 +41,20 @@ class GoToIrsstScreen extends StatelessWidget {
             children: [
               const SizedBox(height: 20),
               const Text(
-                  'Vous trouverez des informations utiles et ludiques '
-                  'concernant la Santé et sécurité au travail (SST) en '
-                  'suivant ce lien. Vous pouvez accéder à ce document  et à d\'autres ressources à '
-                  'partir du menu principal de l\'application, en cliquant '
-                  'sur la section "Ressources". ',
+                  'L\'application Stage en Images est conçue pour '
+                  'être utilisée après une phase préliminaire d\'analyse de l\'activité de travail '
+                  'avec vos élèves. Consultez nos ressources pour la prise en main, '
+                  'des conseils et du dépannage technique en utlisant le lien ci-dessous.',
                   style: TextStyle(fontSize: 18)),
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(
-                    onPressed: () async => await launchUrl(learnAboutSstUri),
+                  ElevatedButton.icon(
+                    onPressed: () async => await launchUrl(learnAboutApp),
                     style: studentTheme().elevatedButtonTheme.style,
-                    child: const Text('Accéder au PDF'),
+                    label: const Text('Voir la présentation'),
+                    icon: const Icon(Icons.open_in_new),
                   ),
                   ElevatedButton(
                       onPressed: () async {
