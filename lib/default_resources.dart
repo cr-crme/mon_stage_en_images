@@ -4,6 +4,12 @@ import 'package:mon_stage_en_images/screens/login/go_to_irsst_screen.dart';
 import 'package:mon_stage_en_images/screens/q_and_a/main_metier_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+final Uri adoprevitStageImagesUri = Uri(
+  scheme: 'https',
+  host: 'adoprevit.org',
+  path: 'stage-en-images',
+);
+
 final List<ContentCard> resourcesCard = [
   ContentCard(
     coverUri: 'assets/images/cover_learn_sst.jpeg',
