@@ -6,6 +6,7 @@ import 'package:mon_stage_en_images/common/widgets/main_drawer.dart';
 import 'package:mon_stage_en_images/default_onboarding_steps.dart';
 import 'package:mon_stage_en_images/default_resources.dart';
 import 'package:mon_stage_en_images/onboarding/widgets/onboarding_container.dart';
+import 'package:mon_stage_en_images/screens/resources/adoprevit_resources_card.dart';
 import 'package:provider/provider.dart';
 
 class ResourcesScreen extends StatefulWidget {
@@ -64,9 +65,24 @@ class ResourcesScreenState extends State<ResourcesScreen> {
           padding: const EdgeInsets.all(16.0),
           child: CustomScrollView(
             slivers: [
+              SliverFloatingHeader(
+                  snapMode: FloatingHeaderSnapMode.overlay,
+                  child: AdoprevitResourcesCard()),
               SliverToBoxAdapter(
-                child: Text(
-                    "Ressources externes pour faciliter votre utilisation de Mon stage en images"),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Autres ressources externes',
+                        style: Theme.of(context).textTheme.headlineMedium,
+                      ),
+                      Text(
+                          "Pour faciliter votre utilisation de Mon stage en images"),
+                    ],
+                  ),
+                ),
               ),
               SliverToBoxAdapter(
                   child: SizedBox(

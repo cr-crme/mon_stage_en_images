@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:mon_stage_en_images/common/models/answer_sort_and_filter.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
 import 'package:mon_stage_en_images/common/models/question.dart';
@@ -8,10 +9,11 @@ import 'package:mon_stage_en_images/common/providers/all_questions.dart';
 import 'package:mon_stage_en_images/common/providers/database.dart';
 import 'package:mon_stage_en_images/default_onboarding_steps.dart';
 import 'package:mon_stage_en_images/onboarding/onboarding.dart';
+import 'package:mon_stage_en_images/screens/q_and_a/widgets/metier_info_card.dart';
 import 'package:mon_stage_en_images/screens/q_and_a/widgets/question_and_answer_tile.dart';
 import 'package:provider/provider.dart';
 
-class QuestionAndAnswerPage extends StatelessWidget {
+class QuestionAndAnswerPage extends StatefulWidget {
   const QuestionAndAnswerPage(
     this.sectionIndex, {
     super.key,
@@ -29,21 +31,41 @@ class QuestionAndAnswerPage extends StatelessWidget {
   final AnswerSortAndFilter answerFilterMode;
 
   @override
+  State<QuestionAndAnswerPage> createState() => _QuestionAndAnswerPageState();
+}
+
+class _QuestionAndAnswerPageState extends State<QuestionAndAnswerPage> {
+  bool showInfo = true;
+
+  bool _onScroll(UserScrollNotification notif) {
+    if (notif.direction == ScrollDirection.reverse) {
+      setState(() {
+        showInfo = false;
+      });
+    } else if (notif.direction == ScrollDirection.forward) {
+      setState(() {
+        showInfo = true;
+      });
+    }
+    return showInfo;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
     final userType = database.userType;
 
     final allAnswers = AllAnswers.of(context, listen: false);
     var questions = Provider.of<AllQuestions>(context, listen: true)
-        .fromSection(sectionIndex)
+        .fromSection(widget.sectionIndex)
         .toList();
     AnswerSortAndFilter? filter;
-    switch (viewSpan) {
+    switch (widget.viewSpan) {
       case Target.individual:
-        if (pageMode != PageMode.edit) {
+        if (widget.pageMode != PageMode.edit) {
           final answers = allAnswers.filter(
               questionIds: questions.map((e) => e.id),
-              studentIds: [studentId!],
+              studentIds: [widget.studentId!],
               isActive: true);
           questions = answers
               .map((e) => questions.firstWhere((q) => q.id == e.questionId))
@@ -54,8 +76,8 @@ class QuestionAndAnswerPage extends StatelessWidget {
       case Target.all:
       case Target.none:
         // Do not filter for edit mode
-        if (pageMode != PageMode.edit &&
-            answerFilterMode.filled ==
+        if (widget.pageMode != PageMode.edit &&
+            widget.answerFilterMode.filled ==
                 AnswerFilledFilter.withAtLeastOneAnswer) {
           final answers = allAnswers.filter(
               questionIds: questions.map((e) => e.id), hasAnswer: true);
@@ -68,7 +90,7 @@ class QuestionAndAnswerPage extends StatelessWidget {
               .toList();
         }
 
-        filter = answerFilterMode;
+        filter = widget.answerFilterMode;
         break;
     }
 
@@ -79,46 +101,89 @@ class QuestionAndAnswerPage extends StatelessWidget {
       context,
       questions: questions,
       titleIfNothing:
-          'Aucune question${pageMode == PageMode.fixView ? ' répondue' : ''} dans cette section',
+          'Aucune question${widget.pageMode == PageMode.fixView ? ' répondue' : ''} dans cette section',
       answerFilterMode: filter,
     );
 
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+    return NotificationListener<UserScrollNotification>(
+      onNotification: (notification) => _onScroll(notification),
+      child: Stack(
         children: [
-          if (userType == UserType.teacher)
-            Container(
-              padding: const EdgeInsets.only(left: 5, top: 15),
-              child: Text(
-                  '${Section.name(sectionIndex)}${pageMode == PageMode.edit ? ' (Mode édition)' : ''}',
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge!
-                      .copyWith(color: Colors.black)),
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                if (userType == UserType.teacher)
+                  Container(
+                    padding: const EdgeInsets.only(left: 5, top: 15),
+                    child: Text(
+                        '${Section.name(widget.sectionIndex)}${widget.pageMode == PageMode.edit ? ' (Mode édition)' : ''}',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge!
+                            .copyWith(color: Colors.black)),
+                  ),
+                if (widget.viewSpan != Target.individual)
+                  const SizedBox(height: 10),
+                if (widget.viewSpan != Target.individual &&
+                    widget.pageMode == PageMode.edit)
+                  OnboardingContainer(
+                    onInitialize: (context) => OnboardingContexts
+                        .instance['new_question_button'] = context,
+                    child: QuestionAndAnswerTile(
+                      null,
+                      sectionIndex: widget.sectionIndex,
+                      studentId: widget.studentId,
+                      viewSpan: widget.viewSpan,
+                      pageMode: widget.pageMode,
+                      answerFilterMode: null,
+                    ),
+                  ),
+                if (widget.viewSpan != Target.individual &&
+                    questions.isNotEmpty &&
+                    widget.studentId != null)
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text('Activé pour cet élève'),
+                      SizedBox(width: 25)
+                    ],
+                  ),
+                Padding(
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.sizeOf(context).height / 4),
+                  child: questionSection,
+                ),
+              ],
             ),
-          if (viewSpan != Target.individual) const SizedBox(height: 10),
-          if (viewSpan != Target.individual && pageMode == PageMode.edit)
-            OnboardingContainer(
-              onInitialize: (context) =>
-                  OnboardingContexts.instance['new_question_button'] = context,
-              child: QuestionAndAnswerTile(
-                null,
-                sectionIndex: sectionIndex,
-                studentId: studentId,
-                viewSpan: viewSpan,
-                pageMode: pageMode,
-                answerFilterMode: null,
-              ),
+          ),
+          if (userType == UserType.teacher && widget.pageMode == PageMode.edit)
+            Positioned(
+              bottom: MediaQuery.of(context).viewPadding.bottom + 32,
+              right: MediaQuery.of(context).viewPadding.right + 32,
+              child: AnimatedSlide(
+                  duration: Durations.long1,
+                  curve: Curves.easeInOut,
+                  offset: Offset(showInfo ? 2 : 0, 0),
+                  // TODO : extract addOrModifyQuestion logic from QuestionAndAnswerTile
+                  child: QuestionAndAnswerTile(null,
+                      isIconOnly: true,
+                      studentId: widget.studentId,
+                      sectionIndex: widget.sectionIndex,
+                      viewSpan: widget.viewSpan,
+                      pageMode: widget.pageMode,
+                      answerFilterMode: widget.answerFilterMode)),
             ),
-          if (viewSpan != Target.individual &&
-              questions.isNotEmpty &&
-              studentId != null)
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [Text('Activé pour cet élève'), SizedBox(width: 25)],
-            ),
-          questionSection,
+          Positioned(
+            bottom: MediaQuery.of(context).viewPadding.bottom,
+            left: 0,
+            right: 0,
+            child: AnimatedSlide(
+                duration: Durations.long1,
+                curve: Curves.easeInOut,
+                offset: Offset(0, showInfo ? 0 : 1.05),
+                child: MetierInfoCard(sectionIndex: widget.sectionIndex)),
+          )
         ],
       ),
     );
@@ -133,10 +198,10 @@ class QuestionAndAnswerPage extends StatelessWidget {
     return questions.isNotEmpty
         ? QAndAListView(
             questions.toList(growable: false),
-            sectionIndex: sectionIndex,
-            studentId: studentId,
-            viewSpan: viewSpan,
-            pageMode: pageMode,
+            sectionIndex: widget.sectionIndex,
+            studentId: widget.studentId,
+            viewSpan: widget.viewSpan,
+            pageMode: widget.pageMode,
             answerFilterMode: answerFilterMode,
           )
         : Container(

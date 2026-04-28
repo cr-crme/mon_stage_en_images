@@ -108,6 +108,9 @@ flutter:
                 weight: 700
               - asset: assets/fonts/Urbanist/Urbanist-Italic.ttf
                 style: italic
+        - family: MetierIcons
+          fonts:
+              - asset: assets/fonts/MetierIcons/MetierIcons.ttf
 
     # For details regarding fonts from package dependencies,
     # see https://flutter.dev/custom-fonts/#from-packages
