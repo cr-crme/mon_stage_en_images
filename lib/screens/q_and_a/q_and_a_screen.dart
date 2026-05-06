@@ -236,8 +236,9 @@ class QAndAScreenState extends State<QAndAScreen> {
 
   bool _isConnectingToken = false;
   Future<void> _connectToToken({bool firstConnexion = false}) async {
-    final isSuccess = await context.showAdaptiveModal<bool>(
-      builder: (BuildContext context, pop) {
+    final isSuccess = await showAdaptiveModal<bool>(
+      context: context,
+      builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
             _newCodeDialogSetState = setState;
@@ -304,7 +305,7 @@ class QAndAScreenState extends State<QAndAScreen> {
                   ],
                 ),
               ),
-              onCancelled: () => pop(false),
+              onCancelled: () => Navigator.of(context).pop<bool>(false),
               onConfirmed: () => _validateNewCodeDialogForm(),
             );
           },

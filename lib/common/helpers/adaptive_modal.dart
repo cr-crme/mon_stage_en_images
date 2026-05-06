@@ -2,49 +2,36 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mon_stage_en_images/common/helpers/responsive_service.dart';
 
-typedef AdaptiveModalBuilder<T> = Widget Function(
-  BuildContext context,
-  // this is to enforce the type returned by the "pop dialog pattern",
-  // like in a regular showDialog<T> or showModalBottomSheet<T> (likely a bool)
-  void Function([T? result]) pop,
-);
-
-extension AdaptiveModal on BuildContext {
-  /// Adds a new [PopupRoute]  onto the navigator stack, which content
-  /// is driven by the screen width and the platform. Web and large screens
-  /// show a [Dialog] while mobile devices display a [BottomSheet]
-  Future<T?> showAdaptiveModal<T extends Object>(
-      {
-      /// Content to be displayed inside the modal
-      required AdaptiveModalBuilder<T> builder,
-
-      /// Whether the modal can be dismissed by tapping the barrier. Defaults to true
-      bool isBarrierDismissible = true}) async {
-    // Allows the state of the content to be preserved upon modal switching
-    final GlobalKey contentKey = GlobalObjectKey('AdaptiveModalContent');
-
-    return await Navigator.of(this).push(_AdaptiveModalRoute<T>(
-        builder: builder,
-        context: this,
-        contentKey: contentKey,
-        isBarrierDismissible: isBarrierDismissible));
-  }
+/// Adds a new [PopupRoute]  onto the navigator stack, which content
+/// is driven by the screen width and the platform. Web and large screens
+/// show a [Dialog] while mobile devices display a [BottomSheet]
+/// [builder] Content to be displayed inside the modal
+/// [isBarrierDismissible] Whether the modal can be dismissed by tapping the barrier. Defaults to true
+Future<T?> showAdaptiveModal<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
+  bool isBarrierDismissible = true,
+}) async {
+  return await Navigator.of(context).push(AdaptiveModalRoute<T>(
+    builder: builder,
+    context: context,
+    isBarrierDismissible: isBarrierDismissible,
+  ));
 }
 
 /// A [PopupRoute] to display either a [Dialog] or a [BottomSheet] depending on screen width
 /// and platform type. T is the type expected to be returned when popping the route.
-class _AdaptiveModalRoute<T> extends PopupRoute<T> {
-  _AdaptiveModalRoute({
+class AdaptiveModalRoute<T> extends PopupRoute<T> {
+  AdaptiveModalRoute({
     required this.builder,
     required this.context,
     this.isBarrierDismissible = true,
-    this.contentKey,
   });
 
-  final AdaptiveModalBuilder<T> builder;
+  final WidgetBuilder builder;
   final BuildContext context;
   final bool isBarrierDismissible;
-  final GlobalKey? contentKey;
+  final contentKey = GlobalObjectKey('AdaptiveModalContent');
 
   late final AnimationController _controller;
 
@@ -97,13 +84,7 @@ class _AdaptiveModalRoute<T> extends PopupRoute<T> {
                 key: contentKey,
                 child: Padding(
                   padding: EdgeInsets.all(basePadding),
-                  child: builder(
-                    context,
-                    // this will be used in the caller as "pop" instead of the regular
-                    // Navigator.of(context).pop() so we can enforce that the result
-                    // matches the T type.
-                    ([T? result]) => Navigator.of(context).pop<T>(result),
-                  ),
+                  child: builder(context),
                 )),
           )
         : BottomSheet(
@@ -114,7 +95,6 @@ class _AdaptiveModalRoute<T> extends PopupRoute<T> {
             showDragHandle: true,
             enableDrag: true,
             dragHandleSize: Size(70, 4),
-            // not enforcing the T type return here, this is a "null" case
             onClosing: () => Navigator.of(context).pop(),
             builder: (context) => KeyedSubtree(
               key: contentKey,
@@ -126,12 +106,7 @@ class _AdaptiveModalRoute<T> extends PopupRoute<T> {
                       right: basePadding,
                       top: basePadding,
                       bottom: bottom),
-                  child: builder(
-                    context,
-                    // pop function to be used by the caller so a
-                    // T type is returned when popping the route
-                    ([T? result]) => Navigator.of(context).pop<T>(result),
-                  ),
+                  child: builder(context),
                 ),
               ),
             ),

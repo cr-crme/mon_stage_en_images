@@ -167,10 +167,9 @@ class _LoginScreenState extends State<LoginScreen> {
     StateSetter? setStateForm;
     final formKey = GlobalKey<FormState>();
 
-    final isSuccess = await context.showAdaptiveModal<bool>(
-      // context: context,
-      // barrierDismissible: false,
-      builder: (context, pop) {
+    final isSuccess = await showAdaptiveModal<bool>(
+      context: context,
+      builder: (context) {
         Future<void> confirm() async {
           if (formKey.currentState == null ||
               !formKey.currentState!.validate() && _userType != UserType.none) {
@@ -206,7 +205,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
           await _processConnexion(automaticConnexion: false);
           if (!context.mounted) return;
-          pop(true);
+          Navigator.of(context).pop(true);
         }
 
         return AreYouSureContent(
@@ -214,9 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
             content: 'Compléter les informations pour créer un nouveau compte',
             canReadAloud: true,
             onConfirmed: confirm,
-            onCancelled: () {
-              pop(false);
-            },
+            onCancelled: () => Navigator.of(context).pop(false),
             extraContent: Form(
               key: formKey,
               child: StatefulBuilder(
