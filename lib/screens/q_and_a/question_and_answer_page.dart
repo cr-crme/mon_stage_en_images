@@ -38,16 +38,16 @@ class _QuestionAndAnswerPageState extends State<QuestionAndAnswerPage> {
   bool showInfo = true;
 
   bool _onScroll(UserScrollNotification notif) {
-    if (notif.direction == ScrollDirection.reverse) {
+    if (notif.direction == ScrollDirection.reverse && showInfo) {
       setState(() {
         showInfo = false;
       });
-    } else if (notif.direction == ScrollDirection.forward) {
+    } else if (notif.direction == ScrollDirection.forward && !showInfo) {
       setState(() {
         showInfo = true;
       });
     }
-    return showInfo;
+    return false;
   }
 
   @override
@@ -158,13 +158,13 @@ class _QuestionAndAnswerPageState extends State<QuestionAndAnswerPage> {
           ),
           if (userType == UserType.teacher && widget.pageMode == PageMode.edit)
             Positioned(
+              key: ValueKey('add_question_fab'),
               bottom: MediaQuery.of(context).viewPadding.bottom + 32,
               right: MediaQuery.of(context).viewPadding.right + 32,
               child: AnimatedSlide(
                   duration: Durations.long1,
                   curve: Curves.easeInOut,
                   offset: Offset(showInfo ? 2 : 0, 0),
-                  // TODO : extract addOrModifyQuestion logic from QuestionAndAnswerTile
                   child: QuestionAndAnswerTile(null,
                       isIconOnly: true,
                       studentId: widget.studentId,
@@ -174,6 +174,7 @@ class _QuestionAndAnswerPageState extends State<QuestionAndAnswerPage> {
                       answerFilterMode: widget.answerFilterMode)),
             ),
           Positioned(
+            key: ValueKey('metier_info_card'),
             bottom: MediaQuery.of(context).viewPadding.bottom + 12,
             left: 0,
             right: 0,

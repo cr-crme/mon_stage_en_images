@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:mon_stage_en_images/common/helpers/adaptive_modal.dart';
 import 'package:mon_stage_en_images/common/helpers/emoji_helpers.dart';
 import 'package:mon_stage_en_images/common/helpers/helpers.dart';
 import 'package:mon_stage_en_images/common/helpers/route_manager.dart';
@@ -10,7 +11,7 @@ import 'package:mon_stage_en_images/common/models/themes.dart';
 import 'package:mon_stage_en_images/common/models/user.dart';
 import 'package:mon_stage_en_images/common/providers/all_questions.dart';
 import 'package:mon_stage_en_images/common/providers/database.dart';
-import 'package:mon_stage_en_images/common/widgets/are_you_sure_dialog.dart';
+import 'package:mon_stage_en_images/common/widgets/are_you_sure_content.dart';
 import 'package:mon_stage_en_images/default_questions.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/forgot_password_alert_dialog.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/main_title_background.dart';
@@ -166,10 +167,10 @@ class _LoginScreenState extends State<LoginScreen> {
     StateSetter? setStateForm;
     final formKey = GlobalKey<FormState>();
 
-    final isSuccess = await showDialog<bool?>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
+    final isSuccess = await context.showAdaptiveModal<bool>(
+      // context: context,
+      // barrierDismissible: false,
+      builder: (context, pop) {
         Future<void> confirm() async {
           if (formKey.currentState == null ||
               !formKey.currentState!.validate() && _userType != UserType.none) {
@@ -205,16 +206,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
           await _processConnexion(automaticConnexion: false);
           if (!context.mounted) return;
-          Navigator.pop(context, true);
+          pop(true);
         }
 
-        return AreYouSureDialog(
+        return AreYouSureContent(
             title: 'Inscription',
             content: 'Compléter les informations pour créer un nouveau compte',
             canReadAloud: true,
             onConfirmed: confirm,
             onCancelled: () {
-              Navigator.pop(context, false);
+              pop(false);
             },
             extraContent: Form(
               key: formKey,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mon_stage_en_images/common/helpers/adaptive_modal.dart';
 import 'package:mon_stage_en_images/common/helpers/helpers.dart';
 import 'package:mon_stage_en_images/common/helpers/responsive_service.dart';
 import 'package:mon_stage_en_images/common/helpers/route_manager.dart';
@@ -235,90 +236,76 @@ class QAndAScreenState extends State<QAndAScreen> {
 
   bool _isConnectingToken = false;
   Future<void> _connectToToken({bool firstConnexion = false}) async {
-    final isSuccess = await showModalBottomSheet<bool>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      enableDrag: true,
-      showDragHandle: true,
-      builder: (BuildContext context) {
-        final double basePadding = 20;
-        final bottom = MediaQuery.of(context).viewPadding.bottom +
-            MediaQuery.of(context).viewInsets.bottom +
-            basePadding;
-
+    final isSuccess = await context.showAdaptiveModal<bool>(
+      builder: (BuildContext context, pop) {
         return StatefulBuilder(
           builder: (context, setState) {
             _newCodeDialogSetState = setState;
-            return Padding(
-              padding: EdgeInsets.only(
-                  left: basePadding, right: basePadding, bottom: bottom),
-              child: AreYouSureContent(
-                title: firstConnexion
-                    ? 'Connecter un code'
-                    : 'Se connecter à un nouveau code?',
-                canReadAloud: true,
-                content: firstConnexion
-                    ? 'Pour commencer, connectez-vous au code d\'inscription fourni par votre enseignant·e.'
-                    : 'Êtes-vous certain(e) de vouloir vous connecter à un nouveau code?\n'
-                        'Ceci archivera vos discussions avec l\'enseignant·e actuelle.',
-                extraContent: Form(
-                  key: _newCodeFormKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 20),
-                      Text(
-                          'Entrez ici le code d\'inscription fourni par votre enseignant·e'),
-                      SizedBox(height: 8),
-                      TextFormField(
-                        autofocus: true,
-                        textCapitalization: TextCapitalization.characters,
-                        decoration: InputDecoration(
-                          hintText: 'Code d\'inscription',
-                          errorText: _tokenError,
-                        ),
-                        inputFormatters: [
-                          UpperCaseTextFormatter(),
-                          FilteringTextInputFormatter.allow(
-                              RegExp(r'[A-Za-z0-9]')),
-                          LengthLimitingTextInputFormatter(6),
-                        ],
-                        onChanged: (value) {
-                          _token = value;
-                          _newCodeDialogSetState!(() {
-                            _tokenError = null;
-                          });
-                        },
-                        onFieldSubmitted: (_) => _validateNewCodeDialogForm(),
-                        validator: (value) => _tokenError,
+            return AreYouSureContent(
+              title: firstConnexion
+                  ? 'Connecter un code'
+                  : 'Se connecter à un nouveau code?',
+              canReadAloud: true,
+              content: firstConnexion
+                  ? 'Pour commencer, connectez-vous au code d\'inscription fourni par votre enseignant·e.'
+                  : 'Êtes-vous certain(e) de vouloir vous connecter à un nouveau code?\n'
+                      'Ceci archivera vos discussions avec l\'enseignant·e actuelle.',
+              extraContent: Form(
+                key: _newCodeFormKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 20),
+                    Text(
+                        'Entrez ici le code d\'inscription fourni par votre enseignant·e'),
+                    SizedBox(height: 8),
+                    TextFormField(
+                      autofocus: true,
+                      textCapitalization: TextCapitalization.characters,
+                      decoration: InputDecoration(
+                        hintText: 'Code d\'inscription',
+                        errorText: _tokenError,
                       ),
-                      SizedBox(height: 12),
-                      Text('Entrez votre mot de passe pour confirmer'),
-                      SizedBox(height: 8),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'Mot de passe',
-                          errorText: _passwordError,
-                        ),
-                        obscureText: true,
-                        autofocus: true,
-                        onChanged: (value) {
-                          _password = value;
-                          _newCodeDialogSetState!(() {
-                            _passwordError = null;
-                          });
-                        },
-                        onFieldSubmitted: (_) => _validateNewCodeDialogForm(),
-                        validator: (value) => _passwordError,
+                      inputFormatters: [
+                        UpperCaseTextFormatter(),
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'[A-Za-z0-9]')),
+                        LengthLimitingTextInputFormatter(6),
+                      ],
+                      onChanged: (value) {
+                        _token = value;
+                        _newCodeDialogSetState!(() {
+                          _tokenError = null;
+                        });
+                      },
+                      onFieldSubmitted: (_) => _validateNewCodeDialogForm(),
+                      validator: (value) => _tokenError,
+                    ),
+                    SizedBox(height: 12),
+                    Text('Entrez votre mot de passe pour confirmer'),
+                    SizedBox(height: 8),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Mot de passe',
+                        errorText: _passwordError,
                       ),
-                    ],
-                  ),
+                      obscureText: true,
+                      autofocus: true,
+                      onChanged: (value) {
+                        _password = value;
+                        _newCodeDialogSetState!(() {
+                          _passwordError = null;
+                        });
+                      },
+                      onFieldSubmitted: (_) => _validateNewCodeDialogForm(),
+                      validator: (value) => _passwordError,
+                    ),
+                  ],
                 ),
-                onCancelled: () => Navigator.pop(context, false),
-                onConfirmed: () => _validateNewCodeDialogForm(),
               ),
+              onCancelled: () => pop(false),
+              onConfirmed: () => _validateNewCodeDialogForm(),
             );
           },
         );

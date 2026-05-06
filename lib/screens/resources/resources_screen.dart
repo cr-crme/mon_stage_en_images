@@ -66,7 +66,7 @@ class ResourcesScreenState extends State<ResourcesScreen> {
           child: CustomScrollView(
             slivers: [
               SliverFloatingHeader(
-                  snapMode: FloatingHeaderSnapMode.overlay,
+                  snapMode: FloatingHeaderSnapMode.scroll,
                   child: AdoprevitResourcesCard()),
               SliverToBoxAdapter(
                 child: Padding(

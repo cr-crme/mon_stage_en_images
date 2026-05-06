@@ -20,9 +20,11 @@ class _TextClipboardCopyState extends State<TextClipboardCopy> {
             onPressed: () async {
               final ClipboardData clipboardData =
                   ClipboardData(text: widget.text);
-              await Clipboard.setData(clipboardData).then((_) =>
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('texte copié dans le presse papier'))));
+              await Clipboard.setData(clipboardData).then((_) {
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('texte copié dans le presse papier')));
+              });
             },
             icon: Icon(Icons.copy))
       ],
