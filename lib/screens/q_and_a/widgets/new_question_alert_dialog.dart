@@ -52,7 +52,7 @@ class _NewQuestionAlertDialogState extends State<NewQuestionAlertDialog> {
 
     for (final student in students) {
       if (widget.question == null) {
-        _questionStatus[student.id] = false;
+        _questionStatus[student.id] = widget.student?.id == student.id;
       } else {
         final index = answers.indexWhere((e) => e.studentId == student.id);
         if (index >= 0) _questionStatus[student.id] = answers[index].isActive;

@@ -9,6 +9,7 @@ import 'package:mon_stage_en_images/common/providers/database.dart';
 import 'package:mon_stage_en_images/common/providers/speecher.dart';
 import 'package:mon_stage_en_images/default_onboarding_steps.dart';
 import 'package:mon_stage_en_images/onboarding/onboarding.dart';
+import 'package:mon_stage_en_images/screens/login/failed_checks_screen.dart';
 import 'package:mon_stage_en_images/screens/login/login_screen.dart';
 import 'package:mon_stage_en_images/screens/login/wrong_version_screen.dart';
 import 'package:provider/provider.dart';
@@ -114,6 +115,7 @@ class MyApp extends StatelessWidget {
             if (routeName == null) return null;
 
             if (routeName != LoginScreen.routeName &&
+                routeName != FailedChecksScreen.routeName &&
                 routeName != WrongVersionScreen.routeName) {
               final user =
                   Provider.of<Database>(context, listen: false).currentUser;

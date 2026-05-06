@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mon_stage_en_images/common/helpers/adaptive_modal.dart';
 import 'package:mon_stage_en_images/common/helpers/helpers.dart';
 import 'package:mon_stage_en_images/common/helpers/responsive_service.dart';
 import 'package:mon_stage_en_images/common/helpers/route_manager.dart';
@@ -10,7 +11,7 @@ import 'package:mon_stage_en_images/common/models/section.dart';
 import 'package:mon_stage_en_images/common/models/text_reader.dart';
 import 'package:mon_stage_en_images/common/models/user.dart';
 import 'package:mon_stage_en_images/common/providers/database.dart';
-import 'package:mon_stage_en_images/common/widgets/are_you_sure_dialog.dart';
+import 'package:mon_stage_en_images/common/widgets/are_you_sure_content.dart';
 import 'package:mon_stage_en_images/common/widgets/avatar_tab.dart';
 import 'package:mon_stage_en_images/common/widgets/main_drawer.dart';
 import 'package:mon_stage_en_images/default_onboarding_steps.dart';
@@ -235,14 +236,13 @@ class QAndAScreenState extends State<QAndAScreen> {
 
   bool _isConnectingToken = false;
   Future<void> _connectToToken({bool firstConnexion = false}) async {
-    final isSuccess = await showDialog<bool>(
+    final isSuccess = await showAdaptiveModal<bool>(
       context: context,
-      barrierDismissible: false,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
             _newCodeDialogSetState = setState;
-            return AreYouSureDialog(
+            return AreYouSureContent(
               title: firstConnexion
                   ? 'Connecter un code'
                   : 'Se connecter à un nouveau code?',
@@ -305,7 +305,7 @@ class QAndAScreenState extends State<QAndAScreen> {
                   ],
                 ),
               ),
-              onCancelled: () => Navigator.pop(context, false),
+              onCancelled: () => Navigator.of(context).pop<bool>(false),
               onConfirmed: () => _validateNewCodeDialogForm(),
             );
           },
@@ -411,31 +411,33 @@ class QAndAScreenState extends State<QAndAScreen> {
             padding: const EdgeInsets.only(right: 8.0),
             child: AvatarTab(user: currentUser),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              OnboardingContainer(
-                onInitialize: (context) => OnboardingContexts
-                    .instance['q_and_a_app_bar_title'] = context,
-                child: Text(_student?.toString() ??
-                    (_pageMode == PageMode.fixView
-                        ? 'Résumé des réponses'
-                        : 'Gestion des questions')),
-              ),
-              if (userType == UserType.student)
-                Text(
-                    _currentPage == 0
-                        ? 'Mon stage en images'
-                        : Section.name(_currentPage - 1),
-                    style: currentTheme.copyWith(
-                        fontSize: 15, color: onPrimaryColor)),
-              if (userType == UserType.teacher && _student != null)
-                Text(
-                  currentUser.studentNotes[_student!.id] ?? '',
-                  style: currentTheme.copyWith(
-                      fontSize: 15, color: onPrimaryColor),
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                OnboardingContainer(
+                  onInitialize: (context) => OnboardingContexts
+                      .instance['q_and_a_app_bar_title'] = context,
+                  child: Text(_student?.toString() ??
+                      (_pageMode == PageMode.fixView
+                          ? 'Résumé des réponses'
+                          : 'Gestion des questions')),
                 ),
-            ],
+                if (userType == UserType.student)
+                  Text(
+                      _currentPage == 0
+                          ? 'Mon stage en images'
+                          : Section.name(_currentPage - 1),
+                      style: currentTheme.copyWith(
+                          fontSize: 15, color: onPrimaryColor)),
+                if (userType == UserType.teacher && _student != null)
+                  Text(
+                    currentUser.studentNotes[_student!.id] ?? '',
+                    style: currentTheme.copyWith(
+                        fontSize: 15, color: onPrimaryColor),
+                  ),
+              ],
+            ),
           ),
         ],
       ),

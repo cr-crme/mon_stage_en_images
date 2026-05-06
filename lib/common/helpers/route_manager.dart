@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:mon_stage_en_images/common/helpers/push_notifications_helpers.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
 import 'package:mon_stage_en_images/common/models/user.dart';
 import 'package:mon_stage_en_images/common/providers/database.dart';
 import 'package:mon_stage_en_images/screens/all_students/students_screen.dart';
+import 'package:mon_stage_en_images/screens/login/failed_checks_screen.dart';
 import 'package:mon_stage_en_images/screens/login/go_to_irsst_screen.dart';
 import 'package:mon_stage_en_images/screens/login/login_screen.dart';
 import 'package:mon_stage_en_images/screens/login/terms_and_services_screen.dart';
@@ -15,14 +17,23 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:pub_semver/pub_semver.dart';
 
+final _logger = Logger('RouteManager');
+
+enum _VersionStatus {
+  validVersion,
+  wrongVersion,
+  pendingVersion,
+  cannotObtainVersion;
+}
+
 class RouteManager {
   // Singleton pattern
   RouteManager._();
   static final RouteManager instance = RouteManager._();
 
-  bool get isInitialized => _versionIsValid != null;
+  bool get isInitialized => _status != _VersionStatus.pendingVersion;
 
-  bool? _versionIsValid;
+  _VersionStatus _status = _VersionStatus.pendingVersion;
   Future<void> initialize() async {
     await _setVersionIsValid();
   }
@@ -30,13 +41,23 @@ class RouteManager {
   Future<void> _setVersionIsValid() async {
     WidgetsFlutterBinding.ensureInitialized();
 
+    String versionString;
     // Check the software version
-    final requiredVersion =
-        Version.parse(await Database.getRequiredSoftwareVersion() ?? '0.0.0');
+    try {
+      versionString = (await Database.getRequiredSoftwareVersion())!;
+    } on Exception catch (e) {
+      _logger.info('Cannot obtain software required version : ${e.toString()}');
+      _status = _VersionStatus.cannotObtainVersion;
+      return;
+    }
+
+    final requiredVersion = Version.parse(versionString);
 
     final packageInfo = await PackageInfo.fromPlatform();
     final current = Version.parse(packageInfo.version);
-    _versionIsValid = current >= requiredVersion;
+    _status = current >= requiredVersion
+        ? _VersionStatus.validVersion
+        : _VersionStatus.wrongVersion;
   }
 
   final _navigatorKey = GlobalKey<NavigatorState>();
@@ -44,18 +65,13 @@ class RouteManager {
 
   NavigatorState? get currentState => _navigatorKey.currentState;
 
-  String get initialRoute {
-    if (!isInitialized) {
-      throw Exception(
-          'RouteManager is not initialized. Call initialize() before accessing initialRoute.');
-    }
-
-    if (_versionIsValid!) {
-      return LoginScreen.routeName;
-    } else {
-      return WrongVersionScreen.routeName;
-    }
-  }
+  String get initialRoute => switch (_status) {
+        _VersionStatus.pendingVersion => throw Exception(
+            'RouteManager is not initialized. Call initialize() before accessing initialRoute.'),
+        _VersionStatus.cannotObtainVersion => FailedChecksScreen.routeName,
+        _VersionStatus.wrongVersion => WrongVersionScreen.routeName,
+        _VersionStatus.validVersion => LoginScreen.routeName
+      };
 
   Future<void> gotoLoginPage(BuildContext context) async {
     if (!isInitialized) {
@@ -192,6 +208,8 @@ class RouteManager {
     switch (routeName) {
       case MyInfoScreen.routeName:
         return MyInfoScreen();
+      case FailedChecksScreen.routeName:
+        return FailedChecksScreen();
       case WrongVersionScreen.routeName:
         return WrongVersionScreen();
       case LoginScreen.routeName:

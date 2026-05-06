@@ -47,8 +47,10 @@ class StudentListTile extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 8.0),
                 child: AvatarTab(user: student),
               ),
-            Text(student?.toString() ?? '',
-                style: const TextStyle(fontSize: 20)),
+            Expanded(
+              child: Text(student?.toString() ?? '',
+                  style: const TextStyle(fontSize: 20)),
+            ),
           ],
         ),
         subtitle: Column(

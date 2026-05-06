@@ -27,6 +27,7 @@ class ContentCard extends StatelessWidget {
       child: Column(
         children: [
           Flexible(
+            fit: FlexFit.tight,
             flex: 1,
             child: coverUri != null
                 ? Image.asset(

@@ -25,6 +25,7 @@ class QuestionAndAnswerTile extends StatefulWidget {
     required this.answerFilterMode,
     this.overrideExpandState,
     this.onExpand,
+    this.isIconOnly = false,
   });
 
   final int sectionIndex;
@@ -35,6 +36,7 @@ class QuestionAndAnswerTile extends StatefulWidget {
   final AnswerSortAndFilter? answerFilterMode;
   final bool? overrideExpandState;
   final VoidCallback? onExpand;
+  final bool isIconOnly;
 
   @override
   State<QuestionAndAnswerTile> createState() => _QuestionAndAnswerTileState();
@@ -162,35 +164,42 @@ class _QuestionAndAnswerTileState extends State<QuestionAndAnswerTile> {
   @override
   Widget build(BuildContext context) {
     _isExpanded = widget.overrideExpandState ?? _isExpanded;
-    return Card(
-      elevation: 5,
-      child: Column(
-        children: [
-          QuestionPart(
-            question: widget.question,
-            viewSpan: widget.viewSpan,
-            pageMode: widget.pageMode,
-            studentId: widget.studentId,
-            answer: _answer,
-            onStateChange: _onStateChange,
-            onTap: widget.pageMode == PageMode.edit
-                ? _addOrModifyQuestion
-                : _expand,
-            isAnswerShown: _isExpanded && widget.pageMode != PageMode.edit,
-            isReading: _isReading,
-            startReadingCallback: _startReading,
-            stopReadingCallback: _stopReading,
-          ),
-          if (_isExpanded && widget.pageMode != PageMode.edit)
-            AnswerPart(
-              widget.question!,
-              onStateChange: _onStateChange,
-              studentId: widget.studentId,
-              pageMode: widget.pageMode,
-              filterMode: widget.answerFilterMode,
+    return widget.isIconOnly && widget.question == null
+        ? IconButton.filled(
+            iconSize: 40,
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            onPressed: _addOrModifyQuestion,
+            icon: Icon(Icons.add))
+        : Card(
+            elevation: 5,
+            child: Column(
+              children: [
+                QuestionPart(
+                  question: widget.question,
+                  viewSpan: widget.viewSpan,
+                  pageMode: widget.pageMode,
+                  studentId: widget.studentId,
+                  answer: _answer,
+                  onStateChange: _onStateChange,
+                  onTap: widget.pageMode == PageMode.edit
+                      ? _addOrModifyQuestion
+                      : _expand,
+                  isAnswerShown:
+                      _isExpanded && widget.pageMode != PageMode.edit,
+                  isReading: _isReading,
+                  startReadingCallback: _startReading,
+                  stopReadingCallback: _stopReading,
+                ),
+                if (_isExpanded && widget.pageMode != PageMode.edit)
+                  AnswerPart(
+                    widget.question!,
+                    onStateChange: _onStateChange,
+                    studentId: widget.studentId,
+                    pageMode: widget.pageMode,
+                    filterMode: widget.answerFilterMode,
+                  ),
+              ],
             ),
-        ],
-      ),
-    );
+          );
   }
 }

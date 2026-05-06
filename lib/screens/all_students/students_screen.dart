@@ -133,7 +133,9 @@ class StudentsScreenState extends State<StudentsScreen> {
     if (loginStatus != EzloginStatus.success) {
       if (_passwordDialogSetState != null) {
         _passwordDialogSetState!(() {
-          _passwordError = 'Le mot de passe entré est incorrect';
+          _passwordError =
+              'Les identifiants fournis ne correspondent pas à notre base de données.'
+              'Veuillez réessayer avec des identifiants corrects.';
         });
       }
       return;
@@ -169,6 +171,7 @@ class StudentsScreenState extends State<StudentsScreen> {
                   child: TextFormField(
                     decoration: InputDecoration(
                       labelText: 'Mot de passe',
+                      errorMaxLines: 3,
                       errorText: _passwordError,
                     ),
                     obscureText: true,

@@ -366,7 +366,7 @@ class _DiscussionListViewState extends State<DiscussionListView> {
   }
 }
 
-class _MessageListView extends StatelessWidget {
+class _MessageListView extends StatefulWidget {
   const _MessageListView(
       {required this.discussion, required this.onDeleteMessage});
 
@@ -374,7 +374,14 @@ class _MessageListView extends StatelessWidget {
   final Function({required String studentId, required String answerId})
       onDeleteMessage;
 
-  void _scrollDown(ScrollController scroller) {
+  @override
+  State<_MessageListView> createState() => _MessageListViewState();
+}
+
+class _MessageListViewState extends State<_MessageListView> {
+  late final ScrollController scroller;
+
+  void _scrollDown() {
     // Scolling "min" brings us to the end. See comment below.
     scroller.animateTo(
       scroller.position.minScrollExtent,
@@ -384,14 +391,33 @@ class _MessageListView extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final scroller = ScrollController();
-
+  void initState() {
+    scroller = ScrollController();
+    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (context.mounted) _scrollDown(scroller);
+      if (context.mounted) _scrollDown();
     });
+  }
 
-    final reversedList = discussion.reversed.toList();
+  @override
+  void didUpdateWidget(covariant _MessageListView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.discussion.length > oldWidget.discussion.length) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) _scrollDown();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    scroller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final reversedList = widget.discussion.reversed.toList();
 
     // We have to reverse the answers so last appears first allowing to "scroll"
     // to the end without having to load the photo to know their size. Since we
@@ -401,29 +427,37 @@ class _MessageListView extends StatelessWidget {
         Container(
           constraints: const BoxConstraints(maxHeight: 300),
           padding: const EdgeInsets.only(left: 15),
-          child: RawScrollbar(
-            thumbVisibility: true,
-            controller: scroller,
-            thickness: 7,
-            minThumbLength: 75,
-            thumbColor: Colors.grey[700],
-            radius: const Radius.circular(20),
-            child: ListView.builder(
-              shrinkWrap: true,
-              reverse: true,
+          // This NotificationListener absorbs scroll events
+          // and prevent their propagation up to [QuestionAndAnswerPage]
+          // so the inner scrolls won't trigger a setState in the notification
+          // listener there.
+          child: NotificationListener<ScrollNotification>(
+            onNotification: (notification) => true,
+            child: RawScrollbar(
+              thumbVisibility: true,
               controller: scroller,
-              itemBuilder: (context, index) => Column(
-                children: [
-                  DiscussionTile(
-                    discussion: reversedList[index],
-                    isLast: index == 0,
-                    onDeleted: (String studentId) => onDeleteMessage(
-                        studentId: studentId, answerId: reversedList[index].id),
-                  ),
-                  const SizedBox(height: 10),
-                ],
+              thickness: 7,
+              minThumbLength: 75,
+              thumbColor: Colors.grey[700],
+              radius: const Radius.circular(20),
+              child: ListView.builder(
+                shrinkWrap: true,
+                reverse: true,
+                controller: scroller,
+                itemBuilder: (context, index) => Column(
+                  children: [
+                    DiscussionTile(
+                      discussion: reversedList[index],
+                      isLast: index == 0,
+                      onDeleted: (String studentId) => widget.onDeleteMessage(
+                          studentId: studentId,
+                          answerId: reversedList[index].id),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+                itemCount: widget.discussion.length,
               ),
-              itemCount: discussion.length,
             ),
           ),
         ),

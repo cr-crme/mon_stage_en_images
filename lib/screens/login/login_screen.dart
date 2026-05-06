@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:mon_stage_en_images/common/helpers/adaptive_modal.dart';
 import 'package:mon_stage_en_images/common/helpers/emoji_helpers.dart';
 import 'package:mon_stage_en_images/common/helpers/helpers.dart';
 import 'package:mon_stage_en_images/common/helpers/route_manager.dart';
@@ -10,7 +11,7 @@ import 'package:mon_stage_en_images/common/models/themes.dart';
 import 'package:mon_stage_en_images/common/models/user.dart';
 import 'package:mon_stage_en_images/common/providers/all_questions.dart';
 import 'package:mon_stage_en_images/common/providers/database.dart';
-import 'package:mon_stage_en_images/common/widgets/are_you_sure_dialog.dart';
+import 'package:mon_stage_en_images/common/widgets/are_you_sure_content.dart';
 import 'package:mon_stage_en_images/default_questions.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/forgot_password_alert_dialog.dart';
 import 'package:mon_stage_en_images/screens/login/widgets/main_title_background.dart';
@@ -73,8 +74,8 @@ class _LoginScreenState extends State<LoginScreen> {
           EzloginStatus.couldNotCreateUser => 'Impossible de créer le compte',
           EzloginStatus.needAuthentication => 'Authentification requise',
           EzloginStatus.userNotFound => "Utilisateur non trouvé",
-          EzloginStatus.wrongUsername => 'Nom d\'utilisateur incorrect',
-          EzloginStatus.wrongPassword => 'Mot de passe incorrect',
+          EzloginStatus.wrongUsername => 'Identifiants de connexion incorrects',
+          EzloginStatus.wrongPassword => 'Identifiants de connexion incorrects',
           EzloginStatus.waitingForLogin => 'En attente de connexion...',
           EzloginStatus.cancelled => 'Connexion annulée',
           EzloginStatus.success => 'Connexion réussie',
@@ -166,9 +167,8 @@ class _LoginScreenState extends State<LoginScreen> {
     StateSetter? setStateForm;
     final formKey = GlobalKey<FormState>();
 
-    final isSuccess = await showDialog<bool?>(
+    final isSuccess = await showAdaptiveModal<bool>(
       context: context,
-      barrierDismissible: false,
       builder: (context) {
         Future<void> confirm() async {
           if (formKey.currentState == null ||
@@ -205,17 +205,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
           await _processConnexion(automaticConnexion: false);
           if (!context.mounted) return;
-          Navigator.pop(context, true);
+          Navigator.of(context).pop(true);
         }
 
-        return AreYouSureDialog(
+        return AreYouSureContent(
             title: 'Inscription',
             content: 'Compléter les informations pour créer un nouveau compte',
             canReadAloud: true,
             onConfirmed: confirm,
-            onCancelled: () {
-              Navigator.pop(context, false);
-            },
+            onCancelled: () => Navigator.of(context).pop(false),
             extraContent: Form(
               key: formKey,
               child: StatefulBuilder(

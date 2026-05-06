@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mon_stage_en_images/common/models/answer.dart';
 import 'package:mon_stage_en_images/common/models/enum.dart';
 import 'package:mon_stage_en_images/common/models/question.dart';
+import 'package:mon_stage_en_images/common/models/user.dart';
 import 'package:mon_stage_en_images/common/providers/all_answers.dart';
 import 'package:mon_stage_en_images/common/providers/all_questions.dart';
 import 'package:mon_stage_en_images/common/providers/all_teacher_answers.dart';
@@ -64,9 +65,16 @@ class QuestionPart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const String newQuestionBaseText = 'Créer une nouvelle question';
+
+    final User? student =
+        Provider.of<Database>(context, listen: false).studentById(studentId);
+    final addQuestionTitle = student != null
+        ? [newQuestionBaseText, 'pour', student.firstName].join(' ')
+        : newQuestionBaseText;
+
     return ListTile(
-      title: Text(
-          question == null ? 'Créer une nouvelle question' : question!.text,
+      title: Text(question == null ? addQuestionTitle : question!.text,
           style: _pickTextStyle(context, answer)),
       trailing: _QuestionPartTrailing(
         question: question,

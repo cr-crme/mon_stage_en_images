@@ -6,6 +6,7 @@ import 'package:mon_stage_en_images/common/providers/all_answers.dart';
 import 'package:mon_stage_en_images/common/providers/all_questions.dart';
 import 'package:mon_stage_en_images/common/providers/database.dart';
 import 'package:mon_stage_en_images/common/widgets/taking_action_notifier.dart';
+import 'package:mon_stage_en_images/screens/q_and_a/widgets/metier_tooltip.dart';
 import 'package:provider/provider.dart';
 
 class MetierTile extends StatelessWidget {
@@ -64,24 +65,28 @@ class MetierTile extends StatelessWidget {
           number: userType == UserType.student || numberOfActions == 0
               ? null
               : numberOfActions,
-          child: ListTile(
-            leading: Container(
-              margin: const EdgeInsets.only(bottom: 2),
-              width: 50,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Section.color(sectionIndex)),
-              child: Text(Section.letter(sectionIndex),
-                  style: const TextStyle(fontSize: 25, color: Colors.white)),
+          child: MetierTooltip(
+            sectionIndex: sectionIndex,
+            child: ListTile(
+              leading: Container(
+                margin: const EdgeInsets.only(bottom: 2),
+                width: 50,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Section.color(sectionIndex)),
+                child: Text(Section.letter(sectionIndex),
+                    style: const TextStyle(fontSize: 25, color: Colors.white)),
+              ),
+              title: Text(
+                Section.name(sectionIndex),
+                style:
+                    _pickTextStyle(context, active, answered, numberOfActions),
+              ),
+              trailing: _trailingBuilder(context, userType, numberOfActions,
+                  answers, answered, active),
+              onTap: () => onTap(sectionIndex),
             ),
-            title: Text(
-              Section.name(sectionIndex),
-              style: _pickTextStyle(context, active, answered, numberOfActions),
-            ),
-            trailing: _trailingBuilder(
-                context, userType, numberOfActions, answers, answered, active),
-            onTap: () => onTap(sectionIndex),
           ),
         ),
       ),
