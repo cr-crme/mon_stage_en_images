@@ -27,6 +27,7 @@ class PushNotificationsHelpers {
         await fcm.requestPermission();
         break;
       case AuthorizationStatus.denied:
+      case AuthorizationStatus.deniedPermanently:
         {
           if (SharedPreferencesController.instance.showPermissionRefused) {
             SharedPreferencesController.instance.showPermissionRefused = false;
@@ -58,6 +59,11 @@ class PushNotificationsHelpers {
         break;
     }
 
+    // getToken() is deprecated in favor of register()/onRegistered, but those
+    // yield a Firebase Installation ID (FID), not an FCM registration token.
+    // The cloud function (functions/main.py) sends via MulticastMessage(tokens=...),
+    // which requires FCM tokens, so switching would break notifications until
+    // the backend is migrated to FID-based direct send.
     final token = await fcm.getToken();
     if (!context.mounted || token == null) return;
 

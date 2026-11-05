@@ -8,7 +8,7 @@ import firebase_admin
 from firebase_admin import db, storage, auth
 import pandas
 
-_app_version = "1.2.2"
+_app_version = "1.2.3"
 _database_version = "v0_1_0"
 
 
